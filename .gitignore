@@ -1,0 +1,11 @@
+# Simple stuff modules should ignore
+*.iml
+build.gradle
+
+# Ignore Eclipse
+.checkstyle
+.project
+.classpath
+.settings/
+bin/
+build/
