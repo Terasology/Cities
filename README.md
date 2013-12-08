@@ -1,16 +1,28 @@
 
+## Cities
+
+A module that creates roads, settlements, etc. procedurally from random numbers.
+
+
+!(images/2013-12-06_merged_roads.png "Two roads merged at overlapping points")
+
+
+## Testing
+
+To test this module, you can use the main method in this class
+
+    org.terasology.testing.SwingTest
+
+
 ## Literature
 
 Stiny 75/78/80
 
-* Palladian Grammar
+* Shape/Palladian Grammar
 
-Middelhoff
+Different types of procedural generation exist(Middelhoff05):
 
-Different types of procedural generation:
+* Grammar-based L-Systems with extensions (ParishMüller01)
 
-* Grammar-based (L-Systems with extensions)
+* Agent-based(Lechner+05)
 
-* Agent-based
-
-* Stochastic
