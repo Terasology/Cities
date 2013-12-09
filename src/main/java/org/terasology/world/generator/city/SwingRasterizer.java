@@ -24,6 +24,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
@@ -45,7 +47,6 @@ import org.terasology.world.generator.city.model.Road;
 import org.terasology.world.generator.city.model.Sector;
 import org.terasology.world.generator.city.model.Sector.Orientation;
 import org.terasology.world.generator.city.raster.CityRasterizerSimple;
-import org.terasology.world.generator.city.raster.RoadRasterizerSimple;
 import org.terasology.world.generator.city.raster.RoadRasterizerSpline;
 
 import com.google.common.base.Function;
@@ -69,6 +70,8 @@ public class SwingRasterizer {
     private Function<Point2d, Junction> junctions;
 
     private Function<Sector, Set<Road>> roadMap;
+    
+    private Map<Sector, Area> roadAreaCache = new HashMap<>();
 
     private String seed;
 
@@ -174,21 +177,24 @@ public class SwingRasterizer {
 
         Set<Road> roads = roadMap.apply(sector);
 
+        Area roadArea = roadAreaCache.get(sector);
+        
         RoadRasterizerSpline rr = new RoadRasterizerSpline();
 
-        Area roadArea = rr.getRoadArea(sector, roads);
+        if (roadArea == null) {
+            roadArea = rr.getRoadArea(sector, roads);
+            roadAreaCache.put(sector, roadArea);
+        }
         
-//        RoadRasterizerSimple rr = new RoadRasterizerSimple();
-        
-//        logger.debug("Drawing {} roads for {}", roads.size(), sector);
+        logger.debug("Drawing {} roads for {}", roads.size(), sector);
 
         rr.rasterRoadArea(g, roadArea);
 
         drawCities(g, roadArea, sector);
         
         
-//        drawFrame(g, sector);
-//        drawSectorText(g, sector);
+        drawFrame(g, sector);
+        drawSectorText(g, sector);
     }
     
     private void drawCities(Graphics2D g, Area roadArea, Sector sector) {

@@ -50,14 +50,15 @@ final class JCityComponent extends JComponent {
 
     private JLabel label;
 
-    private String seed;
+    private SwingRasterizer rasterizer;
     
     public JCityComponent(String seed, final JLabel label) {
         super();
         
         this.label = label;
-        this.seed = seed;
-    
+
+        rasterizer = new SwingRasterizer(seed);
+
         addKeyListener(new KeyAdapter() {
             
             @Override
@@ -112,8 +113,6 @@ final class JCityComponent extends JComponent {
     protected void paintComponent(Graphics g1) {
         
         super.paintComponent(g1);
-
-        SwingRasterizer rasterizer = new SwingRasterizer(seed);
 
         final int imgWidth = image.getWidth();
         final int imgHeight = image.getHeight();
