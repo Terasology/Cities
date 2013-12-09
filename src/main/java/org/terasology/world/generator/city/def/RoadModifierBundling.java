@@ -34,24 +34,22 @@ import com.google.common.collect.Sets;
 public class RoadModifierBundling {
 
     /**
-     * @param localRoads a set of all roads that are adjusted
-     * @param allRoads a set of all roads that act forces on localRoads
+     * @param roads a set of all roads that act forces on each other
      * @return a new set of roads that contain a modified version of localRoads
      */
-    public Set<Road> apply(Set<Road> localRoads, Set<Road> allRoads) {
+    public Set<Road> apply(Set<Road> roads) {
 
         Set<Road> newRoads = Sets.newHashSet();
         
-        for (Road road : localRoads) {
+        for (Road road : roads) {
             
-            Road road2 = snapRoad(road, allRoads);
-            newRoads.add(road2);
+            newRoads.add(attractRoads(road, roads));
         }
-        
+
         return newRoads;
     }
 
-    private Road snapRoad(Road road, Collection<Road> others) {
+    private Road attractRoads(Road road, Collection<Road> others) {
 
         Road newRoad = new Road(road.getStart(), road.getEnd());
 
@@ -63,7 +61,7 @@ public class RoadModifierBundling {
                     continue;
                 }
 
-                applyInfluence(np, other.getPoints());
+                np.add(getInfluence(n, other.getPoints()));
             }
 
             newRoad.add(np);
@@ -72,27 +70,27 @@ public class RoadModifierBundling {
         return newRoad;
     }
 
-    private void applyInfluence(Point2d p, Collection<Point2d> points) {
-        final double maxDist = 0.2;
+    private Vector2d getInfluence(Point2d p, Collection<Point2d> points) {
+        final double maxDist = 0.15;
 
-        Point2d influence = new Point2d(0, 0);
+        Vector2d influence = new Vector2d(0, 0);
+        
+        double fac = 0.02;
         
         for (Point2d op : points) {
             double distSq = op.distanceSquared(p);
             
             if (distSq < maxDist * maxDist) {
                 double dist = Math.sqrt(distSq);
-                double inf = 1.0 - dist / maxDist;
-                Vector2d dir = new Vector2d(p);
-                dir.sub(op);
+                double inf = (1.0 - dist / maxDist) * fac;
+                Vector2d dir = new Vector2d(op);
+                dir.sub(p);
                 dir.scale(inf / dist);
                 influence.add(dir);
             }
         }
 
-        influence.scale(0.5);   // move to the center at maximum
-
-        p.add(influence);
+        return influence;
     }
 
 }

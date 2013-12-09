@@ -93,6 +93,6 @@ public class Road {
     
     @Override
     public String toString() {
-        return "Road [" + start + " -> " + end + ", " + points.size() + " segments]";
+        return "Road [" + start + " -> " + end + ", " + (points.size() + 1) + " segments]";
     }
 }

@@ -55,9 +55,11 @@ public class SwingRasterizer {
 
     Function<City, Set<City>> connectedCities;
 
-    private Function<Sector, Set<Road>> roadMap;
-
     private Function<Sector, Set<UnorderedPair<City>>> sectorConnections;
+
+    private Function<Point2d, Junction> junctions;
+
+    private Function<Sector, Set<Road>> roadMap;
 
     /**
      * @param seed the seed value
@@ -75,7 +77,7 @@ public class SwingRasterizer {
         connectedCities = new CityConnector(cityMap, maxDist);
         connectedCities = CachingFunction.wrap(connectedCities);
 
-        Function<Point2d, Junction> junctions = new Function<Point2d, Junction>() {
+        junctions = new Function<Point2d, Junction>() {
 
             @Override
             public Junction apply(Point2d input) {
@@ -89,13 +91,7 @@ public class SwingRasterizer {
             @Override
             public Set<UnorderedPair<City>> apply(Sector sector) {
                 Set<City> cities = Sets.newHashSet(cityMap.apply(sector));
-    
-                for (Orientation dir : Sector.Orientation.values()) {
-                    Sector neighbor = sector.getNeighbor(dir);
-                    Set<City> neighCities = cityMap.apply(neighbor);
-                    cities.addAll(neighCities);
-                }
-    
+
                 Set<UnorderedPair<City>> connections = Sets.newHashSet();
                 
                 for (City city : cities) {
@@ -111,40 +107,48 @@ public class SwingRasterizer {
         };
         
         sectorConnections = CachingFunction.wrap(sectorConnections);
-        
-        final Function<UnorderedPair<City>, Road> rg2 = new RoadGeneratorSimple(junctions);
-        final RoadModifierRandom rr = new RoadModifierRandom(0.02);
-//        final RoadModifierBundling rmb = new RoadModifierBundling();
 
-        final Function<UnorderedPair<City>, Road> rg = CachingFunction.wrap(new Function<UnorderedPair<City>, Road>() {
+        Function<UnorderedPair<City>, Road> rg = new Function<UnorderedPair<City>, Road>() {
+            private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
+            private RoadModifierRandom rmr = new RoadModifierRandom(0.02);
 
             @Override
             public Road apply(UnorderedPair<City> input) {
-                Road road = rg2.apply(input);
-                rr.apply(road);
+                Road road = rgs.apply(input);
+                rmr.apply(road);
                 return road;
-            }
-        });
-        
-        
-        roadMap = new Function<Sector, Set<Road>>() {
-
-            @Override
-            public Set<Road> apply(Sector input) {
-                Set<Road> roads = Sets.newHashSet();
-                
-                for (UnorderedPair<City> conn : sectorConnections.apply(input)) {
-                    Road road = rg.apply(conn);
-                    roads.add(road);
-                }
-                
-                return roads;
             }
             
         };
-        roadMap = CachingFunction.wrap(roadMap);
+        
+        final Function<UnorderedPair<City>, Road> cachedRoadgen = CachingFunction.wrap(rg);
 
-//        final RoadMerger rm = new RoadMerger();
+        roadMap = new Function<Sector, Set<Road>>() {
+
+            @Override
+            public Set<Road> apply(Sector sector) {
+                Set<Road> allRoads = Sets.newHashSet();
+                
+                Set<UnorderedPair<City>> localConns = sectorConnections.apply(sector);
+                Set<UnorderedPair<City>> allConns = Sets.newHashSet(localConns);
+                
+                // add all neighbors, because their roads might be passing through
+                for (Orientation dir : Sector.Orientation.values()) {
+                    Sector neighbor = sector.getNeighbor(dir);
+
+                    allConns.addAll(sectorConnections.apply(neighbor));
+                }
+
+                for (UnorderedPair<City> conn : allConns) {
+                    Road road = cachedRoadgen.apply(conn);
+                    allRoads.add(road);
+                }
+
+                return allRoads;
+            }
+        };
+        
+        roadMap = CachingFunction.wrap(roadMap);
     }
     
     /**
@@ -154,18 +158,15 @@ public class SwingRasterizer {
     public void rasterizeSector(Graphics2D g, Sector sector) {
 
         drawNoiseBackground(g, sector);
-        
-//        if (sector.equals(Sectors.getSector(new Vector2i(-1, 0)))) {
-//            Set<?> val = roadMap.apply(sector);
-//            System.out.println(val);
-//        }
 
+        Set<Road> roads = roadMap.apply(sector);
+        
         RoadRasterizerSimple rr = new RoadRasterizerSimple();
-//        RoadRasterizerSpline rr = new RoadRasterizerSpline();
+//      RoadRasterizerSpline rr = new RoadRasterizerSpline();
+        rr.rasterRoads(g, roads);
+
         CityRasterizerSimple sr = new CityRasterizerSimple(); 
         
-            Set<Road> roads = roadMap.apply(sector);
-            rr.rasterRoads(g, roads);
         
         Set<City> cis = cityMap.apply(sector);
         for (City ci : cis) {

@@ -97,6 +97,7 @@ public class RoadRasterizerSimple {
         int x2 = (int) ((to.x) * Sector.SIZE);
         int y2 = (int) ((to.y) * Sector.SIZE);
         
+        g.setColor(Color.BLACK);
         g.drawLine(x1, y1, x2, y2);
 
     }

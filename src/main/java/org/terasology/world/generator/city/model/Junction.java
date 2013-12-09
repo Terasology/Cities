@@ -63,6 +63,6 @@ public class Junction {
     
     @Override
     public String toString() {
-        return "Junction [" + coords + ", " + roads.size() + " roads";
+        return "Junction [" + coords + ", " + roads.size() + " roads]";
     }
 }

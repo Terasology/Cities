@@ -80,7 +80,11 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
 
         Set<City> result = Sets.newHashSet();
         
-        for (int i = 0; i < fr.nextInt(minPerSector, maxPerSector); i++) {
+        int count = fr.nextInt(minPerSector, maxPerSector);
+
+        logger.debug("Creating {} cities in {}", count, sector);
+        
+        for (int i = 0; i < count; i++) {
 
             // try n times to randomly place a new city and check the distance to existing ones
             City ci;
@@ -134,7 +138,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
 
         for (City other : cities) {
             double distSq = pos.distanceSquared(other.getPos());
-            if (distSq < minDist) {
+            if (distSq < minDist * minDist) {
                 return false;
             }
         }
