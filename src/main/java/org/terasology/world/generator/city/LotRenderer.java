@@ -15,36 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city.raster;
+package org.terasology.world.generator.city;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Set;
 
-import org.terasology.world.generator.city.model.City;
-import org.terasology.world.generator.city.model.Sector;
+import org.terasology.world.generator.city.model.Building;
+import org.terasology.world.generator.city.model.Lot;
 
 /**
- * Converts a city to pixels
+ * TODO Type description
  * @author Martin Steiger
  */
-public class CityRasterizerSimple {
+public class LotRenderer {
 
     /**
      * @param g the graphics object
-     * @param ci the city info
+     * @param lots a set of lots
      */
-    public void rasterCity(Graphics2D g, City ci) {
-
-        g.setStroke(new BasicStroke());
-        g.setColor(Color.BLACK);
+    public void rasterLots(Graphics2D g, Set<Lot> lots) {
         
-        int cx = (int) ((ci.getPos().x) * Sector.SIZE);
-        int cz = (int) ((ci.getPos().y) * Sector.SIZE);
-
-        int ccSize = (int) ci.getDiameter();
-
-        g.drawOval(cx - ccSize / 2, cz - ccSize / 2, ccSize, ccSize);
+        g.setColor(Color.BLACK);
+        for (Lot lot : lots) {
+            g.draw(lot.getShape());
+            
+            for (Building b : lot.getBuildings()) {
+                // tbd
+            }
+        }
     }
 
 }

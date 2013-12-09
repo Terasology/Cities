@@ -92,7 +92,9 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
             do {
                 double nx = sc.x + fr.nextDouble();
                 double nz = sc.y + fr.nextDouble();
-                double size = fr.nextDouble(minSize, maxSize);
+                // make smaller cities more probable than larger cities
+                double size = fr.nextDouble(Math.sqrt(minSize), Math.sqrt(maxSize));
+                size = size * size;
     
                 ci = new City(size, nx, nz);
                 tries--;

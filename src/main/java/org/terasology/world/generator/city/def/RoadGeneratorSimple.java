@@ -58,7 +58,7 @@ public class RoadGeneratorSimple implements Function<UnorderedPair<City>, Road> 
         addSegments(road, avgSegmentLength);
 
         // here we define width as the log of the smaller city's size
-        double avgSize = Math.min(a.getSize(), b.getSize());
+        double avgSize = Math.min(a.getDiameter(), b.getDiameter());
         float width = (float) Math.max(1.0, Math.log(avgSize));
         width = (float) Math.floor(width * 0.5);
         road.setWidth(1.0f);

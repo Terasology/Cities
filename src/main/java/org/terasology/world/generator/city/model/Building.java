@@ -15,36 +15,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city.raster;
+package org.terasology.world.generator.city.model;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-
-import org.terasology.world.generator.city.model.City;
-import org.terasology.world.generator.city.model.Sector;
+import java.awt.Shape;
 
 /**
- * Converts a city to pixels
+ * Defines a building in the most common sense
  * @author Martin Steiger
  */
-public class CityRasterizerSimple {
+public class Building {
+    private final Shape layout;
+    private final int height;
 
     /**
-     * @param g the graphics object
-     * @param ci the city info
+     * @param layout the building layout
+     * @param height the building height
      */
-    public void rasterCity(Graphics2D g, City ci) {
-
-        g.setStroke(new BasicStroke());
-        g.setColor(Color.BLACK);
-        
-        int cx = (int) ((ci.getPos().x) * Sector.SIZE);
-        int cz = (int) ((ci.getPos().y) * Sector.SIZE);
-
-        int ccSize = (int) ci.getDiameter();
-
-        g.drawOval(cx - ccSize / 2, cz - ccSize / 2, ccSize, ccSize);
+    public Building(Shape layout, int height) {
+        this.layout = layout;
+        this.height = height;
     }
 
+    /**
+     * @return the building layout
+     */
+    public Shape getLayout() {
+        return this.layout;
+    }
+
+    /**
+     * @return the building height
+     */
+    public int getHeight() {
+        return this.height;
+    }
+    
 }

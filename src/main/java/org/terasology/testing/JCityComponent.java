@@ -28,6 +28,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.math.Vector2i;
 import org.terasology.world.generator.city.SwingRasterizer;
 import org.terasology.world.generator.city.model.Sector;
@@ -40,6 +42,8 @@ import org.terasology.world.generator.city.model.Sectors;
 final class JCityComponent extends JComponent {
     private static final long serialVersionUID = 6918469720616969973L;
 
+    private static final Logger logger = LoggerFactory.getLogger(JCityComponent.class);
+    
     final BufferedImage image = new BufferedImage(3 * 256, 3 * 256, BufferedImage.TYPE_INT_ARGB);
 
     final Vector2i cameraPos = new Vector2i(50, 50);
@@ -126,11 +130,15 @@ final class JCityComponent extends JComponent {
             g.scale(scale, scale);
             g.translate(cameraPos.x, cameraPos.y);
 
+            
             int camOffX = (int) Math.floor(cameraPos.x / (double) Sector.SIZE);
             int camOffZ = (int) Math.floor(cameraPos.y / (double) Sector.SIZE);
 
             int numX = imgWidth / (Sector.SIZE * scale) + 1;
             int numZ = imgHeight / (Sector.SIZE * scale) + 1;
+            
+            logger.debug("Drawing {}x{} tiles", numX + 1, numZ + 1);
+
             for (int z = -1; z < numZ; z++) {
                 for (int x = -1; x < numX; x++) {
                     Vector2i coord = new Vector2i(x - camOffX, z - camOffZ);

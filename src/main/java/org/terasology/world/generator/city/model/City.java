@@ -30,7 +30,7 @@ import org.terasology.math.Vector2i;
  */
 public class City {
 
-    private double size;
+    private double diameter;
     private Point2d coords;
 
     /**
@@ -39,7 +39,7 @@ public class City {
      * @param z the z coord (in sectors)
      */
     public City(double size, double x, double z) {
-        this.size = size;
+        this.diameter = size;
         this.coords = new Point2d(x, z);
     }
 
@@ -59,10 +59,10 @@ public class City {
     }
 
     /**
-     * @return the size of the city (number of habitants)
+     * @return the diameter of the city (in blocks)
      */
-    public double getSize() {
-        return this.size;
+    public double getDiameter() {
+        return this.diameter;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class City {
 
     @Override
     public boolean equals(Object obj) {
-        return Objects.equals(coords, size);
+        return Objects.equals(coords, diameter);
     }
 
     @Override

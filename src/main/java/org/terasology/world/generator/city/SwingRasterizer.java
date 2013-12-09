@@ -22,25 +22,31 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.common.CachingFunction;
 import org.terasology.common.UnorderedPair;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.world.generator.city.def.CityConnector;
 import org.terasology.world.generator.city.def.CityPlacerRandom;
+import org.terasology.world.generator.city.def.LotGeneratorRandom;
 import org.terasology.world.generator.city.def.RoadGeneratorSimple;
 import org.terasology.world.generator.city.def.RoadModifierRandom;
 import org.terasology.world.generator.city.model.City;
 import org.terasology.world.generator.city.model.Junction;
+import org.terasology.world.generator.city.model.Lot;
 import org.terasology.world.generator.city.model.Road;
 import org.terasology.world.generator.city.model.Sector;
 import org.terasology.world.generator.city.model.Sector.Orientation;
 import org.terasology.world.generator.city.raster.CityRasterizerSimple;
 import org.terasology.world.generator.city.raster.RoadRasterizerSimple;
+import org.terasology.world.generator.city.raster.RoadRasterizerSpline;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -51,6 +57,9 @@ import com.google.common.collect.Sets;
  */
 public class SwingRasterizer {
 
+    
+    private static final Logger logger = LoggerFactory.getLogger(SwingRasterizer.class);
+    
     Function<Sector, Set<City>> cityMap;
 
     Function<City, Set<City>> connectedCities;
@@ -61,14 +70,18 @@ public class SwingRasterizer {
 
     private Function<Sector, Set<Road>> roadMap;
 
+    private String seed;
+
     /**
      * @param seed the seed value
      */
     public SwingRasterizer(String seed) {
         int minCitiesPerSector = 1;
         int maxCitiesPerSector = 3;
-        int minSize = 10;
+        int minSize = 20;
         int maxSize = 100;
+        
+        this.seed = seed;
         
         cityMap = new CityPlacerRandom(seed, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
         cityMap = CachingFunction.wrap(cityMap);
@@ -110,7 +123,7 @@ public class SwingRasterizer {
 
         Function<UnorderedPair<City>, Road> rg = new Function<UnorderedPair<City>, Road>() {
             private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
-            private RoadModifierRandom rmr = new RoadModifierRandom(0.02);
+            private RoadModifierRandom rmr = new RoadModifierRandom(0.01);
 
             @Override
             public Road apply(UnorderedPair<City> input) {
@@ -160,28 +173,51 @@ public class SwingRasterizer {
         drawNoiseBackground(g, sector);
 
         Set<Road> roads = roadMap.apply(sector);
-        
-        RoadRasterizerSimple rr = new RoadRasterizerSimple();
-//      RoadRasterizerSpline rr = new RoadRasterizerSpline();
-        rr.rasterRoads(g, roads);
 
-        CityRasterizerSimple sr = new CityRasterizerSimple(); 
+        RoadRasterizerSpline rr = new RoadRasterizerSpline();
+
+        Area roadArea = rr.getRoadArea(sector, roads);
+        
+//        RoadRasterizerSimple rr = new RoadRasterizerSimple();
+        
+//        logger.debug("Drawing {} roads for {}", roads.size(), sector);
+
+        rr.rasterRoadArea(g, roadArea);
+
+        drawCities(g, roadArea, sector);
         
         
-        Set<City> cis = cityMap.apply(sector);
-        for (City ci : cis) {
-            sr.rasterCity(g, ci);
-            drawCityName(g, ci);
-        }
-        
-        drawFrame(g, sector);
-        drawSectorText(g, sector);
+//        drawFrame(g, sector);
+//        drawSectorText(g, sector);
     }
     
+    private void drawCities(Graphics2D g, Area roadArea, Sector sector) {
+        CityRasterizerSimple sr = new CityRasterizerSimple(); 
+        LotGeneratorRandom lgr = new LotGeneratorRandom(seed);
+        LotRenderer lr = new LotRenderer();
+        
+        Set<City> cities = Sets.newHashSet(cityMap.apply(sector));
+        
+        // add all neighbors, because their cities might reach into this sector
+        for (Orientation dir : Sector.Orientation.values()) {
+            Sector neighbor = sector.getNeighbor(dir);
+
+            cities.addAll(cityMap.apply(neighbor));
+        }
+        
+        for (City city : cities) {
+            Set<Lot> lots = lgr.createLots(city, roadArea);
+            
+            lr.rasterLots(g, lots);
+            sr.rasterCity(g, city);
+            drawCityName(g, city);
+        }
+    }
+
     private void drawCityName(Graphics2D g, City ci) {
         String text = ci.toString();
         FontMetrics fm = g.getFontMetrics();
-        g.setColor(Color.BLUE);
+        g.setColor(Color.MAGENTA);
         int width = fm.stringWidth(text);
         int cx = (int) ((ci.getPos().x) * Sector.SIZE);
         int cz = (int) ((ci.getPos().y) * Sector.SIZE);
