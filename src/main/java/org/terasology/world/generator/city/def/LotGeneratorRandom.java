@@ -17,7 +17,7 @@
 
 package org.terasology.world.generator.city.def;
 
-import java.awt.geom.Area;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 import java.util.Set;
@@ -53,7 +53,7 @@ public class LotGeneratorRandom {
      * @param blockedArea the area that cannot be built upon 
      * @return a set of lots for that city within the city radius
      */
-    public Set<Lot> createLots(City city, Area blockedArea) {
+    public Set<Lot> createLots(City city, Shape blockedArea) {
         Random r = new FastRandom(Objects.hash(seed, city));
         
         Point2d center = city.getPos();

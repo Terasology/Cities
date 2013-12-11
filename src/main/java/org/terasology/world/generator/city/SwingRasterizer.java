@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -84,7 +85,7 @@ public class SwingRasterizer {
     
     private Function<String, Block> blockType = new BlockTypeFunction();
     
-    private Map<Sector, Area> roadAreaCache = new HashMap<>();
+    private Map<Sector, Shape> roadAreaCache = new HashMap<>();
 
     private String seed;
 
@@ -197,7 +198,7 @@ public class SwingRasterizer {
         
         Set<Road> roads = roadMap.apply(sector);
 
-        Area roadArea = roadAreaCache.get(sector);
+        Shape roadArea = roadAreaCache.get(sector);
 
         if (roadArea == null) {
             RoadRasterizerSpline rr = new RoadRasterizerSpline();
@@ -254,7 +255,7 @@ public class SwingRasterizer {
 
         Set<Road> roads = roadMap.apply(sector);
 
-        Area roadArea = roadAreaCache.get(sector);
+        Shape roadArea = roadAreaCache.get(sector);
         
         RoadRasterizerSpline rr = new RoadRasterizerSpline();
 
@@ -274,7 +275,7 @@ public class SwingRasterizer {
         drawSectorText(g, sector);
     }
     
-    private void drawCities(Graphics2D g, Area roadArea, Sector sector) {
+    private void drawCities(Graphics2D g, Shape roadArea, Sector sector) {
         CityRasterizerSimple sr = new CityRasterizerSimple(); 
         LotGeneratorRandom lgr = new LotGeneratorRandom(seed);
         LotRenderer lr = new LotRenderer();

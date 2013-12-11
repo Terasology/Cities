@@ -83,7 +83,7 @@ public class RoadRasterizerSpline {
      * @param g the graphics object
      * @param allAreas the area to draw
      */
-    public void rasterRoadArea(Graphics2D g, Area allAreas) {
+    public void rasterRoadArea(Graphics2D g, Shape allAreas) {
 
         g.setStroke(new BasicStroke());
         g.setColor(Color.BLACK);
