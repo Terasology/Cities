@@ -17,9 +17,6 @@
 
 package org.terasology.common;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.google.common.base.Function;
 
 /**
@@ -28,56 +25,24 @@ import com.google.common.base.Function;
  * @param <T> the return value type
  * @author Martin Steiger
  */
-public final class CachingFunction<F, T> implements Function<F, T> {
-    private final Function<? super F, ? extends T> function;
+public abstract class CachingFunction<F, T> implements Function<F, T> {
 
-    private final Map<F, T> cache = new ConcurrentHashMap<F, T>();
-
-    /**
-     * @param function the function to cache
-     */
-    private CachingFunction(Function<? super F, ? extends T> function) {
-        this.function = function;
-    }
-    
     /**
      * @param function the function to wrap
      * @return the caching function
      */
     public static <F, T> CachingFunction<F, T> wrap(Function<? super F, ? extends T> function) {
-        return new CachingFunction<>(function);
+        return new CachingFunctionGuava<F, T>(function, 1000);
     }
     
-    @Override
-    public T apply(F input) {
-        T result = cache.get(input);
-
-        if (result == null) {
-            // explicitly check whether the value is stored, but null
-            if (cache.containsKey(input)) {
-                return null;
-            }
-
-            result = function.apply(input);
-
-            cache.put(input, result);
-        }
-
-        return result;
-    }
-
     /**
      * Discards any cached value for {@code input}.
      * @param input the
      */
-    public void invalidate(F input) {
-        cache.remove(input);
-    }
+    public abstract void invalidate(F input);
 
     /**
      * Discards all entries in the cache
      */
-    public void invalidateAll() {
-        cache.clear();
-    }
+    public abstract  void invalidateAll();
 }
