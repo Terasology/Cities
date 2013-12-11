@@ -39,4 +39,6 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         register(new FlatTerrainGenerator());
         register(new CityTerrainGenerator());
     }
+    
+    
 }

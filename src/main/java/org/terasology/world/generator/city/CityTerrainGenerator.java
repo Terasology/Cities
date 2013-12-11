@@ -17,12 +17,22 @@
 
 package org.terasology.world.generator.city;
 
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.Map;
 
+import org.terasology.math.Vector2i;
+import org.terasology.math.Vector3i;
 import org.terasology.world.WorldBiomeProvider;
+import org.terasology.world.block.Block;
 import org.terasology.world.chunks.Chunk;
 import org.terasology.world.generator.FirstPassGenerator;
+import org.terasology.world.generator.city.model.Sector;
+import org.terasology.world.generator.city.model.Sectors;
+
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
 
 /**
  * TODO Type description
@@ -31,11 +41,13 @@ import org.terasology.world.generator.FirstPassGenerator;
 public class CityTerrainGenerator implements FirstPassGenerator {
 
     private WorldBiomeProvider worldBiomeProvider;
-    private SwingRasterizer rasterizer;
+    private WorldFacade facade;
+    private BlockTypeFunction blockType = new BlockTypeFunction();
+    private Function<? super Vector2i, Integer> heightMap = Functions.constant(50); 
 
     @Override
     public void setWorldSeed(String worldSeed) {
-        rasterizer = new SwingRasterizer(worldSeed);
+        facade = new WorldFacade(worldSeed);
     }
 
     @Override
@@ -61,11 +73,43 @@ public class CityTerrainGenerator implements FirstPassGenerator {
 
     @Override
     public void generateChunk(Chunk chunk) {
-        if (rasterizer == null) {
+        if (facade == null) {
             throw new IllegalStateException("seed has not been set");
         }
         
-        rasterizer.writeChunk(chunk);
+        writeChunk(chunk);
     }
 
+    private void writeChunk(Chunk chunk) {
+        Vector3i chunkPos = chunk.getBlockWorldPos(new Vector3i(0, 0, 0));
+        
+        int wx = chunkPos.x;
+        int wz = chunkPos.z;
+        int sx = (int) Math.floor((double) wx / Sector.SIZE);
+        int sz = (int) Math.floor((double) wz / Sector.SIZE);
+        int chunkSizeX = chunk.getChunkSizeX();
+        int chunkSizeZ = chunk.getChunkSizeZ();
+
+        Sector sector = Sectors.getSector(new Vector2i(sx, sz));
+        
+        Rectangle2D chunkRect = new Rectangle2D.Double(wx, wz, chunkSizeX, chunkSizeZ);
+
+        Shape roadArea = facade.getRoadArea(sector);
+        
+        if (!roadArea.intersects(chunkRect)) {
+            return;
+        }
+        
+        for (int z = 0; z < chunkSizeZ; z++) {
+            for (int x = 0; x < chunkSizeX; x++) {
+            
+                if (roadArea.contains(wx + x, wz + z)) {
+                    int y = heightMap.apply(new Vector2i(wx + x, wz + z));
+                    Vector3i pos = new Vector3i(x, y, z);
+                    Block block = blockType.apply(BlockTypes.ROAD_SURFACE);
+                    chunk.setBlock(pos, block);
+                }
+            }
+        }
+    }
 }

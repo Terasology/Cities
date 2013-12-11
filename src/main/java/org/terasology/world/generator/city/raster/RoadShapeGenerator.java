@@ -18,8 +18,6 @@
 package org.terasology.world.generator.city.raster;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
@@ -36,6 +34,7 @@ import org.terasology.world.generator.city.model.Junction;
 import org.terasology.world.generator.city.model.Road;
 import org.terasology.world.generator.city.model.Sector;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -43,16 +42,27 @@ import com.google.common.collect.Sets;
  * Renders roads using splines that pass though all segment points
  * @author Martin Steiger
  */
-public class RoadRasterizerSpline {
+public class RoadShapeGenerator implements Function<Sector, Shape> {
+
+    private final Function<Sector, Set<Road>> roadFunc;
+    
+    /**
+     * @param roadFunc the road function
+     */
+    public RoadShapeGenerator(Function<Sector, Set<Road>> roadFunc) {
+        this.roadFunc = roadFunc;
+    }
 
     /**
      * @param sector the rendered sector
-     * @param roads the roads to draw
      * @return the area that contains all roads 
      */
-    public Area getRoadArea(Sector sector, Set<Road> roads) {
+    @Override
+    public Shape apply(Sector sector) {
 
         Area allAreas = new Area();
+        
+        Set<Road> roads = roadFunc.apply(sector);
 
         Set<Junction> junctions = Sets.newHashSet();
         
@@ -77,19 +87,6 @@ public class RoadRasterizerSpline {
         }
         
         return allAreas;
-    }
-    
-    /**
-     * @param g the graphics object
-     * @param allAreas the area to draw
-     */
-    public void rasterRoadArea(Graphics2D g, Shape allAreas) {
-
-        g.setStroke(new BasicStroke());
-        g.setColor(Color.BLACK);
-        
-        g.draw(allAreas);
-
     }
     
     private Shape getRoadShape(Road road) {
