@@ -7,22 +7,35 @@ A module that creates roads, settlements, etc. procedurally from random numbers.
 ![image1](images/2013-12-10_rendered_roads_ingame.png "Several roads crossing")
 
 
-## Testing
+### Testing
 
 To test this module, you can use the main method in this class
 
     org.terasology.testing.SwingTest
 
 
-## Literature
+### Literature
 
-Stiny 75/78/80
+* Introduction to Shape and Shape GrammerShape[Stiny 75/78/80]
+Mathematical foundation on how to use rules to replace a shape with another
 
-* Shape/Palladian Grammar
+* Introduction to Urban Simulation[WaddellUlfarsson]
+tbd
 
-Different types of procedural generation exist(Middelhoff05):
+
+* Procedural 3D Modeling of Cityscape[Middelhoff05]:
+Three distinct simulation types: L-Systems, agent-based and stochastic.
 
 * Grammar-based L-Systems with extensions (ParishMüller01)
+L-Systems with self-intersection detection
 
-* Agent-based(Lechner+05)
+* Interactive Geometric Simulation of 4D Cities[Weber+08]
+Based on [ParishMüller01], but more sophisticated.
+
+* Modeling the Appearance and Behaviour of Urban Spaces[Vanegas+09]
+Nice survey on Roads, Buildings, Land Use and Rendering.
+
+
+* Procedural Modeling of Land Use In Cities[Lechner+05]
+Uses 2D agent-based simulation with SimCity3000 vis.
 
