@@ -41,7 +41,7 @@ public final class SwingTest {
      */
     public static void main(String[] args) {
 
-        String seed = "asdfghi";
+        String seed = "a";
 
         final JFrame frame = new JFrame();
         final JLabel status = new JLabel();

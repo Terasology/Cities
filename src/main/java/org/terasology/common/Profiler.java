@@ -22,7 +22,8 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
- * A simple, but effective thread-safe profiler for micro-benchmarking
+ * A simple, but effective thread-safe profiler for micro-benchmarking.
+ * Use start() with an arbitrary object identifier to start, get() for intermediate results, and stop() for the final timing.
  * @author Martin Steiger
  */
 public final class Profiler {
@@ -45,15 +46,18 @@ public final class Profiler {
     /**
      * Removes a measurement recording with the specified ID
      * @param id an identifier object
+     * @return the time in milliseconds
      */
-    public static void stop(Object id) {
+    public static double stop(Object id) {
+        double time = get(id);
         TIME_MAP.remove(id);
+        return time;
     }
 
     /**
      * Get the time since start() was last called
      * @param id an identifier object
-     * @return the time milliseconds
+     * @return the time in milliseconds
      */
     public static double get(Object id) {
         Long start = TIME_MAP.get(id);
@@ -71,9 +75,9 @@ public final class Profiler {
      * @param id an identifier object
      * @return the time in milliseconds as formatted string
      */
-    public static String getString(Object id) {
+    public static String getAsString(Object id) {
         double time = get(id);
-        return String.format("%6.2fms.", time);
+        return String.format("%.2fms.", time);
     }
 
     private static long measure() {

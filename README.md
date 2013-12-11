@@ -4,7 +4,7 @@
 A module that creates roads, settlements, etc. procedurally from random numbers.
 
 
-![image1](images/2013-12-06_merged_roads.png "Two roads merged at overlapping points")
+![image1](images/2013-12-10_rendered_roads_ingame.png "Several roads crossing")
 
 
 ## Testing

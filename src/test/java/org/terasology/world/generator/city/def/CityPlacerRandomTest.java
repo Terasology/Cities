@@ -81,7 +81,7 @@ public class CityPlacerRandomTest  {
         
         assertTrue(sum <= sectors * sectors);
         
-        logger.info("Created {} sectors in {}", sum, Profiler.getString("city-placement"));
+        logger.info("Created {} sectors in {}", sum, Profiler.getAsString("city-placement"));
         for (int i = 0; i < bins; i++) {
             logger.info("Created {} sectors with {} cities", hits[i], i + minPerSector);
         }

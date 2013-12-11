@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city;
+package org.terasology.world.generator.city.raster;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
