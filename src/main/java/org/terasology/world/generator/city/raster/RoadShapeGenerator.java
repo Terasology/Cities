@@ -23,6 +23,7 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Path2D.Double;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
     @Override
     public Shape apply(Sector sector) {
 
-        Area allAreas = new Area();
+        Path2D allPaths = new Path2D.Double();
         
         Set<Road> roads = roadFunc.apply(sector);
 
@@ -77,16 +78,15 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
                 continue;
             }
 
-            Area area = new Area(shape);
-            allAreas.add(area);
+            allPaths.append(shape, false);
         }
 
         for (Junction junction : junctions) {
-            Area plaza = createPlaza(junction.getCoords(), 10.0);
-            allAreas.add(plaza);
+            Shape plaza = createPlaza(junction.getCoords(), 10.0);
+            allPaths.append(plaza, false);
         }
         
-        return allAreas;
+        return allPaths;
     }
     
     private Shape getRoadShape(Road road) {
@@ -118,7 +118,7 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
         return shapeBounds.intersects(secRect);
     }
 
-    private Area createPlaza(Point2d pos, double radius) {
+    private Shape createPlaza(Point2d pos, double radius) {
         double x = (pos.x) * Sector.SIZE - radius * 0.5;
         double y = (pos.y) * Sector.SIZE - radius * 0.5;
 
