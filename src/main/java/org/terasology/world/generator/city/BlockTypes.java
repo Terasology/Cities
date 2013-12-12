@@ -28,6 +28,15 @@ public final class BlockTypes {
      */
     public static final String ROAD_SURFACE = "road:surface";
     
+    /**
+     * Empty space in a lot
+     */
+    public static final String LOT_EMPTY = "lot:empty";
+
+    public static final String BUILDING_WALL = "building:wall";
+
+    public static final String ROOF_FLAT = "roof:flat";
+    
     private BlockTypes() {
         // private constructor
     }

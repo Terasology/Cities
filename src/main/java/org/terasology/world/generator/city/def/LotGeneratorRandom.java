@@ -17,17 +17,20 @@
 
 package org.terasology.world.generator.city.def;
 
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Vector2d;
 
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.generator.city.model.City;
-import org.terasology.world.generator.city.model.Lot;
+import org.terasology.world.generator.city.model.RectBuilding;
+import org.terasology.world.generator.city.model.RectLot;
 import org.terasology.world.generator.city.model.Sector;
 
 import com.google.common.base.Function;
@@ -38,7 +41,7 @@ import com.google.common.collect.Sets;
  * randomly in a circular area and checks whether it intersects or not.  
  * @author Martin Steiger
  */
-public class LotGeneratorRandom implements Function<City, Set<Lot>> {
+public class LotGeneratorRandom implements Function<City, Set<RectLot>> {
 
     private final String seed;
     private final Function<Sector, Shape> blockedAreaFunc;
@@ -57,16 +60,16 @@ public class LotGeneratorRandom implements Function<City, Set<Lot>> {
      * @return a set of lots for that city within the city radius
      */
     @Override
-    public Set<Lot> apply(City city) {
+    public Set<RectLot> apply(City city) {
         Random r = new FastRandom(Objects.hash(seed, city));
         
         Sector sector = city.getSector();
         Shape blockedArea = blockedAreaFunc.apply(sector);
         Point2d center = city.getPos();
         
-        Set<Lot> lots = Sets.newHashSet();
-        double minSize = 4d;
-        double maxSize = 8d;
+        Set<RectLot> lots = Sets.newHashSet();
+        double minSize = 6d;
+        double maxSize = 16d;
         double maxRad = (city.getDiameter() - maxSize) * 0.5;
         
         for (int i = 0; i < 100; i++) {
@@ -78,14 +81,17 @@ public class LotGeneratorRandom implements Function<City, Set<Lot>> {
             double z = center.y * Sector.SIZE + rad * Math.sin(ang);
             
             Point2d pos = new Point2d(x, z);
-            double size = Math.min(desSize, getMaxSpace(pos, lots) - 1);
+            Vector2d maxSpace = getMaxSpace(pos, lots);
 
-            Rectangle2D shape = new Rectangle2D.Double(pos.x - size * 0.5, pos.y - size * 0.5, size, size);
-
+            int sizeX = (int) Math.min(desSize, maxSpace.x);
+            int sizeZ = (int) Math.min(desSize, maxSpace.y);
+            
             // check if enough space is available
-            if (size < minSize) {
+            if (sizeX < minSize || sizeZ < minSize) {
                 continue;
             }
+
+            Rectangle shape = new Rectangle((int) (pos.x - sizeX * 0.5), (int) (pos.y - sizeZ * 0.5), sizeX, sizeZ);
 
             // check if lot intersects with blocked area
             if (blockedArea.intersects(shape)) {
@@ -93,25 +99,51 @@ public class LotGeneratorRandom implements Function<City, Set<Lot>> {
             }
 
             // all tests passed -> create and add
-            Lot lot = new Lot(pos, shape);
+            RectLot lot = new RectLot(shape);
+            lot.addBuilding(new RectBuilding(shape, 4));
             lots.add(lot);
         }
         
         return lots;
     }
 
-    private double getMaxSpace(Point2d pos, Set<Lot> lots) {
-        double max = Double.MAX_VALUE;
+    private Vector2d getMaxSpace(Point2d pos, Set<RectLot> lots) {
+        double maxX = Double.MAX_VALUE;
+        double maxZ = Double.MAX_VALUE;
         
-        for (Lot lot : lots) {
-            Rectangle2D bounds = lot.getShape().getBounds2D();
-            double lotExt = Math.max(bounds.getWidth(), bounds.getHeight()) * 0.5;
-            double dist = pos.distance(lot.getPos()) - lotExt;
-            if (dist < max) {
-                max = dist;
+        //      xxxxxxxxxxxxxxxxxxx
+        //      x                 x             (p)
+        //      x        o------- x--------------|
+        //      x                 x
+        //      xxxxxxxxxxxxxxxxxxx
+        //                         <------------->
+        
+        for (RectLot lot : lots) {
+            Rectangle2D bounds = lot.getShape();
+            double dx = Math.abs(pos.x - bounds.getCenterX()) - bounds.getWidth() * 0.5;
+            double dz = Math.abs(pos.y - bounds.getCenterY()) - bounds.getHeight() * 0.5;
+            
+            if (dx < 0 && dz < 0)
+                return new Vector2d(0, 0);
+            
+            if (dx > 0 && dz > 0) {
+                if (dx * dz < maxX * maxZ) {        // it's a rectangular area = w * h
+                    maxX = dx;
+                    maxZ = dz;
+                }
+            }
+            
+            if (dx > 0 && dz < 0) {
+                if (maxX > dx)
+                    maxX = dx;
+            }
+            
+            if (dx < 0 && dz > 0) {
+                if (maxZ > dz)
+                    maxZ = dz;
             }
         }
         
-        return max;
+        return new Vector2d(maxX, maxZ);
     }
 }

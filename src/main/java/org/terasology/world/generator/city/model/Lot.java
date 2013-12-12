@@ -21,8 +21,6 @@ import java.awt.Shape;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
-
 import com.google.common.collect.Sets;
 
 /**
@@ -31,25 +29,15 @@ import com.google.common.collect.Sets;
  */
 public class Lot {
 
-    private final Point2d pos;
     private final Shape shape;
     
     private final Set<Building> buildings = Sets.newHashSet();
     
     /**
-     * @param pos the center of the lot
      * @param shape the shape of the lot
      */
-    public Lot(Point2d pos, Shape shape) {
-        this.pos = pos;
+    public Lot(Shape shape) {
         this.shape = shape;
-    }
-
-    /**
-     * @return the center of the lot
-     */
-    public Point2d getPos() {
-        return this.pos;
     }
 
     /**

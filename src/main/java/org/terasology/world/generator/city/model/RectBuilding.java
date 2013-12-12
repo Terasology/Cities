@@ -15,35 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city.raster;
+package org.terasology.world.generator.city.model;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.util.Set;
-
-import org.terasology.world.generator.city.model.Building;
-import org.terasology.world.generator.city.model.Lot;
+import java.awt.Rectangle;
 
 /**
- * TODO Type description
+ * Defines a building in the most common sense
  * @author Martin Steiger
  */
-public class LotRenderer {
+public class RectBuilding extends Building {
 
     /**
-     * @param g the graphics object
-     * @param lots a set of lots
+     * @param layout the building layout
+     * @param height the building height
      */
-    public void rasterLots(Graphics2D g, Set<? extends Lot> lots) {
-        
-        g.setColor(Color.BLACK);
-        for (Lot lot : lots) {
-            g.draw(lot.getShape());
-            
-            for (Building b : lot.getBuildings()) {
-                // tbd
-            }
-        }
+    public RectBuilding(Rectangle layout, int height) {
+        super(layout, height);
+    }
+    
+    @Override
+    public Rectangle getLayout() {
+        return (Rectangle) super.getLayout();
     }
 
 }

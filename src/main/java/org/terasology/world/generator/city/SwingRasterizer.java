@@ -90,7 +90,7 @@ public class SwingRasterizer {
         }
         
         for (City city : cities) {
-            Set<Lot> lots = facade.getLots(city);
+            Set<? extends Lot> lots = facade.getLots(city);
             
             lr.rasterLots(g, lots);
             sr.rasterCity(g, city);
