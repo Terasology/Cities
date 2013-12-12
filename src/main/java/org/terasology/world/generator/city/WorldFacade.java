@@ -22,8 +22,6 @@ import java.util.Set;
 
 import javax.vecmath.Point2d;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.common.CachingFunction;
 import org.terasology.common.UnorderedPair;
 import org.terasology.world.generator.city.def.CityConnector;
@@ -48,9 +46,9 @@ import com.google.common.collect.Sets;
  */
 public class WorldFacade {
 
-    private Function<Sector, Set<City>> cityMap;
+    Function<Sector, Set<City>> cityMap;
 
-    private Function<City, Set<City>> connectedCities;
+    Function<City, Set<City>> connectedCities;
 
     private Function<Sector, Set<UnorderedPair<City>>> sectorConnections;
 
@@ -88,25 +86,7 @@ public class WorldFacade {
         };
         junctions = CachingFunction.wrap(junctions);
         
-        sectorConnections = new Function<Sector, Set<UnorderedPair<City>>>() {
-            @Override
-            public Set<UnorderedPair<City>> apply(Sector sector) {
-                Set<City> cities = Sets.newHashSet(cityMap.apply(sector));
-
-                Set<UnorderedPair<City>> connections = Sets.newHashSet();
-                
-                for (City city : cities) {
-                    Set<City> conn = connectedCities.apply(city);
-                    
-                    for (City other : conn) {
-                        connections.add(new UnorderedPair<City>(city, other));
-                    }
-                }
-                
-                return connections;
-            }
-        };
-        
+        sectorConnections = new SectorConnector(cityMap, connectedCities);
         sectorConnections = CachingFunction.wrap(sectorConnections);
 
         Function<UnorderedPair<City>, Road> rg = new Function<UnorderedPair<City>, Road>() {
