@@ -25,7 +25,7 @@ import org.terasology.world.generator.city.model.Building;
 import org.terasology.world.generator.city.model.Lot;
 
 /**
- * TODO Type description
+ * Draws lots and the contained buildings
  * @author Martin Steiger
  */
 public class LotRenderer {
@@ -34,14 +34,17 @@ public class LotRenderer {
      * @param g the graphics object
      * @param lots a set of lots
      */
-    public void rasterLots(Graphics2D g, Set<? extends Lot> lots) {
+    public void rasterLots(Graphics2D g, Set<? extends Lot<?, ?>> lots) {
         
-        g.setColor(Color.BLACK);
-        for (Lot lot : lots) {
+        g.setColor(Color.YELLOW);
+        for (Lot<?, ?> lot : lots) {
             g.draw(lot.getShape());
             
-            for (Building b : lot.getBuildings()) {
-                // tbd
+            for (Building<?> b : lot.getBuildings()) {
+                g.setColor(Color.RED);
+                g.fill(b.getLayout());
+                g.setColor(Color.RED.darker());
+                g.draw(b.getLayout());
             }
         }
     }

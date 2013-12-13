@@ -20,22 +20,15 @@ package org.terasology.world.generator.city.model;
 import java.awt.Rectangle;
 
 /**
- * Defines a building in the most common sense
+ * A rectangular {@link Lot}
  * @author Martin Steiger
  */
-public class RectBuilding extends Building {
+public class SimpleLot extends Lot<Rectangle, SimpleBuilding> {
 
     /**
-     * @param layout the building layout
-     * @param height the building height
+     * @param shape the shape of the lot
      */
-    public RectBuilding(Rectangle layout, int height) {
-        super(layout, height);
+    public SimpleLot(Rectangle shape) {
+        super(shape);
     }
-    
-    @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
-    }
-
 }

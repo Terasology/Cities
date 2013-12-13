@@ -25,39 +25,41 @@ import com.google.common.collect.Sets;
 
 /**
  * A parcel where building can be placed on
+ * @param <S> the shape class of the lot 
+ * @param <B> the building type
  * @author Martin Steiger
  */
-public class Lot {
+public class Lot<S extends Shape, B extends Building<?>> {
 
-    private final Shape shape;
+    private final S shape;
     
-    private final Set<Building> buildings = Sets.newHashSet();
+    private final Set<B> buildings = Sets.newHashSet();
     
     /**
      * @param shape the shape of the lot
      */
-    public Lot(Shape shape) {
+    public Lot(S shape) {
         this.shape = shape;
     }
 
     /**
      * @return the layout shape
      */
-    public Shape getShape() {
+    public S getShape() {
         return this.shape;
     }
 
     /**
      * @param bldg the building to add
      */
-    public void addBuilding(Building bldg) {
+    public void addBuilding(B bldg) {
         buildings.add(bldg);
     }
     
     /**
      * @return an unmodifiable view on all buildings in this lot
      */
-    public Set<Building> getBuildings() {
+    public Set<B> getBuildings() {
         return Collections.unmodifiableSet(buildings);
     }
 }

@@ -31,7 +31,7 @@ import org.terasology.world.generator.city.def.RoadGeneratorSimple;
 import org.terasology.world.generator.city.def.RoadModifierRandom;
 import org.terasology.world.generator.city.model.City;
 import org.terasology.world.generator.city.model.Junction;
-import org.terasology.world.generator.city.model.RectLot;
+import org.terasology.world.generator.city.model.SimpleLot;
 import org.terasology.world.generator.city.model.Road;
 import org.terasology.world.generator.city.model.Sector;
 import org.terasology.world.generator.city.model.Sector.Orientation;
@@ -58,7 +58,7 @@ public class WorldFacade {
 
     private Function<Sector, Shape> roadShapeFunc;
 
-    private Function<City, Set<RectLot>> lotGenerator;
+    private Function<City, Set<SimpleLot>> lotGenerator;
 
     /**
      * @param seed the seed value
@@ -158,7 +158,7 @@ public class WorldFacade {
      * @param city the city
      * @return all lots that are part of the city
      */
-    public Set<RectLot> getLots(City city) {
+    public Set<SimpleLot> getLots(City city) {
         return lotGenerator.apply(city);
     }
 }

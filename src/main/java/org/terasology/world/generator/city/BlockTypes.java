@@ -33,8 +33,14 @@ public final class BlockTypes {
      */
     public static final String LOT_EMPTY = "lot:empty";
 
+    /**
+     * A simple building wall
+     */
     public static final String BUILDING_WALL = "building:wall";
 
+    /**
+     * Flat roof
+     */
     public static final String ROOF_FLAT = "roof:flat";
     
     private BlockTypes() {

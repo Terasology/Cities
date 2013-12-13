@@ -29,9 +29,9 @@ import javax.vecmath.Vector2d;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.generator.city.model.City;
-import org.terasology.world.generator.city.model.RectBuilding;
-import org.terasology.world.generator.city.model.RectLot;
 import org.terasology.world.generator.city.model.Sector;
+import org.terasology.world.generator.city.model.SimpleBuilding;
+import org.terasology.world.generator.city.model.SimpleLot;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -41,7 +41,7 @@ import com.google.common.collect.Sets;
  * randomly in a circular area and checks whether it intersects or not.  
  * @author Martin Steiger
  */
-public class LotGeneratorRandom implements Function<City, Set<RectLot>> {
+public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
 
     private final String seed;
     private final Function<Sector, Shape> blockedAreaFunc;
@@ -60,14 +60,14 @@ public class LotGeneratorRandom implements Function<City, Set<RectLot>> {
      * @return a set of lots for that city within the city radius
      */
     @Override
-    public Set<RectLot> apply(City city) {
+    public Set<SimpleLot> apply(City city) {
         Random r = new FastRandom(Objects.hash(seed, city));
         
         Sector sector = city.getSector();
         Shape blockedArea = blockedAreaFunc.apply(sector);
         Point2d center = city.getPos();
         
-        Set<RectLot> lots = Sets.newHashSet();
+        Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
         double minSize = 6d;
         double maxSize = 16d;
         double maxRad = (city.getDiameter() - maxSize) * 0.5;
@@ -99,15 +99,15 @@ public class LotGeneratorRandom implements Function<City, Set<RectLot>> {
             }
 
             // all tests passed -> create and add
-            RectLot lot = new RectLot(shape);
-            lot.addBuilding(new RectBuilding(shape, 4));
+            SimpleLot lot = new SimpleLot(shape);
+            lot.addBuilding(new SimpleBuilding(shape, 4));
             lots.add(lot);
         }
         
         return lots;
     }
 
-    private Vector2d getMaxSpace(Point2d pos, Set<RectLot> lots) {
+    private Vector2d getMaxSpace(Point2d pos, Set<SimpleLot> lots) {
         double maxX = Double.MAX_VALUE;
         double maxZ = Double.MAX_VALUE;
         
@@ -115,35 +115,40 @@ public class LotGeneratorRandom implements Function<City, Set<RectLot>> {
         //      x                 x             (p)
         //      x        o------- x--------------|
         //      x                 x
-        //      xxxxxxxxxxxxxxxxxxx
+        //      xxxxxxxxxxxxxxxxxxx       dx
         //                         <------------->
         
-        for (RectLot lot : lots) {
+        for (SimpleLot lot : lots) {
             Rectangle2D bounds = lot.getShape();
             double dx = Math.abs(pos.x - bounds.getCenterX()) - bounds.getWidth() * 0.5;
             double dz = Math.abs(pos.y - bounds.getCenterY()) - bounds.getHeight() * 0.5;
             
-            if (dx < 0 && dz < 0)
+            // the point is inside -> abort
+            if (dx <= 0 && dz <= 0) {
                 return new Vector2d(0, 0);
+            }
             
+            // the point is diagonally outside -> restrict one of the two only
             if (dx > 0 && dz > 0) {
-                if (dx * dz < maxX * maxZ) {        // it's a rectangular area = w * h
-                    maxX = dx;
-                    maxZ = dz;
+                // make the larger of the two smaller --> larger shape area
+                if (dx > dz) {
+                    maxX = Math.min(maxX, dx);
+                } else {
+                    maxZ = Math.min(maxZ, dz);
                 }
             }
             
-            if (dx > 0 && dz < 0) {
-                if (maxX > dx)
-                    maxX = dx;
+            // the z-axis is overlapping -> restrict x
+            if (dx > 0 && dz <= 0) {
+                maxX = Math.min(maxX, dx);
             }
             
-            if (dx < 0 && dz > 0) {
-                if (maxZ > dz)
-                    maxZ = dz;
+            // the x-axis is overlapping -> restrict z
+            if (dx <= 0 && dz > 0) {
+                maxZ = Math.min(maxZ, dz);
             }
         }
         
-        return new Vector2d(maxX, maxZ);
+        return new Vector2d(2 * maxX, 2 * maxZ);
     }
 }
