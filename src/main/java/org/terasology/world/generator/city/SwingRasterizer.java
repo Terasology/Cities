@@ -28,9 +28,9 @@ import java.util.Set;
 
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.world.generator.city.model.City;
-import org.terasology.world.generator.city.model.Lot;
 import org.terasology.world.generator.city.model.Sector;
 import org.terasology.world.generator.city.model.Sector.Orientation;
+import org.terasology.world.generator.city.model.SimpleLot;
 import org.terasology.world.generator.city.raster.CityRasterizerSimple;
 import org.terasology.world.generator.city.raster.LotRenderer;
 
@@ -90,7 +90,7 @@ public class SwingRasterizer {
         }
         
         for (City city : cities) {
-            Set<? extends Lot<?, ?>> lots = facade.getLots(city);
+            Set<SimpleLot> lots = facade.getLots(city);
             
             lr.rasterLots(g, lots);
             sr.rasterCity(g, city);

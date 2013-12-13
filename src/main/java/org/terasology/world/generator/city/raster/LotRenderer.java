@@ -21,8 +21,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Set;
 
-import org.terasology.world.generator.city.model.Building;
-import org.terasology.world.generator.city.model.Lot;
+import org.terasology.world.generator.city.model.SimpleBuilding;
+import org.terasology.world.generator.city.model.SimpleLot;
 
 /**
  * Draws lots and the contained buildings
@@ -34,17 +34,19 @@ public class LotRenderer {
      * @param g the graphics object
      * @param lots a set of lots
      */
-    public void rasterLots(Graphics2D g, Set<? extends Lot<?, ?>> lots) {
+    public void rasterLots(Graphics2D g, Set<SimpleLot> lots) {
         
-        g.setColor(Color.YELLOW);
-        for (Lot<?, ?> lot : lots) {
+        for (SimpleLot lot : lots) {
+            g.setColor(Color.YELLOW);
             g.draw(lot.getShape());
             
-            for (Building<?> b : lot.getBuildings()) {
+            for (SimpleBuilding b : lot.getBuildings()) {
                 g.setColor(Color.RED);
                 g.fill(b.getLayout());
                 g.setColor(Color.RED.darker());
                 g.draw(b.getLayout());
+                g.setColor(Color.GREEN);
+                g.draw(b.getDoor());
             }
         }
     }

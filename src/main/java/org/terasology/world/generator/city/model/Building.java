@@ -47,7 +47,7 @@ public class Building<T extends Shape> {
     /**
      * @return the building height
      */
-    public int getHeight() {
+    public int getWallHeight() {
         return this.height;
     }
     

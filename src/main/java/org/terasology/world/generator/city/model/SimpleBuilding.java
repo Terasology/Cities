@@ -18,6 +18,8 @@
 package org.terasology.world.generator.city.model;
 
 import java.awt.Rectangle;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Defines a building in the most common sense
@@ -25,12 +27,30 @@ import java.awt.Rectangle;
  */
 public class SimpleBuilding extends Building<Rectangle> {
 
+    private Rectangle door;
+    private Set<Rectangle> windows;
+
     /**
      * @param layout the building layout
+     * @param door the door area in one of the wall
      * @param height the building height
      */
-    public SimpleBuilding(Rectangle layout, int height) {
+    public SimpleBuilding(Rectangle layout, Rectangle door, int height) {
         super(layout, height);
+        this.door = door;
     }
     
+    /**
+     * @return the door area in one of the wall
+     */
+    public Rectangle getDoor() {
+        return door;
+    }
+    
+    /**
+     * @return the window areas
+     */
+    public Set<Rectangle> getWindows() {
+        return Collections.unmodifiableSet(windows);
+    }
 }

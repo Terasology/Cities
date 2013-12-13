@@ -61,7 +61,7 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
      */
     @Override
     public Set<SimpleLot> apply(City city) {
-        Random r = new FastRandom(Objects.hash(seed, city));
+        Random rand = new FastRandom(Objects.hash(seed, city));
         
         Sector sector = city.getSector();
         Shape blockedArea = blockedAreaFunc.apply(sector);
@@ -73,9 +73,9 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         double maxRad = (city.getDiameter() - maxSize) * 0.5;
         
         for (int i = 0; i < 100; i++) {
-            double ang = r.nextDouble(0, Math.PI * 2.0);
-            double rad = r.nextDouble(5 + maxSize * 0.5, maxRad);
-            double desSize = r.nextDouble(minSize, maxSize);
+            double ang = rand.nextDouble(0, Math.PI * 2.0);
+            double rad = rand.nextDouble(5 + maxSize * 0.5, maxRad);
+            double desSize = rand.nextDouble(minSize, maxSize);
             
             double x = center.x * Sector.SIZE + rad * Math.cos(ang);
             double z = center.y * Sector.SIZE + rad * Math.sin(ang);
@@ -100,11 +100,47 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
 
             // all tests passed -> create and add
             SimpleLot lot = new SimpleLot(shape);
-            lot.addBuilding(new SimpleBuilding(shape, 4));
+            lot.addBuilding(createBuilding(rand, shape));
             lots.add(lot);
         }
         
         return lots;
+    }
+
+    /**
+     * @param r the random
+     * @param lot the lot shape
+     * @return a building
+     */
+    private SimpleBuilding createBuilding(Random r, Rectangle lot) {
+        // leave 1 block border for the building
+        Rectangle rc = new Rectangle(lot.x + 1, lot.y + 1, lot.width - 2, lot.height - 2);
+        
+        int wallHeight = 4;
+        int doorWidth = 1;
+        
+        Rectangle door;
+        if (r.nextBoolean()) {                               // on the x-axis
+            int cx = rc.x + (rc.width - doorWidth) / 2; 
+            if (r.nextBoolean()) {                           // on the top wall
+                int y = rc.y;
+                door = new Rectangle(cx, y, doorWidth, 1);
+            } else {
+                int y = rc.y + rc.height - 1;                // on the bottom wall
+                door = new Rectangle(cx, y, doorWidth, 1);
+            }
+        } else {
+            int cz = rc.y + (rc.height - doorWidth) / 2; 
+            if (r.nextBoolean()) {                           // on the left wall
+                int x = rc.x;
+                door = new Rectangle(x, cz, 1, doorWidth);
+            } else {                                         // on the right wall
+                int x = rc.x + rc.width - 1;
+                door = new Rectangle(x, cz, 1, doorWidth);
+            }
+        }
+        
+        return new SimpleBuilding(rc, door, wallHeight);
     }
 
     private Vector2d getMaxSpace(Point2d pos, Set<SimpleLot> lots) {
