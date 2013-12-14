@@ -53,7 +53,7 @@ public final class Sector {
     /**
      * Measured in blocks
      */
-    public static final int SIZE = 256;
+    public static final int SIZE = 1024;
     
     private final Vector2i coords;
 

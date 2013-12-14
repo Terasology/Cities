@@ -21,6 +21,8 @@ import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+
 /**
  * Defines a building in the most common sense
  * @author Martin Steiger
@@ -28,17 +30,25 @@ import java.util.Set;
 public class SimpleBuilding extends Building<Rectangle> {
 
     private Rectangle door;
-    private Set<Rectangle> windows;
+    private int doorHeight;
+    
+    private Roof roof;
+    
+    private final Set<Rectangle> windows = Sets.newHashSet();
 
     /**
      * @param layout the building layout
+     * @param roof the roof definition
      * @param door the door area in one of the wall
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
+     * @param doorHeight the height of the door
      */
-    public SimpleBuilding(Rectangle layout, int baseHeight, int wallHeight, Rectangle door) {
+    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight, Rectangle door, int doorHeight) {
         super(layout, baseHeight, wallHeight);
+        this.roof = roof;
         this.door = door;
+        this.doorHeight = doorHeight;
     }
     
 
@@ -49,6 +59,20 @@ public class SimpleBuilding extends Building<Rectangle> {
         return door;
     }
     
+    /**
+     * @return the height of the door
+     */
+    public int getDoorHeight() {
+        return this.doorHeight;
+    }
+
+    /**
+     * @return the roof the roof definition
+     */
+    public Roof getRoof() {
+        return this.roof;
+    }
+
     /**
      * @return the window areas
      */

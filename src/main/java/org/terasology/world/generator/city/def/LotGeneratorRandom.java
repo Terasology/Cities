@@ -30,6 +30,8 @@ import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.generator.city.model.City;
+import org.terasology.world.generator.city.model.Roof;
+import org.terasology.world.generator.city.model.SaddleRoof;
 import org.terasology.world.generator.city.model.Sector;
 import org.terasology.world.generator.city.model.SimpleBuilding;
 import org.terasology.world.generator.city.model.SimpleLot;
@@ -51,6 +53,7 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
     /**
      * @param seed the random seed
      * @param blockedAreaFunc describes the blocked area for a sector
+     * @param heightMap the terrain height function
      */
     public LotGeneratorRandom(String seed, Function<Sector, Shape> blockedAreaFunc, Function<Vector2i, Integer> heightMap) {
         this.seed = seed;
@@ -71,8 +74,8 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         Point2d center = city.getPos();
         
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
-        double minSize = 6d;
-        double maxSize = 16d;
+        double minSize = 9d;
+        double maxSize = 12d;
         double maxRad = (city.getDiameter() - maxSize) * 0.5;
         
         for (int i = 0; i < 100; i++) {
@@ -121,6 +124,7 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         
         int wallHeight = 3;
         int doorWidth = 1;
+        int doorHeight = 2;
         
         Rectangle door;
         if (r.nextBoolean()) {                               // on the x-axis
@@ -146,9 +150,12 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         // use door as base height - 
         // this is a bit dodgy, because only the first block is considered
         // maybe sample along width of the door and use the average?
+        // also check the height _in front_ of the door
         int baseHeight = heightMap.apply(new Vector2i(door.x, door.y));
         
-        return new SimpleBuilding(rc, baseHeight, wallHeight, door);
+        Roof roof = new SaddleRoof(1);
+        
+        return new SimpleBuilding(rc, roof, baseHeight, wallHeight, door, doorHeight);
     }
 
     private Vector2d getMaxSpace(Point2d pos, Set<SimpleLot> lots) {

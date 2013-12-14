@@ -82,14 +82,14 @@ public class WorldFacade {
         };
         
         int minCitiesPerSector = 1;
-        int maxCitiesPerSector = 3;
-        int minSize = 20;
-        int maxSize = 100;
+        int maxCitiesPerSector = 2;
+        int minSize = 50;
+        int maxSize = 250;
         
         cityMap = new CityPlacerRandom(seed, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
         cityMap = CachingFunction.wrap(cityMap);
         
-        double maxDist = 0.8;
+        double maxDist = 0.75;
         connectedCities = new CityConnector(cityMap, maxDist);
         connectedCities = CachingFunction.wrap(connectedCities);
 
