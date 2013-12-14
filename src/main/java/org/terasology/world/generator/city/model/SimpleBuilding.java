@@ -33,13 +33,15 @@ public class SimpleBuilding extends Building<Rectangle> {
     /**
      * @param layout the building layout
      * @param door the door area in one of the wall
-     * @param height the building height
+     * @param baseHeight the height of the floor level
+     * @param wallHeight the building height above the floor level
      */
-    public SimpleBuilding(Rectangle layout, Rectangle door, int height) {
-        super(layout, height);
+    public SimpleBuilding(Rectangle layout, int baseHeight, int wallHeight, Rectangle door) {
+        super(layout, baseHeight, wallHeight);
         this.door = door;
     }
     
+
     /**
      * @return the door area in one of the wall
      */

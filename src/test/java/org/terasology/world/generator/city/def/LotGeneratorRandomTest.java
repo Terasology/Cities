@@ -71,17 +71,10 @@ public class LotGeneratorRandomTest  {
             }
         }
         
-        // could be Functions.constant() actually, if key is turned into ? super Sector
-        Function<Sector, Shape> blockedAreaFunc = new Function<Sector, Shape>() {
-            private final Shape shape = new Area();
-            @Override
-            public Shape apply(Sector input) {
-                return shape;
-            }
-            
-        };
+        Function<Sector, Shape> blockedAreaFunc = constantFunction((Shape) (new Area()));
+        Function<Vector2i, Integer> heightMap = constantFunction(5);
         
-        LotGeneratorRandom lg = new LotGeneratorRandom(seed, blockedAreaFunc);
+        LotGeneratorRandom lg = new LotGeneratorRandom(seed, blockedAreaFunc, heightMap);
         
         Profiler.start("lot-generator");
         
@@ -119,6 +112,15 @@ public class LotGeneratorRandomTest  {
         }
 
         logger.info("Created {} lots with {} buildings in {}", lotCount, bdgCount, Profiler.getAsString("lot-generator"));
+    }
+    
+    private static <P, R> Function<P, R> constantFunction(final R val) {
+        return new Function<P, R>() {
+            @Override
+            public R apply(P p) {
+                return val;
+            }
+        };
     }
 }
 

@@ -24,6 +24,9 @@ import javax.vecmath.Point2d;
 
 import org.terasology.common.CachingFunction;
 import org.terasology.common.UnorderedPair;
+import org.terasology.math.Vector2i;
+import org.terasology.utilities.procedural.Noise;
+import org.terasology.utilities.procedural.PerlinNoise;
 import org.terasology.world.generator.city.def.CityConnector;
 import org.terasology.world.generator.city.def.CityPlacerRandom;
 import org.terasology.world.generator.city.def.LotGeneratorRandom;
@@ -60,10 +63,24 @@ public class WorldFacade {
 
     private Function<City, Set<SimpleLot>> lotGenerator;
 
+    private Function<Vector2i, Integer> heightMap;
+
     /**
      * @param seed the seed value
      */
-    public WorldFacade(String seed) {
+    public WorldFacade(final String seed) {
+        
+        final Noise terrainHeight = new PerlinNoise(seed.hashCode());
+
+        heightMap = new Function<Vector2i, Integer>() {
+
+            @Override
+            public Integer apply(Vector2i pos) {
+                return (int) Math.min(12, Math.max(1, (5 + terrainHeight.noise(pos.x / 155d, 0, pos.y / 155d) * 15d)));
+            }
+            
+        };
+        
         int minCitiesPerSector = 1;
         int maxCitiesPerSector = 3;
         int minSize = 20;
@@ -134,8 +151,15 @@ public class WorldFacade {
         roadShapeFunc = new RoadShapeGenerator(roadMap);
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
         
-        lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc);
+        lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc, heightMap);
         lotGenerator = CachingFunction.wrap(lotGenerator);
+    }
+
+    /**
+     * @return the terrain height map function
+     */
+    public Function<Vector2i, Integer> getHeightMap() {
+        return this.heightMap;
     }
 
     /**

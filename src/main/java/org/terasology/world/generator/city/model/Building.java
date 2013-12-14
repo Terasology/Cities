@@ -26,15 +26,18 @@ import java.awt.Shape;
  */
 public class Building<T extends Shape> {
     private final T layout;
-    private final int height;
+    private final int wallHeight;
+    private final int baseHeight;
 
     /**
      * @param layout the building layout
-     * @param height the building height
+     * @param baseHeight the height of the floor level
+     * @param wallHeight the building height above the floor level
      */
-    public Building(T layout, int height) {
+    public Building(T layout, int baseHeight, int wallHeight) {
         this.layout = layout;
-        this.height = height;
+        this.baseHeight = baseHeight;
+        this.wallHeight = wallHeight;
     }
 
     /**
@@ -48,7 +51,14 @@ public class Building<T extends Shape> {
      * @return the building height
      */
     public int getWallHeight() {
-        return this.height;
+        return this.wallHeight;
+    }
+
+    /**
+     * @return the base height
+     */
+    public int getBaseHeight() {
+        return baseHeight;
     }
     
 }

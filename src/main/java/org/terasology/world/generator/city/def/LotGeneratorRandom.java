@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.generator.city.model.City;
@@ -45,14 +46,16 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
 
     private final String seed;
     private final Function<Sector, Shape> blockedAreaFunc;
+    private Function<Vector2i, Integer> heightMap;
     
     /**
      * @param seed the random seed
      * @param blockedAreaFunc describes the blocked area for a sector
      */
-    public LotGeneratorRandom(String seed, Function<Sector, Shape> blockedAreaFunc) {
+    public LotGeneratorRandom(String seed, Function<Sector, Shape> blockedAreaFunc, Function<Vector2i, Integer> heightMap) {
         this.seed = seed;
         this.blockedAreaFunc = blockedAreaFunc;
+        this.heightMap = heightMap;
     }
 
     /**
@@ -116,7 +119,7 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         // leave 1 block border for the building
         Rectangle rc = new Rectangle(lot.x + 1, lot.y + 1, lot.width - 2, lot.height - 2);
         
-        int wallHeight = 4;
+        int wallHeight = 3;
         int doorWidth = 1;
         
         Rectangle door;
@@ -140,7 +143,12 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
             }
         }
         
-        return new SimpleBuilding(rc, door, wallHeight);
+        // use door as base height - 
+        // this is a bit dodgy, because only the first block is considered
+        // maybe sample along width of the door and use the average?
+        int baseHeight = heightMap.apply(new Vector2i(door.x, door.y));
+        
+        return new SimpleBuilding(rc, baseHeight, wallHeight, door);
     }
 
     private Vector2d getMaxSpace(Point2d pos, Set<SimpleLot> lots) {

@@ -36,6 +36,11 @@ public final class BlockTypes {
     /**
      * A simple building wall
      */
+    public static final String BUILDING_FLOOR = "building:floor";
+
+    /**
+     * A simple building wall
+     */
     public static final String BUILDING_WALL = "building:wall";
 
     /**
