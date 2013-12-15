@@ -27,6 +27,7 @@ import org.terasology.common.UnorderedPair;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.procedural.Noise;
 import org.terasology.utilities.procedural.PerlinNoise;
+import org.terasology.utilities.procedural.SimplexNoise;
 import org.terasology.world.generator.city.def.CityConnector;
 import org.terasology.world.generator.city.def.CityPlacerRandom;
 import org.terasology.world.generator.city.def.LotGeneratorRandom;
@@ -70,13 +71,13 @@ public class WorldFacade {
      */
     public WorldFacade(final String seed) {
         
-        final Noise terrainHeight = new PerlinNoise(seed.hashCode());
+        final SimplexNoise terrainHeight = new SimplexNoise(seed.hashCode());
 
         heightMap = new Function<Vector2i, Integer>() {
 
             @Override
             public Integer apply(Vector2i pos) {
-                return (int) Math.min(12, Math.max(1, (5 + terrainHeight.noise(pos.x / 155d, 0, pos.y / 155d) * 15d)));
+                return (int) Math.min(12, Math.max(1, (5 + terrainHeight.noise(pos.x / 155d, pos.y / 155d) * 15d)));
             }
             
         };

@@ -23,6 +23,11 @@ package org.terasology.world.generator.city;
  */
 public final class BlockTypes {
 
+	/**
+	 * Air (maybe not required)
+	 */
+	public static final String AIR = "air";
+
     /**
      * Surface of a road (asphalt)
      */

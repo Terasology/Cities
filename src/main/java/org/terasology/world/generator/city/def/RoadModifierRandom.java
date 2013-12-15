@@ -59,8 +59,8 @@ public class RoadModifierRandom  {
 
         for (Point2d n : road.getPoints()) {
 
-            n.x += r.nextStandNormalDistrDouble() * randomness;
-            n.y += r.nextStandNormalDistrDouble() * randomness;
+            n.x += r.nextGaussian() * randomness;
+            n.y += r.nextGaussian() * randomness;
 
         }
     }

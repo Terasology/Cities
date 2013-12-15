@@ -30,8 +30,8 @@ import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.generator.city.model.City;
+import org.terasology.world.generator.city.model.HipRoof;
 import org.terasology.world.generator.city.model.Roof;
-import org.terasology.world.generator.city.model.SaddleRoof;
 import org.terasology.world.generator.city.model.Sector;
 import org.terasology.world.generator.city.model.SimpleBuilding;
 import org.terasology.world.generator.city.model.SimpleLot;
@@ -153,7 +153,12 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         // also check the height _in front_ of the door
         int baseHeight = heightMap.apply(new Vector2i(door.x, door.y));
         
-        Roof roof = new SaddleRoof(1);
+        // in this case, this is exactly the lot area
+        Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
+
+		int roofPitch = 1;
+        int roofBaseHeight = baseHeight + wallHeight;
+		Roof roof = new HipRoof(roofArea, roofBaseHeight, roofBaseHeight + 1, roofPitch);
         
         return new SimpleBuilding(rc, roof, baseHeight, wallHeight, door, doorHeight);
     }
