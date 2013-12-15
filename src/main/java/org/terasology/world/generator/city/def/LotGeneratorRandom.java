@@ -151,7 +151,8 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         // this is a bit dodgy, because only the first block is considered
         // maybe sample along width of the door and use the average?
         // also check the height _in front_ of the door
-        int baseHeight = heightMap.apply(new Vector2i(door.x, door.y));
+        // we add +1, because the building starts at 1 block above the terrain
+        int baseHeight = heightMap.apply(new Vector2i(door.x, door.y)) + 1;
         
         // in this case, this is exactly the lot area
         Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
