@@ -24,10 +24,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.common.Profiler;
+import org.terasology.cities.common.Profiler;
+import org.terasology.cities.generator.CityPlacerRandom;
+import org.terasology.cities.model.City;
+import org.terasology.cities.model.Sectors;
 import org.terasology.math.Vector2i;
-import org.terasology.world.generator.city.model.City;
-import org.terasology.world.generator.city.model.Sectors;
 
 /**
  * Tests {@link CityPlacerRandom}
