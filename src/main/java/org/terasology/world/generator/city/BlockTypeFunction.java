@@ -44,7 +44,13 @@ final class BlockTypeFunction implements Function<String, Block> {
      * Setup the mapping with defaults 
      */
     public BlockTypeFunction() {
+        map.put(BlockTypes.AIR, BlockManager.getAir());
+
         register(BlockTypes.ROAD_SURFACE, "core:Gravel");
+        register(BlockTypes.LOT_EMPTY, "core:dirt");
+        register(BlockTypes.BUILDING_WALL, "core:brick");
+        register(BlockTypes.BUILDING_FLOOR, "core:stone");
+        register(BlockTypes.ROOF_FLAT, "core:plank");
     }
 
     /**
@@ -57,7 +63,7 @@ final class BlockTypeFunction implements Function<String, Block> {
         if (block == null) {
             logger.warn("Could not resolve block URI \"{}\" - skipping", blockUri);
         } else {
-            map.put(BlockTypes.ROAD_SURFACE, block);
+            map.put(blockType, block);
         }
     }
     

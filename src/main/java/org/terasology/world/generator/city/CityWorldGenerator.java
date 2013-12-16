@@ -16,7 +16,6 @@
 package org.terasology.world.generator.city;
 
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
-import org.terasology.core.world.generator.chunkGenerators.FlatTerrainGenerator;
 
 import org.terasology.engine.SimpleUri;
 import org.terasology.world.generator.RegisterWorldGenerator;
@@ -36,7 +35,8 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
     @Override
     public void initialize() {
-        register(new FlatTerrainGenerator());
+        register(new HeightMapTerrainGenerator());
+        register(new BoundaryGenerator());
         register(new CityTerrainGenerator());
     }
     

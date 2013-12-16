@@ -20,7 +20,9 @@ package nexus.model.raster;
 import java.awt.Rectangle;
 
 import org.terasology.math.Vector3i;
+import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.Chunk;
+import org.terasology.world.generator.city.BlockTypes;
 
 /**
  * Implements all methods except setBlock()
@@ -131,7 +133,7 @@ public abstract class AbstractBrush implements Brush
 						break;
 					}
 					
-					setBlock(chunk, x, y, z, null);
+					setBlock(chunk, x, y, z, BlockTypes.AIR);
 				}
 			}
 		}		
