@@ -33,6 +33,7 @@ import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
+import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
 import com.google.common.base.Function;
@@ -68,7 +69,7 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         Rectangle lotRc = lot.getShape();
         
         // use the rectangle, not the lot itself, because its hashcode is the identity hashcode
-        FastRandom r = new FastRandom(Objects.hash(seed, lotRc));
+        Random r = new MersenneRandom(Objects.hash(seed, lotRc));
         
         Rectangle rc = new Rectangle(lotRc.x + 1, lotRc.y + 1, lotRc.width - 2, lotRc.height - 2);
         
@@ -120,19 +121,15 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
     private Roof createRoof(Random r, Rectangle roofArea, int roofBaseHeight) {
         int type = r.nextInt(100);
         
-        if (type < 25) {
+        if (type < 33) {
             int roofPitch = 1;
             return new HipRoof(roofArea, roofBaseHeight, roofBaseHeight + 1, roofPitch);
         }
         
-        if (type < 50) {
-            return new FlatRoof(roofArea, roofBaseHeight, 1);
+        if (type < 66) {
+            return new DomeRoof(roofArea, roofBaseHeight, Math.min(roofArea.width, roofArea.height) / 2);
         }
         
-        if (type < 75) {
-            return new SaddleRoof(roofArea, roofBaseHeight, 1);
-        }
-        
-        return new DomeRoof(roofArea, roofBaseHeight, 10);
+        return new SaddleRoof(roofArea, roofBaseHeight, 1);
     }
 }

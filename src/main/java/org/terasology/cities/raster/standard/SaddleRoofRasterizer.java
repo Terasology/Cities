@@ -43,7 +43,7 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
         
         final boolean alongX = (area.width > area.height);
         
-        HeightMap topHm = new HeightMapAdapter() {
+        final HeightMap topHm = new HeightMapAdapter() {
 
             @Override
             public int apply(int x, int z) {
@@ -66,7 +66,31 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
             }
         };
 
-        HeightMap bottomHm = new OffsetHeightMap(topHm, -1);
+        HeightMap bottomHm = new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                int h0 = roof.getBaseHeight();
+                int y = topHm.apply(x, z) - 1;
+                
+                if (alongX) {
+                    int left = area.x + 1;                   // building border is +1
+                    int right = left + area.width - 1 - 1;   // building border is -1
+                    
+                    if (x == left || x == right) {
+                        return Math.min(h0, y);
+                    }
+                } else {
+                    int top = area.y + 1;                   // building border is +1
+                    int bottom = area.y + area.height - 1 - 1; // building border is -1
+                    if (z == top || z == bottom) {
+                        return Math.min(h0, y);
+                    }
+                }
+                
+                return y; 
+            }
+        };
         
         brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }

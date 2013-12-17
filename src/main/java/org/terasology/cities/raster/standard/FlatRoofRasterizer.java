@@ -48,7 +48,7 @@ public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
                 int rx = x - area.x;
                 int rz = z - area.y;
 
-                int y = roof.getBaseHeight();
+                int y = roof.getBaseHeight() + 1;       // at least one block thick
 
                 // distance to border of the roof
                 int borderDistX = Math.min(rx, area.width - 1 - rx);

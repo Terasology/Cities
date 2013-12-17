@@ -41,37 +41,64 @@ public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
             return;
         }
 
-//        An ellipsoid is defined as
+//        The surface of an ellipsoid is defined as the set of points(x, y, z) that ..
 //        
 //         x^2     y^2     z^2
-//        ----- + ----- + ----- = 0
+//        ----- + ----- + ----- = 1
 //         a^2     b^2     c^2
+//        
+//
+//                 (      x^2     z^2  )
+//       y^2 = b^2 ( 1 - ----- - ----- )
+//                 (      a^2     c^2  )
+//        
         
         HeightMap topHm = new HeightMapAdapter() {
 
             @Override
             public int apply(int rx, int rz) {
-                double x = rx - area.x - area.width / 2;   // distance from the center
-                double z = rz - area.y - area.height / 2;
+                int height = roof.getHeight();
+                double y = getY(area, height, rx + 0.5, rz + 0.5);        // measure at block center
                 
-                double a = area.width / 2;
-                double b = roof.getHeight();
-                double c = area.width / 2;
-
-                for (int y = roof.getBaseHeight(); y < brush.getMaxHeight(); y++) {
-                    double result = (x * x) / (a * a) + (y * y) / (b * b) + (z * z) / (c * c);
-                    if (result > 1.0) {
-                        return y;
-                    }
-                }
-                
-                return roof.getBaseHeight();
+                return roof.getBaseHeight() + (int) Math.max(1, y);
             }
         };
 
-        HeightMap bottomHm = new OffsetHeightMap(topHm, -1);
+        HeightMap bottomHm = new HeightMapAdapter() {
+
+            @Override
+            public int apply(int rx, int rz) {
+                int baseHeight = roof.getBaseHeight();
+
+                if (rx == area.x || rz == area.y) {
+                    return baseHeight;
+                }
+                
+                if (rx == area.x + area.getWidth() - 1 || rz == area.y + area.getHeight() - 1) {
+                    return baseHeight;
+                }
+                
+                int height = roof.getHeight();
+                double y = getY(area, height, rx + 0.5, rz + 0.5);        // measure at block center
+                
+                return baseHeight + (int) Math.max(0, y - 2);
+            }
+        };
         
         brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }
 
+    private double getY(Rectangle area, int height, double rx, double rz) {
+        
+        double x = rx - area.x - area.width * 0.5;   // distance from the center
+        double z = rz - area.y - area.height * 0.5;
+        
+        double a = area.width * 0.5;
+        double b = height;
+        double c = area.height * 0.5;
+    
+        double y2 = b * b * (1 - (x * x) / (a * a) - (z * z) / (c * c));
+    
+        return Math.sqrt(y2);
+    }
 }
