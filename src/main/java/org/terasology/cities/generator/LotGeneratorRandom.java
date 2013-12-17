@@ -52,17 +52,14 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
     
     private final String seed;
     private final Function<Sector, Shape> blockedAreaFunc;
-    private Function<Vector2i, Integer> heightMap;
     
     /**
      * @param seed the random seed
      * @param blockedAreaFunc describes the blocked area for a sector
-     * @param heightMap the terrain height function
      */
-    public LotGeneratorRandom(String seed, Function<Sector, Shape> blockedAreaFunc, Function<Vector2i, Integer> heightMap) {
+    public LotGeneratorRandom(String seed, Function<Sector, Shape> blockedAreaFunc) {
         this.seed = seed;
         this.blockedAreaFunc = blockedAreaFunc;
-        this.heightMap = heightMap;
     }
 
     /**
@@ -116,64 +113,12 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
 
             // all tests passed -> create and add
             SimpleLot lot = new SimpleLot(shape);
-            lot.addBuilding(createBuilding(rand, shape));
             lots.add(lot);
         }
         
         logger.debug("Generated {} lots for city {}", lots.size(), city);
         
         return lots;
-    }
-
-    /**
-     * @param r the random
-     * @param lot the lot shape
-     * @return a building
-     */
-    private SimpleBuilding createBuilding(Random r, Rectangle lot) {
-        // leave 1 block border for the building
-        Rectangle rc = new Rectangle(lot.x + 1, lot.y + 1, lot.width - 2, lot.height - 2);
-        
-        int wallHeight = 3;
-        int doorWidth = 1;
-        int doorHeight = 2;
-        
-        Rectangle door;
-        if (r.nextBoolean()) {                               // on the x-axis
-            int cx = rc.x + (rc.width - doorWidth) / 2; 
-            if (r.nextBoolean()) {                           // on the top wall
-                int y = rc.y;
-                door = new Rectangle(cx, y, doorWidth, 1);
-            } else {
-                int y = rc.y + rc.height - 1;                // on the bottom wall
-                door = new Rectangle(cx, y, doorWidth, 1);
-            }
-        } else {
-            int cz = rc.y + (rc.height - doorWidth) / 2; 
-            if (r.nextBoolean()) {                           // on the left wall
-                int x = rc.x;
-                door = new Rectangle(x, cz, 1, doorWidth);
-            } else {                                         // on the right wall
-                int x = rc.x + rc.width - 1;
-                door = new Rectangle(x, cz, 1, doorWidth);
-            }
-        }
-        
-        // use door as base height - 
-        // this is a bit dodgy, because only the first block is considered
-        // maybe sample along width of the door and use the average?
-        // also check the height _in front_ of the door
-        // we add +1, because the building starts at 1 block above the terrain
-        int baseHeight = heightMap.apply(new Vector2i(door.x, door.y)) + 1;
-        
-        // in this case, this is exactly the lot area
-        Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
-
-        int roofPitch = 1;
-        int roofBaseHeight = baseHeight + wallHeight;
-        Roof roof = new HipRoof(roofArea, roofBaseHeight, roofBaseHeight + 1, roofPitch);
-
-        return new SimpleBuilding(rc, roof, baseHeight, wallHeight, door, doorHeight);
     }
 
     private Vector2d getMaxSpace(Point2d pos, Set<SimpleLot> lots) {

@@ -17,19 +17,25 @@
 
 package org.terasology.cities.model;
 
+import java.awt.Rectangle;
+
 /**
  * A dome roof
  * @author Martin Steiger
  */
-public class DomeRoof implements Roof {
+public class DomeRoof extends RectangularRoof {
 
     private final int height;
     
     /**
-     * @param height the maximum height of the roof
+     * @param rc the roof shape
+     * @param baseHeight the base height of the roof
+     * @param maxHeight the maximum height of the roof
      */
-    public DomeRoof(int height) {
-        this.height = height;
+    public DomeRoof(Rectangle rc, int baseHeight, int maxHeight) {
+        super(rc, baseHeight);
+        
+        this.height = maxHeight;
     }
 
     /**

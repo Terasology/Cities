@@ -20,49 +20,53 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.HipRoof;
+import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
- * Converts a {@link HipRoof} into blocks
+ * Converts a {@link FlatRoof} into blocks
  * @author Martin Steiger
  */
-public class HipRoofRasterizer implements Rasterizer<HipRoof> {
+public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
     
     @Override
-    public void raster(Brush brush, final HipRoof roof) {
+    public void raster(Brush brush, final FlatRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {
             return;
         }
         
-        // this is the ground truth
-        // maxHeight = baseHeight + Math.min(cur.width, cur.height) / (2 * pitch);
-        
-        HeightMap hm = new HeightMapAdapter() {
+        HeightMap topHm = new HeightMapAdapter() {
 
             @Override
             public int apply(int x, int z) {
                 int rx = x - area.x;
                 int rz = z - area.y;
 
+                int y = roof.getBaseHeight();
+
                 // distance to border of the roof
                 int borderDistX = Math.min(rx, area.width - 1 - rx);
                 int borderDistZ = Math.min(rz, area.height - 1 - rz);
 
                 int dist = Math.min(borderDistX, borderDistZ);
-
-                int y = roof.getBaseHeight() + dist / roof.getPitch();
-                return Math.min(y, roof.getMaxHeight());
+                
+                if (dist == 0) {
+                    y += roof.getBorderHeight();
+                }
+                
+                return y;
             }
         };
 
-        brush.fill(area, hm, new OffsetHeightMap(hm, 1), BlockTypes.ROOF_FLAT);
+        HeightMap bottomHm = new ConstantHeightMap(roof.getBaseHeight());
+        
+        brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }
 
 }

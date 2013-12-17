@@ -23,10 +23,8 @@ import java.awt.Rectangle;
  * A hip roof
  * @author Martin Steiger
  */
-public class HipRoof implements Roof {
+public class HipRoof extends RectangularRoof {
 
-    private final Rectangle rc;
-    private final int baseHeight;
     private final int maxHeight;
     private final int pitch;
     
@@ -37,8 +35,8 @@ public class HipRoof implements Roof {
      * @param pitch the pitch
      */
     public HipRoof(Rectangle rc, int baseHeight, int maxHeight, int pitch) {
-        this.rc = rc;
-        this.baseHeight = baseHeight;
+        super(rc, baseHeight);
+        
         this.maxHeight = maxHeight;
         this.pitch = pitch;
     }
@@ -51,24 +49,10 @@ public class HipRoof implements Roof {
     }
 
     /**
-     * @return the roof area
-     */
-    public Rectangle getArea() {
-        return this.rc;
-    }
-
-    /**
      * @return the slope
      */
     public int getPitch() {
         return this.pitch;
-    }
-
-    /**
-     * @return the base height of the roof
-     */
-    public int getBaseHeight() {
-        return baseHeight;
     }
 
 }

@@ -17,18 +17,24 @@
 
 package org.terasology.cities.model;
 
+import java.awt.Rectangle;
+
 /**
  * A flat roof with an extruded border (terrace roof)
  * @author Martin Steiger
  */
-public class FlatRoof implements Roof {
+public class FlatRoof extends RectangularRoof {
 
     private final int borderHeight;
 
     /**
+     * @param rc the roof shape
+     * @param baseHeight the base height of the roof
      * @param borderHeight the height of the border
      */
-    public FlatRoof(int borderHeight) {
+    public FlatRoof(Rectangle rc, int baseHeight, int borderHeight) {
+        super(rc, baseHeight);
+        
         this.borderHeight = borderHeight;
     }
 

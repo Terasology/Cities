@@ -17,10 +17,17 @@
 
 package org.terasology.cities.model;
 
+import java.awt.Shape;
+
 /**
  * A basic interface for different roof types
  * @author Martin Steiger
  */
 public interface Roof {
-    // marker
+
+    /**
+     * @return the roof area
+     */
+    Shape getArea();
+
 }

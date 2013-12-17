@@ -36,7 +36,7 @@ public class City {
     private final Point2d coords;
     private final Set<Lot> lots = Sets.newHashSet();
     private double diameter;
-    
+
     /**
      * @param size the city cize (number of habitants)
      * @param x the x coord (in sectors)
@@ -53,6 +53,7 @@ public class City {
     public Point2d getPos() {
         return coords;
     }
+
     /**
      * @return the city center in sectors
      */
@@ -68,7 +69,7 @@ public class City {
     public double getDiameter() {
         return this.diameter;
     }
-    
+
     /**
      * @return all lots that are part of the city
      */
@@ -90,14 +91,14 @@ public class City {
     public String toString() {
         // this is for debugging only
         return Base58.encode(hashCode());
-        
-        // return "City " + coords; 
+
+        // return "City " + coords;
     }
 
     /**
-     * @param newLots the lots to add
+     * @param lot the lot to add
      */
-    public void addAll(Set<? extends Lot> newLots) {
-        this.lots.addAll(newLots);
+    public void add(Lot lot) {
+        this.lots.add(lot);
     }
 }

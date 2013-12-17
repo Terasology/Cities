@@ -17,13 +17,11 @@
 
 package org.terasology.cities.terrain;
 
-import org.terasology.math.Vector2i;
-
 /**
  * An implementation that returns other.height + offset
  * @author Martin Steiger
  */
-public class OffsetHeightMap implements HeightMap {
+public class OffsetHeightMap extends HeightMapAdapter {
 
     private final int offset;
     private final HeightMap base;
@@ -35,11 +33,6 @@ public class OffsetHeightMap implements HeightMap {
     public OffsetHeightMap(HeightMap base, int offset) {
         this.base = base;
         this.offset = offset;
-    }
-    
-    @Override
-    public Integer apply(Vector2i input) {
-        return apply(input.x, input.y);
     }
 
     @Override

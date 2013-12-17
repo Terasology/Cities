@@ -37,11 +37,13 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.generator.CityPlacerRandom;
 import org.terasology.cities.generator.LotGeneratorRandom;
+import org.terasology.cities.generator.SimpleHousingGenerator;
 import org.terasology.cities.model.Building;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
+import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.math.Vector2i;
 
@@ -81,7 +83,8 @@ public class LotGeneratorRandomTest  {
         Function<Sector, Shape> blockedAreaFunc = constantFunction((Shape) (new Area()));
         Function<Vector2i, Integer> heightMap = constantFunction(5);
         
-        LotGeneratorRandom lg = new LotGeneratorRandom(seed, blockedAreaFunc, heightMap);
+        LotGeneratorRandom lg = new LotGeneratorRandom(seed, blockedAreaFunc);
+        SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
         
         Profiler.start("lot-generator");
         
@@ -104,10 +107,14 @@ public class LotGeneratorRandomTest  {
                     
                     lotCount += lots.size();
                     
-                    for (Lot lot : lots) {
+                    for (SimpleLot lot : lots) {
                         Rectangle2D lotBbox = lot.getShape().getBounds2D();
                         
                         assertTrue("lot not in city bounding circle", cityBbox.contains(lotBbox));
+                        
+                        for (SimpleBuilding blg : shg.apply(lot)) {
+                            lot.addBuilding(blg);
+                        }
                         
                         for (Building bld : lot.getBuildings()) {
                             Rectangle2D bldgBbox = bld.getLayout().getBounds2D();

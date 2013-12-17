@@ -47,7 +47,7 @@ public abstract class Brush {
 
     public abstract Rectangle getIntersectionArea(int x1, int z1, int x2, int z2);
     
-    protected abstract int getMaxHeight();
+    public abstract int getMaxHeight();
 
     public Rectangle getIntersectionArea(Vector3i from, Vector3i to) {
         int x1 = from.x;

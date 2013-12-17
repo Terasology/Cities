@@ -17,18 +17,24 @@
 
 package org.terasology.cities.model;
 
+import java.awt.Rectangle;
+
 /**
  * A saddle(gable) roof
  * @author Martin Steiger
  */
-public class SaddleRoof implements Roof {
+public class SaddleRoof extends RectangularRoof {
 
     private final int pitch;
 
     /**
+     * @param shape the roof shape
+     * @param baseHeight the base height of the roof
      * @param pitch the roof pitch
      */
-    public SaddleRoof(int pitch) {
+    public SaddleRoof(Rectangle shape, int baseHeight, int pitch) {
+        super(shape, baseHeight);
+        
         this.pitch = pitch;
     }
 

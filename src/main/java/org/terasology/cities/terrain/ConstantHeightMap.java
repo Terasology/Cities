@@ -17,13 +17,11 @@
 
 package org.terasology.cities.terrain;
 
-import org.terasology.math.Vector2i;
-
 /**
  * An implementation based on a constant value
  * @author Martin Steiger
  */
-public class ConstantHeightMap implements HeightMap {
+public class ConstantHeightMap extends HeightMapAdapter {
 
     private final int height;
 
@@ -34,11 +32,6 @@ public class ConstantHeightMap implements HeightMap {
         this.height = height;
     }
     
-    @Override
-    public Integer apply(Vector2i input) {
-        return apply(input.x, input.y);
-    }
-
     @Override
     public int apply(int x, int z) {
         return height;

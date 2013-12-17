@@ -15,33 +15,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.terrain;
+package org.terasology.cities.model;
 
-import org.terasology.math.TeraMath;
-import org.terasology.utilities.procedural.SimplexNoise;
+import java.awt.Rectangle;
 
 /**
- * A simple implementation based on {@link SimplexNoise}
+ * A roof with rectangular shape
  * @author Martin Steiger
  */
-public class NoiseHeightMap extends HeightMapAdapter {
-
-    private SimplexNoise terrainNoise = new SimplexNoise(0);
+public class RectangularRoof implements Roof {
+    
+    private final Rectangle rc;
+    private final int baseHeight;
 
     /**
-     * @param seed the seed value
+     * @param rc the roof area
+     * @param baseHeight the base height of the roof
      */
-    public void setSeed(String seed) {
-        terrainNoise = new SimplexNoise(seed.hashCode());
+    public RectangularRoof(Rectangle rc, int baseHeight) {
+        this.rc = rc;
+        this.baseHeight = baseHeight;
+    }
+
+    /**
+     * @return the base height of the roof
+     */
+    public int getBaseHeight() {
+        return baseHeight;
     }
     
+    /**
+     * @return the roof area
+     */
     @Override
-    public int apply(int x, int z) {
-        int val = 5 + (int) (terrainNoise.noise(x / 155d, z / 155d) * 8d);
-        val += (int) (terrainNoise.noise(x / 72d, z / 72d) * 4d);
-        
-        return TeraMath.clamp(val, 1, 12);
+    public Rectangle getArea() {
+        return this.rc;
     }
-
-
 }

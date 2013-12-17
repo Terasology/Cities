@@ -18,7 +18,10 @@
 package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.DomeRoof;
+import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.model.HipRoof;
+import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.raster.RasterRegistry;
@@ -38,6 +41,9 @@ public final class StandardRegistry extends RasterRegistry {
         register(SimpleLot.class, new SimpleLotRasterizer());
         register(SimpleBuilding.class, new SimpleBuildingRasterizer());
         register(HipRoof.class, new HipRoofRasterizer());
+        register(FlatRoof.class, new FlatRoofRasterizer());
+        register(SaddleRoof.class, new SaddleRoofRasterizer());
+        register(DomeRoof.class, new DomeRoofRasterizer());
     }
 
     /**

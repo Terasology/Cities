@@ -30,12 +30,14 @@ import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
+import org.terasology.cities.generator.SimpleHousingGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sector.Orientation;
+import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.terrain.HeightMap;
 
@@ -59,8 +61,6 @@ public class WorldFacade {
     private Function<Sector, Set<Road>> roadMap;
 
     private Function<Sector, Shape> roadShapeFunc;
-
-    private Function<City, Set<SimpleLot>> lotGenerator;
 
     /**
      * @param seed the seed value
@@ -138,8 +138,8 @@ public class WorldFacade {
         roadShapeFunc = new RoadShapeGenerator(roadMap);
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
         
-        lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc, heightMap);
-        lotGenerator = CachingFunction.wrap(lotGenerator);
+        final LotGeneratorRandom lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc);
+        final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
         
         decoratedCities = new Function<Sector, Set<City>>() {
             
@@ -147,8 +147,15 @@ public class WorldFacade {
             public Set<City> apply(Sector input) {
                 Set<City> cities = cityMap.apply(input);
                 for (City city : cities) {
-                    Set<? extends Lot> lots = lotGenerator.apply(city);
-                    city.addAll(lots);
+                    Set<SimpleLot> lots = lotGenerator.apply(city);
+                    
+                    for (SimpleLot lot : lots) {
+                        city.add(lot);
+                        
+                        for (SimpleBuilding bldg : blgGenerator.apply(lot)) {
+                            lot.addBuilding(bldg);
+                        }
+                    }
                 }
                 return cities;
             }

@@ -17,31 +17,17 @@
 
 package org.terasology.cities.terrain;
 
-import org.terasology.math.TeraMath;
-import org.terasology.utilities.procedural.SimplexNoise;
+import org.terasology.math.Vector2i;
 
 /**
- * A simple implementation based on {@link SimplexNoise}
+ * A partial implementation of {@link HeightMap}
  * @author Martin Steiger
  */
-public class NoiseHeightMap extends HeightMapAdapter {
+public abstract class HeightMapAdapter implements HeightMap {
 
-    private SimplexNoise terrainNoise = new SimplexNoise(0);
-
-    /**
-     * @param seed the seed value
-     */
-    public void setSeed(String seed) {
-        terrainNoise = new SimplexNoise(seed.hashCode());
-    }
-    
     @Override
-    public int apply(int x, int z) {
-        int val = 5 + (int) (terrainNoise.noise(x / 155d, z / 155d) * 8d);
-        val += (int) (terrainNoise.noise(x / 72d, z / 72d) * 4d);
-        
-        return TeraMath.clamp(val, 1, 12);
+    public Integer apply(Vector2i input) {
+        return apply(input.x, input.y);
     }
-
 
 }

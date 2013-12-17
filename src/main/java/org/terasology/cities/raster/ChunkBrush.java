@@ -79,7 +79,7 @@ public class ChunkBrush extends Brush {
     }
     
     @Override
-    protected int getMaxHeight() {
+    public int getMaxHeight() {
         return chunk.getChunkSizeY();
     }
     

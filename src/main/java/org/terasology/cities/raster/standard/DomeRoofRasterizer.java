@@ -20,7 +20,7 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.HipRoof;
+import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.terrain.HeightMap;
@@ -28,41 +28,50 @@ import org.terasology.cities.terrain.HeightMapAdapter;
 import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
- * Converts a {@link HipRoof} into blocks
+ * Converts a {@link DomeRoof} into blocks
  * @author Martin Steiger
  */
-public class HipRoofRasterizer implements Rasterizer<HipRoof> {
+public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
     
     @Override
-    public void raster(Brush brush, final HipRoof roof) {
+    public void raster(final Brush brush, final DomeRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {
             return;
         }
+
+//        An ellipsoid is defined as
+//        
+//         x^2     y^2     z^2
+//        ----- + ----- + ----- = 0
+//         a^2     b^2     c^2
         
-        // this is the ground truth
-        // maxHeight = baseHeight + Math.min(cur.width, cur.height) / (2 * pitch);
-        
-        HeightMap hm = new HeightMapAdapter() {
+        HeightMap topHm = new HeightMapAdapter() {
 
             @Override
-            public int apply(int x, int z) {
-                int rx = x - area.x;
-                int rz = z - area.y;
+            public int apply(int rx, int rz) {
+                double x = rx - area.x - area.width / 2;   // distance from the center
+                double z = rz - area.y - area.height / 2;
+                
+                double a = area.width / 2;
+                double b = roof.getHeight();
+                double c = area.width / 2;
 
-                // distance to border of the roof
-                int borderDistX = Math.min(rx, area.width - 1 - rx);
-                int borderDistZ = Math.min(rz, area.height - 1 - rz);
-
-                int dist = Math.min(borderDistX, borderDistZ);
-
-                int y = roof.getBaseHeight() + dist / roof.getPitch();
-                return Math.min(y, roof.getMaxHeight());
+                for (int y = roof.getBaseHeight(); y < brush.getMaxHeight(); y++) {
+                    double result = (x * x) / (a * a) + (y * y) / (b * b) + (z * z) / (c * c);
+                    if (result > 1.0) {
+                        return y;
+                    }
+                }
+                
+                return roof.getBaseHeight();
             }
         };
 
-        brush.fill(area, hm, new OffsetHeightMap(hm, 1), BlockTypes.ROOF_FLAT);
+        HeightMap bottomHm = new OffsetHeightMap(topHm, -1);
+        
+        brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }
 
 }
