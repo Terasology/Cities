@@ -15,15 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.terrain;
 
-import org.terasology.cities.raster.RasterRegistry;
+import org.terasology.math.Vector2i;
 
 /**
- * A dummy class that is only used for {@link RasterRegistry} to find the 
- * name and a {@link ClassLoader} for this package
+ * An implementation based on a constant value
  * @author Martin Steiger
  */
-public class Dummy {
-    // empty
+public class ConstantHeightMap implements HeightMap {
+
+    private final int height;
+
+    /**
+     * @param height the height constant
+     */
+    public ConstantHeightMap(int height) {
+        this.height = height;
+    }
+    
+    @Override
+    public Integer apply(Vector2i input) {
+        return apply(input.x, input.y);
+    }
+
+    @Override
+    public int apply(int x, int z) {
+        return height;
+    }
+
 }

@@ -21,11 +21,10 @@ import java.awt.Shape;
 
 /**
  * Defines a building in the most common sense
- * @param <T> the layout shape class 
  * @author Martin Steiger
  */
-public class Building<T extends Shape> {
-    private final T layout;
+public class Building {
+    private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
 
@@ -34,7 +33,7 @@ public class Building<T extends Shape> {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public Building(T layout, int baseHeight, int wallHeight) {
+    public Building(Shape layout, int baseHeight, int wallHeight) {
         this.layout = layout;
         this.baseHeight = baseHeight;
         this.wallHeight = wallHeight;
@@ -43,7 +42,7 @@ public class Building<T extends Shape> {
     /**
      * @return the building layout
      */
-    public T getLayout() {
+    public Shape getLayout() {
         return this.layout;
     }
 

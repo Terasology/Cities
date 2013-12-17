@@ -20,6 +20,7 @@ package org.terasology.cities;
 import java.util.Collections;
 import java.util.Map;
 
+import org.terasology.cities.terrain.HeightMap;
 import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.chunks.Chunk;
 import org.terasology.world.generator.FirstPassGenerator;
@@ -30,16 +31,22 @@ import org.terasology.world.generator.FirstPassGenerator;
  */
 public class CityTerrainGenerator implements FirstPassGenerator {
 
-	private MyGenerator generator;
+    private MyGenerator generator;
+    private HeightMap heightMap;
 
-//    private WorldBiomeProvider worldBiomeProvider;
+    // private WorldBiomeProvider worldBiomeProvider;
+
+    /**
+     * @param heightMap the height map to use
+     */
+    public CityTerrainGenerator(HeightMap heightMap) {
+        this.heightMap = heightMap;
+    }
 
     @Override
     public void setWorldSeed(String worldSeed) {
-    	if (worldSeed == null)
-    		return;
-    	
-        generator = new MyGenerator(worldSeed);
+
+        generator = new MyGenerator(worldSeed, heightMap);
     }
 
     @Override

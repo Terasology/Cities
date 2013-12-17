@@ -17,13 +17,35 @@
 
 package org.terasology.cities.raster.standard;
 
+import org.terasology.cities.BlockTypes;
+import org.terasology.cities.model.Building;
+import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
+import org.terasology.cities.raster.Rasterizer;
 
 /**
- * A dummy class that is only used for {@link RasterRegistry} to find the 
- * name and a {@link ClassLoader} for this package
+ * Draws the lot layout and all contained buildings
  * @author Martin Steiger
  */
-public class Dummy {
-    // empty
+public class SimpleLotRasterizer implements Rasterizer<SimpleLot> {
+
+    @Override
+    public void raster(Brush brush, SimpleLot lot) {
+
+        if (!brush.affects(lot.getShape())) {
+            return;
+        }
+
+        RasterRegistry registry = StandardRegistry.getInstance();
+        
+        brush.fillRectOnTerrain(lot.getShape(), 0, 1, BlockTypes.LOT_EMPTY);
+        
+        for (Building blg : lot.getBuildings()) {
+            
+            registry.rasterize(brush, blg);
+        }
+        
+    }
+    
 }

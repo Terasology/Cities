@@ -15,15 +15,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.terrain;
 
-import org.terasology.cities.raster.RasterRegistry;
+import org.terasology.math.Vector2i;
 
 /**
- * A dummy class that is only used for {@link RasterRegistry} to find the 
- * name and a {@link ClassLoader} for this package
+ * An implementation that returns other.height + offset
  * @author Martin Steiger
  */
-public class Dummy {
-    // empty
+public class OffsetHeightMap implements HeightMap {
+
+    private final int offset;
+    private final HeightMap base;
+
+    /**
+     * @param base the base height map
+     * @param offset the height offset
+     */
+    public OffsetHeightMap(HeightMap base, int offset) {
+        this.base = base;
+        this.offset = offset;
+    }
+    
+    @Override
+    public Integer apply(Vector2i input) {
+        return apply(input.x, input.y);
+    }
+
+    @Override
+    public int apply(int x, int z) {
+        return base.apply(x, z) + offset;
+    }
+
+
 }

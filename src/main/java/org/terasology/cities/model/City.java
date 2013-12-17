@@ -18,11 +18,14 @@
 package org.terasology.cities.model;
 
 import java.util.Objects;
+import java.util.Set;
 
 import javax.vecmath.Point2d;
 
 import org.terasology.cities.common.Base58;
 import org.terasology.math.Vector2i;
+
+import com.google.common.collect.Sets;
 
 /**
  * Provides information on a city
@@ -30,9 +33,10 @@ import org.terasology.math.Vector2i;
  */
 public class City {
 
+    private final Point2d coords;
+    private final Set<Lot> lots = Sets.newHashSet();
     private double diameter;
-    private Point2d coords;
-
+    
     /**
      * @param size the city cize (number of habitants)
      * @param x the x coord (in sectors)
@@ -64,6 +68,13 @@ public class City {
     public double getDiameter() {
         return this.diameter;
     }
+    
+    /**
+     * @return all lots that are part of the city
+     */
+    public Set<Lot> getLots() {
+        return lots;
+    }
 
     @Override
     public int hashCode() {
@@ -81,5 +92,12 @@ public class City {
         return Base58.encode(hashCode());
         
         // return "City " + coords; 
+    }
+
+    /**
+     * @param newLots the lots to add
+     */
+    public void addAll(Set<? extends Lot> newLots) {
+        this.lots.addAll(newLots);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Martin Steiger
+ * Copyright 2013 MovingBlocks
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,17 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.world.chunks.Chunk;
 
 /**
  * Converts T elements into blocks
- * @param <T> the element type 
+ * @param <T> the element type
  * @author Martin Steiger
  */
-public interface Rasterizer<T>
-{
-	/**
-	 * @param chunk the chunk that is filled
-	 * @param brush the brush
-	 * @param element the object that is converted into blocks
-	 */
-	public void raster(Chunk chunk, Brush brush, T element);
+public interface Rasterizer<T> {
+    
+    /**
+     * @param brush the brush
+     * @param element the object that is converted into blocks
+     */
+    void raster(Brush brush, T element);
 }

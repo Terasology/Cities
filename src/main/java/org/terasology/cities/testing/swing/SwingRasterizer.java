@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities;
+package org.terasology.cities.testing.swing;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -26,12 +26,13 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 
+import org.terasology.cities.WorldFacade;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.Sector.Orientation;
-import org.terasology.cities.testing.swing.CityRasterizerSimple;
-import org.terasology.cities.testing.swing.LotRenderer;
+import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.NoiseHeightMap;
 import org.terasology.utilities.random.FastRandom;
 
 import com.google.common.collect.Sets;
@@ -48,7 +49,9 @@ public class SwingRasterizer {
      * @param seed the seed value
      */
     public SwingRasterizer(String seed) {
-        facade = new WorldFacade(seed);
+        HeightMap heightMap = new NoiseHeightMap();
+
+        facade = new WorldFacade(seed, heightMap);
     }
 
     /**
@@ -90,7 +93,7 @@ public class SwingRasterizer {
         }
         
         for (City city : cities) {
-            Set<SimpleLot> lots = facade.getLots(city);
+            Set<Lot> lots = city.getLots();
             
             lr.rasterLots(g, lots);
             sr.rasterCity(g, city);

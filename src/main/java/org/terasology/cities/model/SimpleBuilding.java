@@ -27,7 +27,7 @@ import com.google.common.collect.Sets;
  * Defines a building in the most common sense
  * @author Martin Steiger
  */
-public class SimpleBuilding extends Building<Rectangle> {
+public class SimpleBuilding extends Building {
 
     private Rectangle door;
     private int doorHeight;
@@ -51,6 +51,10 @@ public class SimpleBuilding extends Building<Rectangle> {
         this.doorHeight = doorHeight;
     }
     
+    @Override
+    public Rectangle getLayout() {
+        return (Rectangle) super.getLayout();
+    }
 
     /**
      * @return the door area in one of the wall

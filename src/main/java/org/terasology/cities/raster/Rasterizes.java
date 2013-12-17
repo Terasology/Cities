@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Martin Steiger
+ * Copyright 2013 MovingBlocks
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +23,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for classes that rasterize other classes into blocks
+ * An annotation for classes that rasterize other classes into blocks.
+ * Every annotated class <b>must have a default constructor</b>.
+ * 
+ * @deprecated Modules are not allowed to use reflection - 
+ * if they ever do add this back again and use {@link ReflectionRegistrar} to find all elements
  * @author Martin Steiger
  */
+@Deprecated
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Rasterizes
-{
-	/**
-	 * @return The target class that it rasterized
-	 */
-	Class<?> target();
+public @interface Rasterizes {
+
+    /**
+     * @return The target class that it rasterized
+     */
+    Class<?> target();
 }

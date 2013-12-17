@@ -15,16 +15,18 @@
  */
 package org.terasology.cities;
 
+import org.terasology.cities.terrain.NoiseHeightMap;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
-
 import org.terasology.engine.SimpleUri;
 import org.terasology.world.generator.RegisterWorldGenerator;
 
 /**
- * @author Immortius
+ * @author Martin Steiger
  */
 @RegisterWorldGenerator(id = "city", displayName = "City World")
 public class CityWorldGenerator extends AbstractBaseWorldGenerator {
+
+    private NoiseHeightMap heightMap;
 
     /**
      * @param uri the uri
@@ -35,10 +37,22 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
     @Override
     public void initialize() {
-        register(new HeightMapTerrainGenerator());
-        register(new BoundaryGenerator());
-        register(new CityTerrainGenerator());
+
+        heightMap = new NoiseHeightMap();
+        
+        register(new HeightMapTerrainGenerator(heightMap));
+        register(new BoundaryGenerator(heightMap));
+        register(new CityTerrainGenerator(heightMap));
     }
     
-    
+    @Override
+    public void setWorldSeed(String seed) {
+        if (seed == null) {
+            return;
+        }
+        
+        heightMap.setSeed(seed);
+        
+        super.setWorldSeed(seed);
+    }
 }

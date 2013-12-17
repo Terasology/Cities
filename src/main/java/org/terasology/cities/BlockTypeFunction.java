@@ -38,19 +38,14 @@ final class BlockTypeFunction implements Function<String, Block> {
 
     private final Map<String, Block> map = Maps.newConcurrentMap();
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
-    private final Block defaultBlock = blockManager.getBlock("core:Stone");
+    private final Block defaultBlock;
 
     /**
      * Setup the mapping with defaults 
      */
     public BlockTypeFunction() {
         map.put(BlockTypes.AIR, BlockManager.getAir());
-
-        register(BlockTypes.ROAD_SURFACE, "core:Gravel");
-        register(BlockTypes.LOT_EMPTY, "core:dirt");
-        register(BlockTypes.BUILDING_WALL, "core:brick");
-        register(BlockTypes.BUILDING_FLOOR, "core:stone");
-        register(BlockTypes.ROOF_FLAT, "core:plank");
+        defaultBlock = blockManager.getBlock("core:Stone");
     }
 
     /**

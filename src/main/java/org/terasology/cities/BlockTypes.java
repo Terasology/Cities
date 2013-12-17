@@ -23,10 +23,10 @@ package org.terasology.cities;
  */
 public final class BlockTypes {
 
-	/**
-	 * Air (maybe not required)
-	 */
-	public static final String AIR = "air";
+    /**
+     * Air (maybe not required)
+     */
+    public static final String AIR = "air";
 
     /**
      * Surface of a road (asphalt)

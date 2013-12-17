@@ -17,13 +17,23 @@
 
 package org.terasology.cities.raster.standard;
 
-import org.terasology.cities.raster.RasterRegistry;
+import java.awt.Shape;
+
+import org.terasology.cities.BlockTypes;
+import org.terasology.cities.raster.Brush;
 
 /**
- * A dummy class that is only used for {@link RasterRegistry} to find the 
- * name and a {@link ClassLoader} for this package
+ * Draws road shapes on the terrain surface
  * @author Martin Steiger
  */
-public class Dummy {
-    // empty
+public class RoadRasterizer {
+
+    /**
+     * @param brush the brush to use
+     * @param element the road shape
+     */
+    public void draw(Brush brush, Shape element) {
+        brush.fillShapeOnTerrain(element, 0, 1, BlockTypes.ROAD_SURFACE);
+    }
+
 }

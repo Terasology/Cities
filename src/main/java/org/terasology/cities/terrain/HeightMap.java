@@ -15,15 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.terrain;
 
-import org.terasology.cities.raster.RasterRegistry;
+import org.terasology.math.Vector2i;
+
+import com.google.common.base.Function;
 
 /**
- * A dummy class that is only used for {@link RasterRegistry} to find the 
- * name and a {@link ClassLoader} for this package
+ * Definition of a height map
  * @author Martin Steiger
  */
-public class Dummy {
-    // empty
+public interface HeightMap extends Function<Vector2i, Integer> {
+
+    /**
+     * @param x the x world coord
+     * @param z the z world coord
+     * @return the height
+     */
+    int apply(int x, int z);
+
 }

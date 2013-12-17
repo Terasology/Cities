@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Martin Steiger
+ * Copyright 2013 MovingBlocks
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,47 +23,51 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
-import org.terasology.cities.raster.Rasterizes;
-import org.terasology.world.chunks.Chunk;
+import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.math.Vector2i;
 
 /**
  * Converts a {@link HipRoof} into blocks
  * @author Martin Steiger
  */
-@Rasterizes(target = HipRoof.class)
-public class HipRoofRasterizer implements Rasterizer<HipRoof>
-{
-	@Override
-	public void raster(Chunk chunk, Brush brush, HipRoof roof)
-	{
-        Rectangle area = roof.getArea();
-        Rectangle cur = brush.getIntersectionArea(chunk, area);
-        
-        if (cur.isEmpty())
-        	return;
+public class HipRoofRasterizer implements Rasterizer<HipRoof> {
+    
+    @Override
+    public void raster(Brush brush, final HipRoof roof) {
+        final Rectangle area = roof.getArea();
+
+        if (!brush.affects(area)) {
+            return;
+        }
         
         // this is the ground truth
         // maxHeight = baseHeight + Math.min(cur.width, cur.height) / (2 * pitch);
         
-		for (int z = cur.y; z < cur.y + cur.height; z++) {
-        	for (int x = cur.x; x < cur.x + cur.width; x++) {
+        HeightMap hm = new HeightMap() {
 
-    			int rx = x - area.x;
-    			int rz = z - area.y;
-    			
-    			// distance to border of the roof
-    			int borderDistX = Math.min(rx, area.width - 1 - rx);
-    			int borderDistZ = Math.min(rz, area.height - 1 - rz);
-    			
-    			int dist = Math.min(borderDistX, borderDistZ);
-    			
-    			int y = roof.getBaseHeight() + dist / roof.getPitch();
-				y = Math.min(y, roof.getMaxHeight());
-    			
-       			brush.setBlock(chunk, x, y, z, BlockTypes.ROOF_FLAT);
-        	}
-		}
-		
-	}
+            @Override
+            public Integer apply(Vector2i input) {
+                return apply(input.x, input.y);
+            }
+
+            @Override
+            public int apply(int x, int z) {
+                int rx = x - area.x;
+                int rz = z - area.y;
+
+                // distance to border of the roof
+                int borderDistX = Math.min(rx, area.width - 1 - rx);
+                int borderDistZ = Math.min(rz, area.height - 1 - rz);
+
+                int dist = Math.min(borderDistX, borderDistZ);
+
+                int y = roof.getBaseHeight() + dist / roof.getPitch();
+                return Math.min(y, roof.getMaxHeight());
+            }
+        };
+
+        brush.fill(area, hm, new OffsetHeightMap(hm, 1), BlockTypes.ROOF_FLAT);
+    }
 
 }

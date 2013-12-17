@@ -26,6 +26,8 @@ import java.util.Set;
 import javax.vecmath.Point2d;
 import javax.vecmath.Vector2d;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.Roof;
@@ -46,6 +48,8 @@ import com.google.common.collect.Sets;
  */
 public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
 
+    private static final Logger logger = LoggerFactory.getLogger(LotGeneratorRandom.class);
+    
     private final String seed;
     private final Function<Sector, Shape> blockedAreaFunc;
     private Function<Vector2i, Integer> heightMap;
@@ -76,11 +80,17 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
         double minSize = 9d;
         double maxSize = 12d;
-        double maxRad = (city.getDiameter() - maxSize) * 0.5;
+        double maxLotDiam = maxSize * Math.sqrt(2);
+        double minRad = 5 + maxSize * 0.5;
+        double maxRad = (city.getDiameter() - maxLotDiam) * 0.5;
+        
+        if (minRad >= maxRad) {
+            return lots;        // which is empty
+        }
         
         for (int i = 0; i < 100; i++) {
             double ang = rand.nextDouble(0, Math.PI * 2.0);
-            double rad = rand.nextDouble(5 + maxSize * 0.5, maxRad);
+            double rad = rand.nextDouble(minRad, maxRad);
             double desSize = rand.nextDouble(minSize, maxSize);
             
             double x = center.x * Sector.SIZE + rad * Math.cos(ang);
@@ -96,7 +106,7 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
             if (sizeX < minSize || sizeZ < minSize) {
                 continue;
             }
-
+            
             Rectangle shape = new Rectangle((int) (pos.x - sizeX * 0.5), (int) (pos.y - sizeZ * 0.5), sizeX, sizeZ);
 
             // check if lot intersects with blocked area
@@ -109,6 +119,8 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
             lot.addBuilding(createBuilding(rand, shape));
             lots.add(lot);
         }
+        
+        logger.debug("Generated {} lots for city {}", lots.size(), city);
         
         return lots;
     }
@@ -157,10 +169,10 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         // in this case, this is exactly the lot area
         Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
 
-		int roofPitch = 1;
+        int roofPitch = 1;
         int roofBaseHeight = baseHeight + wallHeight;
-		Roof roof = new HipRoof(roofArea, roofBaseHeight, roofBaseHeight + 1, roofPitch);
-        
+        Roof roof = new HipRoof(roofArea, roofBaseHeight, roofBaseHeight + 1, roofPitch);
+
         return new SimpleBuilding(rc, roof, baseHeight, wallHeight, door, doorHeight);
     }
 

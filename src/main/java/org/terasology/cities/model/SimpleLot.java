@@ -23,12 +23,17 @@ import java.awt.Rectangle;
  * A rectangular {@link Lot}
  * @author Martin Steiger
  */
-public class SimpleLot extends Lot<Rectangle, SimpleBuilding> {
+public class SimpleLot extends Lot {
 
     /**
      * @param shape the shape of the lot
      */
     public SimpleLot(Rectangle shape) {
         super(shape);
+    }
+    
+    @Override
+    public Rectangle getShape() {
+        return (Rectangle) super.getShape();
     }
 }

@@ -23,8 +23,12 @@ import static org.junit.Assert.assertTrue;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Set;
+
+import javax.vecmath.Point2d;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -33,10 +37,11 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.generator.CityPlacerRandom;
 import org.terasology.cities.generator.LotGeneratorRandom;
+import org.terasology.cities.model.Building;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
-import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.math.Vector2i;
 
@@ -61,8 +66,8 @@ public class LotGeneratorRandomTest  {
         
         int minPerSector = 1;
         int maxPerSector = 3;
-        int minSize = 10;
-        int maxSize = 100;
+        int minSize = 30;
+        int maxSize = 200;
         Function<Sector, Set<City>> cpr = CachingFunction.wrap(new CityPlacerRandom(seed, minPerSector, maxPerSector, minSize, maxSize));
         
         for (int x = 0; x < sectors; x++) {
@@ -88,14 +93,25 @@ public class LotGeneratorRandomTest  {
                 Set<City> cities = cpr.apply(Sectors.getSector(coord));
                 
                 for (City city : cities) {
+                    Point2d pos = new Point2d(city.getPos());
+                    pos.x *= Sector.SIZE;
+                    pos.y *= Sector.SIZE;
+                    double rad = city.getDiameter() * 0.5;
+                    Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
+
                     Set<SimpleLot> lots = lg.apply(city);
                     List<SimpleLot> list = Lists.newArrayList(lots);
                     
                     lotCount += lots.size();
                     
-                    for (SimpleLot lot : lots) {
-                        for (SimpleBuilding bld : lot.getBuildings()) {
-                            assertTrue("building not inside lot", lot.getShape().contains(bld.getLayout()));
+                    for (Lot lot : lots) {
+                        Rectangle2D lotBbox = lot.getShape().getBounds2D();
+                        
+                        assertTrue("lot not in city bounding circle", cityBbox.contains(lotBbox));
+                        
+                        for (Building bld : lot.getBuildings()) {
+                            Rectangle2D bldgBbox = bld.getLayout().getBounds2D();
+                            assertTrue("building not inside lot", lotBbox.contains(bldgBbox));
                         }
                         
                         bdgCount += lot.getBuildings().size();
