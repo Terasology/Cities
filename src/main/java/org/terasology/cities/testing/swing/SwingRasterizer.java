@@ -31,9 +31,8 @@ import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sector.Orientation;
-import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.NoiseHeightMap;
-import org.terasology.utilities.random.FastRandom;
+import org.terasology.math.TeraMath;
 
 import com.google.common.collect.Sets;
 
@@ -44,13 +43,15 @@ import com.google.common.collect.Sets;
 public class SwingRasterizer {
 
     private final WorldFacade facade;
+    private NoiseHeightMap heightMap;
     
     /**
      * @param seed the seed value
      */
     public SwingRasterizer(String seed) {
-        HeightMap heightMap = new NoiseHeightMap();
-
+        heightMap = new NoiseHeightMap();
+        heightMap.setSeed(seed);
+        
         facade = new WorldFacade(seed, heightMap);
     }
 
@@ -112,13 +113,18 @@ public class SwingRasterizer {
     }
 
     private void drawNoiseBackground(Graphics2D g, Sector sector) {
-        FastRandom random = new FastRandom(sector.hashCode());
-        BufferedImage img = new BufferedImage(Sector.SIZE, Sector.SIZE, BufferedImage.TYPE_INT_ARGB);
-        
-        for (int y = 0; y < Sector.SIZE; y++) {
-            for (int x = 0; x < Sector.SIZE; x++) {
-                int v = 235 + random.nextInt(20);
-                Color c = new Color(v, v, v);
+        int scale = 4;
+        int size = Sector.SIZE / scale;
+        BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                int gx = sector.getCoords().x * Sector.SIZE + x * scale;
+                int gz = sector.getCoords().y * Sector.SIZE + y * scale;
+                int height = heightMap.apply(gx, gz);
+                int b = TeraMath.clamp(185 + height * 5, 0, 255);
+
+                Color c = new Color(b, b, b);
                 img.setRGB(x, y, c.getRGB());
             }
         }
@@ -126,7 +132,7 @@ public class SwingRasterizer {
         int offX = Sector.SIZE * sector.getCoords().x;
         int offZ = Sector.SIZE * sector.getCoords().y;
 
-        g.drawImage(img, offX, offZ, null);
+        g.drawImage(img, offX, offZ, Sector.SIZE, Sector.SIZE, null);
     }
     
    private void drawSectorText(Graphics2D g, Sector sector) {
