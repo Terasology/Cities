@@ -63,12 +63,12 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
 
         // top wall is in brush area
         if (ftop >= btop && ftop <= bbot) {
-            wallX(brush, hm, wallX1, wallX2, ftop, "Fences:Fence.top");
+            wallX(brush, hm, wallX1, wallX2, ftop, "Fences:Fence.front");
         }
 
         // bottom wall is in brush area
         if (fbot >= btop && fbot <= bbot) {
-            wallX(brush, hm, wallX1, wallX2, fbot, "Fences:Fence.center");
+            wallX(brush, hm, wallX1, wallX2, fbot, "Fences:Fence.back");
         }
 
         // left wall is in brush area
@@ -84,29 +84,45 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         if (brushRc.contains(fleft, ftop)) {
             int y = hm.apply(fleft, ftop);
             
-            // TODO: add higher posts is necessary
-            brush.setBlock(fleft, y, ftop, "Fences:FenceCorner.center");
+            brush.setBlock(fleft, y, ftop, BlockTypes.FENCE_NW);
+
+            // add higher posts if necessary
+            if (hm.apply(fleft + 1, ftop) > y || hm.apply(fleft, ftop + 1) > y) {
+                brush.setBlock(fleft, y + 1, ftop, BlockTypes.FENCE_NW);
+            }
         }
 
         if (brushRc.contains(fleft, fbot)) {
             int y = hm.apply(fleft, fbot);
             
-            // TODO: add higher posts is necessary
-            brush.setBlock(fleft, y, fbot, "Fences:FenceCorner.right"); // correct
+            brush.setBlock(fleft, y, fbot, BlockTypes.FENCE_SW);
+
+            // add higher posts if necessary
+            if (hm.apply(fleft + 1, fbot) > y || hm.apply(fleft, fbot - 1) > y) {
+                brush.setBlock(fleft, y + 1, fbot, BlockTypes.FENCE_SW);
+            }
         }
 
         if (brushRc.contains(fright, fbot)) {
             int y = hm.apply(fright, fbot);
-            
-            // TODO: add higher posts is necessary
-            brush.setBlock(fright, y, fbot, "Fences:FenceCorner.front"); // correct
+
+            brush.setBlock(fright, y, fbot, BlockTypes.FENCE_SE);
+
+            // add higher posts if necessary
+            if (hm.apply(fright - 1, fbot) > y || hm.apply(fright, fbot - 1) > y) {
+                brush.setBlock(fright, y + 1, fbot, BlockTypes.FENCE_SE);
+            }
         }
 
         if (brushRc.contains(fright, ftop)) {
             int y = hm.apply(fright, ftop);
             
-            // TODO: add higher posts is necessary
-            brush.setBlock(fright, y, ftop, "Fences:FenceCorner.left"); // correct
+            brush.setBlock(fright, y, ftop, BlockTypes.FENCE_NE);
+
+            // add higher posts if necessary
+            if (hm.apply(fright - 1, ftop) > y || hm.apply(fright, ftop + 1) > y) {
+                brush.setBlock(fright, y + 1, ftop, BlockTypes.FENCE_NE);
+            }
         }
     }
 
@@ -118,7 +134,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             
             // if one of the neighbors is higher, add one fence block on top
             if (hm.apply(x - 1, z) > y || hm.apply(x + 1, z) > y) {
-                brush.setBlock(x, y + 1, z, BlockTypes.FENCE_X);
+                brush.setBlock(x, y + 1, z, type);
             }
         }
     }
@@ -131,7 +147,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
 
             // if one of the neighbors is higher, add one fence block on top
             if (hm.apply(x, z - 1) > y || hm.apply(x, z + 1) > y) {
-                brush.setBlock(x, y + 1, z, BlockTypes.FENCE_Z);
+                brush.setBlock(x, y + 1, z, type);
             }
             
         }
