@@ -41,8 +41,9 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         heightMap = new NoiseHeightMap();
         
         register(new HeightMapTerrainGenerator(heightMap));
-        register(new BoundaryGenerator(heightMap));
+//        register(new BoundaryGenerator(heightMap));
         register(new CityTerrainGenerator(heightMap));
+        register(new FloraGeneratorFast(heightMap));
     }
     
     @Override
