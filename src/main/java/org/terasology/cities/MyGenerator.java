@@ -55,11 +55,21 @@ public class MyGenerator {
         theme.register(BlockTypes.BUILDING_WALL, "Cities:stonawall1");
         theme.register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark");
         theme.register(BlockTypes.BUILDING_FOUNDATION, "core:gravel");
-        theme.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles1");
+        theme.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles2");
         theme.register(BlockTypes.ROOF_HIP, "Cities:wood3");
         theme.register(BlockTypes.ROOF_SADDLE, "Cities:wood3");
         theme.register(BlockTypes.ROOF_DOME, "core:plank");
         theme.register(BlockTypes.ROOF_GABLE, "core:plank");
+
+        // -- require Fences modules
+        theme.register(BlockTypes.FENCE_X, "Fences:Fence.left");
+        theme.register(BlockTypes.FENCE_Z, "Fences:Fence.top");
+        theme.register(BlockTypes.FENCE_GATE_X, "Fences:FenceSlats.left");
+        theme.register(BlockTypes.FENCE_GATE_Z, "Fences:FenceSlats.top");
+        theme.register(BlockTypes.FENCE_SW, "Fences:FenceCorner.left");
+        theme.register(BlockTypes.FENCE_SE, "Fences:FenceCorner.right");
+        theme.register(BlockTypes.FENCE_NW, "Fences:FenceCorner.top");
+        theme.register(BlockTypes.FENCE_NE, "Fences:FenceCorner.bottom");
     }
 
     /**

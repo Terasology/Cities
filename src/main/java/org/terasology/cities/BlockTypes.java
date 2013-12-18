@@ -77,7 +77,40 @@ public final class BlockTypes {
      * Saddle roof
      */
     public static final String ROOF_SADDLE = "roof:saddle";
-    
+
+    /**
+     * Fence along x (east-west)
+     */
+    public static final String FENCE_X = "fences:ew";
+
+    /**
+     * Fence along z (north-south)
+     */
+    public static final String FENCE_Z = "fences:ns";
+
+    /**
+     * Fence corner (south-west)
+     */
+    public static final String FENCE_SW = "fences:corner:sw";
+
+    /**
+     * Fence corner (south-east)
+     */
+    public static final String FENCE_SE = "fences:corner:se";
+
+    /**
+     * Fence corner (north-west)
+     */
+    public static final String FENCE_NW = "fences:corner:nw";
+
+    /**
+     * Fence corner (north-east)
+     */
+    public static final String FENCE_NE = "fences:corner:ne";
+
+    public static final String FENCE_GATE_X = "fences:gate:ew";
+    public static final String FENCE_GATE_Z = "fences:gate:ns";
+
     private BlockTypes() {
         // private constructor
     }

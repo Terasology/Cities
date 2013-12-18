@@ -30,7 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 
@@ -71,8 +73,8 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
         Point2d center = city.getPos();
         
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
-        double minSize = 9d;
-        double maxSize = 12d;
+        double minSize = 10d;
+        double maxSize = 13d;
         double maxLotDiam = maxSize * Math.sqrt(2);
         double minRad = 5 + maxSize * 0.5;
         double maxRad = (city.getDiameter() - maxLotDiam) * 0.5;
@@ -108,7 +110,13 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
             }
 
             // all tests passed -> create and add
+            Rectangle fenceRc = new Rectangle(shape);
+            int gateX = fenceRc.x + rand.nextInt(fenceRc.width);
+            int gateZ = fenceRc.y + rand.nextInt(fenceRc.height);
+            SimpleFence fence = new SimpleFence(fenceRc, new Vector2i(gateX, gateZ)); 
+            
             SimpleLot lot = new SimpleLot(shape);
+            lot.setFence(fence);
             lots.add(lot);
         }
         

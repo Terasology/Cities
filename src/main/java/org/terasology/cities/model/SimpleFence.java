@@ -19,41 +19,37 @@ package org.terasology.cities.model;
 
 import java.awt.Rectangle;
 
-import com.google.common.base.Optional;
+import org.terasology.math.Vector2i;
 
 /**
- * A rectangular {@link Lot}
+ * A rectangular fence
  * @author Martin Steiger
  */
-public class SimpleLot extends Lot {
+public class SimpleFence {
 
-    private Optional<SimpleFence> fence = Optional.absent();
-
-    /**
-     * @param shape the shape of the lot
-     */
-    public SimpleLot(Rectangle shape) {
-        super(shape);
-    }
-
-    /**
-     * @param fence the fence to set (or <code>null</code> to clear)
-     */
-    public void setFence(SimpleFence fence) {
-        this.fence = Optional.fromNullable(fence);
-    }
-
-    @Override
-    public Rectangle getShape() {
-        return (Rectangle) super.getShape();
-    }
-
-    /**
-     * @return the fence (if available)
-     */
-    public Optional<SimpleFence> getFence() {
-        return this.fence;
-    }
-
+    private final Rectangle rect;
+    private final Vector2i gate;
     
+    /**
+     * @param rect the fence outline area
+     * @param gate the gate position
+     */
+    public SimpleFence(Rectangle rect, Vector2i gate) {
+        this.rect = rect;
+        this.gate = gate;
+    }
+
+    /**
+     * @return the rect
+     */
+    public Rectangle getRect() {
+        return this.rect;
+    }
+
+    /**
+     * @return the gate
+     */
+    public Vector2i getGate() {
+        return this.gate;
+    }
 }

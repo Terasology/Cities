@@ -69,7 +69,8 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         // use the rectangle, not the lot itself, because its hashcode is the identity hashcode
         Random r = new MersenneRandom(Objects.hash(seed, lotRc));
         
-        Rectangle rc = new Rectangle(lotRc.x + 1, lotRc.y + 1, lotRc.width - 2, lotRc.height - 2);
+        int inset = 2;
+        Rectangle rc = new Rectangle(lotRc.x + inset, lotRc.y + inset, lotRc.width - 2 * inset, lotRc.height - 2 * inset);
         
         int wallHeight = 3;
         int doorWidth = 1;
@@ -103,7 +104,7 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         // we add +1, because the building starts at 1 block above the terrain
         int baseHeight = heightMap.apply(new Vector2i(door.x, door.y)) + 1;
         
-        // in this case, this is exactly the lot area
+        // the roof area is 1 block larger all around
         Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
 
         int roofBaseHeight = baseHeight + wallHeight;

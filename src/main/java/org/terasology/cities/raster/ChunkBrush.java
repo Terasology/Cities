@@ -78,16 +78,20 @@ public class ChunkBrush extends Brush {
      */
     protected void setBlock(int x, int y, int z, Block block) {
         
-        int lx = x - chunk.getBlockWorldPosX(0);
-        int ly = y - chunk.getBlockWorldPosY(0);
-        int lz = z - chunk.getBlockWorldPosZ(0);
+        int wx = chunk.getBlockWorldPosX(0);
+        int wy = chunk.getBlockWorldPosY(0);
+        int wz = chunk.getBlockWorldPosZ(0);
+
+        int lx = x - wx;
+        int ly = y - wy;
+        int lz = z - wz;
 
         // TODO: remove
         final boolean debugging = true;
         if (debugging) {
-            Preconditions.checkArgument(lx >= 0 && lx < chunk.getChunkSizeX(), "X value of %s not in rage [%s..%s]", lx, 0, chunk.getChunkSizeX());
-            Preconditions.checkArgument(ly >= 0 && ly < chunk.getChunkSizeY(), "Y value of %s not in rage [%s..%s]", ly, 0, chunk.getChunkSizeY());
-            Preconditions.checkArgument(lz >= 0 && lz < chunk.getChunkSizeZ(), "Z value of %s not in rage [%s..%s]", lz, 0, chunk.getChunkSizeZ());
+            Preconditions.checkArgument(lx >= 0 && lx < chunk.getChunkSizeX(), "X value of %s not in rage [%s..%s]", x, wx, wx + chunk.getChunkSizeX());
+            Preconditions.checkArgument(ly >= 0 && ly < chunk.getChunkSizeY(), "Y value of %s not in rage [%s..%s]", y, wy, wy + chunk.getChunkSizeY());
+            Preconditions.checkArgument(lz >= 0 && lz < chunk.getChunkSizeZ(), "Z value of %s not in rage [%s..%s]", z, wz, wz + chunk.getChunkSizeZ());
         }
             
 

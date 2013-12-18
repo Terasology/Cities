@@ -42,10 +42,17 @@ public class SimpleLotRasterizer implements Rasterizer<SimpleLot> {
         
         brush.fillRect(lot.getShape(), ti.getHeightMap(), BlockTypes.LOT_EMPTY);
         
+        // draw buildings
         for (Building blg : lot.getBuildings()) {
             
             registry.rasterize(brush, ti, blg);
         }
+
+        // draw fence
+        if (lot.getFence().isPresent()) {
+            registry.rasterize(brush, ti, lot.getFence().get());
+        }
+        
         
     }
     

@@ -76,8 +76,9 @@ final class BlockTheme implements Function<String, Block> {
         Block block = map.get(input);
 
         if (block == null) {
-            block = defaultBlock;
-            logger.warn("Could not resolve block type \"{}\" - using default", input);
+            block = blockManager.getBlock(input);
+//            block = defaultBlock;
+//            logger.warn("Could not resolve block type \"{}\" - using default", input);
         }
 
         return block;
