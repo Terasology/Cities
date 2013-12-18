@@ -50,9 +50,9 @@ public class MyGenerator {
 
         blockType.register(BlockTypes.ROAD_SURFACE, "core:Gravel");
         blockType.register(BlockTypes.LOT_EMPTY, "core:dirt");
-        blockType.register(BlockTypes.BUILDING_WALL, "core:brick");
-        blockType.register(BlockTypes.BUILDING_FLOOR, "core:stone");
-        blockType.register(BlockTypes.ROOF_FLAT, "core:plank");
+        blockType.register(BlockTypes.BUILDING_WALL, "Cities:stonawall1");
+        blockType.register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark");
+        blockType.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles1");
     }
 
     /**

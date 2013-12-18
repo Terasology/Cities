@@ -40,8 +40,8 @@ public class BoundaryGenerator implements FirstPassGenerator {
     private Function<Vector2i, Integer> heightMap;
 
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
-    private final Block chunkBorder = blockManager.getBlock("Cities:Chunk");
-    private final Block sectorBorder = blockManager.getBlock("Cities:Sector");
+    private final Block chunkBorder = blockManager.getBlock("Cities:black");
+    private final Block sectorBorder = blockManager.getBlock("Cities:pink");
 
     /**
      * @param heightMap the height map to use
