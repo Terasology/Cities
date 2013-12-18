@@ -26,8 +26,10 @@ import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.ChunkBrush;
+import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
+import org.terasology.cities.terrain.CachingHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.math.Vector2i;
@@ -40,7 +42,7 @@ import com.google.common.collect.Sets;
  * @author Martin Steiger
  */
 public class MyGenerator {
-    private BlockTypeFunction blockType = new BlockTypeFunction();
+    private BlockTheme theme = new BlockTheme();
     private WorldFacade facade;
     private HeightMap heightMap;
 
@@ -48,11 +50,16 @@ public class MyGenerator {
         this.heightMap = heightMap;
         facade = new WorldFacade(worldSeed, heightMap);
 
-        blockType.register(BlockTypes.ROAD_SURFACE, "core:Gravel");
-        blockType.register(BlockTypes.LOT_EMPTY, "core:dirt");
-        blockType.register(BlockTypes.BUILDING_WALL, "Cities:stonawall1");
-        blockType.register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark");
-        blockType.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles1");
+        theme.register(BlockTypes.ROAD_SURFACE, "core:Gravel");
+        theme.register(BlockTypes.LOT_EMPTY, "core:dirt");
+        theme.register(BlockTypes.BUILDING_WALL, "Cities:stonawall1");
+        theme.register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark");
+        theme.register(BlockTypes.BUILDING_FOUNDATION, "core:gravel");
+        theme.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles1");
+        theme.register(BlockTypes.ROOF_HIP, "Cities:wood3");
+        theme.register(BlockTypes.ROOF_SADDLE, "Cities:wood3");
+        theme.register(BlockTypes.ROOF_DOME, "core:plank");
+        theme.register(BlockTypes.ROOF_GABLE, "core:plank");
     }
 
     /**
@@ -66,20 +73,23 @@ public class MyGenerator {
         int sz = (int) TeraMath.fastFloor((double) wz / Sector.SIZE);
         Sector sector = Sectors.getSector(new Vector2i(sx, sz));
 
-        Brush brush = new ChunkBrush(chunk, heightMap, blockType);
+        Brush brush = new ChunkBrush(chunk, theme);
 
-        drawCities(sector, brush);
-        drawRoads(sector, brush);
+        CachingHeightMap cachedHm = new CachingHeightMap(brush.getAffectedArea(), heightMap);
+        TerrainInfo ti = new TerrainInfo(cachedHm); 
+        
+        drawCities(sector, ti, brush);
+        drawRoads(sector, ti, brush);
     }
 
-    private void drawRoads(Sector sector, Brush brush) {
+    private void drawRoads(Sector sector, TerrainInfo ti, Brush brush) {
         Shape roadArea = facade.getRoadArea(sector);
 
         RoadRasterizer rr = new RoadRasterizer();
-        rr.draw(brush, roadArea);
+        rr.raster(brush, ti, roadArea);
     }
 
-    private void drawCities(Sector sector, Brush brush) {
+    private void drawCities(Sector sector, TerrainInfo ti, Brush brush) {
         Set<City> cities = Sets.newHashSet(facade.getCities(sector));
 
         for (Orientation dir : Orientation.values()) {
@@ -89,7 +99,7 @@ public class MyGenerator {
         CityRasterizer cr = new CityRasterizer();
 
         for (City city : cities) {
-            cr.raster(brush, city);
+            cr.raster(brush, ti, city);
         }
     }
 

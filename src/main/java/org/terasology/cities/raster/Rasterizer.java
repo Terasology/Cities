@@ -27,7 +27,8 @@ public interface Rasterizer<T> {
     
     /**
      * @param brush the brush
+     * @param ti TODO
      * @param element the object that is converted into blocks
      */
-    void raster(Brush brush, T element);
+    void raster(Brush brush, TerrainInfo ti, T element);
 }

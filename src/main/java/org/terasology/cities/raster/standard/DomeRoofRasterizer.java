@@ -23,9 +23,9 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
  * Converts a {@link DomeRoof} into blocks
@@ -34,7 +34,7 @@ import org.terasology.cities.terrain.OffsetHeightMap;
 public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
     
     @Override
-    public void raster(final Brush brush, final DomeRoof roof) {
+    public void raster(final Brush brush, TerrainInfo ti, final DomeRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {
@@ -85,7 +85,7 @@ public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
             }
         };
         
-        brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }
 
     private double getY(Rectangle area, int height, double rx, double rz) {

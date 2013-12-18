@@ -23,6 +23,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
@@ -34,7 +35,7 @@ import org.terasology.cities.terrain.HeightMapAdapter;
 public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
     
     @Override
-    public void raster(Brush brush, final FlatRoof roof) {
+    public void raster(Brush brush, TerrainInfo ti, final FlatRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {
@@ -66,7 +67,7 @@ public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
 
         HeightMap bottomHm = new ConstantHeightMap(roof.getBaseHeight());
         
-        brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }
 
 }

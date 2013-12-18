@@ -24,7 +24,8 @@ import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
-import org.terasology.math.Vector3i;
+import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
  * Converts a {@link SimpleBuilding} into blocks
@@ -33,7 +34,7 @@ import org.terasology.math.Vector3i;
 public class SimpleBuildingRasterizer implements Rasterizer<SimpleBuilding> {
 
     @Override
-    public void raster(Brush brush, SimpleBuilding blg) {
+    public void raster(Brush brush, TerrainInfo ti, SimpleBuilding blg) {
         Rectangle rc = blg.getLayout();
         
         if (brush.affects(rc)) {
@@ -41,30 +42,27 @@ public class SimpleBuildingRasterizer implements Rasterizer<SimpleBuilding> {
             int baseHeight = blg.getBaseHeight();
             int wallHeight = blg.getWallHeight();
     
-            brush.clearAbove(rc, baseHeight);
-            
-            brush.fill(rc, baseHeight - 1, baseHeight, BlockTypes.BUILDING_FLOOR);
-            brush.fillAirBelow(rc, baseHeight - 2, BlockTypes.BUILDING_FLOOR);
+            // clear area above floor level
+            brush.fillRect(rc, baseHeight, new OffsetHeightMap(ti.getHeightMap(), 1), BlockTypes.AIR);
+
+            // lay floor level
+            brush.fillRect(rc, baseHeight - 1, baseHeight, BlockTypes.BUILDING_FLOOR);
+
+            // put foundation concrete below 
+            brush.fillRect(rc, ti.getHeightMap(), baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
             
             // wall along z
-            brush.createWallZ(rc.y, rc.y + rc.height, rc.x, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
-            brush.createWallZ(rc.y, rc.y + rc.height, rc.x + rc.width - 1, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
-    
-            // wall along x
-            brush.createWallX(rc.x, rc.x + rc.width, rc.y, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
-            brush.createWallX(rc.x, rc.x + rc.width, rc.y + rc.height - 1, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
+            brush.frame(rc, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
     
             // door
             Rectangle door = blg.getDoor();
-            Vector3i doorFrom = new Vector3i(door.x, baseHeight, door.y);
-            Vector3i doorTo = new Vector3i(door.x + door.width, baseHeight + blg.getDoorHeight(), door.y + door.height);
-            brush.fill(doorFrom, doorTo, BlockTypes.AIR);
+            brush.fillRect(door, baseHeight, baseHeight + blg.getDoorHeight(), BlockTypes.AIR);
         }
         
         // the roof can be larger than the building -- not sure if this is a good idea ...
         
         RasterRegistry registry = StandardRegistry.getInstance();
-        registry.rasterize(brush, blg.getRoof());
+        registry.rasterize(brush, ti, blg.getRoof());
     }
 
 }

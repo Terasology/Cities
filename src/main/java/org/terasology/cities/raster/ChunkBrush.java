@@ -19,12 +19,11 @@ package org.terasology.cities.raster;
 
 import java.awt.Rectangle;
 
-import org.terasology.cities.terrain.HeightMap;
 import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.Chunk;
 
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 
 /**
  * Converts model elements into blocks of of a chunk
@@ -36,52 +35,29 @@ public class ChunkBrush extends Brush {
     
     /**
      * @param chunk the chunk to work on
-     * @param heightMap the height map
      * @param blockType a mapping String type -> block
      */
-    public ChunkBrush(Chunk chunk, HeightMap heightMap, Function<String, Block> blockType) {
-        super(heightMap);
+    public ChunkBrush(Chunk chunk, Function<String, Block> blockType) {
         this.blockType = blockType;
         this.chunk = chunk;
     }
 
     @Override
-    protected Rectangle getAffectedArea() {
+    public Rectangle getAffectedArea() {
         int wx = chunk.getBlockWorldPosX(0);
         int wz = chunk.getBlockWorldPosZ(0);
         return new Rectangle(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
     }
 
     @Override
-    public Rectangle getIntersectionArea(int x1, int z1, int x2, int z2) {
-
-        // this just computes the intersection between getAffectedArea() and the given rectangle
-        
-        int wx = chunk.getBlockWorldPosX(0);
-        int wz = chunk.getBlockWorldPosZ(0);
-
-        int minX = Math.max(x1, wx);
-        int maxX = Math.min(x2, wx + chunk.getChunkSizeX());
-
-        int minZ = Math.max(z1, wz);
-        int maxZ = Math.min(z2, wz + chunk.getChunkSizeZ());
-
-        return new Rectangle(minX, minZ, maxX - minX, maxZ - minZ);
-    }
-
-    @Override
-    public boolean isAir(int x, int y, int z) {
-        int lx = x - chunk.getBlockWorldPosX(0);
-        int ly = y - chunk.getBlockWorldPosY(0);
-        int lz = z - chunk.getBlockWorldPosZ(0);
-
-        return chunk.getBlock(lx, ly, lz) == BlockManager.getAir();
+    public int getMaxHeight() {
+        return chunk.getBlockWorldPosY(0) + chunk.getChunkSizeY();
     }
     
     @Override
-    public int getMaxHeight() {
-        return chunk.getChunkSizeY();
-    }
+    public int getMinHeight() {
+        return chunk.getBlockWorldPosY(0);
+    } 
     
     /**
      * @param x x in world coords
@@ -101,9 +77,19 @@ public class ChunkBrush extends Brush {
      * @param block the actual block  
      */
     protected void setBlock(int x, int y, int z, Block block) {
+        
         int lx = x - chunk.getBlockWorldPosX(0);
         int ly = y - chunk.getBlockWorldPosY(0);
         int lz = z - chunk.getBlockWorldPosZ(0);
+
+        // TODO: remove
+        final boolean debugging = true;
+        if (debugging) {
+            Preconditions.checkArgument(lx >= 0 && lx < chunk.getChunkSizeX(), "X value of %s not in rage [%s..%s]", lx, 0, chunk.getChunkSizeX());
+            Preconditions.checkArgument(ly >= 0 && ly < chunk.getChunkSizeY(), "Y value of %s not in rage [%s..%s]", ly, 0, chunk.getChunkSizeY());
+            Preconditions.checkArgument(lz >= 0 && lz < chunk.getChunkSizeZ(), "Z value of %s not in rage [%s..%s]", lz, 0, chunk.getChunkSizeZ());
+        }
+            
 
         chunk.setBlock(lx, ly, lz, block);
         

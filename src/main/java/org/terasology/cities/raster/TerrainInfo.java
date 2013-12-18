@@ -15,24 +15,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.raster;
 
-import java.awt.Shape;
-
-import org.terasology.cities.BlockTypes;
-import org.terasology.cities.raster.Brush;
-import org.terasology.cities.raster.Rasterizer;
-import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.terrain.HeightMap;
 
 /**
- * Draws road shapes on the terrain surface
+ * Some terrain info for {@link Rasterizer}s
  * @author Martin Steiger
  */
-public class RoadRasterizer implements Rasterizer<Shape> {
+public class TerrainInfo {
 
-    @Override
-    public void raster(Brush brush, TerrainInfo ti, Shape element) {
-        brush.fillShape(element, ti.getHeightMap(), 1, BlockTypes.ROAD_SURFACE);
+    private HeightMap hm;
+    
+    /**
+     * @param hm the terrain height map
+     */
+    public TerrainInfo(HeightMap hm) {
+        this.hm = hm;
     }
 
+    /**
+     * @return the terrain height map
+     */
+    public HeightMap getHeightMap() {
+        return hm;
+    }
 }

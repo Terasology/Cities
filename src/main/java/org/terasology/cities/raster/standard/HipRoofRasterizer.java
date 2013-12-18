@@ -23,6 +23,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
 import org.terasology.cities.terrain.OffsetHeightMap;
@@ -34,7 +35,7 @@ import org.terasology.cities.terrain.OffsetHeightMap;
 public class HipRoofRasterizer implements Rasterizer<HipRoof> {
     
     @Override
-    public void raster(Brush brush, final HipRoof roof) {
+    public void raster(Brush brush, TerrainInfo ti, final HipRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {
@@ -62,7 +63,7 @@ public class HipRoofRasterizer implements Rasterizer<HipRoof> {
             }
         };
 
-        brush.fill(area, hm, new OffsetHeightMap(hm, 1), BlockTypes.ROOF_FLAT);
+        brush.fillRect(area, hm, new OffsetHeightMap(hm, 1), BlockTypes.ROOF_HIP);
     }
 
 }

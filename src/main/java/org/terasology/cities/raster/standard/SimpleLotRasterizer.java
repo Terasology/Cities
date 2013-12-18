@@ -23,6 +23,7 @@ import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.raster.TerrainInfo;
 
 /**
  * Draws the lot layout and all contained buildings
@@ -31,7 +32,7 @@ import org.terasology.cities.raster.Rasterizer;
 public class SimpleLotRasterizer implements Rasterizer<SimpleLot> {
 
     @Override
-    public void raster(Brush brush, SimpleLot lot) {
+    public void raster(Brush brush, TerrainInfo ti, SimpleLot lot) {
 
         if (!brush.affects(lot.getShape())) {
             return;
@@ -39,11 +40,11 @@ public class SimpleLotRasterizer implements Rasterizer<SimpleLot> {
 
         RasterRegistry registry = StandardRegistry.getInstance();
         
-        brush.fillRectOnTerrain(lot.getShape(), 0, 1, BlockTypes.LOT_EMPTY);
+        brush.fillRect(lot.getShape(), ti.getHeightMap(), BlockTypes.LOT_EMPTY);
         
         for (Building blg : lot.getBuildings()) {
             
-            registry.rasterize(brush, blg);
+            registry.rasterize(brush, ti, blg);
         }
         
     }

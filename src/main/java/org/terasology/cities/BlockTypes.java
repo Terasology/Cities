@@ -39,9 +39,14 @@ public final class BlockTypes {
     public static final String LOT_EMPTY = "lot:empty";
 
     /**
-     * A simple building wall
+     * A simple building's floor
      */
     public static final String BUILDING_FLOOR = "building:floor";
+
+    /**
+     * A simple building's foundation
+     */
+    public static final String BUILDING_FOUNDATION = "building:foundation";
 
     /**
      * A simple building wall
@@ -52,6 +57,26 @@ public final class BlockTypes {
      * Flat roof
      */
     public static final String ROOF_FLAT = "roof:flat";
+
+    /**
+     * Hip roof
+     */
+    public static final String ROOF_HIP = "roof:hip";
+
+    /**
+     * Dome roof
+     */
+    public static final String ROOF_DOME = "roof:dome";
+
+    /**
+     * The roof gable for saddle roofs
+     */
+    public static final String ROOF_GABLE = "roof:gable";
+
+    /**
+     * Saddle roof
+     */
+    public static final String ROOF_SADDLE = "roof:saddle";
     
     private BlockTypes() {
         // private constructor

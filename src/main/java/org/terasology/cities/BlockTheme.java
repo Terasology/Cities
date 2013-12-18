@@ -32,9 +32,9 @@ import com.google.common.collect.Maps;
  * A mapping from block types (as defined in {@link BlockTypes}) to actual blocks
  * @author Martin Steiger
  */
-final class BlockTypeFunction implements Function<String, Block> {
+final class BlockTheme implements Function<String, Block> {
 
-    private static final Logger logger = LoggerFactory.getLogger(BlockTypeFunction.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlockTheme.class);
 
     private final Map<String, Block> map = Maps.newConcurrentMap();
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
@@ -43,7 +43,7 @@ final class BlockTypeFunction implements Function<String, Block> {
     /**
      * Setup the mapping with defaults 
      */
-    public BlockTypeFunction() {
+    public BlockTheme() {
         map.put(BlockTypes.AIR, BlockManager.getAir());
         defaultBlock = blockManager.getBlock("core:Stone");
     }

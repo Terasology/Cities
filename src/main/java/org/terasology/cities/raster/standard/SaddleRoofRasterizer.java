@@ -23,6 +23,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
 import org.terasology.cities.terrain.OffsetHeightMap;
@@ -34,7 +35,7 @@ import org.terasology.cities.terrain.OffsetHeightMap;
 public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
     
     @Override
-    public void raster(Brush brush, final SaddleRoof roof) {
+    public void raster(Brush brush, TerrainInfo ti, final SaddleRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {
@@ -66,33 +67,34 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
             }
         };
 
-        HeightMap bottomHm = new HeightMapAdapter() {
+        final HeightMap bottomHm = new OffsetHeightMap(topHm, -1);
+        
+        brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_SADDLE);
+        
+        HeightMap gableBottomHm = new HeightMapAdapter() {
 
             @Override
             public int apply(int x, int z) {
                 int h0 = roof.getBaseHeight();
-                int y = topHm.apply(x, z) - 1;
-                
                 if (alongX) {
                     int left = area.x + 1;                   // building border is +1
                     int right = left + area.width - 1 - 1;   // building border is -1
                     
                     if (x == left || x == right) {
-                        return Math.min(h0, y);
+                        return h0;
                     }
                 } else {
                     int top = area.y + 1;                   // building border is +1
                     int bottom = area.y + area.height - 1 - 1; // building border is -1
                     if (z == top || z == bottom) {
-                        return Math.min(h0, y);
+                        return h0;
                     }
                 }
                 
-                return y; 
+                return bottomHm.apply(x, z);        // return top-height to get a no-op
             }
         };
         
-        brush.fill(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        brush.fillRect(area, gableBottomHm, bottomHm, BlockTypes.ROOF_GABLE);
     }
-
 }

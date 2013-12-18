@@ -40,7 +40,6 @@ import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.SimpleHousingGenerator;
 import org.terasology.cities.model.Building;
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.SimpleBuilding;

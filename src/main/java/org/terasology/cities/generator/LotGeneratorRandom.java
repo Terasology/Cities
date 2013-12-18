@@ -29,12 +29,8 @@ import javax.vecmath.Vector2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.HipRoof;
-import org.terasology.cities.model.Roof;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
-import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 

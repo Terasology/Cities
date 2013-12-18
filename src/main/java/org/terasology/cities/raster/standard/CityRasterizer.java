@@ -27,6 +27,7 @@ import org.terasology.cities.model.Sector;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
+import org.terasology.cities.raster.TerrainInfo;
 
 /**
  * TODO Type description
@@ -35,7 +36,7 @@ import org.terasology.cities.raster.Rasterizer;
 public class CityRasterizer implements Rasterizer<City> {
 
     @Override
-    public void raster(Brush brush, City city) {
+    public void raster(Brush brush, TerrainInfo ti, City city) {
 
         Point2d pos = city.getPos();
         double rad = city.getDiameter() * 0.5;
@@ -48,7 +49,7 @@ public class CityRasterizer implements Rasterizer<City> {
         RasterRegistry registry = StandardRegistry.getInstance();
         
         for (Lot lot : city.getLots()) {
-            registry.rasterize(brush, lot);
+            registry.rasterize(brush, ti, lot);
         }
     }
 }

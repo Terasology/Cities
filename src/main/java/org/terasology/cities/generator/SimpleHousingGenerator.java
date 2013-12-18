@@ -25,14 +25,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.DomeRoof;
-import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.Roof;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.math.Vector2i;
-import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 

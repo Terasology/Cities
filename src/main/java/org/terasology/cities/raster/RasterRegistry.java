@@ -63,13 +63,14 @@ public class RasterRegistry {
     /**
      * A convenience wrapper
      * @param brush the brush to use
+     * @param ti the terrain info
      * @param obj the object to rasterize
      */
-    public <T> void rasterize(Brush brush, T obj) {
+    public <T> void rasterize(Brush brush, TerrainInfo ti, T obj) {
         Optional<Rasterizer<T>> opt = getRasterizer(obj);
         if (opt.isPresent()) {
             Rasterizer<T> r = opt.get();
-            r.raster(brush, obj);
+            r.raster(brush, ti, obj);
         } else {
             logger.debug("No rasterizer found for object {} -- skipping", obj);
         }
