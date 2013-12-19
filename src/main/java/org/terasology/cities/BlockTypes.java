@@ -79,14 +79,24 @@ public final class BlockTypes {
     public static final String ROOF_SADDLE = "roof:saddle";
 
     /**
-     * Fence along x (east-west)
+     * Fence along top (east-west)
      */
-    public static final String FENCE_X = "fences:ew";
+    public static final String FENCE_TOP = "Fences:Fence.front";
 
     /**
-     * Fence along z (north-south)
+     * Fence along bottom (east-west)
      */
-    public static final String FENCE_Z = "fences:ns";
+    public static final String FENCE_BOTTOM = "Fences:Fence.back";
+
+    /**
+     * Fence along left (north-south)
+     */
+    public static final String FENCE_LEFT = "Fences:Fence.left";
+
+    /**
+     * Fence along right (north-south)
+     */
+    public static final String FENCE_RIGHT = "Fences:Fence.right";
 
     /**
      * Fence corner (south-west)
@@ -108,8 +118,10 @@ public final class BlockTypes {
      */
     public static final String FENCE_NE = "fences:corner:ne";
 
-    public static final String FENCE_GATE_X = "fences:gate:ew";
-    public static final String FENCE_GATE_Z = "fences:gate:ns";
+    public static final String FENCE_GATE_TOP = "fences:gate:top";
+    public static final String FENCE_GATE_LEFT = "fences:gate:left";
+    public static final String FENCE_GATE_RIGHT = "fences:gate:right";
+    public static final String FENCE_GATE_BOTTOM = "fences:gate:bottom";
 
     private BlockTypes() {
         // private constructor

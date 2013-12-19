@@ -200,7 +200,7 @@ public abstract class Brush {
      * @param rect the rectangle that should be drawn
      * @return the intersection between the brush area and the rectangle
      */
-    protected Rectangle getIntersectionArea(Rectangle rect) {
+    public Rectangle getIntersectionArea(Rectangle rect) {
         return getAffectedArea().intersection(rect);
     }
 
@@ -221,4 +221,50 @@ public abstract class Brush {
         createWallX(rc.x, rc.x + rc.width, rc.y + rc.height - 1, baseHeight, wallHeight, type);
         
     }
+    
+    /**
+     * Draws a line.<br/>
+     * See Wikipedia: Bresenham's line algorithm, chapter Simplification
+     * @param x1 x start in world coords
+     * @param z1 z start in world coords
+     * @param x2 x end in world coords
+     * @param z2 z end in world coords
+     * @param hmBottom the height map at the bottom (inclusive)
+     * @param hmTop the height map for the top (exclusive)
+     * @param type the block type
+     */
+    public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, String type) {
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(z2 - z1);
+
+        int sx = (x1 < x2) ? 1 : -1;
+        int sy = (z1 < z2) ? 1 : -1;
+
+        int err = dx - dy;
+
+        int x = x1;
+        int z = z1;
+        
+        while (true) {
+            for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
+                setBlock(x, y, z, type);
+            }
+
+            if (x == x2 && z == z2) {
+                break;
+            }
+
+            int e2 = 2 * err;
+
+            if (e2 > -dy) {
+                err = err - dy;
+                x += sx;
+            }
+
+            if (e2 < dx) {
+                err = err + dx;
+                z += sy;
+            }
+        }
+    }    
 }

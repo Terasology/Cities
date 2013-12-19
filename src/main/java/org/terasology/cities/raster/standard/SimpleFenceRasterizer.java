@@ -26,6 +26,7 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.math.Vector2i;
 
 /**
  * Converts a {@link SimpleFence} into blocks
@@ -63,24 +64,25 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
 
         // top wall is in brush area
         if (ftop >= btop && ftop <= bbot) {
-            wallX(brush, hm, wallX1, wallX2, ftop, "Fences:Fence.front");
+            wallX(brush, hm, wallX1, wallX2, ftop, BlockTypes.FENCE_TOP);
         }
 
         // bottom wall is in brush area
         if (fbot >= btop && fbot <= bbot) {
-            wallX(brush, hm, wallX1, wallX2, fbot, "Fences:Fence.back");
+            wallX(brush, hm, wallX1, wallX2, fbot, BlockTypes.FENCE_BOTTOM);
         }
 
         // left wall is in brush area
         if (fleft >= bleft && fleft <= bright) {
-            wallZ(brush, hm, fleft, wallZ1, wallZ2, "Fences:Fence.left");
+            wallZ(brush, hm, fleft, wallZ1, wallZ2, BlockTypes.FENCE_LEFT);
         }       
 
         // right wall is in brush area
         if (fright >= bleft && fright <= bright) {
-            wallZ(brush, hm, fright, wallZ1, wallZ2, "Fences:Fence.right");
+            wallZ(brush, hm, fright, wallZ1, wallZ2, BlockTypes.FENCE_RIGHT);
         }       
 
+        // top-left corner post
         if (brushRc.contains(fleft, ftop)) {
             int y = hm.apply(fleft, ftop);
             
@@ -92,6 +94,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             }
         }
 
+        // bottom left corner post
         if (brushRc.contains(fleft, fbot)) {
             int y = hm.apply(fleft, fbot);
             
@@ -103,6 +106,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             }
         }
 
+        // bottom right corner post
         if (brushRc.contains(fright, fbot)) {
             int y = hm.apply(fright, fbot);
 
@@ -114,6 +118,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             }
         }
 
+        // top right corner post
         if (brushRc.contains(fright, ftop)) {
             int y = hm.apply(fright, ftop);
             
@@ -122,6 +127,29 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             // add higher posts if necessary
             if (hm.apply(fright - 1, ftop) > y || hm.apply(fright, ftop + 1) > y) {
                 brush.setBlock(fright, y + 1, ftop, BlockTypes.FENCE_NE);
+            }
+        }
+        
+        Vector2i gatePos = fence.getGate();
+        
+        if (brushRc.contains(gatePos.x, gatePos.y)) {
+            String gateBlock = null;
+            if (gatePos.x == fleft) { // left side
+                gateBlock = BlockTypes.FENCE_GATE_LEFT;
+            }
+            if (gatePos.y == ftop) { // left side
+                gateBlock = BlockTypes.FENCE_GATE_TOP;
+            }
+            if (gatePos.x == fright) { // right side
+                gateBlock = BlockTypes.FENCE_GATE_RIGHT;
+            }
+            if (gatePos.y == fbot) { // left side
+                gateBlock = BlockTypes.FENCE_GATE_BOTTOM;
+            }
+            
+            if (gateBlock != null) {
+                int y = hm.apply(gatePos.x, gatePos.y);
+                brush.setBlock(gatePos.x, y, gatePos.y, gateBlock);
             }
         }
     }

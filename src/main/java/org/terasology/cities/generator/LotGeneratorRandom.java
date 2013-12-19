@@ -111,9 +111,29 @@ public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
 
             // all tests passed -> create and add
             Rectangle fenceRc = new Rectangle(shape);
-            int gateX = fenceRc.x + rand.nextInt(fenceRc.width);
-            int gateZ = fenceRc.y + rand.nextInt(fenceRc.height);
-            SimpleFence fence = new SimpleFence(fenceRc, new Vector2i(gateX, gateZ)); 
+            Vector2i gatePos = new Vector2i();
+            switch (rand.nextInt(4)) {
+            case 0:
+                gatePos.x = rand.nextInt(fenceRc.x + 1, fenceRc.x + fenceRc.width - 2);
+                gatePos.y = fenceRc.y;
+                break;
+                
+            case 1:
+                gatePos.x = fenceRc.x;
+                gatePos.y = rand.nextInt(fenceRc.y + 1, fenceRc.y + fenceRc.height - 2);
+                break;
+                
+            case 2:
+                gatePos.x = rand.nextInt(fenceRc.x + 1, fenceRc.x + fenceRc.width - 2);
+                gatePos.y = fenceRc.y + fenceRc.height - 1;
+                break;
+                
+            case 3:
+                gatePos.x = fenceRc.x + fenceRc.width - 1;
+                gatePos.y = rand.nextInt(fenceRc.y + 1, fenceRc.y + fenceRc.height - 2);
+                break;
+            }
+            SimpleFence fence = new SimpleFence(fenceRc, gatePos); 
             
             SimpleLot lot = new SimpleLot(shape);
             lot.setFence(fence);

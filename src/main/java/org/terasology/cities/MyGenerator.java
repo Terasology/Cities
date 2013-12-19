@@ -62,14 +62,22 @@ public class MyGenerator {
         theme.register(BlockTypes.ROOF_GABLE, "core:plank");
 
         // -- require Fences modules
-        theme.register(BlockTypes.FENCE_X, "Fences:Fence.left");
-        theme.register(BlockTypes.FENCE_Z, "Fences:Fence.top");
-        theme.register(BlockTypes.FENCE_GATE_X, "Fences:FenceSlats.left");
-        theme.register(BlockTypes.FENCE_GATE_Z, "Fences:FenceSlats.top");
-        theme.register(BlockTypes.FENCE_SW, "Fences:FenceCorner.left");
-        theme.register(BlockTypes.FENCE_SE, "Fences:FenceCorner.right");
-        theme.register(BlockTypes.FENCE_NW, "Fences:FenceCorner.top");
-        theme.register(BlockTypes.FENCE_NE, "Fences:FenceCorner.bottom");
+        theme.register(BlockTypes.FENCE_TOP, "Fences:Fence.front");
+        theme.register(BlockTypes.FENCE_BOTTOM, "Fences:Fence.back");
+        theme.register(BlockTypes.FENCE_LEFT, "Fences:Fence.left");
+        theme.register(BlockTypes.FENCE_RIGHT, "Fences:Fence.right");
+        
+        theme.register(BlockTypes.FENCE_SW, "Fences:FenceCorner.right");
+        theme.register(BlockTypes.FENCE_SE, "Fences:FenceCorner.front");
+        theme.register(BlockTypes.FENCE_NW, "Fences:FenceCorner.back");
+        theme.register(BlockTypes.FENCE_NE, "Fences:FenceCorner.left");
+
+        // there is no fence gate :-(
+        theme.register(BlockTypes.FENCE_GATE_TOP, "Core:Air");
+        theme.register(BlockTypes.FENCE_GATE_LEFT, "Core:Air");
+        theme.register(BlockTypes.FENCE_GATE_RIGHT, "Core:Air");
+        theme.register(BlockTypes.FENCE_GATE_BOTTOM, "Core:Air");
+
     }
 
     /**

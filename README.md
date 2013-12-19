@@ -4,7 +4,7 @@
 A module that creates roads, settlements, etc. procedurally from random numbers.
 
 
-![image1](images/2013-12-16_simple_buildings_uphill_ts.jpg "Several simple housing on a hillside")
+![image1](images/2013-12-18_fenced_house.jpg "Several simple housings on a hillside with fences")
 
 
 ### Testing
