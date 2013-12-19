@@ -31,10 +31,13 @@ import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
 import org.terasology.cities.generator.SimpleHousingGenerator;
+import org.terasology.cities.generator.TownWallGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
+import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.TownWall;
 import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
@@ -137,6 +140,7 @@ public class WorldFacade {
         roadShapeFunc = new RoadShapeGenerator(roadMap);
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
         
+        final TownWallGenerator twg = new TownWallGenerator(seed, heightMap);
         final LotGeneratorRandom lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc);
         final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
         
@@ -146,6 +150,13 @@ public class WorldFacade {
             public Set<City> apply(Sector input) {
                 Set<City> cities = cityMap.apply(input);
                 for (City city : cities) {
+                    
+                    if (city instanceof MedievalTown) {
+                        MedievalTown town = (MedievalTown) city;
+                        TownWall tw = twg.generate(city);
+                        town.setTownWall(tw);
+                    }
+
                     Set<SimpleLot> lots = lotGenerator.apply(city);
                     
                     for (SimpleLot lot : lots) {

@@ -18,38 +18,37 @@
 package org.terasology.cities.model;
 
 import java.awt.Rectangle;
-import java.util.Collections;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
 
 /**
- * Defines a building in the most common sense
+ * A flat battlement roof with merlons
  * @author Martin Steiger
  */
-public class SimpleBuilding extends Building {
-    
-    private final Set<Rectangle> windows = Sets.newHashSet();
+public class BattlementRoof extends FlatRoof {
 
     /**
-     * @param layout the building layout
-     * @param roof the roof definition
-     * @param baseHeight the height of the floor level
-     * @param wallHeight the building height above the floor level
+     * @param rc the roof shape
+     * @param baseHeight the base height of the roof
+     * @param merlonHeight the height of the border
      */
-    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
+    public BattlementRoof(Rectangle rc, int baseHeight, int merlonHeight) {
+        super(rc, baseHeight, merlonHeight);
     }
-    
+
+    /**
+     * @param lx x in local (roof area) coordinates
+     * @param lz z in local (roof area) coordinates
+     * @return the borderHeight
+     */
     @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
-    }
-
-    /**
-     * @return the window areas
-     */
-    public Set<Rectangle> getWindows() {
-        return Collections.unmodifiableSet(windows);
+    public int getBorderHeight(int lx, int lz) {
+        if (lx % 2 == 1) {
+            return 0;
+        }
+        
+        if (lz % 2 == 1) {
+            return 0;
+        }
+        
+        return super.getBorderHeight(lx, lz);
     }
 }

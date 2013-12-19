@@ -79,6 +79,11 @@ public final class BlockTypes {
     public static final String ROOF_SADDLE = "roof:saddle";
 
     /**
+     * Tower stone
+     */
+    public static final String TOWER_WALL = "tower:wall";
+
+    /**
      * Fence along top (east-west)
      */
     public static final String FENCE_TOP = "Fences:Fence.front";

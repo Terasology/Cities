@@ -27,14 +27,17 @@ public class Building {
     private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
+    private final Roof roof;
 
     /**
      * @param layout the building layout
+     * @param roof the roof definition
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public Building(Shape layout, int baseHeight, int wallHeight) {
+    public Building(Shape layout, Roof roof, int baseHeight, int wallHeight) {
         this.layout = layout;
+        this.roof = roof;
         this.baseHeight = baseHeight;
         this.wallHeight = wallHeight;
     }
@@ -44,6 +47,13 @@ public class Building {
      */
     public Shape getLayout() {
         return this.layout;
+    }
+
+    /**
+     * @return the roof the roof definition
+     */
+    public Roof getRoof() {
+        return this.roof;
     }
 
     /**

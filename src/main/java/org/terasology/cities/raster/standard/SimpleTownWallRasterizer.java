@@ -17,44 +17,32 @@
 
 package org.terasology.cities.raster.standard;
 
-import java.awt.geom.Ellipse2D;
-
-import javax.vecmath.Point2d;
-
-import org.terasology.cities.model.City;
-import org.terasology.cities.model.Lot;
-import org.terasology.cities.model.MedievalTown;
-import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.Tower;
+import org.terasology.cities.model.TownWall;
+import org.terasology.cities.model.WallSegment;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 
 /**
- * Converts a {@link City} into blocks
+ * TODO Type description
  * @author Martin Steiger
  */
-public class CityRasterizer implements Rasterizer<City> {
+public class SimpleTownWallRasterizer implements Rasterizer<TownWall> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, City city) {
-
-        Point2d pos = city.getPos();
-        double rad = city.getDiameter() * 0.5;
-        Ellipse2D circle = new Ellipse2D.Double(pos.x * Sector.SIZE - rad, pos.y * Sector.SIZE - rad, rad * 2, rad * 2);
-        
-        if (!brush.affects(circle)) {
-            return;
-        }
-
+    public void raster(Brush brush, TerrainInfo ti, TownWall tw) {
         RasterRegistry registry = StandardRegistry.getInstance();
-        
-        for (Lot lot : city.getLots()) {
-            registry.rasterize(brush, ti, lot);
+
+        for (WallSegment ws : tw.getWalls()) {
+            registry.rasterize(brush, ti, ws);
         }
-        
-        if (city instanceof MedievalTown) {
-            new SimpleTownWallRasterizer().raster(brush, ti, ((MedievalTown)city).getTownWall().get());
+
+        for (Tower tower : tw.getTowers()) {
+            registry.rasterize(brush, ti, tower);
         }
+
     }
+
 }

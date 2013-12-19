@@ -29,6 +29,7 @@ import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.Roof;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleBuilding;
+import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
@@ -110,7 +111,7 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         int roofBaseHeight = baseHeight + wallHeight;
         Roof roof = createRoof(r, roofArea, roofBaseHeight);
 
-        SimpleBuilding simpleBuilding = new SimpleBuilding(rc, roof, baseHeight, wallHeight, door, doorHeight);
+        SimpleBuilding simpleBuilding = new SimpleHome(rc, roof, baseHeight, wallHeight, door, doorHeight);
         
         logger.debug("Created 1 building for the lot");
         

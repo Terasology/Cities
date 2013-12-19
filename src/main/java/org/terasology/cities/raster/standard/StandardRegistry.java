@@ -17,14 +17,17 @@
 
 package org.terasology.cities.raster.standard;
 
+import org.terasology.cities.model.BattlementRoof;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.SaddleRoof;
-import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleFence;
+import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.SimpleTower;
+import org.terasology.cities.model.WallSegment;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
 
@@ -40,12 +43,15 @@ public final class StandardRegistry extends RasterRegistry {
     private StandardRegistry() {
         register(City.class, new CityRasterizer());
         register(SimpleLot.class, new SimpleLotRasterizer());
-        register(SimpleBuilding.class, new SimpleBuildingRasterizer());
+        register(SimpleHome.class, new SimpleHomeRasterizer());
         register(HipRoof.class, new HipRoofRasterizer());
         register(FlatRoof.class, new FlatRoofRasterizer());
         register(SaddleRoof.class, new SaddleRoofRasterizer());
         register(DomeRoof.class, new DomeRoofRasterizer());
+        register(BattlementRoof.class, new FlatRoofRasterizer());   // not sure if this is a good idea
         register(SimpleFence.class, new SimpleFenceRasterizer());
+        register(SimpleTower.class, new SimpleTowerRasterizer());
+        register(WallSegment.class, new SimpleWallSegmentRasterizer());
     }
 
     /**

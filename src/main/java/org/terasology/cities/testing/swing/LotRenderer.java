@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.terasology.cities.model.Building;
 import org.terasology.cities.model.Lot;
-import org.terasology.cities.model.SimpleBuilding;
+import org.terasology.cities.model.SimpleHome;
 
 /**
  * Draws lots and the contained buildings
@@ -47,8 +47,8 @@ public class LotRenderer {
                 g.setColor(Color.RED.darker());
                 g.draw(b.getLayout());
                 
-                if (b instanceof SimpleBuilding) {
-                    SimpleBuilding sb = (SimpleBuilding) b;
+                if (b instanceof SimpleHome) {
+                    SimpleHome sb = (SimpleHome) b;
                     g.setColor(Color.GREEN);
                     g.draw(sb.getDoor());
                 }

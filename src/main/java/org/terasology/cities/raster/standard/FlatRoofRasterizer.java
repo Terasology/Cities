@@ -58,7 +58,7 @@ public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
                 int dist = Math.min(borderDistX, borderDistZ);
                 
                 if (dist == 0) {
-                    y += roof.getBorderHeight();
+                    y += roof.getBorderHeight(rx, rz);
                 }
                 
                 return y;

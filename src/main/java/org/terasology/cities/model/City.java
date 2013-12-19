@@ -38,12 +38,12 @@ public class City {
     private double diameter;
 
     /**
-     * @param size the city cize (number of habitants)
+     * @param diameter the city diameter in blocks
      * @param x the x coord (in sectors)
      * @param z the z coord (in sectors)
      */
-    public City(double size, double x, double z) {
-        this.diameter = size;
+    public City(double diameter, double x, double z) {
+        this.diameter = diameter;
         this.coords = new Point2d(x, z);
     }
 

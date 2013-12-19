@@ -18,38 +18,21 @@
 package org.terasology.cities.model;
 
 import java.awt.Rectangle;
-import java.util.Collections;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
 
 /**
- * Defines a building in the most common sense
+ * A simple tower
  * @author Martin Steiger
  */
-public class SimpleBuilding extends Building {
-    
-    private final Set<Rectangle> windows = Sets.newHashSet();
+public class SimpleTower extends SimpleBuilding implements Tower {
 
     /**
      * @param layout the building layout
-     * @param roof the roof definition
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
-    }
-    
-    @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
+    public SimpleTower(Rectangle layout, int baseHeight, int wallHeight) {
+        super(layout, new BattlementRoof(new Rectangle(layout.x - 1, layout.y - 1, layout.width + 2, layout.height + 2), baseHeight + wallHeight, 1), baseHeight, wallHeight);
     }
 
-    /**
-     * @return the window areas
-     */
-    public Set<Rectangle> getWindows() {
-        return Collections.unmodifiableSet(windows);
-    }
+    
 }

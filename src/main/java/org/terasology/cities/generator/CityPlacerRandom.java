@@ -25,6 +25,7 @@ import javax.vecmath.Point2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
@@ -96,7 +97,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
                 double size = fr.nextDouble(Math.sqrt(minSize), Math.sqrt(maxSize));
                 size = size * size;
     
-                ci = new City(size, nx, nz);
+                ci = new MedievalTown(size, nx, nz);
                 tries--;
                 
             } while (!placementOk(ci, result) && tries >= 0);            

@@ -22,7 +22,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.SimpleTower;
+import org.terasology.cities.model.Tower;
+import org.terasology.cities.model.TownWall;
+import org.terasology.cities.model.WallSegment;
+import org.terasology.math.Vector2i;
 
 /**
  * Converts a city to pixels
@@ -42,9 +48,46 @@ public class CityRasterizerSimple {
         int cx = (int) ((ci.getPos().x) * Sector.SIZE);
         int cz = (int) ((ci.getPos().y) * Sector.SIZE);
 
-        int ccSize = (int) ci.getDiameter();
+//        int ccSize = (int) ci.getDiameter();
+//
+//        g.drawOval(cx - ccSize / 2, cz - ccSize / 2, ccSize, ccSize);
+        
+        if (ci instanceof MedievalTown) {
+            MedievalTown town = (MedievalTown) ci;
+            
+            if (town.getTownWall().isPresent()) {
+                rasterTownWall(g, town.getTownWall().get());
+            }
+        }
+    }
 
-        g.drawOval(cx - ccSize / 2, cz - ccSize / 2, ccSize, ccSize);
+    private void rasterTownWall(Graphics2D g, TownWall townWall) {
+        for (WallSegment ws : townWall.getWalls()) {
+            Vector2i from = ws.getStart();
+            Vector2i to = ws.getEnd();
+
+            g.setColor(Color.BLACK);
+            g.setStroke(new BasicStroke(ws.getWallThickness()));
+            g.drawLine(from.x, from.y, to.x, to.y);
+
+            g.setColor(Color.GRAY);
+            g.setStroke(new BasicStroke(ws.getWallThickness() - 2));    // create a border
+            g.drawLine(from.x, from.y, to.x, to.y);
+        }
+        
+        g.setStroke(new BasicStroke());
+        g.setColor(Color.BLACK);
+        
+        for (Tower tower : townWall.getTowers()) {
+            if (tower instanceof SimpleTower) {
+                SimpleTower st = (SimpleTower) tower;
+                g.setColor(Color.GRAY);
+                g.fill(st.getLayout());
+                
+                g.setColor(Color.BLACK);
+                g.draw(st.getLayout());
+            }
+        }
     }
 
 }

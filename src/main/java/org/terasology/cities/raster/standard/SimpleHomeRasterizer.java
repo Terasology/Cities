@@ -20,7 +20,7 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.SimpleBuilding;
+import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
@@ -28,13 +28,13 @@ import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
- * Converts a {@link SimpleBuilding} into blocks
+ * Converts a {@link SimpleHome} into blocks
  * @author Martin Steiger
  */
-public class SimpleBuildingRasterizer implements Rasterizer<SimpleBuilding> {
+public class SimpleHomeRasterizer implements Rasterizer<SimpleHome> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, SimpleBuilding blg) {
+    public void raster(Brush brush, TerrainInfo ti, SimpleHome blg) {
         Rectangle rc = blg.getLayout();
         
         if (brush.affects(rc)) {

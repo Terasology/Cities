@@ -17,39 +17,48 @@
 
 package org.terasology.cities.model;
 
-import java.awt.Rectangle;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * Defines a building in the most common sense
+ * Defines a town wall consisting of {@link Tower}s 
+ * and {@link WallSegment}s.
  * @author Martin Steiger
  */
-public class SimpleBuilding extends Building {
-    
-    private final Set<Rectangle> windows = Sets.newHashSet();
+public class TownWall {
+
+    private final List<WallSegment> walls = Lists.newArrayList();
+    private final Set<Tower> towers = Sets.newHashSet();
 
     /**
-     * @param layout the building layout
-     * @param roof the roof definition
-     * @param baseHeight the height of the floor level
-     * @param wallHeight the building height above the floor level
+     * @param wallSegment the wall segment to add
      */
-    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
-    }
-    
-    @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
+    public void addWall(WallSegment wallSegment) {
+        walls.add(wallSegment);
     }
 
     /**
-     * @return the window areas
+     * @return an unmodifiable view on the walls
      */
-    public Set<Rectangle> getWindows() {
-        return Collections.unmodifiableSet(windows);
+    public List<WallSegment> getWalls() {
+        return Collections.unmodifiableList(walls);
+    }
+
+    /**
+     * @param tower the tower to add
+     */
+    public void addTower(Tower tower) {
+        towers.add(tower);
+    }
+
+    /**
+     * @return an unmodifiable view on the towers
+     */
+    public Set<Tower> getTowers() {
+        return Collections.unmodifiableSet(towers);
     }
 }

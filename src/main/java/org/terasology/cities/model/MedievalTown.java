@@ -17,33 +17,36 @@
 
 package org.terasology.cities.model;
 
-import java.awt.Rectangle;
+import com.google.common.base.Optional;
 
 /**
- * A flat roof with an extruded border (terrace roof)
+ * Provides information on a city
  * @author Martin Steiger
  */
-public class FlatRoof extends RectangularRoof {
+public class MedievalTown extends City {
 
-    private final int borderHeight;
+    private TownWall townWall;
 
     /**
-     * @param rc the roof shape
-     * @param baseHeight the base height of the roof
-     * @param borderHeight the height of the border
+     * @param diameter the city diameter in blocks
+     * @param x the x coord (in sectors)
+     * @param z the z coord (in sectors)
      */
-    public FlatRoof(Rectangle rc, int baseHeight, int borderHeight) {
-        super(rc, baseHeight);
-        
-        this.borderHeight = borderHeight;
+    public MedievalTown(double diameter, double x, double z) {
+        super(diameter, x, z);
     }
 
     /**
-     * @param lx x in local (roof area) coordinates
-     * @param lz z in local (roof area) coordinates
-     * @return the borderHeight
+     * @return the town wall, if available
      */
-    public int getBorderHeight(int lx, int lz) {
-        return borderHeight;
+    public Optional<TownWall> getTownWall() {
+        return Optional.fromNullable(townWall);
+    }
+    
+    /**
+     * @param tw the town wall or <code>null</code> to clear
+     */
+    public void setTownWall(TownWall tw) {
+        this.townWall = tw;
     }
 }

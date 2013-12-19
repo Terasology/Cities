@@ -18,38 +18,42 @@
 package org.terasology.cities.model;
 
 import java.awt.Rectangle;
-import java.util.Collections;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
 
 /**
- * Defines a building in the most common sense
+ * TODO Type description
  * @author Martin Steiger
  */
-public class SimpleBuilding extends Building {
-    
-    private final Set<Rectangle> windows = Sets.newHashSet();
+public class SimpleHome extends SimpleBuilding {
+
+    private Rectangle door;
+    private int doorHeight;
 
     /**
      * @param layout the building layout
      * @param roof the roof definition
+     * @param door the door area in one of the wall
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
+     * @param doorHeight the height of the door
      */
-    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight) {
+    public SimpleHome(Rectangle layout, Roof roof, int baseHeight, int wallHeight, Rectangle door, int doorHeight) {
         super(layout, roof, baseHeight, wallHeight);
-    }
-    
-    @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
+        this.door = door;
+        this.doorHeight = doorHeight;
     }
 
     /**
-     * @return the window areas
+     * @return the door area in one of the wall
      */
-    public Set<Rectangle> getWindows() {
-        return Collections.unmodifiableSet(windows);
+    public Rectangle getDoor() {
+        return door;
     }
+    
+    /**
+     * @return the height of the door
+     */
+    public int getDoorHeight() {
+        return this.doorHeight;
+    }
+
 }
