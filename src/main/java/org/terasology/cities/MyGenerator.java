@@ -61,6 +61,8 @@ public class MyGenerator {
         theme.register(BlockTypes.ROOF_DOME, "core:plank");
         theme.register(BlockTypes.ROOF_GABLE, "core:plank");
 
+        theme.register(BlockTypes.TOWER_WALL, "Cities:stonawall1");
+
         // -- require Fences modules
         theme.register(BlockTypes.FENCE_TOP, "Fences:Fence.front");
         theme.register(BlockTypes.FENCE_BOTTOM, "Fences:Fence.back");

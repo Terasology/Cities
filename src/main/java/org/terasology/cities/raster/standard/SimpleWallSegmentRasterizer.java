@@ -42,7 +42,7 @@ public class SimpleWallSegmentRasterizer implements Rasterizer<WallSegment> {
         int x2 = element.getEnd().x;
         int z2 = element.getEnd().y;
         
-//        brush.draw(bottomHm, topHm, x1, z1, x2, z2, BlockTypes.TOWER_WALL);
+        brush.draw(bottomHm, topHm, x1, z1, x2, z2, BlockTypes.TOWER_WALL);
     }
 
 }

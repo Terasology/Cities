@@ -17,6 +17,7 @@
 
 package org.terasology.cities.raster;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
@@ -234,6 +235,11 @@ public abstract class Brush {
      * @param type the block type
      */
     public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, String type) {
+        
+        if (getAffectedArea().intersects(x1, z1, x2 - x1, z2 - z1)) {
+            return;
+        }
+        
         int dx = Math.abs(x2 - x1);
         int dy = Math.abs(z2 - z1);
 
@@ -247,7 +253,9 @@ public abstract class Brush {
         
         while (true) {
             for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
-                setBlock(x, y, z, type);
+                if (getAffectedArea().contains(x, z)) {
+                    setBlock(x, y, z, type);
+                }
             }
 
             if (x == x2 && z == z2) {
