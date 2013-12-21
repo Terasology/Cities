@@ -19,6 +19,8 @@ package org.terasology.cities.raster;
 
 import java.awt.Rectangle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.world.block.Block;
 import org.terasology.world.chunks.Chunk;
 
@@ -30,8 +32,11 @@ import com.google.common.base.Preconditions;
  * @author Martin Steiger
  */
 public class ChunkBrush extends Brush {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ChunkBrush.class);
+    
     private final Chunk chunk;
-    private Function<String, Block> blockType;
+    private final Function<String, Block> blockType;
     
     /**
      * @param chunk the chunk to work on
@@ -88,10 +93,34 @@ public class ChunkBrush extends Brush {
 
         // TODO: remove
         final boolean debugging = true;
+        final boolean warnOnly = true;
         if (debugging) {
-            Preconditions.checkArgument(lx >= 0 && lx < chunk.getChunkSizeX(), "X value of %s not in rage [%s..%s]", x, wx, wx + chunk.getChunkSizeX());
-            Preconditions.checkArgument(ly >= 0 && ly < chunk.getChunkSizeY(), "Y value of %s not in rage [%s..%s]", y, wy, wy + chunk.getChunkSizeY());
-            Preconditions.checkArgument(lz >= 0 && lz < chunk.getChunkSizeZ(), "Z value of %s not in rage [%s..%s]", z, wz, wz + chunk.getChunkSizeZ());
+            boolean xOk = lx >= 0 && lx < chunk.getChunkSizeX();
+            boolean yOk = ly >= 0 && ly < chunk.getChunkSizeY();
+            boolean zOk = lz >= 0 && lz < chunk.getChunkSizeZ();
+            
+            if (warnOnly) {
+                if (!xOk) {
+                    logger.warn("X value of {} not in range [{}..{}]", x, wx, wx + chunk.getChunkSizeX() - 1);
+                    return;
+                }
+                
+                if (!yOk) {
+                    logger.warn("Y value of {} not in range [{}..{}]", y, wy, wy + chunk.getChunkSizeY() - 1);
+                    return;
+                }
+                
+                if (!zOk) {
+                    logger.warn("Z value of {} not in range [{}..{}]", z, wz, wz + chunk.getChunkSizeZ() - 1);
+                    return;
+                }
+            } else {
+                Preconditions.checkArgument(xOk, "X value of %s not in range [%s..%s]", x, wx, wx + chunk.getChunkSizeX() - 1);
+                Preconditions.checkArgument(yOk, "Y value of %s not in range [%s..%s]", y, wy, wy + chunk.getChunkSizeY() - 1);
+                Preconditions.checkArgument(zOk, "Z value of %s not in range [%s..%s]", z, wz, wz + chunk.getChunkSizeZ() - 1);
+                
+                // an exception will be thrown, so no code below this line will be executed
+            }
         }
             
 
