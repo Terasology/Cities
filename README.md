@@ -7,14 +7,48 @@ A module that creates roads, settlements, etc. procedurally from random numbers.
 ![image1](images/2013-12-18_fenced_house.jpg "Several simple housings on a hillside with fences")
 
 
-### Testing
+This module contains a world generator `City Worlds` that creates 
 
-To test this module, you can use the main method in this class
+
+### Setup
+
+To see what it looks like, just add the module to your Terasology installation using 
+
+    gradlew fetchModuleCities
+	
+When the game starts, create a new world using the `City Worlds` generator and ... explore !
+
+
+### Overview
+
+The world is partitioned into square-shaped `Sector`s. For every sector, up to three suitable locations for settlements are determined. 
+Long-distance roads are added to connect them in a pair-wise manner. Then, lots (and smaller streets) are created around the center.
+Finally, buildings and city furniture are generated.
+
+Basically, every part of this module can be separated into three distinct parts:
+
+* A world entity definition, such as `RomanesqueChurch`, that contains all information on a particual model (size, height, windows, roof type, and so on). This is basically a POJO.
+
+* A generator that creates different instances of `RomanesqueChurch` based on random numbers.
+
+* A rasterizer that converts `RomanesqueChurch` instances into blocks. This is often a composite of several other rasterizers and a 3D brush.
+
+
+### Contributing
+
+Actually, this is the fun part and it's really easy to do. Just create your own triple of entitiy definition, entity generation and entity rasterization to add a new element to the world. 
+
+
+### Debugging 
+
+There is a terrain generator `BoundaryGenerator` that creates a grid along sector and chunks borders (using magenta and black blocks).
+
+You can also use the main method in this class to view the generated world in a 2D top-down perspective:
 
     org.terasology.testing.SwingTest
+	
 
-
-### Literature
+### Literature Overview
 
 * Introduction to Shape and Shape GrammerShape[Stiny 75/78/80]
 Mathematical foundation on how to use rules to replace a shape with another
@@ -39,3 +73,5 @@ Nice survey on Roads, Buildings, Land Use and Rendering.
 * Procedural Modeling of Land Use In Cities[Lechner+05]
 Uses 2D agent-based simulation with SimCity3000 vis.
 
+* Konzeption & Realisierung eines prozeduralen Ansatzes zur Erzeugung von Gebäuden (Janusch, 2007)
+tbd
