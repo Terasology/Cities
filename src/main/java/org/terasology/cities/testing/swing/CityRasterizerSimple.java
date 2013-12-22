@@ -22,9 +22,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
+import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.model.Tower;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.model.WallSegment;
@@ -65,13 +67,27 @@ public class CityRasterizerSimple {
         for (WallSegment ws : townWall.getWalls()) {
             Vector2i from = ws.getStart();
             Vector2i to = ws.getEnd();
+            Color color = Color.BLACK;
+            int thickness = 1;
+            
+            if (ws instanceof SolidWallSegment) {
+                SolidWallSegment sws = (SolidWallSegment) ws;
+                thickness = sws.getWallThickness();
+                color = Color.GRAY;
+            }
+
+            if (ws instanceof GateWallSegment) {
+                GateWallSegment sws = (GateWallSegment) ws;
+                thickness = sws.getWallThickness();
+                color = new Color(224, 64, 64);
+            }
 
             g.setColor(Color.BLACK);
-            g.setStroke(new BasicStroke(ws.getWallThickness()));
+            g.setStroke(new BasicStroke(thickness));
             g.drawLine(from.x, from.y, to.x, to.y);
 
-            g.setColor(Color.GRAY);
-            g.setStroke(new BasicStroke(ws.getWallThickness() - 2));    // create a border
+            g.setColor(color);
+            g.setStroke(new BasicStroke(thickness - 2)); // create a border
             g.drawLine(from.x, from.y, to.x, to.y);
         }
         

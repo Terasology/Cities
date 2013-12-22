@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
+import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.model.WallSegment;
 import org.terasology.math.Vector2i;
@@ -67,8 +69,6 @@ public class DefaultTownWallGenerator {
         Vector2i center = new Vector2i(cx, cz);
         
         int maxWallThick = 4;
-        int wallThick = 4;
-        int wallHeight = 8;
         double maxRad = (city.getDiameter() - maxWallThick) * 0.5;
 
         TownWall tw = new TownWall();
@@ -115,7 +115,7 @@ public class DefaultTownWallGenerator {
                         Vector2i start = tp.get(lastHit);
                         Vector2i end = tp.get(i);
 
-                        tw.addWall(new WallSegment(start, end, wallThick, wallHeight));
+                        tw.addWall(createSolidWall(start, end));
                     }
                     lastHit = i;
                 } else
@@ -130,28 +130,38 @@ public class DefaultTownWallGenerator {
                     if (lastHit >= 0) {
                         Vector2i start = tp.get(lastHit);
                         Vector2i end = tp.get(i);
-                        tw.addWall(new WallSegment(start, end, wallThick, wallHeight));
+                        tw.addWall(createSolidWall(start, end));
                     }
                     lastHit = i;
                 }
             }
         }
 
-        // connect first and last tower to close the circle
+        // connect first and last tower to close the circle 
+        // --> this could be a gate segment 
+        // --> TODO: find out
         if (firstHit >= 0 && lastHit >= 0) {
             Vector2i start = tp.get(lastHit);
             Vector2i end = tp.get(firstHit);
-            tw.addWall(new WallSegment(start, end, wallThick, wallHeight));
+            tw.addWall(createSolidWall(start, end));
         }
         
         return tw;
     }
     
+    private WallSegment createSolidWall(Vector2i start, Vector2i end) {
+        int wallThick = 4;
+        int wallHeight = 8;
+
+        WallSegment wall = new SolidWallSegment(start, end, wallThick, wallHeight);
+        return wall;
+    }
+    
     private WallSegment createGateWall(Vector2i start, Vector2i end) {
-        int wallHeight = 1;
+        int wallHeight = 8;
         int wallThick = 4;
 
-        WallSegment wall = new WallSegment(start, end, wallThick, wallHeight);
+        WallSegment wall = new GateWallSegment(start, end, wallThick, wallHeight);
         return wall;
     }
 

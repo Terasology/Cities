@@ -20,34 +20,37 @@ package org.terasology.cities.model;
 import org.terasology.math.Vector2i;
 
 /**
- * A straight wall segment
+ * A straight, solid wall segment
  * @author Martin Steiger
  */
-public class WallSegment {
+public class SolidWallSegment extends WallSegment {
 
-    private final Vector2i start;
-    private final Vector2i end;
+    private int wallThickness;
+    private int wallHeight;
     
     /**
      * @param start one end of the wall
      * @param end the other end of the wall
+     * @param wallThickness the wall thickness in block
+     * @param wallHeight the wall height in blocks above terrain
      */
-    public WallSegment(Vector2i start, Vector2i end) {
-        this.start = start;
-        this.end = end;
+    public SolidWallSegment(Vector2i start, Vector2i end, int wallThickness, int wallHeight) {
+        super(start, end);
+        this.wallThickness = wallThickness;
+        this.wallHeight = wallHeight;
     }
 
     /**
-     * @return one end of the wall
+     * @return the wallThickness
      */
-    public Vector2i getStart() {
-        return this.start;
+    public int getWallThickness() {
+        return this.wallThickness;
     }
 
     /**
-     * @return the other end of the wall
+     * @return the wall height in blocks above terrain
      */
-    public Vector2i getEnd() {
-        return this.end;
+    public int getWallHeight() {
+        return this.wallHeight;
     }
 }

@@ -23,6 +23,7 @@ import java.util.Objects;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
+import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.model.WallSegment;
 import org.terasology.math.Vector2i;
@@ -89,7 +90,7 @@ public class SimpleTownWallGenerator {
             Vector2i pos = new Vector2i(tx, ty);
             
             if (prevPos != null) {
-                tw.addWall(new WallSegment(prevPos, pos, wallThick, wallHeight));
+                tw.addWall(new SolidWallSegment(prevPos, pos, wallThick, wallHeight));
             }
             
             prevPos = pos;
@@ -98,7 +99,7 @@ public class SimpleTownWallGenerator {
         
         // close the circle
         Vector2i firstPoint = tw.getWalls().get(0).getStart();
-        tw.addWall(new WallSegment(prevPos, firstPoint, wallThick, wallHeight));
+        tw.addWall(new SolidWallSegment(prevPos, firstPoint, wallThick, wallHeight));
         
         // generate wall towers
         for (WallSegment wall : tw.getWalls()) {

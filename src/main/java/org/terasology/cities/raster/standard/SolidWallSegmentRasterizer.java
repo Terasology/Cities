@@ -18,7 +18,7 @@
 package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.WallSegment;
+import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
@@ -26,13 +26,13 @@ import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
- * Converts a {@link WallSegment} into blocks
+ * Converts a {@link SolidWallSegment} into blocks
  * @author Martin Steiger
  */
-public class SimpleWallSegmentRasterizer implements Rasterizer<WallSegment> {
+public class SolidWallSegmentRasterizer implements Rasterizer<SolidWallSegment> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, WallSegment element) {
+    public void raster(Brush brush, TerrainInfo ti, SolidWallSegment element) {
 
         HeightMap bottomHm = ti.getHeightMap();
         HeightMap topHm = new OffsetHeightMap(bottomHm, element.getWallHeight());
