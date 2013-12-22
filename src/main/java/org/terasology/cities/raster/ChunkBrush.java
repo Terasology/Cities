@@ -21,6 +21,7 @@ import java.awt.Rectangle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.BlockTypes;
 import org.terasology.world.block.Block;
 import org.terasology.world.chunks.Chunk;
 
@@ -36,13 +37,13 @@ public class ChunkBrush extends Brush {
     private static final Logger logger = LoggerFactory.getLogger(ChunkBrush.class);
     
     private final Chunk chunk;
-    private final Function<String, Block> blockType;
+    private final Function<BlockTypes, Block> blockType;
     
     /**
      * @param chunk the chunk to work on
      * @param blockType a mapping String type -> block
      */
-    public ChunkBrush(Chunk chunk, Function<String, Block> blockType) {
+    public ChunkBrush(Chunk chunk, Function<BlockTypes, Block> blockType) {
         this.blockType = blockType;
         this.chunk = chunk;
     }
@@ -71,7 +72,7 @@ public class ChunkBrush extends Brush {
      * @param type the block type 
      */
     @Override
-    public void setBlock(int x, int y, int z, String type) {
+    public void setBlock(int x, int y, int z, BlockTypes type) {
         setBlock(x, y, z, blockType.apply(type));
     }
 

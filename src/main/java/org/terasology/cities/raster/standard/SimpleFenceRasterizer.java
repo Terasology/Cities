@@ -133,7 +133,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         Vector2i gatePos = fence.getGate();
         
         if (brushRc.contains(gatePos.x, gatePos.y)) {
-            String gateBlock = null;
+            BlockTypes gateBlock = null;
             if (gatePos.x == fleft) { // left side
                 gateBlock = BlockTypes.FENCE_GATE_LEFT;
             }
@@ -154,7 +154,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         }
     }
 
-    private void wallX(Brush brush, HeightMap hm, int x1, int x2, int z, String type) {
+    private void wallX(Brush brush, HeightMap hm, int x1, int x2, int z, BlockTypes type) {
         for (int x = x1; x <= x2; x++) {
             int y = hm.apply(x, z);
             
@@ -167,7 +167,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         }
     }
     
-    private void wallZ(Brush brush, HeightMap hm, int x, int z1, int z2, String type) {
+    private void wallZ(Brush brush, HeightMap hm, int x, int z1, int z2, BlockTypes type) {
         for (int z = z1; z <= z2; z++) {
             int y = hm.apply(x, z);
             

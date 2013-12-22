@@ -32,11 +32,11 @@ import com.google.common.collect.Maps;
  * A mapping from block types (as defined in {@link BlockTypes}) to actual blocks
  * @author Martin Steiger
  */
-final class BlockTheme implements Function<String, Block> {
+final class BlockTheme implements Function<BlockTypes, Block> {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockTheme.class);
 
-    private final Map<String, Block> map = Maps.newConcurrentMap();
+    private final Map<BlockTypes, Block> map = Maps.newConcurrentMap();
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
     private final Block defaultBlock;
 
@@ -52,7 +52,7 @@ final class BlockTheme implements Function<String, Block> {
      * @param blockType the block type (as defined in BlockTypes} 
      * @param blockUri the block uri
      */
-    public void register(String blockType, String blockUri) {
+    public void register(BlockTypes blockType, String blockUri) {
         Block block = blockManager.getBlock(blockUri);
         
         if (block == null) {
@@ -71,14 +71,13 @@ final class BlockTheme implements Function<String, Block> {
     }
 
     @Override
-    public Block apply(String input) {
+    public Block apply(BlockTypes input) {
 
         Block block = map.get(input);
 
         if (block == null) {
-            block = blockManager.getBlock(input);
-//            block = defaultBlock;
-//            logger.warn("Could not resolve block type \"{}\" - using default", input);
+            block = defaultBlock;
+            logger.warn("Could not resolve block type \"{}\" - using default", input);
         }
 
         return block;

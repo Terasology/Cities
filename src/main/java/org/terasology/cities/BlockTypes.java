@@ -7,7 +7,7 @@
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT ANY WARRANTY, without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
@@ -21,115 +21,111 @@ package org.terasology.cities;
  * A set of constants used for city building
  * @author Martin Steiger
  */
-public final class BlockTypes {
+public enum BlockTypes {
 
     /**
      * Air (maybe not required)
      */
-    public static final String AIR = "air";
+    AIR,
 
     /**
      * Surface of a road (asphalt)
      */
-    public static final String ROAD_SURFACE = "road:surface";
+    ROAD_SURFACE,
     
     /**
      * Empty space in a lot
      */
-    public static final String LOT_EMPTY = "lot:empty";
+    LOT_EMPTY,
 
     /**
      * A simple building's floor
      */
-    public static final String BUILDING_FLOOR = "building:floor";
+    BUILDING_FLOOR,
 
     /**
      * A simple building's foundation
      */
-    public static final String BUILDING_FOUNDATION = "building:foundation";
+    BUILDING_FOUNDATION,
 
     /**
      * A simple building wall
      */
-    public static final String BUILDING_WALL = "building:wall";
+    BUILDING_WALL,
 
     /**
      * Flat roof
      */
-    public static final String ROOF_FLAT = "roof:flat";
+    ROOF_FLAT,
 
     /**
      * Hip roof
      */
-    public static final String ROOF_HIP = "roof:hip";
+    ROOF_HIP,
 
     /**
      * Dome roof
      */
-    public static final String ROOF_DOME = "roof:dome";
+    ROOF_DOME,
 
     /**
      * The roof gable for saddle roofs
      */
-    public static final String ROOF_GABLE = "roof:gable";
+    ROOF_GABLE,
 
     /**
      * Saddle roof
      */
-    public static final String ROOF_SADDLE = "roof:saddle";
+    ROOF_SADDLE,
 
     /**
      * Tower stone
      */
-    public static final String TOWER_WALL = "tower:wall";
+    TOWER_WALL,
 
     /**
      * Fence along top (east-west)
      */
-    public static final String FENCE_TOP = "Fences:Fence.front";
+    FENCE_TOP,
 
     /**
      * Fence along bottom (east-west)
      */
-    public static final String FENCE_BOTTOM = "Fences:Fence.back";
+    FENCE_BOTTOM,
 
     /**
      * Fence along left (north-south)
      */
-    public static final String FENCE_LEFT = "Fences:Fence.left";
+    FENCE_LEFT,
 
     /**
      * Fence along right (north-south)
      */
-    public static final String FENCE_RIGHT = "Fences:Fence.right";
+    FENCE_RIGHT,
 
     /**
      * Fence corner (south-west)
      */
-    public static final String FENCE_SW = "fences:corner:sw";
+    FENCE_SW,
 
     /**
      * Fence corner (south-east)
      */
-    public static final String FENCE_SE = "fences:corner:se";
+    FENCE_SE,
 
     /**
      * Fence corner (north-west)
      */
-    public static final String FENCE_NW = "fences:corner:nw";
+    FENCE_NW,
 
     /**
      * Fence corner (north-east)
      */
-    public static final String FENCE_NE = "fences:corner:ne";
+    FENCE_NE,
 
-    public static final String FENCE_GATE_TOP = "fences:gate:top";
-    public static final String FENCE_GATE_LEFT = "fences:gate:left";
-    public static final String FENCE_GATE_RIGHT = "fences:gate:right";
-    public static final String FENCE_GATE_BOTTOM = "fences:gate:bottom";
-
-    private BlockTypes() {
-        // private constructor
-    }
+    FENCE_GATE_TOP,
+    FENCE_GATE_LEFT,
+    FENCE_GATE_RIGHT,
+    FENCE_GATE_BOTTOM;
 
 }

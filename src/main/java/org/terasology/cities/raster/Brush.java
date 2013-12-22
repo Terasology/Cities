@@ -20,6 +20,7 @@ package org.terasology.cities.raster;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
+import org.terasology.cities.BlockTypes;
 import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.OffsetHeightMap;
@@ -36,7 +37,7 @@ public abstract class Brush {
      * @param height the height of the shape
      * @param type the block type
      */
-    public void fillShape(Shape shape, HeightMap hmBottom, int height, String type) {
+    public void fillShape(Shape shape, HeightMap hmBottom, int height, BlockTypes type) {
         // optimize, if necessary
        fillShape(shape, hmBottom, new OffsetHeightMap(hmBottom, height), type);
     }
@@ -47,7 +48,7 @@ public abstract class Brush {
      * @param hmTop top height map (exclusive)
      * @param type the block type
      */
-    public void fillShape(Shape shape, HeightMap hmBottom, HeightMap hmTop, String type) {
+    public void fillShape(Shape shape, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
         Rectangle rc = getIntersectionArea(shape.getBounds());
 
         if (rc.isEmpty()) {
@@ -77,7 +78,7 @@ public abstract class Brush {
      * @param height the height of the shape
      * @param type the block type
      */
-    public void createWallX(int x1, int x2, int z, int bottom, int height, String type) {
+    public void createWallX(int x1, int x2, int z, int bottom, int height, BlockTypes type) {
         Rectangle rect = new Rectangle(x1, z, x2 - x1, 1);
         HeightMap hmBottom = new ConstantHeightMap(bottom);
         HeightMap hmTop = new ConstantHeightMap(bottom + height);
@@ -92,7 +93,7 @@ public abstract class Brush {
      * @param height the height of the shape
      * @param type the block type
      */
-    public void createWallZ(int z1, int z2, int x, int bottom, int height, String type) {
+    public void createWallZ(int z1, int z2, int x, int bottom, int height, BlockTypes type) {
         fillRect(new Rectangle(x, z1, 1, z2 - z1), new ConstantHeightMap(bottom), new ConstantHeightMap(bottom + height), type);
     }
 
@@ -102,7 +103,7 @@ public abstract class Brush {
      * @param heightMap the height map
      * @param type the block type
      */
-    public void fillRect(Rectangle shape, HeightMap heightMap, String type) {
+    public void fillRect(Rectangle shape, HeightMap heightMap, BlockTypes type) {
         fillRect(shape, heightMap, new OffsetHeightMap(heightMap, 1), type);        
     }
 
@@ -112,7 +113,7 @@ public abstract class Brush {
      * @param top the top height of the shape (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, int bottom, int top, String type) {
+    public void fillRect(Rectangle rect, int bottom, int top, BlockTypes type) {
         ConstantHeightMap hmBottom = new ConstantHeightMap(bottom);
         ConstantHeightMap hmTop = new ConstantHeightMap(top);
         fillRect(rect, hmBottom, hmTop, type);
@@ -124,7 +125,7 @@ public abstract class Brush {
      * @param height the top height of the shape (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, HeightMap hmBottom, int height, String type) {
+    public void fillRect(Rectangle rect, HeightMap hmBottom, int height, BlockTypes type) {
         // optimize, if necessary
         fillRect(rect, hmBottom, new ConstantHeightMap(height), type);
     }
@@ -135,7 +136,7 @@ public abstract class Brush {
      * @param hmTop the top height map (exclusive) 
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, int baseHeight, HeightMap hmTop, String type) {
+    public void fillRect(Rectangle rect, int baseHeight, HeightMap hmTop, BlockTypes type) {
         // optimize, if necessary
         fillRect(rect, new ConstantHeightMap(baseHeight), hmTop, type);
     }
@@ -146,7 +147,7 @@ public abstract class Brush {
      * @param hmTop the height map for the top (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, HeightMap hmBottom, HeightMap hmTop, String type) {
+    public void fillRect(Rectangle rect, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
         Rectangle rc = getIntersectionArea(rect);
 
         if (rc.isEmpty()) {
@@ -179,7 +180,7 @@ public abstract class Brush {
      * @param z z in world coords
      * @param type the block type
      */
-    public abstract void setBlock(int x, int y, int z, String type);
+    public abstract void setBlock(int x, int y, int z, BlockTypes type);
     
     /**
      * @return the maximum drawing height
@@ -210,7 +211,7 @@ public abstract class Brush {
      * @param wallHeight the wall height
      * @param type the block type
      */
-    public void frame(Rectangle rc, int baseHeight, int wallHeight, String type) {
+    public void frame(Rectangle rc, int baseHeight, int wallHeight, BlockTypes type) {
         
         // walls along z-axis
         createWallZ(rc.y, rc.y + rc.height, rc.x, baseHeight, wallHeight, type);
@@ -233,7 +234,7 @@ public abstract class Brush {
      * @param hmTop the height map for the top (exclusive)
      * @param type the block type
      */
-    public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, String type) {
+    public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, BlockTypes type) {
         
         if (!getAffectedArea().intersectsLine(x1, z1, x2, z2)) {
             return;
