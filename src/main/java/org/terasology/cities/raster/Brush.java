@@ -20,17 +20,9 @@ package org.terasology.cities.raster;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
-import math.geom2d.Box2D;
-import math.geom2d.Point2D;
-import math.geom2d.curve.Curve2D;
-import math.geom2d.curve.CurveSet2D;
-import math.geom2d.line.AbstractLine2D;
-import math.geom2d.line.LineSegment2D;
-
 import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.OffsetHeightMap;
-import org.terasology.math.TeraMath;
 
 /**
  * Converts model elements into blocks
@@ -243,35 +235,10 @@ public abstract class Brush {
      */
     public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, String type) {
         
-        LineSegment2D line = new LineSegment2D(new Point2D(x1, z1), new Point2D(x2, z2));
-        Rectangle rect = getAffectedArea();
-        
-        if (!rect.intersectsLine(x1, z1, x2, z2)) {
+        if (!getAffectedArea().intersectsLine(x1, z1, x2, z2)) {
             return;
         }
         
-        Box2D box = new Box2D(
-                rect.getX(), 
-                rect.getX() + rect.getWidth() - 0.001,     // make sure that larger value is rounded down 
-                rect.getY(), 
-                rect.getY() + rect.getHeight() - 0.001);   // make sure that larger value is rounded down
-        
-        CurveSet2D<? extends AbstractLine2D> segs = line.clip(box);
-        
-        for (Curve2D seg : segs) {
-            Point2D p0 = seg.point(seg.t0());
-            Point2D p1 = seg.point(seg.t1());
-            int sx1 = TeraMath.floorToInt(p0.x());
-            int sz1 = TeraMath.floorToInt(p0.y());
-            int sx2 = TeraMath.floorToInt(p1.x());
-            int sz2 = TeraMath.floorToInt(p1.y());
-            
-            drawClippedLine(hmBottom, hmTop, sx1, sz1, sx2, sz2, type);
-        }
-    }
-    
-    private void drawClippedLine(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, String type) {
-    
         int dx = Math.abs(x2 - x1);
         int dy = Math.abs(z2 - z1);
 
@@ -285,7 +252,9 @@ public abstract class Brush {
         
         while (true) {
             for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
-                setBlock(x, y, z, type);
+                if (getAffectedArea().contains(x, z)) {
+                    setBlock(x, y, z, type);
+                }
             }
 
             if (x == x2 && z == z2) {
@@ -299,6 +268,7 @@ public abstract class Brush {
                 x += sx;
             }
             // if going along diagonals is not ok use " .. } else if (e2.. " instead
+
             if (e2 < dx) {
                 err = err + dx;
                 z += sy;
