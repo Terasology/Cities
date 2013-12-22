@@ -20,54 +20,14 @@ package org.terasology.cities.model;
 import java.awt.Shape;
 
 /**
- * Defines a building in the most common sense
+ * TODO Type description
  * @author Martin Steiger
  */
-public class Building {
-    private final Shape layout;
-    private final int wallHeight;
-    private final int baseHeight;
-    private final Roof roof;
-
-    /**
-     * @param layout the building layout
-     * @param roof the roof definition
-     * @param baseHeight the height of the floor level
-     * @param wallHeight the building height above the floor level
-     */
-    public Building(Shape layout, Roof roof, int baseHeight, int wallHeight) {
-        this.layout = layout;
-        this.roof = roof;
-        this.baseHeight = baseHeight;
-        this.wallHeight = wallHeight;
-    }
+public interface Building {
 
     /**
      * @return the building layout
      */
-    public Shape getLayout() {
-        return this.layout;
-    }
+    Shape getLayout();
 
-    /**
-     * @return the roof the roof definition
-     */
-    public Roof getRoof() {
-        return this.roof;
-    }
-
-    /**
-     * @return the building height
-     */
-    public int getWallHeight() {
-        return this.wallHeight;
-    }
-
-    /**
-     * @return the base height
-     */
-    public int getBaseHeight() {
-        return baseHeight;
-    }
-    
 }

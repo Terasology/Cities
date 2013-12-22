@@ -50,15 +50,21 @@ public class CityRasterizerSimple {
         int cx = (int) ((ci.getPos().x) * Sector.SIZE);
         int cz = (int) ((ci.getPos().y) * Sector.SIZE);
 
-//        int ccSize = (int) ci.getDiameter();
-//
-//        g.drawOval(cx - ccSize / 2, cz - ccSize / 2, ccSize, ccSize);
+        int ccSize = (int) ci.getDiameter();
+
+        // draw city bounding circle with a dashed blue line
+        float[] dash = {8, 8};
+        g.setColor(Color.BLUE);
+        g.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.0f, dash, 0f));
+        g.drawOval(cx - ccSize / 2, cz - ccSize / 2, ccSize, ccSize);
         
         if (ci instanceof MedievalTown) {
             MedievalTown town = (MedievalTown) ci;
             
             if (town.getTownWall().isPresent()) {
-                rasterTownWall(g, town.getTownWall().get());
+                TownWall townWall = town.getTownWall().get();
+
+                rasterTownWall(g, townWall);
             }
         }
     }

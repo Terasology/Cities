@@ -18,6 +18,7 @@
 package org.terasology.cities;
 
 import java.awt.Shape;
+import java.awt.geom.Path2D;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
@@ -32,6 +33,7 @@ import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
 import org.terasology.cities.generator.SimpleHousingGenerator;
+import org.terasology.cities.generator.TownWallShapeGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.MedievalTown;
@@ -141,7 +143,7 @@ public class WorldFacade {
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
         
         final DefaultTownWallGenerator twg = new DefaultTownWallGenerator(seed, heightMap);
-        final LotGeneratorRandom lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc);
+        final LotGeneratorRandom lotGenerator = new LotGeneratorRandom(seed);
         final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
         
         decoratedCities = new Function<Sector, Set<City>>() {
@@ -151,13 +153,22 @@ public class WorldFacade {
                 Set<City> cities = cityMap.apply(input);
                 for (City city : cities) {
                     
+                    Shape roadShape = roadShapeFunc.apply(input);
+                    Path2D blockedArea = new Path2D.Double();
+                    blockedArea.append(roadShape, false);
+
                     if (city instanceof MedievalTown) {
                         MedievalTown town = (MedievalTown) city;
-                        TownWall tw = twg.generate(city, roadShapeFunc.apply(input));
+                        TownWall tw = twg.generate(city, roadShape);
                         town.setTownWall(tw);
+
+                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
+                        Shape townWallShape = twsg.computeShape(tw);
+                        blockedArea.append(townWallShape, false);
                     }
 
-                    Set<SimpleLot> lots = lotGenerator.apply(city);
+                    
+                    Set<SimpleLot> lots = lotGenerator.generate(city, blockedArea);
                     
                     for (SimpleLot lot : lots) {
                         city.add(lot);

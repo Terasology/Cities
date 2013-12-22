@@ -44,7 +44,7 @@ final class JCityComponent extends JComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(JCityComponent.class);
     
-    final BufferedImage image = new BufferedImage(3 * 256, 3 * 256, BufferedImage.TYPE_INT_ARGB);
+    final BufferedImage image = new BufferedImage(4 * 256, 3 * 256, BufferedImage.TYPE_INT_ARGB);
 
     final Vector2i cameraPos = new Vector2i(-50, 350);
 

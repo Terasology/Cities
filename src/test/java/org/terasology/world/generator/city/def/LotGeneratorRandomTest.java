@@ -21,9 +21,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Set;
@@ -79,10 +78,9 @@ public class LotGeneratorRandomTest  {
             }
         }
         
-        Function<Sector, Shape> blockedAreaFunc = constantFunction((Shape) (new Area()));
         Function<Vector2i, Integer> heightMap = constantFunction(5);
         
-        LotGeneratorRandom lg = new LotGeneratorRandom(seed, blockedAreaFunc);
+        LotGeneratorRandom lg = new LotGeneratorRandom(seed);
         SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
         
         Profiler.start("lot-generator");
@@ -101,7 +99,7 @@ public class LotGeneratorRandomTest  {
                     double rad = city.getDiameter() * 0.5;
                     Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
 
-                    Set<SimpleLot> lots = lg.apply(city);
+                    Set<SimpleLot> lots = lg.generate(city, new Path2D.Double());
                     List<SimpleLot> list = Lists.newArrayList(lots);
                     
                     lotCount += lots.size();

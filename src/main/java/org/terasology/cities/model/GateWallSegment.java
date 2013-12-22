@@ -25,7 +25,6 @@ import org.terasology.math.Vector2i;
  */
 public class GateWallSegment extends WallSegment {
 
-    private int wallThickness;
     private int wallHeight;
     
     /**
@@ -35,16 +34,8 @@ public class GateWallSegment extends WallSegment {
      * @param wallHeight the wall height in blocks above terrain
      */
     public GateWallSegment(Vector2i start, Vector2i end, int wallThickness, int wallHeight) {
-        super(start, end);
-        this.wallThickness = wallThickness;
+        super(start, end, wallThickness);
         this.wallHeight = wallHeight;
-    }
-
-    /**
-     * @return the wallThickness
-     */
-    public int getWallThickness() {
-        return this.wallThickness;
     }
 
     /**

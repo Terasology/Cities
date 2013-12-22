@@ -36,7 +36,6 @@ import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 
 /**
@@ -44,32 +43,27 @@ import com.google.common.collect.Sets;
  * randomly in a circular area and checks whether it intersects or not.  
  * @author Martin Steiger
  */
-public class LotGeneratorRandom implements Function<City, Set<SimpleLot>> {
+public class LotGeneratorRandom {
 
     private static final Logger logger = LoggerFactory.getLogger(LotGeneratorRandom.class);
     
     private final String seed;
-    private final Function<Sector, Shape> blockedAreaFunc;
     
     /**
      * @param seed the random seed
-     * @param blockedAreaFunc describes the blocked area for a sector
      */
-    public LotGeneratorRandom(String seed, Function<Sector, Shape> blockedAreaFunc) {
+    public LotGeneratorRandom(String seed) {
         this.seed = seed;
-        this.blockedAreaFunc = blockedAreaFunc;
     }
 
     /**
      * @param city the city
+     * @param blockedArea describes the blocked area for a sector
      * @return a set of lots for that city within the city radius
      */
-    @Override
-    public Set<SimpleLot> apply(City city) {
+    public Set<SimpleLot> generate(City city, Shape blockedArea) {
         Random rand = new FastRandom(Objects.hash(seed, city));
         
-        Sector sector = city.getSector();
-        Shape blockedArea = blockedAreaFunc.apply(sector);
         Point2d center = city.getPos();
         
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation

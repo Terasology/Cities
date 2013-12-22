@@ -17,19 +17,17 @@
 
 package org.terasology.cities.model;
 
-import java.awt.Rectangle;
-import java.util.Collections;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
+import java.awt.Shape;
 
 /**
  * Defines a building in the most common sense
  * @author Martin Steiger
  */
-public class SimpleBuilding extends AbstractBuilding {
-    
-    private final Set<Rectangle> windows = Sets.newHashSet();
+public class AbstractBuilding implements Building {
+    private final Shape layout;
+    private final int wallHeight;
+    private final int baseHeight;
+    private final Roof roof;
 
     /**
      * @param layout the building layout
@@ -37,19 +35,40 @@ public class SimpleBuilding extends AbstractBuilding {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
-    }
-    
-    @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
+    public AbstractBuilding(Shape layout, Roof roof, int baseHeight, int wallHeight) {
+        this.layout = layout;
+        this.roof = roof;
+        this.baseHeight = baseHeight;
+        this.wallHeight = wallHeight;
     }
 
     /**
-     * @return the window areas
+     * @return the building layout
      */
-    public Set<Rectangle> getWindows() {
-        return Collections.unmodifiableSet(windows);
+    @Override
+    public Shape getLayout() {
+        return this.layout;
     }
+
+    /**
+     * @return the roof the roof definition
+     */
+    public Roof getRoof() {
+        return this.roof;
+    }
+
+    /**
+     * @return the building height
+     */
+    public int getWallHeight() {
+        return this.wallHeight;
+    }
+
+    /**
+     * @return the base height
+     */
+    public int getBaseHeight() {
+        return baseHeight;
+    }
+    
 }

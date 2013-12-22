@@ -21,6 +21,6 @@ package org.terasology.cities.model;
  * An empty definition of a tower
  * @author Martin Steiger
  */
-public interface Tower {
+public interface Tower extends Building {
     // marker
 }

@@ -28,13 +28,17 @@ public class WallSegment {
     private final Vector2i start;
     private final Vector2i end;
     
+    private int wallThickness;
+
     /**
      * @param start one end of the wall
      * @param end the other end of the wall
+     * @param wallThickness the wall thickness in block
      */
-    public WallSegment(Vector2i start, Vector2i end) {
+    public WallSegment(Vector2i start, Vector2i end, int wallThickness) {
         this.start = start;
         this.end = end;
+        this.wallThickness = wallThickness;
     }
 
     /**
@@ -50,4 +54,12 @@ public class WallSegment {
     public Vector2i getEnd() {
         return this.end;
     }
+
+    /**
+     * @return the wallThickness
+     */
+    public int getWallThickness() {
+        return this.wallThickness;
+    }
+
 }

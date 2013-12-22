@@ -76,6 +76,8 @@ public class SwingRasterizer {
         Shape roadArea = facade.getRoadArea(sector);
 
         g.setStroke(new BasicStroke());
+        g.setColor(new Color(224, 96, 32));
+        g.fill(roadArea);
         g.setColor(Color.BLACK);
         g.draw(roadArea);
     }
