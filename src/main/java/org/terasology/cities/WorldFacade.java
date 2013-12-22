@@ -26,21 +26,21 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.generator.CityConnector;
 import org.terasology.cities.generator.CityPlacerRandom;
+import org.terasology.cities.generator.DefaultTownWallGenerator;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
 import org.terasology.cities.generator.SimpleHousingGenerator;
-import org.terasology.cities.generator.TownWallGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.TownWall;
 import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
 
 import com.google.common.base.Function;
@@ -140,7 +140,7 @@ public class WorldFacade {
         roadShapeFunc = new RoadShapeGenerator(roadMap);
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
         
-        final TownWallGenerator twg = new TownWallGenerator(seed, heightMap);
+        final DefaultTownWallGenerator twg = new DefaultTownWallGenerator(seed, heightMap);
         final LotGeneratorRandom lotGenerator = new LotGeneratorRandom(seed, roadShapeFunc);
         final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
         
@@ -153,7 +153,7 @@ public class WorldFacade {
                     
                     if (city instanceof MedievalTown) {
                         MedievalTown town = (MedievalTown) city;
-                        TownWall tw = twg.generate(city);
+                        TownWall tw = twg.generate(city, roadShapeFunc.apply(input));
                         town.setTownWall(tw);
                     }
 

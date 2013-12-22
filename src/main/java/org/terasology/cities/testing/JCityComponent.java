@@ -46,7 +46,7 @@ final class JCityComponent extends JComponent {
     
     final BufferedImage image = new BufferedImage(3 * 256, 3 * 256, BufferedImage.TYPE_INT_ARGB);
 
-    final Vector2i cameraPos = new Vector2i(250, 350);
+    final Vector2i cameraPos = new Vector2i(-50, 350);
 
     private JLabel label;
 

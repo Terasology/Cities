@@ -18,12 +18,9 @@
 package org.terasology.cities.generator;
 
 import java.awt.Rectangle;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
 import org.terasology.cities.model.TownWall;
@@ -33,13 +30,13 @@ import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 /**
- * TODO Type description
+ * Generates a {@link TownWall} around a given settlement.
+ * Does not respect blocked areas or roads
  * @author Martin Steiger
  */
-public class TownWallGenerator {
+public class SimpleTownWallGenerator {
 
     private String seed;
     private Function<Vector2i, Integer> heightMap;
@@ -48,11 +45,15 @@ public class TownWallGenerator {
      * @param seed the random seed
      * @param heightMap the terrain height function
      */
-    public TownWallGenerator(String seed, Function<Vector2i, Integer> heightMap) {
+    public SimpleTownWallGenerator(String seed, Function<Vector2i, Integer> heightMap) {
         this.seed = seed;
         this.heightMap = heightMap;
     }
 
+    /**
+     * @param city the city
+     * @return a town wall
+     */
     public TownWall generate(City city) {
         Random rand = new MersenneRandom(Objects.hash(seed, city.getPos().hashCode()));
         
