@@ -21,9 +21,9 @@ import java.util.Set;
 
 import javax.vecmath.Point2d;
 
+import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.Sector.Orientation;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -61,7 +61,7 @@ public class CityConnector implements Function<City, Set<City>> {
         Set<City> directNeighs = cityMap.apply(sector);
         Set<City> cities = Sets.newHashSet(directNeighs); 
 
-        for (Orientation dir : Sector.Orientation.values()) {
+        for (Orientation dir : Orientation.values()) {
             Sector neighbor = sector.getNeighbor(dir);
             Set<City> neighCities = cityMap.apply(neighbor);
             cities.addAll(neighCities);

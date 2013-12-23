@@ -27,10 +27,10 @@ import java.awt.image.BufferedImage;
 import java.util.Set;
 
 import org.terasology.cities.WorldFacade;
+import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.cities.terrain.NoiseHeightMap;
 import org.terasology.math.TeraMath;
 
@@ -89,7 +89,7 @@ public class SwingRasterizer {
         Set<City> cities = Sets.newHashSet(facade.getCities(sector));
         
         // add all neighbors, because their cities might reach into this sector
-        for (Orientation dir : Sector.Orientation.values()) {
+        for (Orientation dir : Orientation.values()) {
             Sector neighbor = sector.getNeighbor(dir);
 
             cities.addAll(facade.getCities(neighbor));

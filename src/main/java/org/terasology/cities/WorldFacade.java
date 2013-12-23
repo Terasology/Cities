@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.vecmath.Point2d;
 
 import org.terasology.cities.common.CachingFunction;
+import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.generator.CityConnector;
 import org.terasology.cities.generator.CityPlacerRandom;
@@ -39,7 +40,6 @@ import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.TownWall;
@@ -122,7 +122,7 @@ public class WorldFacade {
                 Set<UnorderedPair<City>> allConns = Sets.newHashSet(localConns);
                 
                 // add all neighbors, because their roads might be passing through
-                for (Orientation dir : Sector.Orientation.values()) {
+                for (Orientation dir : Orientation.values()) {
                     Sector neighbor = sector.getNeighbor(dir);
 
                     allConns.addAll(sectorConnections.apply(neighbor));

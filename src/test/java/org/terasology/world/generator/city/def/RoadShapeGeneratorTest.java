@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.CachingFunction;
+import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.generator.CityConnector;
@@ -39,7 +40,6 @@ import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
-import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.math.Vector2i;
 
 import com.google.common.base.Function;
@@ -104,7 +104,7 @@ public class RoadShapeGeneratorTest  {
                 Set<UnorderedPair<City>> allConns = Sets.newHashSet(localConns);
                 
                 // add all neighbors, because their roads might be passing through
-                for (Orientation dir : Sector.Orientation.values()) {
+                for (Orientation dir : Orientation.values()) {
                     Sector neighbor = sector.getNeighbor(dir);
 
                     allConns.addAll(sc.apply(neighbor));

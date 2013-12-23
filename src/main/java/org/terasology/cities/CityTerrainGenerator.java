@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
-import org.terasology.cities.model.Sector.Orientation;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.ChunkBrush;
 import org.terasology.cities.raster.TerrainInfo;

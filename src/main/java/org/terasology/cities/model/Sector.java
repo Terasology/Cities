@@ -17,6 +17,7 @@
 
 package org.terasology.cities.model;
 
+import org.terasology.cities.common.Orientation;
 import org.terasology.math.Vector2i;
 
 /**
@@ -24,31 +25,6 @@ import org.terasology.math.Vector2i;
  * @author Martin Steiger
  */
 public final class Sector {
-    
-    @SuppressWarnings("javadoc")
-    public enum Orientation {
-        NORTH(0),
-        NORTHEAST(1),
-        EAST(2),
-        SOUTHEAST(3),
-        SOUTH(4),
-        SOUTHWEST(5),
-        WEST(6),
-        NORTHWEST(7);
-        
-        private final int index;
-        
-        Orientation(int index) {
-            this.index = index;
-        }
-        
-        /**
-         * @return the array index in the orientation array
-         */
-        public int getIndex() {
-            return index;
-        }
-    }
     
     /**
      * Measured in blocks
@@ -80,12 +56,10 @@ public final class Sector {
      * @return the neighbor sector
      */
     public Sector getNeighbor(Orientation dir) {
-        int[] ox = new int[] {0, 1, 1, 1, 0, -1, -1, -1 };
-        int[] oz = new int[] {-1, -1, 0, 1, 1, 1, 0, -1 };
         
-        int index = dir.getIndex();
-        int x = coords.x + ox[index];
-        int z = coords.y + oz[index];
+        Vector2i v = dir.getDir();
+        int x = coords.x + v.x;
+        int z = coords.y + v.y;
         
         return Sectors.getSector(new Vector2i(x, z));
     }
