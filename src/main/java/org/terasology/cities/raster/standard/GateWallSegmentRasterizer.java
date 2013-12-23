@@ -52,10 +52,18 @@ public class GateWallSegmentRasterizer implements Rasterizer<GateWallSegment> {
                 double cz = (z1 + z2) * 0.5;
                 double dx = x - cx;
                 double dz = z - cz;
-                double dist = Math.sqrt((dx * dx) + (dz * dz));
-                int base = terrain.apply(x, z);
+ 
                 // dist is at maximum 0.5 * width
-                return (int) (base + height * (1.0 - 2 * dist / width) - 1);
+                double dist = Math.sqrt((dx * dx) + (dz * dz));
+                
+                // normalize
+                dist = 2 * dist / width;
+                
+                // make it a squeezed circle shape
+                dist = Math.min(1.0, dist * dist * 4);
+                
+                int base = terrain.apply(x, z);
+                return (int) (base + height * (1.0 - dist) - 1);
             }
         };
         
