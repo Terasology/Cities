@@ -25,8 +25,7 @@ import java.awt.Rectangle;
  */
 public class SimpleHome extends SimpleBuilding {
 
-    private Rectangle door;
-    private int doorHeight;
+    private SimpleDoor door;
 
     /**
      * @param layout the building layout
@@ -34,26 +33,20 @@ public class SimpleHome extends SimpleBuilding {
      * @param door the door area in one of the wall
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
-     * @param doorHeight the height of the door
      */
-    public SimpleHome(Rectangle layout, Roof roof, int baseHeight, int wallHeight, Rectangle door, int doorHeight) {
+    public SimpleHome(Rectangle layout, Roof roof, int baseHeight, int wallHeight, SimpleDoor door) {
         super(layout, roof, baseHeight, wallHeight);
+        
+        // TODO: check that the door is at the border and heights are ok
+        
         this.door = door;
-        this.doorHeight = doorHeight;
     }
 
     /**
      * @return the door area in one of the wall
      */
-    public Rectangle getDoor() {
+    public SimpleDoor getDoor() {
         return door;
     }
     
-    /**
-     * @return the height of the door
-     */
-    public int getDoorHeight() {
-        return this.doorHeight;
-    }
-
 }

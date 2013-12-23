@@ -24,11 +24,13 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.Roof;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleBuilding;
+import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.math.Vector2i;
@@ -77,41 +79,50 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         int doorWidth = 1;
         int doorHeight = 2;
         
-        Rectangle door;
+        Orientation orientation;
+        Rectangle doorRc;
         if (r.nextBoolean()) {                               // on the x-axis
             int cx = rc.x + (rc.width - doorWidth) / 2; 
             if (r.nextBoolean()) {                           // on the top wall
                 int y = rc.y;
-                door = new Rectangle(cx, y, doorWidth, 1);
+                doorRc = new Rectangle(cx, y, doorWidth, 1);
+                orientation = Orientation.NORTH;
             } else {
                 int y = rc.y + rc.height - 1;                // on the bottom wall
-                door = new Rectangle(cx, y, doorWidth, 1);
+                doorRc = new Rectangle(cx, y, doorWidth, 1);
+                orientation = Orientation.SOUTH;
             }
         } else {
             int cz = rc.y + (rc.height - doorWidth) / 2; 
             if (r.nextBoolean()) {                           // on the left wall
                 int x = rc.x;
-                door = new Rectangle(x, cz, 1, doorWidth);
+                doorRc = new Rectangle(x, cz, 1, doorWidth);
+                orientation = Orientation.WEST;
             } else {                                         // on the right wall
                 int x = rc.x + rc.width - 1;
-                door = new Rectangle(x, cz, 1, doorWidth);
+                doorRc = new Rectangle(x, cz, 1, doorWidth);
+                orientation = Orientation.EAST;
             }
         }
         
         // use door as base height - 
         // this is a bit dodgy, because only the first block is considered
         // maybe sample along width of the door and use the average?
-        // also check the height _in front_ of the door
+        Vector2i doorDir = orientation.getDir();
+        Vector2i probePos = new Vector2i(doorRc.x + doorDir.x, doorRc.y + doorDir.y);
+
         // we add +1, because the building starts at 1 block above the terrain
-        int baseHeight = heightMap.apply(new Vector2i(door.x, door.y)) + 1;
-        
+        int baseHeight = heightMap.apply(probePos) + 1;
+
+        SimpleDoor door = new SimpleDoor(orientation, doorRc, baseHeight, baseHeight + doorHeight);
+
         // the roof area is 1 block larger all around
         Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
 
         int roofBaseHeight = baseHeight + wallHeight;
         Roof roof = createRoof(r, roofArea, roofBaseHeight);
 
-        SimpleBuilding simpleBuilding = new SimpleHome(rc, roof, baseHeight, wallHeight, door, doorHeight);
+        SimpleBuilding simpleBuilding = new SimpleHome(rc, roof, baseHeight, wallHeight, door);
         
         logger.debug("Created 1 building for the lot");
         

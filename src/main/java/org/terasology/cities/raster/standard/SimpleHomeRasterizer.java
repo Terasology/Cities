@@ -20,6 +20,7 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
@@ -55,8 +56,8 @@ public class SimpleHomeRasterizer implements Rasterizer<SimpleHome> {
             brush.frame(rc, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
     
             // door
-            Rectangle door = blg.getDoor();
-            brush.fillRect(door, baseHeight, baseHeight + blg.getDoorHeight(), BlockTypes.AIR);
+            SimpleDoor door = blg.getDoor();
+            brush.fillRect(door.getRect(), door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
         }
         
         // the roof can be larger than the building -- not sure if this is a good idea ...

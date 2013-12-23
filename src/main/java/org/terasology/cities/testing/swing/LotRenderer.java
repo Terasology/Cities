@@ -50,7 +50,7 @@ public class LotRenderer {
                 if (b instanceof SimpleHome) {
                     SimpleHome sb = (SimpleHome) b;
                     g.setColor(Color.GREEN);
-                    g.draw(sb.getDoor());
+                    g.draw(sb.getDoor().getRect());
                 }
             }
         }
