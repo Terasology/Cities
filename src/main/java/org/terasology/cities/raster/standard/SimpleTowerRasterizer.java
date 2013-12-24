@@ -53,7 +53,7 @@ public class SimpleTowerRasterizer implements Rasterizer<SimpleTower> {
             brush.fillRect(rc, ti.getHeightMap(), baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
             
             // wall along z
-            brush.frame(rc, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
+            brush.frame(rc, baseHeight, baseHeight + wallHeight, BlockTypes.BUILDING_WALL);
         }
         
         RasterRegistry registry = StandardRegistry.getInstance();

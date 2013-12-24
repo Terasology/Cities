@@ -24,6 +24,7 @@ import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.SaddleRoof;
+import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
@@ -54,6 +55,7 @@ public final class StandardRegistry extends RasterRegistry {
         register(SimpleTower.class, new SimpleTowerRasterizer());
         register(SolidWallSegment.class, new SolidWallSegmentRasterizer());
         register(GateWallSegment.class, new GateWallSegmentRasterizer());
+        register(SimpleChurch.class, new SimpleChurchRasterizer());
     }
 
     /**

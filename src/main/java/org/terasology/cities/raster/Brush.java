@@ -75,13 +75,13 @@ public abstract class Brush {
      * @param x2 right x coord
      * @param z the z coord
      * @param bottom the bottom height (inclusive)
-     * @param height the height of the shape
+     * @param top the top height of the shape (exclusive)
      * @param type the block type
      */
-    public void createWallX(int x1, int x2, int z, int bottom, int height, BlockTypes type) {
+    public void createWallX(int x1, int x2, int z, int bottom, int top, BlockTypes type) {
         Rectangle rect = new Rectangle(x1, z, x2 - x1, 1);
         HeightMap hmBottom = new ConstantHeightMap(bottom);
-        HeightMap hmTop = new ConstantHeightMap(bottom + height);
+        HeightMap hmTop = new ConstantHeightMap(top);
         fillRect(rect, hmBottom, hmTop, type);
     }
 
@@ -90,11 +90,14 @@ public abstract class Brush {
      * @param z1 left z coord
      * @param z2 right z coord
      * @param bottom the bottom height (inclusive)
-     * @param height the height of the shape
+     * @param top the top height of the shape
      * @param type the block type
      */
-    public void createWallZ(int z1, int z2, int x, int bottom, int height, BlockTypes type) {
-        fillRect(new Rectangle(x, z1, 1, z2 - z1), new ConstantHeightMap(bottom), new ConstantHeightMap(bottom + height), type);
+    public void createWallZ(int z1, int z2, int x, int bottom, int top, BlockTypes type) {
+        Rectangle rect = new Rectangle(x, z1, 1, z2 - z1);
+        ConstantHeightMap hmBottom = new ConstantHeightMap(bottom);
+        ConstantHeightMap hmTop = new ConstantHeightMap(top);
+        fillRect(rect, hmBottom, hmTop, type);
     }
 
     /**
@@ -208,18 +211,18 @@ public abstract class Brush {
     /**
      * @param rc the outline rect
      * @param baseHeight the base height
-     * @param wallHeight the wall height
+     * @param topHeight the top height
      * @param type the block type
      */
-    public void frame(Rectangle rc, int baseHeight, int wallHeight, BlockTypes type) {
+    public void frame(Rectangle rc, int baseHeight, int topHeight, BlockTypes type) {
         
         // walls along z-axis
-        createWallZ(rc.y, rc.y + rc.height, rc.x, baseHeight, wallHeight, type);
-        createWallZ(rc.y, rc.y + rc.height, rc.x + rc.width - 1, baseHeight, wallHeight, type);
+        createWallZ(rc.y, rc.y + rc.height, rc.x, baseHeight, topHeight, type);
+        createWallZ(rc.y, rc.y + rc.height, rc.x + rc.width - 1, baseHeight, topHeight, type);
 
         // walls along x-axis
-        createWallX(rc.x, rc.x + rc.width, rc.y, baseHeight, wallHeight, type);
-        createWallX(rc.x, rc.x + rc.width, rc.y + rc.height - 1, baseHeight, wallHeight, type);
+        createWallX(rc.x, rc.x + rc.width, rc.y, baseHeight, topHeight, type);
+        createWallX(rc.x, rc.x + rc.width, rc.y + rc.height - 1, baseHeight, topHeight, type);
         
     }
     

@@ -30,9 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
-import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 
@@ -48,12 +46,36 @@ public class LotGeneratorRandom {
     private static final Logger logger = LoggerFactory.getLogger(LotGeneratorRandom.class);
     
     private final String seed;
+
+    private final double minSize; 
+    private final double maxSize;
+    private final int maxTries;
+    private final int maxLots;
+    
+    /**
+     * @param seed the random seed
+     * @param minSize minimum lot size
+     * @param maxSize maximum lot size
+     * @param maxLots maximum number of lots
+     * @param maxTries maximum number of tries to create lots
+     */
+    public LotGeneratorRandom(String seed, double minSize, double maxSize, int maxLots, int maxTries) {
+        this.seed = seed;
+        this.minSize = minSize;
+        this.maxSize = maxSize;
+        this.maxLots = maxLots;
+        this.maxTries = maxTries;
+    }
     
     /**
      * @param seed the random seed
      */
     public LotGeneratorRandom(String seed) {
         this.seed = seed;
+        this.minSize = 10d;
+        this.maxSize = 18d;
+        this.maxTries = 100;
+        this.maxLots = maxTries;
     }
 
     /**
@@ -67,8 +89,6 @@ public class LotGeneratorRandom {
         Point2d center = city.getPos();
         
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
-        double minSize = 10d;
-        double maxSize = 13d;
         double maxLotDiam = maxSize * Math.sqrt(2);
         double minRad = 5 + maxSize * 0.5;
         double maxRad = (city.getDiameter() - maxLotDiam) * 0.5;
@@ -77,10 +97,11 @@ public class LotGeneratorRandom {
             return lots;        // which is empty
         }
         
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < maxTries && lots.size() < maxLots;  i++) {
             double ang = rand.nextDouble(0, Math.PI * 2.0);
             double rad = rand.nextDouble(minRad, maxRad);
-            double desSize = rand.nextDouble(minSize, maxSize);
+            double desSizeX = rand.nextDouble(minSize, maxSize);
+            double desSizeZ = rand.nextDouble(minSize, maxSize);
             
             double x = center.x * Sector.SIZE + rad * Math.cos(ang);
             double z = center.y * Sector.SIZE + rad * Math.sin(ang);
@@ -88,8 +109,8 @@ public class LotGeneratorRandom {
             Point2d pos = new Point2d(x, z);
             Vector2d maxSpace = getMaxSpace(pos, lots);
 
-            int sizeX = (int) Math.min(desSize, maxSpace.x);
-            int sizeZ = (int) Math.min(desSize, maxSpace.y);
+            int sizeX = (int) Math.min(desSizeX, maxSpace.x);
+            int sizeZ = (int) Math.min(desSizeZ, maxSpace.y);
             
             // check if enough space is available
             if (sizeX < minSize || sizeZ < minSize) {
@@ -104,33 +125,7 @@ public class LotGeneratorRandom {
             }
 
             // all tests passed -> create and add
-            Rectangle fenceRc = new Rectangle(shape);
-            Vector2i gatePos = new Vector2i();
-            switch (rand.nextInt(4)) {
-            case 0:
-                gatePos.x = rand.nextInt(fenceRc.x + 1, fenceRc.x + fenceRc.width - 2);
-                gatePos.y = fenceRc.y;
-                break;
-                
-            case 1:
-                gatePos.x = fenceRc.x;
-                gatePos.y = rand.nextInt(fenceRc.y + 1, fenceRc.y + fenceRc.height - 2);
-                break;
-                
-            case 2:
-                gatePos.x = rand.nextInt(fenceRc.x + 1, fenceRc.x + fenceRc.width - 2);
-                gatePos.y = fenceRc.y + fenceRc.height - 1;
-                break;
-                
-            case 3:
-                gatePos.x = fenceRc.x + fenceRc.width - 1;
-                gatePos.y = rand.nextInt(fenceRc.y + 1, fenceRc.y + fenceRc.height - 2);
-                break;
-            }
-            SimpleFence fence = new SimpleFence(fenceRc, gatePos); 
-            
             SimpleLot lot = new SimpleLot(shape);
-            lot.setFence(fence);
             lots.add(lot);
         }
         

@@ -26,15 +26,15 @@ import java.awt.Rectangle;
 public class HipRoof extends RectangularRoof {
 
     private final int maxHeight;
-    private final int pitch;
+    private final double pitch;
     
     /**
      * @param rc the roof area
      * @param baseHeight the base height of the roof
      * @param maxHeight the maximum height of the roof
-     * @param pitch the pitch
+     * @param pitch the roof pitch
      */
-    public HipRoof(Rectangle rc, int baseHeight, int maxHeight, int pitch) {
+    public HipRoof(Rectangle rc, int baseHeight, int maxHeight, double pitch) {
         super(rc, baseHeight);
         
         this.maxHeight = maxHeight;
@@ -51,7 +51,7 @@ public class HipRoof extends RectangularRoof {
     /**
      * @return the slope
      */
-    public int getPitch() {
+    public double getPitch() {
         return this.pitch;
     }
 

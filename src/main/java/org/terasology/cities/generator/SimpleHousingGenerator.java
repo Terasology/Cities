@@ -17,6 +17,9 @@
 
 package org.terasology.cities.generator;
 
+import static org.terasology.cities.common.Orientation.EAST;
+import static org.terasology.cities.common.Orientation.WEST;
+
 import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.Objects;
@@ -140,7 +143,10 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         if (type < 66) {
             return new DomeRoof(roofArea, roofBaseHeight, Math.min(roofArea.width, roofArea.height) / 2);
         }
+
+        boolean alongX = (roofArea.width > roofArea.height);
+        Orientation o = alongX ? Orientation.EAST : Orientation.NORTH;
         
-        return new SaddleRoof(roofArea, roofBaseHeight, 1);
+        return new SaddleRoof(roofArea, roofBaseHeight, o, 1);
     }
 }

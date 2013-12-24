@@ -33,6 +33,8 @@ import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
+import org.terasology.cities.generator.SimpleChurchGenerator;
+import org.terasology.cities.generator.SimpleFenceGenerator;
 import org.terasology.cities.generator.SimpleHousingGenerator;
 import org.terasology.cities.generator.TownWallShapeGenerator;
 import org.terasology.cities.model.City;
@@ -40,7 +42,9 @@ import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleBuilding;
+import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
@@ -143,9 +147,12 @@ public class WorldFacade {
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
         
         final DefaultTownWallGenerator twg = new DefaultTownWallGenerator(seed, heightMap);
-        final LotGeneratorRandom lotGenerator = new LotGeneratorRandom(seed);
+        final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
+        final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 15d, 25d, 1, 100);
         final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
-        
+        final SimpleFenceGenerator sfg = new SimpleFenceGenerator(seed);
+        final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);
+
         decoratedCities = new Function<Sector, Set<City>>() {
             
             @Override
@@ -167,14 +174,26 @@ public class WorldFacade {
                         blockedArea.append(townWallShape, false);
                     }
 
+                    if (city instanceof MedievalTown) {
+                        Set<SimpleLot> lots = churchLotGenerator.generate(city, blockedArea);
+                        if (!lots.isEmpty()) {
+                            SimpleLot lot = lots.iterator().next();
+                            SimpleChurch church = sacg.generate(lot);
+                            blockedArea.append(church.getLayout(), false);
+                            lot.addBuilding(church);
+                            city.add(lot);
+                        }
+                    }
                     
-                    Set<SimpleLot> lots = lotGenerator.generate(city, blockedArea);
+                    Set<SimpleLot> lots = housingLotGenerator.generate(city, blockedArea);
                     
                     for (SimpleLot lot : lots) {
                         city.add(lot);
                         
                         for (SimpleBuilding bldg : blgGenerator.apply(lot)) {
                             lot.addBuilding(bldg);
+                            SimpleFence fence = sfg.createFence(city, lot.getShape());
+                            lot.setFence(fence);
                         }
                     }
                 }

@@ -53,7 +53,7 @@ public class SimpleHomeRasterizer implements Rasterizer<SimpleHome> {
             brush.fillRect(rc, ti.getHeightMap(), baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
             
             // wall along z
-            brush.frame(rc, baseHeight, wallHeight, BlockTypes.BUILDING_WALL);
+            brush.frame(rc, baseHeight, blg.getBaseHeight() + wallHeight, BlockTypes.BUILDING_WALL);
     
             // door
             SimpleDoor door = blg.getDoor();

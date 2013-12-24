@@ -27,6 +27,7 @@ import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
 import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.math.TeraMath;
 
 /**
  * Converts a {@link HipRoof} into blocks
@@ -43,7 +44,7 @@ public class HipRoofRasterizer implements Rasterizer<HipRoof> {
         }
         
         // this is the ground truth
-        // maxHeight = baseHeight + Math.min(cur.width, cur.height) / (2 * pitch);
+        // maxHeight = baseHeight + Math.min(cur.width, cur.height) * pitch / 2;
         
         HeightMap hm = new HeightMapAdapter() {
 
@@ -58,12 +59,12 @@ public class HipRoofRasterizer implements Rasterizer<HipRoof> {
 
                 int dist = Math.min(borderDistX, borderDistZ);
 
-                int y = roof.getBaseHeight() + dist / roof.getPitch();
+                int y = TeraMath.floorToInt(roof.getBaseHeight() + dist * roof.getPitch());
                 return Math.min(y, roof.getMaxHeight());
             }
         };
 
-        brush.fillRect(area, hm, new OffsetHeightMap(hm, 1), BlockTypes.ROOF_HIP);
+        brush.fillRect(area, hm, new OffsetHeightMap(hm, (int) roof.getPitch()), BlockTypes.ROOF_HIP);
     }
 
 }

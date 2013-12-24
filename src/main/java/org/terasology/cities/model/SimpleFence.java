@@ -19,6 +19,7 @@ package org.terasology.cities.model;
 
 import java.awt.Rectangle;
 
+import org.terasology.cities.common.Orientation;
 import org.terasology.math.Vector2i;
 
 /**
@@ -29,13 +30,17 @@ public class SimpleFence {
 
     private final Rectangle rect;
     private final Vector2i gate;
+    private final Orientation gateOrient;
     
     /**
      * @param rect the fence outline area
+     * @param gateOrient the gate's orientation
      * @param gate the gate position
      */
-    public SimpleFence(Rectangle rect, Vector2i gate) {
+    public SimpleFence(Rectangle rect, Orientation gateOrient, Vector2i gate) {
+        
         this.rect = rect;
+        this.gateOrient = gateOrient;
         this.gate = gate;
     }
 
@@ -44,6 +49,13 @@ public class SimpleFence {
      */
     public Rectangle getRect() {
         return this.rect;
+    }
+    
+    /**
+     * @return the gate orientation
+     */
+    public Orientation getGateOrientation() {
+        return this.gateOrient;
     }
 
     /**

@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.terasology.cities.model.Building;
 import org.terasology.cities.model.Lot;
+import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleHome;
 
 /**
@@ -42,15 +43,27 @@ public class LotRenderer {
             g.draw(lot.getShape());
             
             for (Building b : lot.getBuildings()) {
-                g.setColor(Color.RED);
-                g.fill(b.getLayout());
-                g.setColor(Color.RED.darker());
-                g.draw(b.getLayout());
                 
                 if (b instanceof SimpleHome) {
                     SimpleHome sb = (SimpleHome) b;
+
+                    g.setColor(Color.RED);
+                    g.fill(b.getLayout());
+                    g.setColor(Color.RED.darker());
+                    g.draw(b.getLayout());
+
                     g.setColor(Color.GREEN);
                     g.draw(sb.getDoor().getRect());
+                }
+                
+                if (b instanceof SimpleChurch) {
+                    SimpleChurch sc = (SimpleChurch) b;
+                    g.setColor(Color.GREEN);
+                    g.fill(b.getLayout());
+                    g.setColor(Color.GREEN.darker());
+                    g.draw(b.getLayout());
+                    g.setColor(Color.BLUE);
+                    g.draw(sc.getDoor().getRect());
                 }
             }
         }

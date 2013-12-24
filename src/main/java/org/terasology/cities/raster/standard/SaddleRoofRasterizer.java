@@ -27,6 +27,7 @@ import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
 import org.terasology.cities.terrain.OffsetHeightMap;
+import static org.terasology.cities.common.Orientation.*;
 
 /**
  * Converts a {@link SaddleRoof} into blocks
@@ -42,7 +43,7 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
             return;
         }
         
-        final boolean alongX = (area.width > area.height);
+        final boolean alongX = roof.getOrientation() == EAST || roof.getOrientation() == WEST;
         
         final HeightMap topHm = new HeightMapAdapter() {
 

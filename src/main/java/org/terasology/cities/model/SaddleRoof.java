@@ -19,30 +19,56 @@ package org.terasology.cities.model;
 
 import java.awt.Rectangle;
 
+import org.terasology.cities.common.Orientation;
+
+import static org.terasology.cities.common.Orientation.*;
+
+import com.google.common.base.Preconditions;
+
 /**
  * A saddle(gable) roof
  * @author Martin Steiger
  */
 public class SaddleRoof extends RectangularRoof {
 
-    private final int pitch;
+    private final double pitch;
+    
+    private final Orientation orientation;
 
     /**
      * @param shape the roof shape
      * @param baseHeight the base height of the roof
      * @param pitch the roof pitch
+     * @param orientation the orientation (only NORTH, WEST, SOUTH, EAST are allowed)
      */
-    public SaddleRoof(Rectangle shape, int baseHeight, int pitch) {
+    public SaddleRoof(Rectangle shape, int baseHeight, Orientation orientation, double pitch) {
         super(shape, baseHeight);
+
+        Preconditions.checkArgument(pitch > 0 && pitch < 10, "pitch must be in [0..10]");
+
+        Preconditions.checkArgument(
+                orientation == WEST
+             || orientation == NORTH
+             || orientation == SOUTH 
+             || orientation == EAST,
+                "only NORTH, WEST, SOUTH, EAST are allowed");
         
+        this.orientation = orientation;
         this.pitch = pitch;
     }
 
     /**
      * @return the pitch
      */
-    public int getPitch() {
+    public double getPitch() {
         return pitch;
+    }
+
+    /**
+     * @return the orientation
+     */
+    public Orientation getOrientation() {
+        return orientation;
     }
 
 }
