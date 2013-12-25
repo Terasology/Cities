@@ -15,20 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.raster;
-
+package org.terasology.cities.model;
 
 /**
- * Converts T elements into blocks
- * @param <T> the element type
+ * A window
  * @author Martin Steiger
  */
-public interface Rasterizer<T> {
-    
-    /**
-     * @param brush the brush
-     * @param ti terrain info
-     * @param element the object that is converted into blocks
-     */
-    void raster(Brush brush, TerrainInfo ti, T element);
+public interface Window {
+    // empty 
 }

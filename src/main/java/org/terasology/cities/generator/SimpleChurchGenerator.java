@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.SaddleRoof;
+import org.terasology.cities.model.SimpleBuildingPart;
 import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleLot;
@@ -31,7 +32,7 @@ import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
 /**
- * TODO Type description
+ * Creates {@link SimpleChurch}es
  * @author Martin Steiger
  */
 public class SimpleChurchGenerator {
@@ -40,8 +41,8 @@ public class SimpleChurchGenerator {
     private HeightMap heightMap;
 
     /**
-     * @param seed
-     * @param heightMap 
+     * @param seed the seed 
+     * @param heightMap the height map
      */
     public SimpleChurchGenerator(String seed, HeightMap heightMap) {
         this.seed = seed;
@@ -49,8 +50,8 @@ public class SimpleChurchGenerator {
     }
 
     /**
-     * @param lot
-     * @return
+     * @param lot the lot to use
+     * @return a generated {@link SimpleChurch} model
      */
     public SimpleChurch generate(SimpleLot lot) {
         
@@ -145,9 +146,11 @@ public class SimpleChurchGenerator {
         towerRoofRect.height += 2;
 
         SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, hallHeight, door.getOrientation(), 1);
-        HipRoof towerRoof = new HipRoof(towerRoofRect, towerHeight, 1000, 2);
+        HipRoof towerRoof = new HipRoof(towerRoofRect, towerHeight, 2);
 
-        SimpleChurch church = new SimpleChurch(towerRect, naveRect, door, baseHeight, naveRoof, towerRoof, towerHeight, hallHeight);
+        SimpleBuildingPart nave = new SimpleBuildingPart(naveRect, baseHeight, hallHeight, naveRoof);
+        SimpleBuildingPart tower = new SimpleBuildingPart(towerRect, baseHeight, towerHeight, towerRoof);
+        SimpleChurch church = new SimpleChurch(nave, tower, door);
         
         return church;
     }

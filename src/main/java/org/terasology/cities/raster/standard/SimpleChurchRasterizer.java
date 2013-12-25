@@ -18,60 +18,47 @@
 package org.terasology.cities.raster.standard;
 
 import java.awt.Rectangle;
-import java.awt.Shape;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.Roof;
-import org.terasology.cities.model.SaddleRoof;
+import org.terasology.cities.model.SimpleBuildingPart;
 import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
-import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
  * Converts a {@link SimpleChurch} into blocks
  * @author Martin Steiger
  */
-public class SimpleChurchRasterizer implements Rasterizer<SimpleChurch> {
+public class SimpleChurchRasterizer extends AbstractRasterizer<SimpleChurch> {
 
     @Override
     public void raster(Brush brush, TerrainInfo ti, SimpleChurch blg) {
-        Shape shape = blg.getLayout();
         
-        RasterRegistry registry = StandardRegistry.getInstance();
+        rasterBuildingPart(brush, ti, blg.getNave());
+        rasterBuildingPart(brush, ti, blg.getTower());
+        
+        // door
+        SimpleDoor door = blg.getDoor();
+        brush.fillRect(door.getRect(), door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
+    }
 
+    private void rasterBuildingPart(Brush brush, TerrainInfo ti, SimpleBuildingPart part) {
+        Rectangle shape = part.getLayout();
+        
         if (brush.affects(shape)) {
-            prepareFloor(brush, blg.getNaveRect(), ti.getHeightMap(), blg.getBaseHeight(), BlockTypes.BUILDING_FLOOR);
-            prepareFloor(brush, blg.getTowerRect(), ti.getHeightMap(), blg.getBaseHeight(), BlockTypes.BUILDING_FLOOR);
-            
-            brush.frame(blg.getNaveRect(), blg.getBaseHeight(), blg.getHallHeight(), BlockTypes.BUILDING_WALL);
-            brush.frame(blg.getTowerRect(), blg.getBaseHeight(), blg.getTowerHeight(), BlockTypes.BUILDING_WALL);
-            
-            // door
-            SimpleDoor door = blg.getDoor();
-            brush.fillRect(door.getRect(), door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
+            prepareFloor(brush, shape, ti.getHeightMap(), part.getBaseHeight(), BlockTypes.BUILDING_FLOOR);
+            brush.frame(shape, part.getBaseHeight(), part.getTopHeight(), BlockTypes.BUILDING_WALL);
         }
         
-        registry.rasterize(brush, ti, blg.getNaveRoof()); 
-        registry.rasterize(brush, ti, blg.getTowerRoof()); 
-    }
-
-    private void prepareFloor(Brush brush, Rectangle rc, HeightMap terrain, int baseHeight, BlockTypes floor) {
+        Roof roof = part.getRoof();
         
-        // clear area above floor level
-        brush.fillRect(rc, baseHeight, new OffsetHeightMap(terrain, 1), BlockTypes.AIR);
+        if (brush.affects(roof.getArea())) {
+            RasterRegistry registry = StandardRegistry.getInstance();
 
-        // lay floor level
-        brush.fillRect(rc, baseHeight - 1, baseHeight, floor);
-
-        // put foundation concrete below 
-        brush.fillRect(rc, terrain, baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
-        
+            registry.rasterize(brush, ti, roof);
+        }
     }
-
 }

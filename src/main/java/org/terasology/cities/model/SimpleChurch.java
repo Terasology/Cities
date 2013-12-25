@@ -17,114 +17,44 @@
 
 package org.terasology.cities.model;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Path2D;
-
 /**
- * TODO Type description
+ * A simple aisle-less church consisting of nave and bell tower 
  * @author Martin Steiger
  */
-public class SimpleChurch implements Building {
+public class SimpleChurch extends MultipartBuilding {
 
-    private final Shape layout;
-    private final int baseHeight;
-    private final int towerHeight;
-    private final int hallHeight;
-    private final Rectangle towerRect;
-    private final Rectangle naveRect;
     private final SimpleDoor door;
-    private final Roof naveRoof;
-    private final Roof towerRoof;
+    private SimpleBuildingPart tower;
+    private SimpleBuildingPart nave;
 
     /**
-     * @param towerRect 
-     * @param naveRect 
-     * @param door 
-     * @param layout
-     * @param baseHeight
-     * @param naveRoof 
-     * @param towerRoof 
-     * @param towerHeight
-     * @param naveHeight
+     * @param bellTower the bell tower
+     * @param nave the nave
+     * @param entrance the entrance door
      */
-    public SimpleChurch(Rectangle towerRect, Rectangle naveRect, SimpleDoor door, int baseHeight, Roof naveRoof, Roof towerRoof, int towerHeight, int naveHeight) {
-        this.towerRect = towerRect;
-        this.naveRect = naveRect;
-        this.baseHeight = baseHeight;
-        this.naveRoof = naveRoof;
-        this.towerRoof = towerRoof;
-        this.towerHeight = towerHeight;
-        this.hallHeight = naveHeight;
-        this.door = door;
+    public SimpleChurch(SimpleBuildingPart nave, SimpleBuildingPart bellTower, SimpleDoor entrance) {
+        this.tower = bellTower;
+        this.nave = nave;
+        this.door = entrance; 
 
-        Path2D path = new Path2D.Double();
-        path.append(towerRect, false);
-        path.append(naveRect, false);
-        layout = path;
+        addPart(tower);
+        addPart(nave);
     }
 
-
-    @Override
-    public Shape getLayout() {
-        return layout;
+    /**
+     * @return the tower
+     */
+    public SimpleBuildingPart getTower() {
+        return this.tower;
     }
 
 
     /**
-     * @return the baseHeight
+     * @return the nave
      */
-    public int getBaseHeight() {
-        return this.baseHeight;
+    public SimpleBuildingPart getNave() {
+        return this.nave;
     }
-
-
-    /**
-     * @return the towerHeight
-     */
-    public int getTowerHeight() {
-        return this.towerHeight;
-    }
-
-
-    /**
-     * @return the hallHeight
-     */
-    public int getHallHeight() {
-        return this.hallHeight;
-    }
-
-
-    /**
-     * @return the towerRect
-     */
-    public Rectangle getTowerRect() {
-        return this.towerRect;
-    }
-
-
-    /**
-     * @return the naveRect
-     */
-    public Rectangle getNaveRect() {
-        return this.naveRect;
-    }
-
-    /**
-     * @return the naveRoof
-     */
-    public Roof getNaveRoof() {
-        return this.naveRoof;
-    }
-
-
-    /**
-     * @return the towerRoof
-     */
-    public Roof getTowerRoof() {
-        return this.towerRoof;
-    }
-
 
     /**
      * @return the door

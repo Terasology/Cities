@@ -137,7 +137,7 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         
         if (type < 33) {
             int roofPitch = 1;
-            return new HipRoof(roofArea, roofBaseHeight, roofBaseHeight + 1, roofPitch);
+            return new HipRoof(roofArea, roofBaseHeight, roofPitch, roofBaseHeight + 1);
         }
         
         if (type < 66) {

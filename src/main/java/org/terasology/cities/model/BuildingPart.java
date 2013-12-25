@@ -15,20 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.raster;
+package org.terasology.cities.model;
 
+import java.awt.Shape;
 
 /**
- * Converts T elements into blocks
- * @param <T> the element type
+ * Defines a part of a building.
+ * This is similar to an entire building.
  * @author Martin Steiger
  */
-public interface Rasterizer<T> {
-    
+public interface BuildingPart {
+
     /**
-     * @param brush the brush
-     * @param ti terrain info
-     * @param element the object that is converted into blocks
+     * @return the building layout
      */
-    void raster(Brush brush, TerrainInfo ti, T element);
+    Shape getLayout();
+
 }

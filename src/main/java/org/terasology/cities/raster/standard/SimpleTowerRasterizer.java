@@ -23,15 +23,13 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.SimpleTower;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
-import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
- * TODO Type description
+ * Converts a {@link SimpleTower} to blocks
  * @author Martin Steiger
  */
-public class SimpleTowerRasterizer implements Rasterizer<SimpleTower> {
+public class SimpleTowerRasterizer extends AbstractRasterizer<SimpleTower> {
 
     @Override
     public void raster(Brush brush, TerrainInfo ti, SimpleTower tower) {
@@ -43,14 +41,7 @@ public class SimpleTowerRasterizer implements Rasterizer<SimpleTower> {
             int baseHeight = tower.getBaseHeight();
             int wallHeight = tower.getWallHeight();
     
-            // clear area above floor level
-            brush.fillRect(rc, baseHeight, new OffsetHeightMap(ti.getHeightMap(), 1), BlockTypes.AIR);
-
-            // lay floor level
-            brush.fillRect(rc, baseHeight - 1, baseHeight, BlockTypes.BUILDING_FLOOR);
-
-            // put foundation concrete below 
-            brush.fillRect(rc, ti.getHeightMap(), baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
+            prepareFloor(brush, rc, ti.getHeightMap(), baseHeight, BlockTypes.BUILDING_FLOOR);
             
             // wall along z
             brush.frame(rc, baseHeight, baseHeight + wallHeight, BlockTypes.BUILDING_WALL);

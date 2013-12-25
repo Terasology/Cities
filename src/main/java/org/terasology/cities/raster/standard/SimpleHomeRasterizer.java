@@ -24,15 +24,13 @@ import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
-import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.terrain.OffsetHeightMap;
 
 /**
  * Converts a {@link SimpleHome} into blocks
  * @author Martin Steiger
  */
-public class SimpleHomeRasterizer implements Rasterizer<SimpleHome> {
+public class SimpleHomeRasterizer extends AbstractRasterizer<SimpleHome> {
 
     @Override
     public void raster(Brush brush, TerrainInfo ti, SimpleHome blg) {
@@ -43,16 +41,9 @@ public class SimpleHomeRasterizer implements Rasterizer<SimpleHome> {
             int baseHeight = blg.getBaseHeight();
             int wallHeight = blg.getWallHeight();
     
-            // clear area above floor level
-            brush.fillRect(rc, baseHeight, new OffsetHeightMap(ti.getHeightMap(), 1), BlockTypes.AIR);
-
-            // lay floor level
-            brush.fillRect(rc, baseHeight - 1, baseHeight, BlockTypes.BUILDING_FLOOR);
-
-            // put foundation concrete below 
-            brush.fillRect(rc, ti.getHeightMap(), baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
+            prepareFloor(brush, rc, ti.getHeightMap(), baseHeight, BlockTypes.BUILDING_FLOOR);
             
-            // wall along z
+            // create walls
             brush.frame(rc, baseHeight, blg.getBaseHeight() + wallHeight, BlockTypes.BUILDING_WALL);
     
             // door

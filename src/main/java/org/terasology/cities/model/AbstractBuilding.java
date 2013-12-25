@@ -18,12 +18,18 @@
 package org.terasology.cities.model;
 
 import java.awt.Shape;
+import java.util.Collections;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 /**
  * Defines a building in the most common sense
  * @author Martin Steiger
  */
 public class AbstractBuilding implements Building {
+    
+    private final Set<Window> windows = Sets.newHashSet();
     private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
@@ -71,4 +77,17 @@ public class AbstractBuilding implements Building {
         return baseHeight;
     }
     
+    /**
+     * @param window the window to add
+     */
+    public void addWindow(Window window) {
+        windows.add(window);
+    }
+
+    /**
+     * @return the window areas
+     */
+    public Set<Window> getWindows() {
+        return Collections.unmodifiableSet(windows);
+    }
 }

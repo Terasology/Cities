@@ -18,18 +18,12 @@
 package org.terasology.cities.model;
 
 import java.awt.Rectangle;
-import java.util.Collections;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
 
 /**
- * Defines a building in the most common sense
+ * Defines a rectangular shaped building in the most common sense
  * @author Martin Steiger
  */
 public class SimpleBuilding extends AbstractBuilding {
-    
-    private final Set<Rectangle> windows = Sets.newHashSet();
 
     /**
      * @param layout the building layout
@@ -46,10 +40,4 @@ public class SimpleBuilding extends AbstractBuilding {
         return (Rectangle) super.getLayout();
     }
 
-    /**
-     * @return the window areas
-     */
-    public Set<Rectangle> getWindows() {
-        return Collections.unmodifiableSet(windows);
-    }
 }

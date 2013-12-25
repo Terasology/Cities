@@ -50,6 +50,7 @@ public class ChunkBrush extends Brush {
 
     @Override
     public Rectangle getAffectedArea() {
+        // TODO: move into constructor, because this is used often
         int wx = chunk.getBlockWorldPosX(0);
         int wz = chunk.getBlockWorldPosZ(0);
         return new Rectangle(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());

@@ -34,11 +34,20 @@ public class HipRoof extends RectangularRoof {
      * @param maxHeight the maximum height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rectangle rc, int baseHeight, int maxHeight, double pitch) {
+    public HipRoof(Rectangle rc, int baseHeight, double pitch, int maxHeight) {
         super(rc, baseHeight);
         
         this.maxHeight = maxHeight;
         this.pitch = pitch;
+    }
+
+    /**
+     * @param rc the roof area
+     * @param baseHeight the base height of the roof
+     * @param pitch the roof pitch
+     */
+    public HipRoof(Rectangle rc, int baseHeight, double pitch) {
+        this(rc, baseHeight, pitch, Integer.MAX_VALUE);
     }
 
     /**
