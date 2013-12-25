@@ -38,6 +38,7 @@ public class ChunkBrush extends Brush {
     
     private final Chunk chunk;
     private final Function<BlockTypes, Block> blockType;
+    private final Rectangle affectedArea;
     
     /**
      * @param chunk the chunk to work on
@@ -46,14 +47,15 @@ public class ChunkBrush extends Brush {
     public ChunkBrush(Chunk chunk, Function<BlockTypes, Block> blockType) {
         this.blockType = blockType;
         this.chunk = chunk;
+        
+        int wx = chunk.getBlockWorldPosX(0);
+        int wz = chunk.getBlockWorldPosZ(0);
+        this.affectedArea = new Rectangle(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
     }
 
     @Override
     public Rectangle getAffectedArea() {
-        // TODO: move into constructor, because this is used often
-        int wx = chunk.getBlockWorldPosX(0);
-        int wz = chunk.getBlockWorldPosZ(0);
-        return new Rectangle(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
+        return affectedArea;
     }
 
     @Override
