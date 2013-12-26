@@ -52,8 +52,10 @@ public class CachingHeightMap extends HeightMapAdapter {
     
     @Override
     public int apply(int x, int z) {
-        if ((x >= area.x && x < area.x + area.width)
-         && (z >= area.y && z < area.y + area.height)) {
+        boolean xOk = x >= area.x && x < area.x + area.width;
+        boolean zOk = z >= area.y && z < area.y + area.height;
+        
+        if (xOk && zOk) {
             int lx = x - area.x;
             int lz = z - area.y;
             return height[lz * area.width + lx];

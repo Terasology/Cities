@@ -49,12 +49,13 @@ public abstract class Brush {
      * @param type the block type
      */
     public void fillShape(Shape shape, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
-        Rectangle rc = getIntersectionArea(shape.getBounds());
 
-        if (rc.isEmpty()) {
+        if (!shape.intersects(getAffectedArea())) {
             return;
         }
         
+        Rectangle rc = getIntersectionArea(shape.getBounds());
+
         for (int z = rc.y; z < rc.y + rc.height; z++) {
             for (int x = rc.x; x < rc.x + rc.width; x++) {
             
@@ -255,8 +256,8 @@ public abstract class Brush {
         int z = z1;
         
         while (true) {
-            for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
-                if (getAffectedArea().contains(x, z)) {
+            if (getAffectedArea().contains(x, z)) {
+                for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
                     setBlock(x, y, z, type);
                 }
             }
