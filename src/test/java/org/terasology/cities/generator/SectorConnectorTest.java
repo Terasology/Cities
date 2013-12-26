@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city.def;
+package org.terasology.cities.generator;
 
 import static org.junit.Assert.assertTrue;
 
@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.generator.CityConnector;
-import org.terasology.cities.generator.CityPlacerRandom;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;

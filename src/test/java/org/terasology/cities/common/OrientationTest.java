@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city.def;
+package org.terasology.cities.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.terasology.cities.common.Orientation.EAST;

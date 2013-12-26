@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.world.generator.city.def;
+package org.terasology.cities.generator;
 
 import java.awt.Shape;
 import java.util.Set;
@@ -30,11 +30,6 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.generator.CityConnector;
-import org.terasology.cities.generator.CityPlacerRandom;
-import org.terasology.cities.generator.RoadGeneratorSimple;
-import org.terasology.cities.generator.RoadModifierRandom;
-import org.terasology.cities.generator.RoadShapeGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
