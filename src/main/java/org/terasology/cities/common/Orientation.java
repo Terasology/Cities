@@ -21,6 +21,7 @@ import java.util.EnumMap;
 
 import org.terasology.math.Vector2i;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 /**
@@ -116,31 +117,41 @@ public enum Orientation {
     }
 
     /**
-     * @return the orientation at +45 degrees (45 degrees clockwise)
+     * @param degrees the rotation in degrees at 45° intervals (clockwise)
+     * @return the orientation
      */
-    public Orientation getRotatedCW45() {
-        return ROTATE_CW.get(this);
-    }
+    public Orientation getRotated(int degrees) {
+        Preconditions.checkArgument(degrees % 45 == 0, "degrees must be a multiple of 45 (is %s)", degrees);
 
-    /**
-     * @return the orientation at -45 degrees (45 degrees counter-clockwise)
-     */
-    public Orientation getRotatedCCW45() {
-        return ROTATE_CCW.get(this);
-    }
+        // normalize degrees to be in [0..360[
+        int norm = (degrees % 360);
+        if (norm < 0) {
+            norm += 360;
+        }
+        
+        if (norm == 0) {
+            return this;
+        }
+        
+        if (norm == 180) {
+            return OPPOSITES.get(this);
+        }
 
-    /**
-     * @return the orientation at +90 degrees (90 degrees clockwise)
-     */
-    public Orientation getRotatedCW90() {
-        return ROTATE_CW.get(ROTATE_CW.get(this));
-    }
+        Orientation result = this;
 
-    /**
-     * @return the orientation at -90 degrees (90 degrees counter-clockwise)
-     */
-    public Orientation getRotatedCCW90() {
-        return ROTATE_CCW.get(ROTATE_CCW.get(this));
+        // this requires 3 map lookups maximum
+        
+        while (norm < 180 && norm > 0) {
+            result = ROTATE_CW.get(result);
+            norm -= 45;
+        }
+        
+        while (norm > 180 && norm < 360) {
+            result = ROTATE_CCW.get(result);
+            norm += 45;
+        }
+        
+        return result;
     }
     
     /**
