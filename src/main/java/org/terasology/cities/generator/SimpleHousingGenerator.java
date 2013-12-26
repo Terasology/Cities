@@ -17,9 +17,6 @@
 
 package org.terasology.cities.generator;
 
-import static org.terasology.cities.common.Orientation.EAST;
-import static org.terasology.cities.common.Orientation.WEST;
-
 import java.awt.Rectangle;
 import java.util.Collections;
 import java.util.Objects;
