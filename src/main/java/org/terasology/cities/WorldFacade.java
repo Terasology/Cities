@@ -179,7 +179,7 @@ public class WorldFacade {
                         if (!lots.isEmpty()) {
                             SimpleLot lot = lots.iterator().next();
                             SimpleChurch church = sacg.generate(lot);
-                            blockedArea.append(church.getLayout(), false);
+                            blockedArea.append(lot.getShape(), false);
                             lot.addBuilding(church);
                             city.add(lot);
                         }

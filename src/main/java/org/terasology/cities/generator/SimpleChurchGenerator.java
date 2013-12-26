@@ -35,10 +35,10 @@ import org.terasology.utilities.random.Random;
  * Creates {@link SimpleChurch}es
  * @author Martin Steiger
  */
-public class SimpleChurchGenerator {
+public class SimpleChurchGenerator extends AbstractGenerator {
 
-    private String seed;
-    private HeightMap heightMap;
+    private final String seed;
+    private final HeightMap heightMap;
 
     /**
      * @param seed the seed 
@@ -66,63 +66,48 @@ public class SimpleChurchGenerator {
         
         boolean alignEast = (lotRc.width > lotRc.height);
         
+        // build along larger axis and rotate later, if necessary
+        int width = Math.max(lotRc.width, lotRc.height);
+        int height = Math.min(lotRc.width, lotRc.height);
+        
         int doorWidth = 2;
         int doorHeight = 4;
         double relationLength = 0.33;       // tower size compared to nave size
-        double relationWidth = 2.1;
+        double relationWidth = 2;
 
-        Rectangle towerRect;
-        Rectangle naveRect;
-        Rectangle doorRc;
-        Orientation doorOrientation;
+        int towerSize = (int) (width * relationLength);
         
-        if (alignEast) {
-            int towerSize = (int) (lotRc.width * relationLength);
-            
-            // make it odd, so that the tented roof looks nice (1 block thick at the center)
-            if (towerSize % 2 == 0) {
-                towerSize++;
-            }
-            
-            int naveLen = lotRc.width - towerSize;
-            int naveWidth = (int) (towerSize * relationWidth);
-
-            // make it odd, so it looks symmetric with the tower - make it smaller though
-            if (naveLen % 2 == 0) {
-                naveLen--;
-            }
-            
-            int ty = lotRc.y + (lotRc.height - towerSize) / 2;
-            int dy = lotRc.y + (lotRc.height - doorWidth) / 2;
-            int ny = lotRc.y + (lotRc.height - naveWidth) / 2;
-            naveRect = new Rectangle(lotRc.x, ny, naveLen, naveWidth);
-            towerRect = new Rectangle(lotRc.x + naveLen, ty, towerSize, towerSize);
-            doorRc = new Rectangle(lotRc.x, dy, 1, doorWidth);
-            doorOrientation = Orientation.WEST;
-        } else {
-            int towerSize = (int) (lotRc.height * relationLength);
-            
-            // make it odd, so that the tented roof looks nice (1 block thick at the center)
-            if (towerSize % 2 == 0) {
-                towerSize++;
-            }
-            
-            int naveLen = lotRc.height - towerSize;
-            int naveWidth = (int) (towerSize * relationWidth);
-
-            // make it odd, so it looks symmetric with the tower - make it smaller though
-            if (naveLen % 2 == 0) {
-                naveLen--;
-            }
-
-            int tx = lotRc.x + (lotRc.width - towerSize) / 2;
-            int dx = lotRc.x + (lotRc.width - doorWidth) / 2;
-            int nx = lotRc.x + (lotRc.width - naveWidth) / 2;
-            naveRect = new Rectangle(nx, lotRc.y, naveWidth, naveLen);
-            towerRect = new Rectangle(tx, lotRc.y + naveLen, towerSize, towerSize);
-            doorRc = new Rectangle(dx, lotRc.y, doorWidth, 1);
-            doorOrientation = Orientation.NORTH;
+        // make it odd, so that the tented roof looks nice (1 block thick at the center)
+        if (towerSize % 2 == 0) {
+            towerSize++;
         }
+        
+        int naveLen = width - towerSize;
+        int naveWidth = (int) Math.min(height, towerSize * relationWidth);
+
+        // make it odd, so it looks symmetric with the tower - make it smaller though
+        if (naveLen % 2 == 0) {
+            naveLen--;
+        }
+        
+        int ty = (height - towerSize) / 2;
+        int dy = (height - doorWidth) / 2;
+        int ny = (height - naveWidth) / 2;
+        Rectangle naveRect = new Rectangle(0, ny, naveLen, naveWidth);
+        Rectangle towerRect = new Rectangle(naveLen, ty, towerSize, towerSize);
+        Rectangle doorRc = new Rectangle(0, dy, 1, doorWidth);
+        Orientation doorOrientation = Orientation.WEST;        
+        
+        int rot = alignEast ? 0 : 90;
+        
+        if (rand.nextBoolean()) {
+            rot += 180;
+        }
+        
+        naveRect = transformRect(naveRect, lotRc, rot);
+        towerRect = transformRect(towerRect, lotRc, rot);
+        doorRc = transformRect(doorRc, lotRc, rot);
+        doorOrientation = doorOrientation.getRotated(rot);
 
         Vector2i doorDir = doorOrientation.getDir();
         Rectangle probeRc = new Rectangle(doorRc.x + doorDir.x, doorRc.y + doorDir.y, doorRc.width, doorRc.height);
