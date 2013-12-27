@@ -25,7 +25,7 @@ import org.terasology.cities.common.Orientation;
  * A rectangular window in a wall
  * @author Martin Steiger
  */
-public class SimpleWindow {
+public class SimpleWindow implements Window {
 
     private Orientation orientation;
     private Rectangle rect;
@@ -71,4 +71,5 @@ public class SimpleWindow {
      */
     public int getTopHeight() {
         return this.topHeight;
-    }}
+    }
+}

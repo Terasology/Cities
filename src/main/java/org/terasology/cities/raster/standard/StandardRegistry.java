@@ -30,6 +30,7 @@ import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.SimpleTower;
+import org.terasology.cities.model.SimpleWindow;
 import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
@@ -47,6 +48,7 @@ public final class StandardRegistry extends RasterRegistry {
         register(City.class, new CityRasterizer());
         register(SimpleLot.class, new SimpleLotRasterizer());
         register(SimpleHome.class, new SimpleHomeRasterizer());
+        register(SimpleWindow.class, new SimpleWindowRasterizer());
         register(HipRoof.class, new HipRoofRasterizer());
         register(FlatRoof.class, new FlatRoofRasterizer());
         register(SaddleRoof.class, new SaddleRoofRasterizer());

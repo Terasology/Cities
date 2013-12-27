@@ -117,6 +117,14 @@ public enum Orientation {
     }
 
     /**
+     * @return true for NORTH, WEST, SOUTH and EAST, false otherwise
+     */
+    public boolean isCardinal() {
+        // there is no need for Objects.equals(), comparing with == is safe here
+        return this == NORTH || this == WEST || this == SOUTH || this == EAST;
+    }
+    
+    /**
      * @param degrees the rotation in degrees at 45° intervals (clockwise)
      * @return the orientation
      */

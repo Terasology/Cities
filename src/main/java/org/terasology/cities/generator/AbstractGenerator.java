@@ -21,11 +21,30 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
+import org.terasology.cities.common.Orientation;
+
+import com.google.common.base.Preconditions;
+
+import static org.terasology.cities.common.Orientation.*;
+
 /**
  * Contains some general utility methods generators often use
  * @author Martin Steiger
  */
 public class AbstractGenerator {
+
+    /**
+     * @param rc the original rectangle
+     * @param ext the amount to add in all directions
+     * @return a new rectangle that is expanded in all directions
+     */
+    protected Rectangle expandRect(Rectangle rc, int ext) {
+        int x = rc.x - ext;
+        int y = rc.y - ext;
+        int width = rc.width + 2 * ext;
+        int height = rc.height + 2 * ext;
+        return new Rectangle(x, y, width, height);
+    }
 
     /**
      * @param rc the rectangle to transform
@@ -53,5 +72,37 @@ public class AbstractGenerator {
         Rectangle result = new Rectangle(x, y, width, height);
 
         return result;
+    }
+    
+    /**
+     * @param rc the original rectangle
+     * @param o the position of the border of interest
+     * @return a rectangle of thickness 1 at the specified border edge
+     */
+    protected Rectangle getBorder(Rectangle rc, Orientation o) {
+        Preconditions.checkArgument(o.isCardinal(), "Orientation must be NORTH, WEST, SOUTH or EAST");
+        
+        if (o == NORTH) {
+            int x = rc.x; 
+            int y = rc.y;
+            return new Rectangle(x, y, rc.width, 1);
+            
+        } else if (o == SOUTH) {
+            int x = rc.x;    
+            int y = rc.y + rc.height - 1;
+            return new Rectangle(x, y, rc.width, 1);
+            
+        } else if (o == WEST) {
+            int x = rc.x;
+            int y = rc.y; 
+            return new Rectangle(x, y, 1, rc.height);
+            
+        } else if (o == EAST) {
+            int x = rc.x + rc.width - 1;
+            int y = rc.y;
+            return new Rectangle(x, y, 1, rc.height);
+        }
+        
+        throw new IllegalStateException();
     }
 }

@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleHome;
+import org.terasology.cities.model.Window;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
@@ -36,6 +37,8 @@ public class SimpleHomeRasterizer extends AbstractRasterizer<SimpleHome> {
     public void raster(Brush brush, TerrainInfo ti, SimpleHome blg) {
         Rectangle rc = blg.getLayout();
         
+        RasterRegistry registry = StandardRegistry.getInstance();
+
         if (brush.affects(rc)) {
         
             int baseHeight = blg.getBaseHeight();
@@ -49,11 +52,15 @@ public class SimpleHomeRasterizer extends AbstractRasterizer<SimpleHome> {
             // door
             SimpleDoor door = blg.getDoor();
             brush.fillRect(door.getRect(), door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
+
+            // windows
+            for (Window wnd : blg.getWindows()) {
+                registry.rasterize(brush, ti, wnd);
+            }
         }
         
         // the roof can be larger than the building -- not sure if this is a good idea ...
         
-        RasterRegistry registry = StandardRegistry.getInstance();
         registry.rasterize(brush, ti, blg.getRoof());
     }
 

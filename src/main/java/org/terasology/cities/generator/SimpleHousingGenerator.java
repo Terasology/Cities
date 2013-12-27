@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.model.HipRoof;
@@ -33,21 +31,22 @@ import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.SimpleWindow;
+import org.terasology.cities.model.Window;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Sets;
 
 /**
- * A very simple lot generator. It places square-shaped lots 
- * randomly in a circular area and checks whether it intersects or not.  
+ * A simple building generator. It places a {@link SimpleHome}s in 
+ * the center of the given lot.  
  * @author Martin Steiger
  */
-public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBuilding>> {
+public class SimpleHousingGenerator extends AbstractGenerator implements Function<SimpleLot, Set<SimpleBuilding>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleHousingGenerator.class);
-    
     private final String seed;
     private Function<Vector2i, Integer> heightMap;
     
@@ -117,16 +116,64 @@ public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBui
         SimpleDoor door = new SimpleDoor(orientation, doorRc, baseHeight, baseHeight + doorHeight);
 
         // the roof area is 1 block larger all around
-        Rectangle roofArea = new Rectangle(rc.x - 1, rc.y - 1, rc.width + 2, rc.height + 2);
+        Rectangle roofArea = expandRect(rc, 1);
 
         int roofBaseHeight = baseHeight + wallHeight;
         Roof roof = createRoof(r, roofArea, roofBaseHeight);
 
-        SimpleBuilding simpleBuilding = new SimpleHome(rc, roof, baseHeight, wallHeight, door);
+        SimpleHome bldg = new SimpleHome(rc, roof, baseHeight, wallHeight, door);
         
-        logger.debug("Created 1 building for the lot");
+        for (int i = 0; i < 3; i++) {
+            // use the other three cardinal directions to place windows
+            Orientation orient = door.getOrientation().getRotated(90 * (i + 1));
+            Set<SimpleWindow> wnds = createWindows(rc, baseHeight, orient);
+            
+            for (SimpleWindow wnd : wnds) {
+                // test if terrain outside window is lower than window base height
+                Vector2i wndDir = wnd.getOrientation().getDir();
+                Rectangle wndRect = wnd.getRect();
+                Vector2i probePosWnd = new Vector2i(wndRect.x + wndDir.x, wndRect.y + wndDir.y);
+                if (wnd.getBaseHeight() > heightMap.apply(probePosWnd)) {
+                    bldg.addWindow(wnd);
+                }
+            }
+        }
         
-        return Collections.singleton(simpleBuilding);
+        return Collections.<SimpleBuilding>singleton(bldg);
+    }
+
+    private Set<SimpleWindow> createWindows(Rectangle rc, int baseHeight, Orientation o) {
+        
+        final int wndBase = baseHeight + 1;
+        final int wndTop = wndBase + 1;
+        final int endDist = 2;
+        final int interDist = 2;
+        final int wndSize = 1;
+
+        Set<SimpleWindow> result = Sets.newHashSet();
+        
+        Rectangle border = getBorder(rc, o);
+        int step = interDist + wndSize;
+        
+        int firstX = border.x + endDist;
+        int lastX = border.x + border.width - endDist * 2;
+        
+        for (int x = firstX; x <= lastX; x += step) {
+            Rectangle rect = new Rectangle(x, border.y, wndSize, 1);
+            SimpleWindow w = new SimpleWindow(o, rect, wndBase, wndTop);
+            result.add(w);
+        }
+        
+        int firstY = border.y + endDist;
+        int lastY = border.y + border.height - endDist * 2;
+        
+        for (int y = firstY; y <= lastY; y += step) {
+            Rectangle rect = new Rectangle(border.x, y, 1, wndSize);
+            SimpleWindow w = new SimpleWindow(o, rect, wndBase, wndTop);
+            result.add(w);
+        }
+        
+        return result;
     }
 
     private Roof createRoof(Random r, Rectangle roofArea, int roofBaseHeight) {
