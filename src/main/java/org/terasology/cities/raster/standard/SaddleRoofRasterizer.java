@@ -78,14 +78,14 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
             public int apply(int x, int z) {
                 int h0 = roof.getBaseHeight();
                 if (alongX) {
-                    int left = area.x + 1;                   // building border is +1
-                    int right = left + area.width - 1 - 1;   // building border is -1
+                    int left = area.x + 1;                     // building border is +1
+                    int right = area.x + area.width - 1 - 1;   // building border is -1
                     
                     if (x == left || x == right) {
                         return h0;
                     }
                 } else {
-                    int top = area.y + 1;                   // building border is +1
+                    int top = area.y + 1;                      // building border is +1
                     int bottom = area.y + area.height - 1 - 1; // building border is -1
                     if (z == top || z == bottom) {
                         return h0;
