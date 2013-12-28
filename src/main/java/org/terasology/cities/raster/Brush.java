@@ -19,11 +19,15 @@ package org.terasology.cities.raster;
 
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.common.LineUtilities;
 import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.math.TeraMath;
 
 /**
  * Converts model elements into blocks
@@ -240,10 +244,23 @@ public abstract class Brush {
      */
     public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, BlockTypes type) {
         
-        if (!getAffectedArea().intersectsLine(x1, z1, x2, z2)) {
-            return;
-        }
+        Rectangle outerBox = getAffectedArea();
+        double shrink = 0.01;
+        Rectangle2D area = new Rectangle2D.Double(outerBox.x, outerBox.y, outerBox.width - shrink, outerBox.height - shrink);
         
+        Line2D line = new Line2D.Double(x1, z1, x2, z2);
+        if (LineUtilities.clipLine(line, area)) {
+            int cx1 = TeraMath.floorToInt(line.getX1());
+            int cy1 = TeraMath.floorToInt(line.getY1());
+            int cx2 = TeraMath.floorToInt(line.getX2());
+            int cy2 = TeraMath.floorToInt(line.getY2());
+            drawClippedLine(hmBottom, hmTop, cx1, cy1, cx2, cy2, type);
+        }
+    }
+    
+    
+    private void drawClippedLine(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, BlockTypes type) {
+
         int dx = Math.abs(x2 - x1);
         int dy = Math.abs(z2 - z1);
 
@@ -256,10 +273,8 @@ public abstract class Brush {
         int z = z1;
         
         while (true) {
-            if (getAffectedArea().contains(x, z)) {
-                for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
-                    setBlock(x, y, z, type);
-                }
+            for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
+                setBlock(x, y, z, type);
             }
 
             if (x == x2 && z == z2) {

@@ -48,6 +48,11 @@ You can also use the main method in this class to view the generated world in a 
     org.terasology.testing.SwingTest
 	
 
+### Acknowledgements
+
+We would like to thank [D. Gilbert of Object Refinery Limited](http://www.object-refinery.com) for his support.
+	
+
 ### Literature Overview
 
 * Introduction to Shape and Shape GrammerShape[Stiny 75/78/80]
