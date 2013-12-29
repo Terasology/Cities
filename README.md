@@ -7,7 +7,7 @@ A module that creates roads, settlements, etc. procedurally from random numbers.
 ![image1](images/2013-12-18_fenced_house.jpg "Several simple housings on a hillside with fences")
 
 
-This module contains a world generator `City Worlds` that creates 
+This module contains a world generator `City Worlds` that creates grassland terrain based on random noise. This terrain is populated with randomly generated settlements of different sizes. 
 
 
 ### Setup
@@ -37,6 +37,8 @@ Basically, every part of this module can be separated into three distinct parts:
 ### Contributing
 
 Actually, this is the fun part and it's really easy to do. Just create your own triple of entitiy definition, entity generation and entity rasterization to add a new element to the world. 
+
+![image2](images/2013-12-29_church_aisles.jpg "Small medieval settlement around a small church, protected by town walls")
 
 
 ### Debugging 
@@ -80,3 +82,7 @@ Uses 2D agent-based simulation with SimCity3000 vis.
 
 * Konzeption & Realisierung eines prozeduralen Ansatzes zur Erzeugung von Gebäuden (Janusch, 2007)
 tbd
+
+### License
+
+This module is licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
