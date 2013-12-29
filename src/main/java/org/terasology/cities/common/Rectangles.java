@@ -32,7 +32,12 @@ import com.google.common.base.Preconditions;
  * Rectangle-related utility methods
  * @author Martin Steiger
  */
-public class Rectangles {
+public final class Rectangles {
+    
+    private Rectangles() {
+        // private
+    }
+    
     /**
      * @param rc the original rectangle
      * @param ext the amount to add in all directions
@@ -52,11 +57,18 @@ public class Rectangles {
      * @param rot the rotation in degrees (only multiples of 45deg.)
      * @return the translated and rotated rectangle
      */
-    public static Rectangle transformRect(Rectangle rc, Rectangle bounds, int rot) {
+    public static Rectangle transformRect(Rectangle rc, Rectangle bounds, Point center, int rot) {
         
+        double anchorx = bounds.width * 0.5;
+        double anchory = bounds.height * 0.5;
+
         AffineTransform at = new AffineTransform();
         at.translate(bounds.x, bounds.y);
-        at.rotate(Math.toRadians(rot), bounds.width * 0.5, bounds.height * 0.5);
+        at.translate(anchorx, anchory);
+        at.rotate(Math.toRadians(rot));
+        at.translate(-center.x, -center.y);
+
+//        at.rotate(Math.toRadians(rot), anchorx, anchory);
         
         Point ptSrc1 = new Point(rc.x, rc.y);
         Point ptSrc2 = new Point(rc.x + rc.width, rc.y + rc.height);

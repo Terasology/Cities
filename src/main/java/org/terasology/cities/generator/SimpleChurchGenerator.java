@@ -17,6 +17,7 @@
 
 package org.terasology.cities.generator;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import org.terasology.cities.common.Orientation;
@@ -105,9 +106,10 @@ public class SimpleChurchGenerator {
             rot += 180;
         }
         
-        naveRect = Rectangles.transformRect(naveRect, lotRc, rot);
-        towerRect = Rectangles.transformRect(towerRect, lotRc, rot);
-        doorRc = Rectangles.transformRect(doorRc, lotRc, rot);
+        Point center = new Point(width / 2, height / 2);
+        naveRect = Rectangles.transformRect(naveRect, lotRc, center, rot);
+        towerRect = Rectangles.transformRect(towerRect, lotRc, center, rot);
+        doorRc = Rectangles.transformRect(doorRc, lotRc, center, rot);
         doorOrientation = doorOrientation.getRotated(rot);
 
         Vector2i doorDir = doorOrientation.getDir();
