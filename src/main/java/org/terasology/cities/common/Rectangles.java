@@ -54,6 +54,7 @@ public final class Rectangles {
     /**
      * @param rc the rectangle to transform
      * @param bounds the bounding rectangle for the transformation (translation offset and rotation center)
+     * @param center the center of the original placing rect
      * @param rot the rotation in degrees (only multiples of 45deg.)
      * @return the translated and rotated rectangle
      */
@@ -67,8 +68,6 @@ public final class Rectangles {
         at.translate(anchorx, anchory);
         at.rotate(Math.toRadians(rot));
         at.translate(-center.x, -center.y);
-
-//        at.rotate(Math.toRadians(rot), anchorx, anchory);
         
         Point ptSrc1 = new Point(rc.x, rc.y);
         Point ptSrc2 = new Point(rc.x + rc.width, rc.y + rc.height);

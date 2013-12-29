@@ -148,7 +148,7 @@ public class WorldFacade {
         
         final DefaultTownWallGenerator twg = new DefaultTownWallGenerator(seed, heightMap);
         final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
-        final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 15d, 25d, 1, 100);
+        final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 25d, 40d, 1, 100);
         final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
         final SimpleFenceGenerator sfg = new SimpleFenceGenerator(seed);
         final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);

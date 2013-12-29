@@ -17,6 +17,10 @@
 
 package org.terasology.cities.model;
 
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+
 /**
  * A simple aisle-less church consisting of nave and bell tower 
  * @author Martin Steiger

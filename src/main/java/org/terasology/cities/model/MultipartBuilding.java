@@ -30,6 +30,8 @@ import com.google.common.collect.Sets;
  */
 public abstract class MultipartBuilding implements Building {
 
+    private final Set<Window> windows = Sets.newHashSet();
+
     private final Set<BuildingPart> parts = Sets.newHashSet();
     private final Path2D layout = new Path2D.Double();
 
@@ -58,5 +60,18 @@ public abstract class MultipartBuilding implements Building {
     }
 
     
+    /**
+     * @param window the window to add
+     */
+    public void addWindow(Window window) {
+        windows.add(window);
+    }
+
+    /**
+     * @return the window areas
+     */
+    public Set<Window> getWindows() {
+        return Collections.unmodifiableSet(windows);
+    }
     
 }

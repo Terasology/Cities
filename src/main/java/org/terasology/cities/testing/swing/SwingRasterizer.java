@@ -217,7 +217,7 @@ public class SwingRasterizer {
         int width = fm.stringWidth(text);
 
         g.setColor(Color.BLACK);
-        g.drawString(text, cx - width / 2, cz + (float) ci.getDiameter() * 0.5f + 6f);
+        g.drawString(text, cx - width / 2, cz + (float) ci.getDiameter() * 0.5f + 10f);
     }
 
     private void drawNoiseBackground(Graphics2D g, Sector sector) {

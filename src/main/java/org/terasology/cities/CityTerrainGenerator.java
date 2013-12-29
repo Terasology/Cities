@@ -83,10 +83,10 @@ public class CityTerrainGenerator implements FirstPassGenerator {
         theme.register(BlockTypes.FENCE_NE, "Fences:FenceCorner.left");
 
         // there is no fence gate :-(
-        theme.register(BlockTypes.FENCE_GATE_TOP, "Core:Air");
-        theme.register(BlockTypes.FENCE_GATE_LEFT, "Core:Air");
-        theme.register(BlockTypes.FENCE_GATE_RIGHT, "Core:Air");
-        theme.register(BlockTypes.FENCE_GATE_BOTTOM, "Core:Air");
+        theme.register(BlockTypes.FENCE_GATE_TOP, "Engine:Air");
+        theme.register(BlockTypes.FENCE_GATE_LEFT, "Engine:Air");
+        theme.register(BlockTypes.FENCE_GATE_RIGHT, "Engine:Air");
+        theme.register(BlockTypes.FENCE_GATE_BOTTOM, "Engine:Air");
     }
 
     @Override

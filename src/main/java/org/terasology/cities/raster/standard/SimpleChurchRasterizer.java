@@ -20,10 +20,12 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.model.BuildingPart;
 import org.terasology.cities.model.Roof;
 import org.terasology.cities.model.SimpleBuildingPart;
 import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleDoor;
+import org.terasology.cities.model.Window;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
@@ -37,8 +39,17 @@ public class SimpleChurchRasterizer extends AbstractRasterizer<SimpleChurch> {
     @Override
     public void raster(Brush brush, TerrainInfo ti, SimpleChurch blg) {
         
-        rasterBuildingPart(brush, ti, blg.getNave());
-        rasterBuildingPart(brush, ti, blg.getTower());
+        for (BuildingPart bp : blg.getParts()) {
+            rasterBuildingPart(brush, ti, (SimpleBuildingPart)bp);
+            rasterBuildingPart(brush, ti, (SimpleBuildingPart)bp);
+        }
+        
+        RasterRegistry registry = StandardRegistry.getInstance();
+
+        // windows
+        for (Window wnd : blg.getWindows()) {
+            registry.rasterize(brush, ti, wnd);
+        }
         
         // door
         SimpleDoor door = blg.getDoor();

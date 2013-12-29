@@ -23,11 +23,13 @@ import java.awt.Rectangle;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Rectangles;
 import org.terasology.cities.model.HipRoof;
+import org.terasology.cities.model.PentRoof;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleBuildingPart;
 import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.SimpleWindow;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
@@ -60,11 +62,7 @@ public class SimpleChurchGenerator {
         Random rand = new MersenneRandom(seed.hashCode());      // TODO: take sector into account
         
         // make build-able area 1 block smaller, so make the roof stay inside 
-        Rectangle lotRc = new Rectangle(lot.getShape());
-        lotRc.x += 1;
-        lotRc.y += 1;
-        lotRc.width -= 2;
-        lotRc.height -= 2;
+        Rectangle lotRc = Rectangles.expandRect(lot.getShape(), -1);
         
         boolean alignEast = (lotRc.width > lotRc.height);
         
@@ -72,10 +70,12 @@ public class SimpleChurchGenerator {
         int width = Math.max(lotRc.width, lotRc.height);
         int height = Math.min(lotRc.width, lotRc.height);
         
-        int doorWidth = 2;
-        int doorHeight = 4;
-        double relationLength = 0.33;       // tower size compared to nave size
-        double relationWidth = 2;
+        int sideOff = 3;
+        int sideWidth = 5;
+        int entranceWidth = 3;
+        int entranceHeight = 4;
+        double relationLength = 0.2;       // tower size compared to nave size
+        double relationWidth = 2.0;
 
         int towerSize = (int) (width * relationLength);
         
@@ -85,20 +85,23 @@ public class SimpleChurchGenerator {
         }
         
         int naveLen = width - towerSize;
-        int naveWidth = (int) Math.min(height, towerSize * relationWidth);
+        int naveWidth = (int) Math.min(height - 2 * sideWidth, towerSize * relationWidth);
 
         // make it odd, so it looks symmetric with the tower - make it smaller though
-        if (naveLen % 2 == 0) {
-            naveLen--;
+        if (naveWidth % 2 == 0) {
+            naveWidth--;
         }
         
         int ty = (height - towerSize) / 2;
-        int dy = (height - doorWidth) / 2;
+        int dy = (height - entranceWidth) / 2;
         int ny = (height - naveWidth) / 2;
-        Rectangle naveRect = new Rectangle(0, ny, naveLen, naveWidth);
-        Rectangle towerRect = new Rectangle(naveLen, ty, towerSize, towerSize);
-        Rectangle doorRc = new Rectangle(0, dy, 1, doorWidth);
+        Rectangle naveRect = new Rectangle(0, ny, naveLen, naveWidth);              
+        Rectangle towerRect = new Rectangle(naveLen - 1, ty, towerSize, towerSize); // -1 makes them overlap
+        Rectangle doorRc = new Rectangle(0, dy, 1, entranceWidth);
         Orientation doorOrientation = Orientation.WEST;        
+
+        Rectangle aisleLeftRc = new Rectangle(sideOff, ny - sideWidth + 1, naveLen - 2 * sideOff, sideWidth);    // make them overlap
+        Rectangle aisleRightRc = new Rectangle(sideOff, ny + naveWidth - 1, naveLen - 2 * sideOff, sideWidth);   // make them overlap
         
         int rot = alignEast ? 0 : 90;
         
@@ -110,26 +113,51 @@ public class SimpleChurchGenerator {
         naveRect = Rectangles.transformRect(naveRect, lotRc, center, rot);
         towerRect = Rectangles.transformRect(towerRect, lotRc, center, rot);
         doorRc = Rectangles.transformRect(doorRc, lotRc, center, rot);
+        aisleLeftRc = Rectangles.transformRect(aisleLeftRc, lotRc, center, rot);
+        aisleRightRc = Rectangles.transformRect(aisleRightRc, lotRc, center, rot);
         doorOrientation = doorOrientation.getRotated(rot);
-
+        Orientation leftOrient = Orientation.SOUTH.getRotated(rot);
+        Orientation rightOrient = Orientation.NORTH.getRotated(rot);
+        
         Vector2i doorDir = doorOrientation.getDir();
         Rectangle probeRc = new Rectangle(doorRc.x + doorDir.x, doorRc.y + doorDir.y, doorRc.width, doorRc.height);
         
         int baseHeight = getMaxHeight(probeRc) + 1; // 0 == terrain
-        int towerHeight = baseHeight + 14;
-        int hallHeight = baseHeight + 8;
+        int towerHeight = baseHeight + 22;
+        int hallHeight = baseHeight + 9;
+        int sideHeight = baseHeight + 4;
         
-        SimpleDoor door = new SimpleDoor(doorOrientation, doorRc, baseHeight, baseHeight + doorHeight);
+        SimpleDoor entrance = new SimpleDoor(doorOrientation, doorRc, baseHeight, baseHeight + entranceHeight);
         
         Rectangle naveRoofRect = Rectangles.expandRect(naveRect, 1);
         Rectangle towerRoofRect = Rectangles.expandRect(towerRect, 1);
 
-        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, hallHeight, door.getOrientation(), 1);
+        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, hallHeight, entrance.getOrientation(), 1);
         HipRoof towerRoof = new HipRoof(towerRoofRect, towerHeight, 2);
+        PentRoof roofLeft = new PentRoof(Rectangles.expandRect(aisleLeftRc, 1), sideHeight, leftOrient, 0.5);
+        PentRoof roofRight = new PentRoof(Rectangles.expandRect(aisleRightRc, 1), sideHeight, rightOrient, 0.5);
 
         SimpleBuildingPart nave = new SimpleBuildingPart(naveRect, baseHeight, hallHeight, naveRoof);
         SimpleBuildingPart tower = new SimpleBuildingPart(towerRect, baseHeight, towerHeight, towerRoof);
-        SimpleChurch church = new SimpleChurch(nave, tower, door);
+        SimpleChurch church = new SimpleChurch(nave, tower, entrance);
+
+        SimpleBuildingPart aisleLeft = new SimpleBuildingPart(aisleLeftRc, baseHeight, sideHeight, roofLeft);
+        SimpleBuildingPart aisleRight = new SimpleBuildingPart(aisleRightRc, baseHeight, sideHeight, roofRight);
+
+        church.addPart(aisleLeft);
+        church.addPart(aisleRight);
+        
+        // create and add tower windows
+        for (int i = 0; i < 3; i++) {
+            // use the other three cardinal directions to place windows
+            Orientation orient = entrance.getOrientation().getRotated(90 * (i + 1));
+            Rectangle towerBorder = Rectangles.getBorder(towerRect, orient);
+
+            int tBX = towerBorder.x + towerBorder.width / 2;
+            int tBZ = towerBorder.y + towerBorder.height / 2;
+            Rectangle wndRect = new Rectangle(tBX, tBZ, 1, 1);
+            church.addWindow(new SimpleWindow(orient, wndRect, towerHeight - 3, towerHeight - 1));
+        }
         
         return church;
     }
