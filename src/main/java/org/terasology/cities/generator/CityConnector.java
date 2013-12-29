@@ -19,9 +19,10 @@ package org.terasology.cities.generator;
 
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 
@@ -90,10 +91,10 @@ public class CityConnector implements Function<City, Set<City>> {
         
         double minDist = Double.MAX_VALUE;
         Optional<City> best = Optional.absent();
-        Point2d pos = city.getPos();
+        Point2i pos = city.getPos();
 
         for (City other : cities) {
-            double distSq = pos.distanceSquared(other.getPos());
+            double distSq = Point2iUtils.distanceSquared(pos, other.getPos());
             if (distSq < minDist) {
                 minDist = distSq;
                 best = Optional.of(other);
@@ -111,11 +112,11 @@ public class CityConnector implements Function<City, Set<City>> {
     private Set<City> citiesInRange(City city, Set<City> neighbors) {
         Set<City> closeCities = Sets.newHashSet(); 
 
-        Point2d pos1 = city.getPos();
+        Point2i pos1 = city.getPos();
 
         for (City other : neighbors) {
-            Point2d pos2 = other.getPos();
-            double distSq = pos1.distanceSquared(pos2);
+            Point2i pos2 = other.getPos();
+            double distSq = Point2iUtils.distanceSquared(pos1, pos2);
 
             if (distSq < maxDist * maxDist) {
                 closeCities.add(other);

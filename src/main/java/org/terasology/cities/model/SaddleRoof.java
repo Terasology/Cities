@@ -17,11 +17,14 @@
 
 package org.terasology.cities.model;
 
+import static org.terasology.cities.common.Orientation.EAST;
+import static org.terasology.cities.common.Orientation.NORTH;
+import static org.terasology.cities.common.Orientation.SOUTH;
+import static org.terasology.cities.common.Orientation.WEST;
+
 import java.awt.Rectangle;
 
 import org.terasology.cities.common.Orientation;
-
-import static org.terasology.cities.common.Orientation.*;
 
 import com.google.common.base.Preconditions;
 

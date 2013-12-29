@@ -20,7 +20,7 @@ package org.terasology.cities.model;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import com.google.common.collect.Sets;
 
@@ -31,19 +31,19 @@ import com.google.common.collect.Sets;
 public class Junction {
     private final Set<Road> roads = Sets.newHashSet();
     
-    private final Point2d coords;
+    private final Point2i coords;
     
     /**
      * @param coords the position coordinates in sectors
      */
-    public Junction(Point2d coords) {
-        this.coords = new Point2d(coords);
+    public Junction(Point2i coords) {
+        this.coords = new Point2i(coords);
     }
     
     /**
      * @return the position coordinates in sectors
      */
-    public Point2d getCoords() {
+    public Point2i getCoords() {
         return coords;
     }
 

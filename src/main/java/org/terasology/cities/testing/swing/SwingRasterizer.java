@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
@@ -105,7 +106,7 @@ public class SwingRasterizer {
     private void drawAccurately(Graphics2D g, Sector sector) {
         int chunkSizeX = ChunkConstants.SIZE_X * 4;
         int chunkSizeZ = ChunkConstants.SIZE_Z * 4;
-
+        
         int chunksX = Sector.SIZE / chunkSizeX;
         int chunksZ = Sector.SIZE / chunkSizeZ;
         
@@ -208,8 +209,8 @@ public class SwingRasterizer {
     private void drawCityName(Graphics2D g, City ci) {
         String text = ci.toString();
 
-        int cx = (int) ((ci.getPos().x) * Sector.SIZE);
-        int cz = (int) ((ci.getPos().y) * Sector.SIZE);
+        int cx = ci.getPos().x;
+        int cz = ci.getPos().y;
 
         Font font = g.getFont();
         FontMetrics fm = g.getFontMetrics(font);
@@ -260,5 +261,6 @@ public class SwingRasterizer {
         g.setColor(Color.BLUE);
         g.setStroke(new BasicStroke(0.0f));
         g.drawRect(offX, offZ, Sector.SIZE, Sector.SIZE);
+        g.setStroke(new BasicStroke());
     }
 }

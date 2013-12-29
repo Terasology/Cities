@@ -130,7 +130,7 @@ public class SwingBrush extends Brush {
             return;
         }
             
-        if (heightMap[lx][lz] < y) {
+        if (heightMap[lx][lz] <= y) {
             heightMap[lx][lz] = (short) y;
             float[] hsb = new float[3];
             Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);

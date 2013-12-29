@@ -19,7 +19,7 @@ package org.terasology.cities.generator;
 
 import java.util.Objects;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.model.Road;
 import org.terasology.utilities.random.FastRandom;
@@ -34,10 +34,10 @@ public class RoadModifierRandom  {
     private double randomness;
 
     /**
-     * Uses a randomness of 0.02
+     * Uses a randomness of 25
      */
     public RoadModifierRandom() {
-        randomness = 0.02;
+        randomness = 25;
     }
 
    /**
@@ -53,11 +53,11 @@ public class RoadModifierRandom  {
      * @param road the road to modify
      */
     public void apply(Road road) {
-        Point2d startPos = road.getStart().getCoords();
-        Point2d endPos = road.getEnd().getCoords();
+        Point2i startPos = road.getStart().getCoords();
+        Point2i endPos = road.getEnd().getCoords();
         Random r = new FastRandom(Objects.hash(startPos, endPos));
 
-        for (Point2d n : road.getPoints()) {
+        for (Point2i n : road.getPoints()) {
 
             n.x += r.nextGaussian() * randomness;
             n.y += r.nextGaussian() * randomness;

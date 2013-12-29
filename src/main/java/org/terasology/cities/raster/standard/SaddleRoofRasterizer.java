@@ -17,6 +17,9 @@
 
 package org.terasology.cities.raster.standard;
 
+import static org.terasology.cities.common.Orientation.EAST;
+import static org.terasology.cities.common.Orientation.WEST;
+
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
@@ -27,7 +30,6 @@ import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
 import org.terasology.cities.terrain.OffsetHeightMap;
-import static org.terasology.cities.common.Orientation.*;
 
 /**
  * Converts a {@link SaddleRoof} into blocks

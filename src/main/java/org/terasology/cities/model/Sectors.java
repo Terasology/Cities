@@ -17,11 +17,13 @@
 
 package org.terasology.cities.model;
 
+import java.math.RoundingMode;
 import java.util.Map;
 
-import org.terasology.math.Vector2i;
+import javax.vecmath.Point2i;
 
 import com.google.common.collect.Maps;
+import com.google.common.math.IntMath;
 
 /**
  * Gives access to all Sectors
@@ -29,17 +31,26 @@ import com.google.common.collect.Maps;
  */
 public final class Sectors {
     
-    private static final Map<Vector2i, Sector> SECTORS = Maps.newConcurrentMap();
+    private static final Map<Point2i, Sector> SECTORS = Maps.newConcurrentMap();
     
     private Sectors() {
         // private
     }
-    
+
+    /**
+     * @param x the x coordinate of the sector
+     * @param z the z coordinate of the sector
+     * @return the sector
+     */
+    public static Sector getSector(int x, int z) {
+        return getSector(new Point2i(x, z));
+    }
+
     /**
      * @param coord the coordinate of the sector
      * @return the sector
      */
-    public static Sector getSector(Vector2i coord) {
+    public static Sector getSector(Point2i coord) {
         Sector sector = SECTORS.get(coord);
         
         if (sector == null) {
@@ -49,5 +60,17 @@ public final class Sectors {
         }
         
         return sector;
+    }
+
+    /**
+     * @param wx the world block x coord
+     * @param wz the world block z coord
+     * @return the sector
+     */
+    public static Sector getSectorForBlock(int wx, int wz) {
+        int sx = IntMath.divide(wx, Sector.SIZE, RoundingMode.FLOOR);
+        int sz = IntMath.divide(wz, Sector.SIZE, RoundingMode.FLOOR);
+        
+        return getSector(new Point2i(sx, sz));
     }
 }

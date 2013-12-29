@@ -27,6 +27,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +141,7 @@ final class JCityComponent extends JComponent {
 
             for (int z = -1; z < numZ; z++) {
                 for (int x = -1; x < numX; x++) {
-                    Vector2i coord = new Vector2i(x - camOffX, z - camOffZ);
+                    Point2i coord = new Point2i(x - camOffX, z - camOffZ);
                     Sector sector = Sectors.getSector(coord);
                     g.setClip((x - camOffX) * Sector.SIZE, (z - camOffZ) * Sector.SIZE, Sector.SIZE, Sector.SIZE);
                     rasterizer.rasterizeSector(g, sector);

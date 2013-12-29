@@ -20,14 +20,15 @@ package org.terasology.cities.generator;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
-import org.terasology.math.Vector2i;
+import org.terasology.math.TeraMath;
 import org.terasology.utilities.random.FastRandom;
 
 import com.google.common.base.Function;
@@ -75,7 +76,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
         final int maxTries = 3;
         
         // create deterministic random
-        Vector2i sc = sector.getCoords();
+        Point2i sc = sector.getCoords();
         int hash = Objects.hash(seed, sector);
         FastRandom fr = new FastRandom(hash);
 
@@ -93,11 +94,15 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
             do {
                 double nx = sc.x + fr.nextDouble();
                 double nz = sc.y + fr.nextDouble();
+                
                 // make smaller cities more probable than larger cities
                 double size = fr.nextDouble(Math.sqrt(minSize), Math.sqrt(maxSize));
                 size = size * size;
     
-                ci = new MedievalTown(size, nx, nz);
+                int cx = TeraMath.floorToInt(nx * Sector.SIZE + 0.5);
+                int cz = TeraMath.floorToInt(nz * Sector.SIZE + 0.5);
+                
+                ci = new MedievalTown(size, cx, cz);
                 tries--;
                 
             } while (!placementOk(ci, result) && tries >= 0);            
@@ -114,8 +119,8 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
     }
 
     private boolean placementOk(City city, Set<City> others) {
-        final double minDistToOthers = 0.2;
-        final double minDistToWater = 0.1;
+        final double minDistToOthers = 200;
+        final double minDistToWater = 100;
         
         if (!distanceToOthersOk(city, others, minDistToOthers)) {
             return false;
@@ -137,10 +142,10 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
 
     private boolean distanceToOthersOk(City city, Set<City> cities, double minDist) {
             
-        Point2d pos = city.getPos();
+        Point2i pos = city.getPos();
 
         for (City other : cities) {
-            double distSq = pos.distanceSquared(other.getPos());
+            double distSq = Point2iUtils.distanceSquared(pos, other.getPos());
             if (distSq < minDist * minDist) {
                 return false;
             }

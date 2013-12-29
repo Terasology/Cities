@@ -29,10 +29,10 @@ public class MedievalTown extends City {
 
     /**
      * @param diameter the city diameter in blocks
-     * @param x the x coord (in sectors)
-     * @param z the z coord (in sectors)
+     * @param x the x coord (in blocks)
+     * @param z the z coord (in blocks)
      */
-    public MedievalTown(double diameter, double x, double z) {
+    public MedievalTown(double diameter, int x, int z) {
         super(diameter, x, z);
     }
 

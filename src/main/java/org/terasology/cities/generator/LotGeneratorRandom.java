@@ -24,12 +24,12 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
@@ -86,7 +86,7 @@ public class LotGeneratorRandom {
     public Set<SimpleLot> generate(City city, Shape blockedArea) {
         Random rand = new FastRandom(Objects.hash(seed, city));
         
-        Point2d center = city.getPos();
+        Point2i center = city.getPos();
         
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
         double maxLotDiam = maxSize * Math.sqrt(2);
@@ -103,8 +103,8 @@ public class LotGeneratorRandom {
             double desSizeX = rand.nextDouble(minSize, maxSize);
             double desSizeZ = rand.nextDouble(minSize, maxSize);
             
-            double x = center.x * Sector.SIZE + rad * Math.cos(ang);
-            double z = center.y * Sector.SIZE + rad * Math.sin(ang);
+            double x = center.x + rad * Math.cos(ang);
+            double z = center.y + rad * Math.sin(ang);
             
             Point2d pos = new Point2d(x, z);
             Vector2d maxSpace = getMaxSpace(pos, lots);

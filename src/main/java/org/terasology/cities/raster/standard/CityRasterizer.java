@@ -19,12 +19,9 @@ package org.terasology.cities.raster.standard;
 
 import java.awt.geom.Ellipse2D;
 
-import javax.vecmath.Point2d;
-
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.MedievalTown;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
@@ -39,9 +36,11 @@ public class CityRasterizer implements Rasterizer<City> {
     @Override
     public void raster(Brush brush, TerrainInfo ti, City city) {
 
-        Point2d pos = city.getPos();
+        int cx = city.getPos().x;
+        int cz = city.getPos().y;
+
         double rad = city.getDiameter() * 0.5;
-        Ellipse2D circle = new Ellipse2D.Double(pos.x * Sector.SIZE - rad, pos.y * Sector.SIZE - rad, rad * 2, rad * 2);
+        Ellipse2D circle = new Ellipse2D.Double(cx - rad, cz - rad, rad * 2, rad * 2);
         
         if (!brush.affects(circle)) {
             return;

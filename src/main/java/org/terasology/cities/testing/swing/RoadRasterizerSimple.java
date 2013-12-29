@@ -23,11 +23,10 @@ import java.awt.Graphics2D;
 import java.util.List;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
-import org.terasology.cities.model.Sector;
 
 /**
  * Renders roads using straight line segments
@@ -44,16 +43,16 @@ public class RoadRasterizerSimple {
         
         for (Road road : roads) {
             
-            List<Point2d> pts = road.getPoints();
+            List<Point2i> pts = road.getPoints();
 
-            Point2d prev = road.getStart().getCoords();
+            Point2i prev = road.getStart().getCoords();
             
             float width = (float) road.getWidth();
             g.setStroke(new BasicStroke(width));
             g.setColor(Color.BLACK);
            
             for (int idx = 0; idx < pts.size(); idx++) {
-                Point2d pt = pts.get(idx);
+                Point2i pt = pts.get(idx);
             
                 drawSegment(g, prev, pt);
                 drawSegmentEnd(g, pt);
@@ -71,34 +70,25 @@ public class RoadRasterizerSimple {
     }
 
     private void drawJunction(Graphics2D g, Junction jun) {
-        Point2d pos = jun.getCoords();
-        
-        int x = (int) ((pos.x) * Sector.SIZE);
-        int y = (int) ((pos.y) * Sector.SIZE);
+        Point2i pos = jun.getCoords();
         
         int r = 3;
         g.setColor(Color.BLACK);
-        g.drawRect(x - r, y - r, 2 * r, 2 * r);
+        g.drawRect(pos.x - r, pos.y - r, 2 * r, 2 * r);
         g.setColor(Color.BLUE);
-        g.drawString("" + jun.getRoads().size(), x + 5, y);
+        g.drawString("" + jun.getRoads().size(), pos.x + 5, pos.y);
     }
 
-    private void drawSegmentEnd(Graphics2D g, Point2d pos) {
-        int x = (int) ((pos.x) * Sector.SIZE);
-        int y = (int) ((pos.y) * Sector.SIZE);
+    private void drawSegmentEnd(Graphics2D g, Point2i pos) {
         
         int r = 2;
-        g.drawOval(x - r, y - r, 2 * r, 2 * r);
+        g.drawOval(pos.x - r, pos.y - r, 2 * r, 2 * r);
     }
 
-    private void drawSegment(Graphics2D g, Point2d from, Point2d to) {
-        int x1 = (int) ((from.x) * Sector.SIZE);
-        int y1 = (int) ((from.y) * Sector.SIZE);
-        int x2 = (int) ((to.x) * Sector.SIZE);
-        int y2 = (int) ((to.y) * Sector.SIZE);
+    private void drawSegment(Graphics2D g, Point2i from, Point2i to) {
         
         g.setColor(Color.BLACK);
-        g.drawLine(x1, y1, x2, y2);
+        g.drawLine(from.x, from.y, to.x, to.y);
 
     }
 }

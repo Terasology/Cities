@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.GateWallSegment;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
 import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.model.TownWall;
@@ -61,10 +60,10 @@ public class DefaultTownWallGenerator {
      * @return a town wall
      */
     public TownWall generate(City city, Shape blockedArea) {
-        Random rand = new MersenneRandom(Objects.hash(seed, city.getPos().hashCode()));
+        Random rand = new MersenneRandom(Objects.hash(seed, city.hashCode()));
         
-        int cx = (int) (city.getPos().x * Sector.SIZE);
-        int cz = (int) (city.getPos().y * Sector.SIZE);
+        int cx = city.getPos().x;
+        int cz = city.getPos().y;
         
         Vector2i center = new Vector2i(cx, cz);
         

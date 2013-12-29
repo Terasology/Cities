@@ -27,7 +27,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -69,8 +69,7 @@ public class LotGeneratorRandomTest  {
         
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Vector2i coord = new Vector2i(x, z);
-                Sector sector = Sectors.getSector(coord);
+                Sector sector = Sectors.getSector(x, z);
                 cpr.apply(sector);   // fill the cache
             }
         }
@@ -86,13 +85,10 @@ public class LotGeneratorRandomTest  {
         int bdgCount = 0;
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Vector2i coord = new Vector2i(x, z);
-                Set<City> cities = cpr.apply(Sectors.getSector(coord));
+                Set<City> cities = cpr.apply(Sectors.getSector(x, z));
                 
                 for (City city : cities) {
-                    Point2d pos = new Point2d(city.getPos());
-                    pos.x *= Sector.SIZE;
-                    pos.y *= Sector.SIZE;
+                    Point2i pos = city.getPos();
                     double rad = city.getDiameter() * 0.5;
                     Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
 

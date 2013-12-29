@@ -20,7 +20,7 @@ package org.terasology.cities.generator;
 import java.awt.Shape;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,7 +35,6 @@ import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
-import org.terasology.math.Vector2i;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -61,10 +60,10 @@ public class RoadShapeGeneratorTest  {
         int minSize = 10;
         int maxSize = 100;
 
-        final Function<Point2d, Junction> junctions = CachingFunction.wrap(new Function<Point2d, Junction>() {
+        final Function<Point2i, Junction> junctions = CachingFunction.wrap(new Function<Point2i, Junction>() {
 
             @Override
-            public Junction apply(Point2d input) {
+            public Junction apply(Point2i input) {
                 return new Junction(input);
             }
             
@@ -72,7 +71,7 @@ public class RoadShapeGeneratorTest  {
         
         CityPlacerRandom cpr = new CityPlacerRandom(seed, minPerSector, maxPerSector, minSize, maxSize);
 
-        double maxDist = 0.8;
+        double maxDist = 800;
         Function<City, Set<City>> cc = new CityConnector(cpr, maxDist);
         final Function<Sector, Set<UnorderedPair<City>>> sc = CachingFunction.wrap(new SectorConnector(cpr, cc));
 
@@ -118,8 +117,7 @@ public class RoadShapeGeneratorTest  {
 
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Vector2i coord = new Vector2i(x, z);
-                Sector sector = Sectors.getSector(coord);
+                Sector sector = Sectors.getSector(x, z);
                 roadMap.apply(sector);   // fill the cache
             }
         }
@@ -132,8 +130,7 @@ public class RoadShapeGeneratorTest  {
 
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Vector2i coord = new Vector2i(x, z);
-                Sector sector = Sectors.getSector(coord);
+                Sector sector = Sectors.getSector(x, z);
                 
                 roadShapeFunc.apply(sector);
             }

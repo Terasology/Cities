@@ -24,7 +24,6 @@ import java.awt.Graphics2D;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.MedievalTown;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
 import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.model.Tower;
@@ -47,8 +46,8 @@ public class CityRasterizerSimple {
         g.setStroke(new BasicStroke());
         g.setColor(Color.BLACK);
         
-        int cx = (int) ((ci.getPos().x) * Sector.SIZE);
-        int cz = (int) ((ci.getPos().y) * Sector.SIZE);
+        int cx = ci.getPos().x;
+        int cz = ci.getPos().y;
 
         int ccSize = (int) ci.getDiameter();
 

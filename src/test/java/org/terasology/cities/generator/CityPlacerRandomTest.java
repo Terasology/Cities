@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sectors;
-import org.terasology.math.Vector2i;
 
 /**
  * Tests {@link CityPlacerRandom}
@@ -58,8 +57,7 @@ public class CityPlacerRandomTest  {
         int[] hits = new int[bins];
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Vector2i coord = new Vector2i(x, z);
-                Set<City> cities = cpr.apply(Sectors.getSector(coord));
+                Set<City> cities = cpr.apply(Sectors.getSector(x, z));
                 
                 assertTrue(cities.size() >= minPerSector);
                 assertTrue(cities.size() <= maxPerSector);

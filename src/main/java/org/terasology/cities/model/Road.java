@@ -20,7 +20,7 @@ package org.terasology.cities.model;
 import java.util.Collections;
 import java.util.List;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import com.google.common.collect.Lists;
 
@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
  */
 public class Road {
 
-    private final List<Point2d> points = Lists.newArrayList();
+    private final List<Point2i> points = Lists.newArrayList();
     private final Junction end;
     private final Junction start;
     private double width = 1.0f;
@@ -59,7 +59,7 @@ public class Road {
     /**
      * @param pt a point on the road
      */
-    public void add(Point2d pt) {
+    public void add(Point2i pt) {
         points.add(pt);
     }
     
@@ -80,7 +80,7 @@ public class Road {
     /**
      * @return an unmodifiable view on the segment points (can be empty, but never <code>null</code>)
      */
-    public List<Point2d> getPoints() {
+    public List<Point2i> getPoints() {
         return Collections.unmodifiableList(points);
     }
     

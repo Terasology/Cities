@@ -20,10 +20,9 @@ package org.terasology.cities.model;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.common.Base58;
-import org.terasology.math.Vector2i;
 
 import com.google.common.collect.Sets;
 
@@ -33,34 +32,33 @@ import com.google.common.collect.Sets;
  */
 public class City {
 
-    private final Point2d coords;
+    private final Point2i coords;
     private final Set<Lot> lots = Sets.newHashSet();
     private double diameter;
 
     /**
      * @param diameter the city diameter in blocks
-     * @param x the x coord (in sectors)
-     * @param z the z coord (in sectors)
+     * @param bx the x coord (in blocks)
+     * @param bz the z coord (in blocks)
      */
-    public City(double diameter, double x, double z) {
+    public City(double diameter, int bx, int bz) {
         this.diameter = diameter;
-        this.coords = new Point2d(x, z);
+        
+        this.coords = new Point2i(bx, bz);
     }
 
     /**
-     * @return the city center in sectors
+     * @return the city center in block world coordinates
      */
-    public Point2d getPos() {
+    public Point2i getPos() {
         return coords;
     }
-
+    
     /**
      * @return the city center in sectors
      */
     public Sector getSector() {
-        int sx = (int) Math.floor(coords.x);
-        int sy = (int) Math.floor(coords.y);
-        return Sectors.getSector(new Vector2i(sx, sy));
+        return Sectors.getSectorForBlock(coords.x, coords.y);
     }
 
     /**

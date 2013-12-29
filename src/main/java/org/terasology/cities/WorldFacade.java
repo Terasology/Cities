@@ -21,7 +21,7 @@ import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
@@ -42,8 +42,8 @@ import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleBuilding;
+import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.TownWall;
@@ -64,7 +64,7 @@ public class WorldFacade {
 
     private Function<Sector, Set<UnorderedPair<City>>> sectorConnections;
 
-    private Function<Point2d, Junction> junctions;
+    private Function<Point2i, Junction> junctions;
 
     private Function<Sector, Set<Road>> roadMap;
 
@@ -84,14 +84,14 @@ public class WorldFacade {
         CityPlacerRandom cpr = new CityPlacerRandom(seed, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
         final Function<Sector, Set<City>> cityMap = CachingFunction.wrap(cpr);
         
-        double maxDist = 0.75;
+        double maxDist = 750;
         connectedCities = new CityConnector(cityMap, maxDist);
         connectedCities = CachingFunction.wrap(connectedCities);
 
-        junctions = new Function<Point2d, Junction>() {
+        junctions = new Function<Point2i, Junction>() {
 
             @Override
-            public Junction apply(Point2d input) {
+            public Junction apply(Point2i input) {
                 return new Junction(input);
             }
             
@@ -103,7 +103,7 @@ public class WorldFacade {
 
         Function<UnorderedPair<City>, Road> rg = new Function<UnorderedPair<City>, Road>() {
             private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
-            private RoadModifierRandom rmr = new RoadModifierRandom(0.01);
+            private RoadModifierRandom rmr = new RoadModifierRandom(10);
 
             @Override
             public Road apply(UnorderedPair<City> input) {
@@ -157,6 +157,7 @@ public class WorldFacade {
             
             @Override
             public Set<City> apply(Sector input) {
+                
                 Set<City> cities = cityMap.apply(input);
                 for (City city : cities) {
                     
@@ -166,7 +167,7 @@ public class WorldFacade {
 
                     if (city instanceof MedievalTown) {
                         MedievalTown town = (MedievalTown) city;
-                        TownWall tw = twg.generate(city, roadShape);
+                        TownWall tw = twg.generate(city, blockedArea);
                         town.setTownWall(tw);
 
                         TownWallShapeGenerator twsg = new TownWallShapeGenerator();

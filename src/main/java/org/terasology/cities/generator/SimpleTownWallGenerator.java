@@ -21,7 +21,6 @@ import java.awt.Rectangle;
 import java.util.Objects;
 
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleTower;
 import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.model.TownWall;
@@ -56,11 +55,11 @@ public class SimpleTownWallGenerator {
      * @return a town wall
      */
     public TownWall generate(City city) {
-        Random rand = new MersenneRandom(Objects.hash(seed, city.getPos().hashCode()));
-        
-        int cx = (int) (city.getPos().x * Sector.SIZE);
-        int cz = (int) (city.getPos().y * Sector.SIZE);
-        
+        Random rand = new MersenneRandom(Objects.hash(seed, city.hashCode()));
+
+        int cx = city.getPos().x;
+        int cz = city.getPos().y;
+       
         int minSegments = 5 + (int) (city.getDiameter() / 30);    // must be > 0
         int maxSegments = 5 + (int) (city.getDiameter() / 20);
         double maxAngularDiv = Math.toRadians(15);

@@ -33,8 +33,6 @@ import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
 import org.terasology.cities.terrain.CachingHeightMap;
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.math.TeraMath;
-import org.terasology.math.Vector2i;
 import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.chunks.Chunk;
 import org.terasology.world.generator.FirstPassGenerator;
@@ -124,9 +122,7 @@ public class CityTerrainGenerator implements FirstPassGenerator {
         int wx = chunk.getBlockWorldPosX(0);
         int wz = chunk.getBlockWorldPosZ(0);
 
-        int sx = (int) TeraMath.fastFloor((double) wx / Sector.SIZE);
-        int sz = (int) TeraMath.fastFloor((double) wz / Sector.SIZE);
-        Sector sector = Sectors.getSector(new Vector2i(sx, sz));
+        Sector sector = Sectors.getSectorForBlock(wx, wz);
 
         Brush brush = new ChunkBrush(chunk, theme);
 

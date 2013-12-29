@@ -20,10 +20,12 @@ package org.terasology.cities.generator;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.vecmath.Point2d;
+import javax.vecmath.Point2i;
 import javax.vecmath.Vector2d;
 
+import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.model.Road;
+import org.terasology.math.Vector2i;
 
 import com.google.common.collect.Sets;
 
@@ -53,8 +55,8 @@ public class RoadModifierBundling {
 
         Road newRoad = new Road(road.getStart(), road.getEnd());
 
-        for (Point2d n : road.getPoints()) {
-            Point2d np = new Point2d(n);
+        for (Point2i n : road.getPoints()) {
+            Point2i np = new Point2i(n);
 
             for (Road other : others) {
                 if (road.equals(other)) {
@@ -70,27 +72,28 @@ public class RoadModifierBundling {
         return newRoad;
     }
 
-    private Vector2d getInfluence(Point2d p, Collection<Point2d> points) {
+    private Vector2i getInfluence(Point2i p, Collection<Point2i> points) {
         final double maxDist = 0.15;
 
         Vector2d influence = new Vector2d(0, 0);
         
         double fac = 0.02;
         
-        for (Point2d op : points) {
-            double distSq = op.distanceSquared(p);
+        for (Point2i op : points) {
+            double distSq = Point2iUtils.distanceSquared(op, p);
             
             if (distSq < maxDist * maxDist) {
                 double dist = Math.sqrt(distSq);
                 double inf = (1.0 - dist / maxDist) * fac;
-                Vector2d dir = new Vector2d(op);
-                dir.sub(p);
+                Vector2d dir = new Vector2d(op.x, op.y);
+                dir.x -= p.x;
+                dir.y -= p.y;
                 dir.scale(inf / dist);
                 influence.add(dir);
             }
         }
 
-        return influence;
+        return new Vector2i((int) influence.x, (int) influence.y);
     }
 
 }
