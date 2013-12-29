@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.common.Rectangles;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.Roof;
@@ -32,7 +33,6 @@ import org.terasology.cities.model.SimpleDoor;
 import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.SimpleWindow;
-import org.terasology.cities.model.Window;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
@@ -45,7 +45,7 @@ import com.google.common.collect.Sets;
  * the center of the given lot.  
  * @author Martin Steiger
  */
-public class SimpleHousingGenerator extends AbstractGenerator implements Function<SimpleLot, Set<SimpleBuilding>> {
+public class SimpleHousingGenerator implements Function<SimpleLot, Set<SimpleBuilding>> {
 
     private final String seed;
     private Function<Vector2i, Integer> heightMap;
@@ -116,7 +116,7 @@ public class SimpleHousingGenerator extends AbstractGenerator implements Functio
         SimpleDoor door = new SimpleDoor(orientation, doorRc, baseHeight, baseHeight + doorHeight);
 
         // the roof area is 1 block larger all around
-        Rectangle roofArea = expandRect(rc, 1);
+        Rectangle roofArea = Rectangles.expandRect(rc, 1);
 
         int roofBaseHeight = baseHeight + wallHeight;
         Roof roof = createRoof(r, roofArea, roofBaseHeight);
@@ -152,7 +152,7 @@ public class SimpleHousingGenerator extends AbstractGenerator implements Functio
 
         Set<SimpleWindow> result = Sets.newHashSet();
         
-        Rectangle border = getBorder(rc, o);
+        Rectangle border = Rectangles.getBorder(rc, o);
         int step = interDist + wndSize;
         
         int firstX = border.x + endDist;

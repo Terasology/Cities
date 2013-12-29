@@ -15,30 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.terasology.cities.generator;
+package org.terasology.cities.common;
+
+import static org.terasology.cities.common.Orientation.EAST;
+import static org.terasology.cities.common.Orientation.NORTH;
+import static org.terasology.cities.common.Orientation.SOUTH;
+import static org.terasology.cities.common.Orientation.WEST;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
-import org.terasology.cities.common.Orientation;
-
 import com.google.common.base.Preconditions;
 
-import static org.terasology.cities.common.Orientation.*;
-
 /**
- * Contains some general utility methods generators often use
+ * Rectangle-related utility methods
  * @author Martin Steiger
  */
-public class AbstractGenerator {
-
+public class Rectangles {
     /**
      * @param rc the original rectangle
      * @param ext the amount to add in all directions
      * @return a new rectangle that is expanded in all directions
      */
-    protected Rectangle expandRect(Rectangle rc, int ext) {
+    public static Rectangle expandRect(Rectangle rc, int ext) {
         int x = rc.x - ext;
         int y = rc.y - ext;
         int width = rc.width + 2 * ext;
@@ -52,7 +52,7 @@ public class AbstractGenerator {
      * @param rot the rotation in degrees (only multiples of 45deg.)
      * @return the translated and rotated rectangle
      */
-    protected Rectangle transformRect(Rectangle rc, Rectangle bounds, int rot) {
+    public static Rectangle transformRect(Rectangle rc, Rectangle bounds, int rot) {
         
         AffineTransform at = new AffineTransform();
         at.translate(bounds.x, bounds.y);
@@ -79,7 +79,7 @@ public class AbstractGenerator {
      * @param o the position of the border of interest
      * @return a rectangle of thickness 1 at the specified border edge
      */
-    protected Rectangle getBorder(Rectangle rc, Orientation o) {
+    public static Rectangle getBorder(Rectangle rc, Orientation o) {
         Preconditions.checkArgument(o.isCardinal(), "Orientation must be NORTH, WEST, SOUTH or EAST");
         
         if (o == NORTH) {

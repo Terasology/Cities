@@ -20,6 +20,7 @@ package org.terasology.cities.generator;
 import java.awt.Rectangle;
 
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.common.Rectangles;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleBuildingPart;
@@ -35,7 +36,7 @@ import org.terasology.utilities.random.Random;
  * Creates {@link SimpleChurch}es
  * @author Martin Steiger
  */
-public class SimpleChurchGenerator extends AbstractGenerator {
+public class SimpleChurchGenerator {
 
     private final String seed;
     private final HeightMap heightMap;
@@ -104,9 +105,9 @@ public class SimpleChurchGenerator extends AbstractGenerator {
             rot += 180;
         }
         
-        naveRect = transformRect(naveRect, lotRc, rot);
-        towerRect = transformRect(towerRect, lotRc, rot);
-        doorRc = transformRect(doorRc, lotRc, rot);
+        naveRect = Rectangles.transformRect(naveRect, lotRc, rot);
+        towerRect = Rectangles.transformRect(towerRect, lotRc, rot);
+        doorRc = Rectangles.transformRect(doorRc, lotRc, rot);
         doorOrientation = doorOrientation.getRotated(rot);
 
         Vector2i doorDir = doorOrientation.getDir();
@@ -118,17 +119,8 @@ public class SimpleChurchGenerator extends AbstractGenerator {
         
         SimpleDoor door = new SimpleDoor(doorOrientation, doorRc, baseHeight, baseHeight + doorHeight);
         
-        Rectangle naveRoofRect = new Rectangle(naveRect);
-        naveRoofRect.x -= 1;
-        naveRoofRect.y -= 1;
-        naveRoofRect.width += 2;
-        naveRoofRect.height += 2;
-
-        Rectangle towerRoofRect = new Rectangle(towerRect);
-        towerRoofRect.x -= 1;
-        towerRoofRect.y -= 1;
-        towerRoofRect.width += 2;
-        towerRoofRect.height += 2;
+        Rectangle naveRoofRect = Rectangles.expandRect(naveRect, 1);
+        Rectangle towerRoofRect = Rectangles.expandRect(towerRect, 1);
 
         SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, hallHeight, door.getOrientation(), 1);
         HipRoof towerRoof = new HipRoof(towerRoofRect, towerHeight, 2);

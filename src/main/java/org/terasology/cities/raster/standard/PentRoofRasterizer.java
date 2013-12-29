@@ -20,6 +20,7 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.common.Rectangles;
 import org.terasology.cities.model.PentRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
@@ -44,7 +45,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
             return;
         }
         
-        HeightMap hm = new HeightMapAdapter() {
+        final HeightMap bottomHm = new HeightMapAdapter() {
 
             @Override
             public int apply(int x, int z) {
@@ -71,8 +72,34 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
         };
 
         int thickness = TeraMath.ceilToInt(roof.getPitch());
-        brush.fillRect(area, hm, new OffsetHeightMap(hm, thickness), BlockTypes.ROOF_HIP);
+        brush.fillRect(area, bottomHm, new OffsetHeightMap(bottomHm, thickness), BlockTypes.ROOF_HIP);
         
-    }
+        final Rectangle wallRect = Rectangles.expandRect(roof.getArea(), -1);
+        
+        HeightMap gableBottomHm = new HeightMapAdapter() {
 
+            @Override
+            public int apply(int x, int z) {
+                int h0 = roof.getBaseHeight();
+
+                boolean onZ = (x == wallRect.x || x == wallRect.x + wallRect.width - 1);
+                boolean zOk = (z >= wallRect.y && z <= wallRect.y + wallRect.height - 1);
+                
+                if (onZ && zOk) {
+                    return h0;
+                }
+
+                boolean onX = (z == wallRect.y || z == wallRect.y + wallRect.height - 1);
+                boolean xOk = (x >= wallRect.x && x <= wallRect.x + wallRect.width - 1);
+
+                if (onX && xOk) {
+                    return h0;
+                }
+
+                return bottomHm.apply(x, z); // return top-height to get a no-op
+            }
+        };
+        
+        brush.fillRect(area, gableBottomHm, bottomHm, BlockTypes.ROOF_GABLE);
+    }
 }
