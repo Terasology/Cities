@@ -58,9 +58,12 @@ public class SwingBrush extends Brush {
         this.wx = wx;
         this.wz = wz;
 
-        this.heightMap = new short[image.getWidth()][image.getHeight()];
+        int width = image.getWidth();
+        int height = image.getHeight();
         
-        this.affectedArea = new Rectangle(wx, wz, image.getWidth(), image.getHeight());
+        this.heightMap = new short[width][height];
+        
+        this.affectedArea = new Rectangle(wx, wz, width, height);
     }
 
     @Override
@@ -126,7 +129,13 @@ public class SwingBrush extends Brush {
             } 
         }
         
+        // this is a bit of a hack - alpha is 0 only for Block.AIR
+        // if air is drawn at or below terrain level, then reduce height accordingly
+        // The color remains unchanged which is wrong, but this information is not available in 2D
         if (color.getAlpha() == 0) {
+            if (heightMap[lx][lz] >= y) {
+                heightMap[lx][lz] = (short) (y - 1);
+            }
             return;
         }
             
