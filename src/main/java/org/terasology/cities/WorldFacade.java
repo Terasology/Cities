@@ -47,6 +47,7 @@ import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
+import org.terasology.engine.CoreRegistry;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -57,7 +58,7 @@ import com.google.common.collect.Sets;
  */
 public class WorldFacade {
 
-    private Function<Sector, Set<City>> decoratedCities;
+    private CachingFunction<Sector, Set<City>> decoratedCities;
 
     private Function<City, Set<City>> connectedCities;
 
@@ -152,7 +153,7 @@ public class WorldFacade {
         final SimpleFenceGenerator sfg = new SimpleFenceGenerator(seed);
         final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);
 
-        decoratedCities = new Function<Sector, Set<City>>() {
+        decoratedCities = CachingFunction.wrap(new Function<Sector, Set<City>>() {
             
             @Override
             public Set<City> apply(Sector input) {
@@ -199,8 +200,16 @@ public class WorldFacade {
                 }
                 return cities;
             }
-        };
-        decoratedCities = CachingFunction.wrap(decoratedCities);
+        });
+        
+        CoreRegistry.putPermanently(WorldFacade.class, this);
+    }
+    
+    /**
+     * Clears the caches
+     */
+    public void expungeCache() {
+        decoratedCities.invalidateAll();
     }
 
     /**
