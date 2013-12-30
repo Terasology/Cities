@@ -10,6 +10,10 @@
             "minVersion" : "0.1.0"
         },
 		{
+            "id" : "NameGenerator",
+            "minVersion" : "0.1.0"
+        },
+		{
             "id" : "Fences",
             "minVersion" : "0.1.0"
         }

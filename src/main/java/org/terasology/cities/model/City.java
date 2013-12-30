@@ -21,8 +21,6 @@ import java.util.Set;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Base58;
-
 import com.google.common.collect.Sets;
 
 /**
@@ -33,16 +31,18 @@ public class City {
 
     private final Point2i coords;
     private final Set<Lot> lots = Sets.newHashSet();
+    private String name;
     private double diameter;
 
     /**
+     * @param name the name of the city
      * @param diameter the city diameter in blocks
      * @param bx the x coord (in blocks)
      * @param bz the z coord (in blocks)
      */
-    public City(double diameter, int bx, int bz) {
+    public City(String name, double diameter, int bx, int bz) {
         this.diameter = diameter;
-        
+        this.name = name;
         this.coords = new Point2i(bx, bz);
     }
 
@@ -86,10 +86,14 @@ public class City {
 
     @Override
     public String toString() {
-        // this is for debugging only
-        return Base58.encode(hashCode());
+        return getName();
+    }
 
-        // return "City " + coords;
+    /**
+     * @return the name of the city
+     */
+    private String getName() {
+        return name;
     }
 
     /**

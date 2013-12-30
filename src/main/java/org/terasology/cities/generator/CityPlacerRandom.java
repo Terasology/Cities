@@ -16,6 +16,7 @@
 
 package org.terasology.cities.generator;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,11 +24,15 @@ import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.asset.Assets;
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.testing.NameList;
 import org.terasology.math.TeraMath;
+import org.terasology.namegenerator.logic.generators.Markov2NameGenerator;
+import org.terasology.namegenerator.logic.generators.NameGenerator;
 import org.terasology.utilities.random.FastRandom;
 
 import com.google.common.base.Function;
@@ -85,6 +90,8 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
 
         logger.debug("Creating {} cities in {}", count, sector);
         
+        NameGenerator nameGen = new Markov2NameGenerator(hash, Arrays.asList(NameList.NAMES));
+        
         for (int i = 0; i < count; i++) {
 
             // try n times to randomly place a new city and check the distance to existing ones
@@ -101,7 +108,8 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
                 int cx = TeraMath.floorToInt(nx * Sector.SIZE + 0.5);
                 int cz = TeraMath.floorToInt(nz * Sector.SIZE + 0.5);
                 
-                ci = new MedievalTown(size, cx, cz);
+                String name = nameGen.nextName(5, 10);
+                ci = new MedievalTown(name, size, cx, cz);
                 tries--;
                 
             } while (!placementOk(ci, result) && tries >= 0);            

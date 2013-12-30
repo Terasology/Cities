@@ -27,12 +27,13 @@ public class MedievalTown extends City {
     private TownWall townWall;
 
     /**
+     * @param name the name of the city
      * @param diameter the city diameter in blocks
      * @param x the x coord (in blocks)
      * @param z the z coord (in blocks)
      */
-    public MedievalTown(double diameter, int x, int z) {
-        super(diameter, x, z);
+    public MedievalTown(String name, double diameter, int x, int z) {
+        super(name, diameter, x, z);
     }
 
     /**
