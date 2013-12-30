@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+ * -------------------------------------------
  * - THIS FILE IS ACTUALLY UNDER BSD-LICENSE -
- *
+ * -------------------------------------------
+ * 
  * JFreeChart : a free chart library for the Java(tm) platform
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
