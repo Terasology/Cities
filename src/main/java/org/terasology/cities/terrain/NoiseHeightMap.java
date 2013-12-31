@@ -16,7 +16,8 @@
 
 package org.terasology.cities.terrain;
 
-import org.terasology.math.TeraMath;
+import org.terasology.utilities.procedural.BrownianNoise2D;
+import org.terasology.utilities.procedural.Noise2D;
 import org.terasology.utilities.procedural.SimplexNoise;
 
 /**
@@ -25,21 +26,25 @@ import org.terasology.utilities.procedural.SimplexNoise;
  */
 public class NoiseHeightMap extends HeightMapAdapter {
 
-    private SimplexNoise terrainNoise = new SimplexNoise(0);
+    private Noise2D terrainNoise;
 
     /**
      * @param seed the seed value
      */
     public void setSeed(String seed) {
-        terrainNoise = new SimplexNoise(seed.hashCode());
+        terrainNoise = new BrownianNoise2D(new SimplexNoise(seed.hashCode()), 6);
     }
     
     @Override
     public int apply(int x, int z) {
-        int val = 5 + (int) (terrainNoise.noise(x / 155d, z / 155d) * 8d);
-        val += (int) (terrainNoise.noise(x / 72d, z / 72d) * 4d);
+        int val = 7;
+        val += (int) (terrainNoise.noise(x / 1000d, z / 1000d) * 8d);
         
-        return TeraMath.clamp(val, 1, 12);
+        if (val < 1) {
+            val = 1;
+        }
+        
+        return val;
     }
 
 

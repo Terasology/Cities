@@ -20,27 +20,23 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.core.world.generator.chunkGenerators.BasicHMTerrainGenerator;
-import org.terasology.core.world.generator.chunkGenerators.FlatTerrainGenerator;
 import org.terasology.engine.CoreRegistry;
 import org.terasology.math.Vector2i;
 import org.terasology.world.WorldBiomeProvider;
-import org.terasology.world.WorldBiomeProvider.Biome;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.Chunk;
 import org.terasology.world.generator.FirstPassGenerator;
+import org.terasology.world.liquid.LiquidData;
+import org.terasology.world.liquid.LiquidType;
 
 import com.google.common.base.Function;
 
 /**
- * Generates terrain based on a height map funciton 
- * -> unify with {@link BasicHMTerrainGenerator} and {@link FlatTerrainGenerator}
+ * Generates terrain based on a height map function 
  * @author Martin Steiger
  */
 public class HeightMapTerrainGenerator implements FirstPassGenerator {
-
-    private WorldBiomeProvider worldBiomeProvider;
 
     private Function<Vector2i, Integer> heightMap;
 
@@ -48,12 +44,13 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
 
     private final Block air = BlockManager.getAir();
     private final Block mantle = blockManager.getBlock("core:MantleStone");
-    private final Block stone = blockManager.getBlock("core:Stone");
+//    private final Block stone = blockManager.getBlock("core:Stone");
     private final Block sand = blockManager.getBlock("core:Sand");
     private final Block grass = blockManager.getBlock("core:Grass");
-    private final Block snow = blockManager.getBlock("core:Snow");
+//    private final Block snow = blockManager.getBlock("core:Snow");
     private final Block dirt = blockManager.getBlock("core:Dirt");
-
+    private final Block water = blockManager.getBlock("core:water");
+    
     /**
      * @param heightMap the height map to use
      */
@@ -70,7 +67,7 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
 
     @Override
     public void setWorldBiomeProvider(WorldBiomeProvider worldBiomeProvider) {
-        this.worldBiomeProvider = worldBiomeProvider;
+        // ignore
     }
 
     /**
@@ -95,67 +92,48 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
     }
     
     /**
-     * An plain copy of {@link FlatTerrainGenerator#generateChunk(Chunk)}
+     * The generated terrain looks like this
+     * <pre>
+     * ---------------------------
+     *  AIR
+     * ---------------------------
+     *  GRASS       surfaceHeight
+     * ---------------------------
+     *  SAND        seaLevel + 1 && surfaceHeight
+     *  DIRT        otherwise
+     * ---------------------------
+     *  WATER       seaLevel
+     *  WATER       1
+     * ---------------------------
+     *  MANTLE      0
+     * ---------------------------
+     * </pre>
      */
     @Override
     public void generateChunk(Chunk chunk) {
+        int seaLevel = 2;
+
         for (int x = 0; x < chunk.getChunkSizeX(); x++) {
             for (int z = 0; z < chunk.getChunkSizeZ(); z++) {
                 int wx = chunk.getBlockWorldPosX(x);
                 int wz = chunk.getBlockWorldPosZ(z);
 
                 int surfaceHeight = heightMap.apply(new Vector2i(wx, wz));
-                WorldBiomeProvider.Biome type = worldBiomeProvider.getBiomeAt(wx, wz);
-
-                // debug
-                // ----------------------------------------------------------
-                type = Biome.PLAINS;
-                // ----------------------------------------------------------
 
                 for (int y = chunk.getChunkSizeY() - 1; y >= 0; y--) {
                     if (y == 0) {
                         // bedrock/mantle
                         chunk.setBlock(x, y, z, mantle);
+                    } else if (y <= seaLevel) { // Ocean
+                        chunk.setBlock(x, y, z, water);
+                        chunk.setLiquid(x, y, z, new LiquidData(LiquidType.WATER, LiquidData.MAX_LIQUID_DEPTH));
+                    } else if (y == seaLevel + 1 && y == surfaceHeight) {
+                        chunk.setBlock(x, y, z, sand);
                     } else if (y < surfaceHeight) {
-                        // underground
-                        switch (type) {
-                        case FOREST:
-                            chunk.setBlock(x, y, z, dirt);
-                            break;
-                        case PLAINS:
-                            chunk.setBlock(x, y, z, dirt);
-                            break;
-                        case MOUNTAINS:
-                            chunk.setBlock(x, y, z, stone);
-                            break;
-                        case SNOW:
-                            chunk.setBlock(x, y, z, snow);
-                            break;
-                        case DESERT:
-                            chunk.setBlock(x, y, z, sand);
-                            break;
-                        }
+                        chunk.setBlock(x, y, z, dirt);
                     } else if (y == surfaceHeight) {
-                        // surface
-                        switch (type) {
-                        case FOREST:
-                            chunk.setBlock(x, y, z, dirt);
-                            break;
-                        case PLAINS:
-                            chunk.setBlock(x, y, z, grass);
-                            break;
-                        case MOUNTAINS:
-                            chunk.setBlock(x, y, z, stone);
-                            break;
-                        case SNOW:
-                            chunk.setBlock(x, y, z, snow);
-                            break;
-                        case DESERT:
-                            chunk.setBlock(x, y, z, sand);
-                            break;
-                        }
+                        chunk.setBlock(x, y, z, grass);
                     } else {
-                        // air
                         chunk.setBlock(x, y, z, air);
                     }
                 }
