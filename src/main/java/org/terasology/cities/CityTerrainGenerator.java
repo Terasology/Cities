@@ -125,7 +125,7 @@ public class CityTerrainGenerator implements FirstPassGenerator {
 
         Brush brush = new ChunkBrush(chunk, theme);
 
-        CachingHeightMap cachedHm = new CachingHeightMap(brush.getAffectedArea(), heightMap);
+        CachingHeightMap cachedHm = new CachingHeightMap(brush.getAffectedArea(), heightMap, 1);
         TerrainInfo ti = new TerrainInfo(cachedHm); 
         
         drawCities(sector, ti, brush);

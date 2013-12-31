@@ -37,6 +37,7 @@ import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
 import org.terasology.cities.terrain.CachingHeightMap;
+import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.NoiseHeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.ChunkConstants;
@@ -86,11 +87,10 @@ public class SwingRasterizer {
      */
     public void rasterizeSector(Graphics2D g, Sector sector) {
 
-        drawNoiseBackground(g, sector);
-
         boolean drawFast = false;
         
         if (drawFast) {
+            drawNoiseBackgroundFast(g, sector);
             drawRoads(g, sector);
             drawCities(g, sector);
         } else {
@@ -126,14 +126,16 @@ public class SwingRasterizer {
             for (int cx = 0; cx < chunksX; cx++) {
                 int wx = sector.getCoords().x * Sector.SIZE + cx * chunkSizeX;
                 int wz = sector.getCoords().y * Sector.SIZE + cz * chunkSizeZ;
-                BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_ARGB);
-                Brush brush = new SwingBrush(wx, wz, image, colorFunc);
 
-                if (g.hitClip(wx, wz, image.getWidth(), image.getHeight())) {
+                if (g.hitClip(wx, wz, chunkSizeX, chunkSizeZ)) {
 
-                    CachingHeightMap cachedHm = new CachingHeightMap(brush.getAffectedArea(), heightMap);
+                    BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_ARGB);
+                    Brush brush = new SwingBrush(wx, wz, image, colorFunc);
+
+                    CachingHeightMap cachedHm = new CachingHeightMap(brush.getAffectedArea(), heightMap, 4);
                     TerrainInfo ti = new TerrainInfo(cachedHm);
 
+                    drawBackground(image, wx, wz, ti);
                     drawCities(sector, ti, brush);
                     drawRoads(sector, ti, brush);
 
@@ -218,8 +220,9 @@ public class SwingRasterizer {
         g.drawString(text, cx - width / 2, cz + (float) ci.getDiameter() * 0.5f + 10f);
     }
 
-    private void drawNoiseBackground(Graphics2D g, Sector sector) {
+    private void drawNoiseBackgroundFast(Graphics2D g, Sector sector) {
         int scale = 4;
+        int maxHeight = 20;
         int size = Sector.SIZE / scale;
         BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
@@ -228,9 +231,15 @@ public class SwingRasterizer {
                 int gx = sector.getCoords().x * Sector.SIZE + x * scale;
                 int gz = sector.getCoords().y * Sector.SIZE + y * scale;
                 int height = heightMap.apply(gx, gz);
-                int b = TeraMath.clamp(185 + height * 5, 0, 255);
+                int b = TeraMath.clamp(255 - (maxHeight - height) * 5, 0, 255);
 
-                Color c = new Color(b, b, b);
+                Color c;
+                if (height <= 2) {
+                    c = Color.BLUE; 
+                } else {
+                    c = new Color(b, b, b);
+                }
+                
                 img.setRGB(x, y, c.getRGB());
             }
         }
@@ -240,6 +249,31 @@ public class SwingRasterizer {
 
         g.drawImage(img, offX, offZ, Sector.SIZE, Sector.SIZE, null);
     }
+    
+    private void drawBackground(BufferedImage image, int wx, int wz, TerrainInfo ti) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int maxHeight = 20;
+        
+        for (int z = 0; z < height; z++) {
+            for (int x = 0; x < width; x++) {
+                int gx = wx + x;
+                int gz = wz + z;
+                int y = ti.getHeightMap().apply(gx, gz);
+                int b = TeraMath.clamp(255 - (maxHeight - y) * 5, 0, 255);
+
+                Color c;
+                if (y <= 2) {
+                    c = Color.BLUE; 
+                } else {
+                    c = new Color(b, b, b);
+                }
+                
+                image.setRGB(x, z, c.getRGB());
+            }
+        }
+    }
+
     
    private void drawSectorText(Graphics2D g, Sector sector) {
        int offX = Sector.SIZE * sector.getCoords().x;
