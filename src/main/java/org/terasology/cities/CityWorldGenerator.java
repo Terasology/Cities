@@ -39,11 +39,14 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
     @Override
     public void initialize() {
 
+        // TODO: this should come from elsewhere
+        CityWorldConfig config = new CityWorldConfig();
+        
         heightMap = new NoiseHeightMap();
         
-        register(new HeightMapTerrainGenerator(heightMap));
+        register(new HeightMapTerrainGenerator(heightMap, config));
 //        register(new BoundaryGenerator(heightMap));
-        register(new CityTerrainGenerator(heightMap));
+        register(new CityTerrainGenerator(heightMap, config));
         register(new FloraGeneratorFast(heightMap));
     }
     

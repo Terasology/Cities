@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +30,8 @@ import javax.vecmath.Point2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.CityWorldConfig;
+import org.terasology.cities.SectorInfo;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.model.Building;
@@ -39,7 +40,8 @@ import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
-import org.terasology.math.Vector2i;
+import org.terasology.cities.terrain.ConstantHeightMap;
+import org.terasology.cities.terrain.HeightMap;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -64,7 +66,17 @@ public class LotGeneratorRandomTest  {
         int maxPerSector = 3;
         int minSize = 30;
         int maxSize = 200;
-        Function<Sector, Set<City>> cpr = CachingFunction.wrap(new CityPlacerRandom(seed, minPerSector, maxPerSector, minSize, maxSize));
+        
+        final CityWorldConfig config = new CityWorldConfig();
+        final HeightMap heightMap = new ConstantHeightMap(10);
+        final Function<Sector, SectorInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, SectorInfo>() {
+
+            @Override
+            public SectorInfo apply(Sector input) {
+                return new SectorInfo(input, config, heightMap);
+            }
+        }); 
+        Function<Sector, Set<City>> cpr = CachingFunction.wrap(new CityPlacerRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize));
         
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
@@ -72,8 +84,6 @@ public class LotGeneratorRandomTest  {
                 cpr.apply(sector);   // fill the cache
             }
         }
-        
-        Function<Vector2i, Integer> heightMap = constantFunction(5);
         
         LotGeneratorRandom lg = new LotGeneratorRandom(seed);
         SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
@@ -91,7 +101,7 @@ public class LotGeneratorRandomTest  {
                     double rad = city.getDiameter() * 0.5;
                     Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
 
-                    Set<SimpleLot> lots = lg.generate(city, new Path2D.Double());
+                    Set<SimpleLot> lots = lg.generate(city, sectorInfos.apply(Sectors.getSector(x, z)));
                     List<SimpleLot> list = Lists.newArrayList(lots);
                     
                     lotCount += lots.size();
@@ -128,13 +138,5 @@ public class LotGeneratorRandomTest  {
         logger.info("Created {} lots with {} buildings in {}", lotCount, bdgCount, Profiler.getAsString("lot-generator"));
     }
     
-    private static <P, R> Function<P, R> constantFunction(final R val) {
-        return new Function<P, R>() {
-            @Override
-            public R apply(P p) {
-                return val;
-            }
-        };
-    }
 }
 

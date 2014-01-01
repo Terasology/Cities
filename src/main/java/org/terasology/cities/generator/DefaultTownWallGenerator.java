@@ -21,6 +21,7 @@ import java.awt.Shape;
 import java.util.List;
 import java.util.Objects;
 
+import org.terasology.cities.SectorInfo;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.SimpleTower;
@@ -55,10 +56,10 @@ public class DefaultTownWallGenerator {
 
     /**
      * @param city the city
-     * @param blockedArea the blocked area
+     * @param sectorInfo the blocked area
      * @return a town wall
      */
-    public TownWall generate(City city, Shape blockedArea) {
+    public TownWall generate(City city, SectorInfo sectorInfo) {
         Random rand = new MersenneRandom(Objects.hash(seed, city.hashCode()));
         
         int cx = city.getPos().x;
@@ -75,7 +76,7 @@ public class DefaultTownWallGenerator {
 
         // generate towers first
         List<Vector2i> tp = getTowerPosList(rand, center, maxRad, step);
-        List<Boolean> blocked = getBlockedPos(tp, blockedArea);
+        List<Boolean> blocked = getBlockedPos(tp, sectorInfo);
         int lastHit = Short.MIN_VALUE;
         int firstHit = Short.MIN_VALUE;
         
@@ -163,12 +164,12 @@ public class DefaultTownWallGenerator {
         return wall;
     }
 
-    private List<Boolean> getBlockedPos(List<Vector2i> tp, Shape blockedArea) {
+    private List<Boolean> getBlockedPos(List<Vector2i> tp, SectorInfo sectorInfo) {
         List<Boolean> list = Lists.newArrayList();
         
         for (Vector2i pos : tp) {
             Rectangle layout = getTowerRect(pos);
-            boolean ok = !blockedArea.intersects(layout);
+            boolean ok = !sectorInfo.isBlocked(layout);
             list.add(Boolean.valueOf(ok));
         }
         

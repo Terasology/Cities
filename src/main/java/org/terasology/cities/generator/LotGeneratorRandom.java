@@ -17,7 +17,6 @@
 package org.terasology.cities.generator;
 
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 import java.util.Set;
@@ -28,6 +27,7 @@ import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.SectorInfo;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.utilities.random.FastRandom;
@@ -79,10 +79,10 @@ public class LotGeneratorRandom {
 
     /**
      * @param city the city
-     * @param blockedArea describes the blocked area for a sector
+     * @param si describes the blocked area for a sector
      * @return a set of lots for that city within the city radius
      */
-    public Set<SimpleLot> generate(City city, Shape blockedArea) {
+    public Set<SimpleLot> generate(City city, SectorInfo si) {
         Random rand = new FastRandom(Objects.hash(seed, city));
         
         Point2i center = city.getPos();
@@ -119,9 +119,11 @@ public class LotGeneratorRandom {
             Rectangle shape = new Rectangle((int) (pos.x - sizeX * 0.5), (int) (pos.y - sizeZ * 0.5), sizeX, sizeZ);
 
             // check if lot intersects with blocked area
-            if (blockedArea.intersects(shape)) {
+            if (si.isBlocked(shape)) {
                 continue;
             }
+            
+            si.addBlockedArea(shape);
 
             // all tests passed -> create and add
             SimpleLot lot = new SimpleLot(shape);

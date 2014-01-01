@@ -20,14 +20,15 @@ import java.awt.Rectangle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.math.TeraMath;
 
 /**
- * A cache that stores a rectangular area
+ * A cache that stores a rectangular area and interpolates values bi-linearly
  * @author Martin Steiger
  */
-public class CachingHeightMap extends HeightMapAdapter {
+public class CachingHeightMapBiLin extends HeightMapAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(CachingHeightMap.class);
+    private static final Logger logger = LoggerFactory.getLogger(CachingHeightMapBiLin.class);
     
     private final short[] height;
     private final Rectangle area;
@@ -39,16 +40,17 @@ public class CachingHeightMap extends HeightMapAdapter {
      * @param hm the height map to use
      * @param scale the scale level (should be a divisor of area.width and area.height)
      */
-    public CachingHeightMap(Rectangle area, HeightMap hm, int scale) {
+    public CachingHeightMapBiLin(Rectangle area, HeightMap hm, int scale) {
         this.area = area;
         this.scale = scale;
         this.hm = hm;
-        this.height = new short[area.width * area.height / (scale * scale)];
+        this.height = new short[(area.width / scale + 1) * (area.height / scale + 1)];
         
-        for (int z = 0; z < area.height / scale; z++) {
-            for (int x = 0; x < area.width / scale; x++) {
+        // area is 1 larger 
+        for (int z = 0; z < area.height / scale + 1; z++) {
+            for (int x = 0; x < area.width / scale + 1; x++) {
                 int y = hm.apply(x * scale + area.x, z * scale + area.y);
-                height[z * area.width / scale + x] = (short) y;
+                height[z * (area.width / scale + 1) + x] = (short) y;
             }
         }
     }
@@ -59,14 +61,38 @@ public class CachingHeightMap extends HeightMapAdapter {
         boolean zOk = z >= area.y && z < area.y + area.height;
         
         if (xOk && zOk) {
-            int lx = (x - area.x) / scale;
-            int lz = (z - area.y) / scale;
-            return height[lz * area.width / scale + lx];
+          double lx = (x - area.x) / (double) scale;
+          double lz = (z - area.y) / (double) scale;
+          
+          int minX = TeraMath.floorToInt(lx);
+          int maxX = minX + 1;
+          
+          int minZ = TeraMath.floorToInt(lz);
+          int maxZ = minZ + 1;
+          
+          int q00 = getHeight(minX, minZ); 
+          int q10 = getHeight(maxX, minZ); 
+          int q01 = getHeight(minX, maxZ); 
+          int q11 = getHeight(maxX, maxZ); 
+
+          double ipx = lx - minX;
+          double ipz = lz - minZ;
+          
+          double min = TeraMath.lerp(q00, q10, ipx);
+          double max = TeraMath.lerp(q01, q11, ipx);
+          
+          double res = TeraMath.lerp(min, max, ipz);
+
+          return TeraMath.floorToInt(res + 0.5);
         }
         
         logger.debug("Accessing height map outside cached bounds -- referring to uncached height map");
         
         return hm.apply(x, z);
+    }
+    
+    private int getHeight(int lx, int lz) {
+        return height[lz * (area.width / scale + 1) + lx];
     }
 
 }

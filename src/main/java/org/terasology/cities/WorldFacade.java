@@ -73,21 +73,18 @@ public class WorldFacade {
     /**
      * @param seed the seed value
      * @param heightMap the height map to use
+     * @param config the world configuration
      */
-    public WorldFacade(String seed, HeightMap heightMap) {
-        
-        int minCitiesPerSector = 1;
-        int maxCitiesPerSector = 2;
-        int minSize = 50;
-        int maxSize = 250;
-        
-        CityPlacerRandom cpr = new CityPlacerRandom(seed, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
-        final Function<Sector, Set<City>> cityMap = CachingFunction.wrap(cpr);
-        
-        double maxDist = 750;
-        connectedCities = new CityConnector(cityMap, maxDist);
-        connectedCities = CachingFunction.wrap(connectedCities);
+    public WorldFacade(String seed, final HeightMap heightMap, final CityWorldConfig config) {
 
+        final Function<Sector, SectorInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, SectorInfo>() {
+
+            @Override
+            public SectorInfo apply(Sector input) {
+                return new SectorInfo(input, config, heightMap);
+            }
+        }); 
+                
         junctions = new Function<Point2i, Junction>() {
 
             @Override
@@ -97,6 +94,18 @@ public class WorldFacade {
             
         };
         junctions = CachingFunction.wrap(junctions);
+        
+        int minCitiesPerSector = config.getMinCitiesPerSector();
+        int maxCitiesPerSector = config.getMaxCitiesPerSector();
+        int minSize = config.getMinCityRadius();
+        int maxSize = config.getMaxCityRadius();
+        
+        CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
+        final Function<Sector, Set<City>> cityMap = CachingFunction.wrap(cpr);
+        
+        double maxDist = config.getMaxConnectedCitiesDistance();
+        connectedCities = new CityConnector(cityMap, maxDist);
+        connectedCities = CachingFunction.wrap(connectedCities);
         
         sectorConnections = new SectorConnector(cityMap, connectedCities);
         sectorConnections = CachingFunction.wrap(sectorConnections);
@@ -158,35 +167,35 @@ public class WorldFacade {
             @Override
             public Set<City> apply(Sector input) {
                 
+                SectorInfo si = sectorInfos.apply(input);
                 Set<City> cities = cityMap.apply(input);
+                
+                Shape roadShape = roadShapeFunc.apply(input);
+                si.addBlockedArea(roadShape);
+
                 for (City city : cities) {
                     
-                    Shape roadShape = roadShapeFunc.apply(input);
-                    Path2D blockedArea = new Path2D.Double();
-                    blockedArea.append(roadShape, false);
-
                     if (city instanceof MedievalTown) {
                         MedievalTown town = (MedievalTown) city;
-                        TownWall tw = twg.generate(city, blockedArea);
+                        TownWall tw = twg.generate(city, si);
                         town.setTownWall(tw);
 
                         TownWallShapeGenerator twsg = new TownWallShapeGenerator();
                         Shape townWallShape = twsg.computeShape(tw);
-                        blockedArea.append(townWallShape, false);
+                        si.addBlockedArea(townWallShape);
                     }
 
                     if (city instanceof MedievalTown) {
-                        Set<SimpleLot> lots = churchLotGenerator.generate(city, blockedArea);
+                        Set<SimpleLot> lots = churchLotGenerator.generate(city, si);
                         if (!lots.isEmpty()) {
                             SimpleLot lot = lots.iterator().next();
                             SimpleChurch church = sacg.generate(lot);
-                            blockedArea.append(lot.getShape(), false);
                             lot.addBuilding(church);
                             city.add(lot);
                         }
                     }
                     
-                    Set<SimpleLot> lots = housingLotGenerator.generate(city, blockedArea);
+                    Set<SimpleLot> lots = housingLotGenerator.generate(city, si);
                     
                     for (SimpleLot lot : lots) {
                         city.add(lot);

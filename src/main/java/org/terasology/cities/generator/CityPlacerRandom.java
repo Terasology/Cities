@@ -24,7 +24,7 @@ import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.asset.Assets;
+import org.terasology.cities.SectorInfo;
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.MedievalTown;
@@ -56,15 +56,19 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
     private final int minPerSector;
     private final int maxPerSector;
 
+    private Function<Sector, SectorInfo> sectorInfos;
+
     /**
      * @param seed the seed
+     * @param sectorInfos a function for sector infos
      * @param minPerSector minimum settlements per sector
      * @param maxPerSector maximum settlements per sector
      * @param minSize minimum settlement size
      * @param maxSize maximum settlement size 
      */
-    public CityPlacerRandom(String seed, int minPerSector, int maxPerSector, int minSize, int maxSize) {
+    public CityPlacerRandom(String seed, Function<Sector, SectorInfo> sectorInfos, int minPerSector, int maxPerSector, int minSize, int maxSize) {
         this.seed = seed;
+        this.sectorInfos = sectorInfos;
         this.minPerSector = minPerSector;
         this.maxPerSector = maxPerSector;
         this.minSize = minSize;
@@ -91,6 +95,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
         logger.debug("Creating {} cities in {}", count, sector);
         
         NameGenerator nameGen = new Markov2NameGenerator(hash, Arrays.asList(NameList.NAMES));
+        SectorInfo si = sectorInfos.apply(sector);
         
         for (int i = 0; i < count; i++) {
 
@@ -112,7 +117,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
                 ci = new MedievalTown(name, size, cx, cz);
                 tries--;
                 
-            } while (!placementOk(ci, result) && tries >= 0);            
+            } while (!placementOk(ci, si, result) && tries >= 0);            
 
             if (tries < 0) {
                 logger.debug("Could not place a new city at {}", sector);
@@ -125,28 +130,20 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
         return result;
     }
 
-    private boolean placementOk(City city, Set<City> others) {
+    private boolean placementOk(City city, SectorInfo si, Set<City> others) {
         final double minDistToOthers = 200;
-        final double minDistToWater = 100;
         
         if (!distanceToOthersOk(city, others, minDistToOthers)) {
             return false;
         }
         
-        if (!distanceToWaterOk(city, minDistToWater)) {
+        if (si.isBlocked(city.getPos())) {
             return false;
         }
         
         return true;
     }
     
-    @SuppressWarnings("unused")
-    private boolean distanceToWaterOk(City city, double minDistToWater) {
-        // TODO: we need terrain info here to check this
-        
-        return true;
-    }
-
     private boolean distanceToOthersOk(City city, Set<City> cities, double minDist) {
             
         Point2i pos = city.getPos();

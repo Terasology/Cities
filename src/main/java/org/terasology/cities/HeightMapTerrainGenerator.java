@@ -44,18 +44,22 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
 
     private final Block air = BlockManager.getAir();
     private final Block mantle = blockManager.getBlock("core:MantleStone");
-//    private final Block stone = blockManager.getBlock("core:Stone");
+    private final Block stone = blockManager.getBlock("core:Stone");
     private final Block sand = blockManager.getBlock("core:Sand");
     private final Block grass = blockManager.getBlock("core:Grass");
-//    private final Block snow = blockManager.getBlock("core:Snow");
+    private final Block snow = blockManager.getBlock("core:Snow");
     private final Block dirt = blockManager.getBlock("core:Dirt");
     private final Block water = blockManager.getBlock("core:water");
+
+    private final CityWorldConfig config;
     
     /**
      * @param heightMap the height map to use
+     * @param config the configuration
      */
-    public HeightMapTerrainGenerator(HeightMap heightMap) {
+    public HeightMapTerrainGenerator(HeightMap heightMap, CityWorldConfig config) {
         this.heightMap = heightMap;
+        this.config = config;
     }
 
     /**
@@ -97,13 +101,14 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      * ---------------------------
      *  AIR
      * ---------------------------
-     *  GRASS       surfaceHeight
+     *  GRASS       surfaceHeight && < snowLine
+     *  SNOW        surfaceHeight && >= snowLine
+     *  SAND        surfaceHeight && seaLevel + 1 
      * ---------------------------
-     *  SAND        seaLevel + 1 && surfaceHeight
-     *  DIRT        otherwise
+     *  DIRT        < surfaceHeight && < snowLine
+     *  STONE       < surfaceHeight && >= snowLine
      * ---------------------------
-     *  WATER       seaLevel
-     *  WATER       1
+     *  WATER       <= seaLevel
      * ---------------------------
      *  MANTLE      0
      * ---------------------------
@@ -111,7 +116,8 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      */
     @Override
     public void generateChunk(Chunk chunk) {
-        int seaLevel = 2;
+        int seaLevel = config.getSeaLevel();
+        int snowLine = config.getSnowLine();
 
         for (int x = 0; x < chunk.getChunkSizeX(); x++) {
             for (int z = 0; z < chunk.getChunkSizeZ(); z++) {
@@ -129,10 +135,14 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
                         chunk.setLiquid(x, y, z, new LiquidData(LiquidType.WATER, LiquidData.MAX_LIQUID_DEPTH));
                     } else if (y == seaLevel + 1 && y == surfaceHeight) {
                         chunk.setBlock(x, y, z, sand);
-                    } else if (y < surfaceHeight) {
+                    } else if (y < surfaceHeight && surfaceHeight < snowLine) {
                         chunk.setBlock(x, y, z, dirt);
-                    } else if (y == surfaceHeight) {
+                    } else if (y < surfaceHeight && surfaceHeight >= snowLine) {
+                        chunk.setBlock(x, y, z, stone);
+                    } else if (y == surfaceHeight && surfaceHeight < snowLine) {
                         chunk.setBlock(x, y, z, grass);
+                    } else if (y == surfaceHeight && surfaceHeight >= snowLine) {
+                        chunk.setBlock(x, y, z, snow);
                     } else {
                         chunk.setBlock(x, y, z, air);
                     }
