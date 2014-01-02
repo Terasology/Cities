@@ -30,8 +30,8 @@ import org.terasology.cities.common.Profiler;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
-import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 
 import com.google.common.base.Function;
 
@@ -57,7 +57,7 @@ public class CityPlacerRandomTest  {
         int maxSize = 100;
         
         final CityWorldConfig config = new CityWorldConfig();
-        final HeightMap heightMap = new ConstantHeightMap(10);
+        final HeightMap heightMap = HeightMaps.constant(10);
         final Function<Sector, SectorInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, SectorInfo>() {
 
             @Override

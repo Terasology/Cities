@@ -20,7 +20,7 @@ package org.terasology.cities.terrain;
  * An implementation based on a constant value
  * @author Martin Steiger
  */
-public class ConstantHeightMap extends HeightMapAdapter {
+class ConstantHeightMap extends HeightMapAdapter {
 
     private final int height;
 

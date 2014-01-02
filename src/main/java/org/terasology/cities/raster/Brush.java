@@ -23,9 +23,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.common.LineUtilities;
-import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.math.TeraMath;
 
 /**
@@ -42,7 +41,7 @@ public abstract class Brush {
      */
     public void fillShape(Shape shape, HeightMap hmBottom, int height, BlockTypes type) {
         // optimize, if necessary
-       fillShape(shape, hmBottom, new OffsetHeightMap(hmBottom, height), type);
+       fillShape(shape, hmBottom, HeightMaps.offset(hmBottom, height), type);
     }
     
     /**
@@ -84,8 +83,8 @@ public abstract class Brush {
      */
     public void createWallX(int x1, int x2, int z, int bottom, int top, BlockTypes type) {
         Rectangle rect = new Rectangle(x1, z, x2 - x1, 1);
-        HeightMap hmBottom = new ConstantHeightMap(bottom);
-        HeightMap hmTop = new ConstantHeightMap(top);
+        HeightMap hmBottom = HeightMaps.constant(bottom);
+        HeightMap hmTop = HeightMaps.constant(top);
         fillRect(rect, hmBottom, hmTop, type);
     }
 
@@ -99,8 +98,8 @@ public abstract class Brush {
      */
     public void createWallZ(int z1, int z2, int x, int bottom, int top, BlockTypes type) {
         Rectangle rect = new Rectangle(x, z1, 1, z2 - z1);
-        ConstantHeightMap hmBottom = new ConstantHeightMap(bottom);
-        ConstantHeightMap hmTop = new ConstantHeightMap(top);
+        HeightMap hmBottom = HeightMaps.constant(bottom);
+        HeightMap hmTop = HeightMaps.constant(top);
         fillRect(rect, hmBottom, hmTop, type);
     }
 
@@ -111,7 +110,7 @@ public abstract class Brush {
      * @param type the block type
      */
     public void fillRect(Rectangle shape, HeightMap heightMap, BlockTypes type) {
-        fillRect(shape, heightMap, new OffsetHeightMap(heightMap, 1), type);        
+        fillRect(shape, heightMap, HeightMaps.offset(heightMap, 1), type);        
     }
 
     /**
@@ -121,8 +120,8 @@ public abstract class Brush {
      * @param type the block type
      */
     public void fillRect(Rectangle rect, int bottom, int top, BlockTypes type) {
-        ConstantHeightMap hmBottom = new ConstantHeightMap(bottom);
-        ConstantHeightMap hmTop = new ConstantHeightMap(top);
+        HeightMap hmBottom = HeightMaps.constant(bottom);
+        HeightMap hmTop = HeightMaps.constant(top);
         fillRect(rect, hmBottom, hmTop, type);
     }
 
@@ -134,7 +133,7 @@ public abstract class Brush {
      */
     public void fillRect(Rectangle rect, HeightMap hmBottom, int height, BlockTypes type) {
         // optimize, if necessary
-        fillRect(rect, hmBottom, new ConstantHeightMap(height), type);
+        fillRect(rect, hmBottom, HeightMaps.constant(height), type);
     }
 
     /**
@@ -145,7 +144,7 @@ public abstract class Brush {
      */
     public void fillRect(Rectangle rect, int baseHeight, HeightMap hmTop, BlockTypes type) {
         // optimize, if necessary
-        fillRect(rect, new ConstantHeightMap(baseHeight), hmTop, type);
+        fillRect(rect, HeightMaps.constant(baseHeight), hmTop, type);
     }
     
     /**

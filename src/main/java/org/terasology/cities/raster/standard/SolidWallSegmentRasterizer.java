@@ -22,7 +22,7 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * Converts a {@link SolidWallSegment} into blocks
@@ -34,7 +34,7 @@ public class SolidWallSegmentRasterizer implements Rasterizer<SolidWallSegment> 
     public void raster(Brush brush, TerrainInfo ti, SolidWallSegment element) {
 
         HeightMap bottomHm = ti.getHeightMap();
-        HeightMap topHm = new OffsetHeightMap(bottomHm, element.getWallHeight());
+        HeightMap topHm = HeightMaps.offset(bottomHm, element.getWallHeight());
         
         int x1 = element.getStart().x;
         int z1 = element.getStart().y;

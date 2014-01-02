@@ -26,64 +26,70 @@ import org.terasology.math.TeraMath;
  * A cache that stores a rectangular area and interpolates values bi-linearly
  * @author Martin Steiger
  */
-public class CachingHeightMapBiLin extends HeightMapAdapter {
+class CachingLerpHeightMap extends HeightMapAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(CachingHeightMapBiLin.class);
+    private static final Logger logger = LoggerFactory.getLogger(CachingLerpHeightMap.class);
     
     private final short[] height;
     private final Rectangle area;
     private final HeightMap hm;
     private final int scale;
+    private final int scaledWidth;
+    private final int scaledHeight;
 
     /**
      * @param area the area to cache
      * @param hm the height map to use
      * @param scale the scale level (should be a divisor of area.width and area.height)
      */
-    public CachingHeightMapBiLin(Rectangle area, HeightMap hm, int scale) {
+    public CachingLerpHeightMap(Rectangle area, HeightMap hm, int scale) {
         this.area = area;
         this.scale = scale;
         this.hm = hm;
-        this.height = new short[(area.width / scale + 1) * (area.height / scale + 1)];
+        
+        this.scaledWidth = area.width / scale + 1;
+        this.scaledHeight = area.height / scale + 1;
+
+        this.height = new short[scaledWidth * scaledHeight];
         
         // area is 1 larger 
-        for (int z = 0; z < area.height / scale + 1; z++) {
-            for (int x = 0; x < area.width / scale + 1; x++) {
-                int y = hm.apply(x * scale + area.x, z * scale + area.y);
-                height[z * (area.width / scale + 1) + x] = (short) y;
+        for (int z = 0; z < scaledHeight; z++) {
+            for (int x = 0; x < scaledWidth; x++) {
+                int y = hm.apply(area.x + x * scale, area.y + z * scale);
+                height[z * scaledWidth + x] = (short) y;
             }
         }
     }
     
     @Override
     public int apply(int x, int z) {
-        boolean xOk = x >= area.x && x < area.x + area.width;
-        boolean zOk = z >= area.y && z < area.y + area.height;
+        boolean xOk = (x >= area.x) && (x < area.x + area.width);
+        boolean zOk = (z >= area.y) && (z < area.y + area.height);
         
         if (xOk && zOk) {
-          double lx = (x - area.x) / (double) scale;
-          double lz = (z - area.y) / (double) scale;
-          
-          int minX = TeraMath.floorToInt(lx);
-          int maxX = minX + 1;
-          
-          int minZ = TeraMath.floorToInt(lz);
-          int maxZ = minZ + 1;
-          
-          int q00 = getHeight(minX, minZ); 
-          int q10 = getHeight(maxX, minZ); 
-          int q01 = getHeight(minX, maxZ); 
-          int q11 = getHeight(maxX, maxZ); 
+            double lx = (x - area.x) / (double) scale;
+            double lz = (z - area.y) / (double) scale;
 
-          double ipx = lx - minX;
-          double ipz = lz - minZ;
-          
-          double min = TeraMath.lerp(q00, q10, ipx);
-          double max = TeraMath.lerp(q01, q11, ipx);
-          
-          double res = TeraMath.lerp(min, max, ipz);
+            int minX = TeraMath.floorToInt(lx);
+            int maxX = minX + 1;
 
-          return TeraMath.floorToInt(res + 0.5);
+            int minZ = TeraMath.floorToInt(lz);
+            int maxZ = minZ + 1;
+
+            int q00 = getHeight(minX, minZ);
+            int q10 = getHeight(maxX, minZ);
+            int q01 = getHeight(minX, maxZ);
+            int q11 = getHeight(maxX, maxZ);
+
+            double ipx = lx - minX;
+            double ipz = lz - minZ;
+
+            double min = TeraMath.lerp(q00, q10, ipx);
+            double max = TeraMath.lerp(q01, q11, ipx);
+
+            double res = TeraMath.lerp(min, max, ipz);
+
+            return TeraMath.floorToInt(res + 0.5);
         }
         
         logger.debug("Accessing height map outside cached bounds -- referring to uncached height map");
@@ -92,7 +98,7 @@ public class CachingHeightMapBiLin extends HeightMapAdapter {
     }
     
     private int getHeight(int lx, int lz) {
-        return height[lz * (area.width / scale + 1) + lx];
+        return height[lz * scaledWidth + lx];
     }
 
 }

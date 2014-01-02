@@ -26,7 +26,7 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.Vector2i;
 
@@ -71,7 +71,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
         };
 
         int thickness = TeraMath.ceilToInt(roof.getPitch());
-        brush.fillRect(area, bottomHm, new OffsetHeightMap(bottomHm, thickness), BlockTypes.ROOF_HIP);
+        brush.fillRect(area, bottomHm, HeightMaps.offset(bottomHm, thickness), BlockTypes.ROOF_HIP);
         
         final Rectangle wallRect = Rectangles.expandRect(roof.getArea(), -1);
         

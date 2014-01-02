@@ -24,7 +24,7 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.math.Vector2i;
 
 /**
@@ -42,8 +42,12 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             return;
         }
         
+        if (fenceRc.intersects(brushRc)) {
+            return;
+        }   
+        
         // for debugging only -- add +1 manually later
-        HeightMap hm = new OffsetHeightMap(ti.getHeightMap(), 1);
+        HeightMap hm = HeightMaps.offset(ti.getHeightMap(), 1);
         
         int fleft = fenceRc.x;
         int ftop = fenceRc.y;

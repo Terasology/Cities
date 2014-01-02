@@ -17,7 +17,6 @@
 package org.terasology.cities;
 
 import java.awt.Shape;
-import java.awt.geom.Path2D;
 import java.util.Set;
 
 import javax.vecmath.Point2i;

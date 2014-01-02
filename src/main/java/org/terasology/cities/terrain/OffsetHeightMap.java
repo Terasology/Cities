@@ -20,7 +20,7 @@ package org.terasology.cities.terrain;
  * An implementation that returns other.height + offset
  * @author Martin Steiger
  */
-public class OffsetHeightMap extends HeightMapAdapter {
+class OffsetHeightMap extends HeightMapAdapter {
 
     private final int offset;
     private final HeightMap base;

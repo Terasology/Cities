@@ -23,8 +23,8 @@ import java.awt.geom.Path2D;
 import javax.vecmath.Point2i;
 
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.terrain.CachingHeightMap;
 import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * TODO Type description
@@ -32,7 +32,7 @@ import org.terasology.cities.terrain.HeightMap;
  */
 public class SectorInfo {
 
-    private final CachingHeightMap heightMap;  
+    private final HeightMap heightMap;  
     private final Path2D blockedArea = new Path2D.Double();
     private CityWorldConfig config;
     private Rectangle sectorRect;
@@ -44,7 +44,7 @@ public class SectorInfo {
         int scale = 4;
         
         sectorRect = new Rectangle(wx, wz, Sector.SIZE, Sector.SIZE);
-        this.heightMap = new CachingHeightMap(sectorRect, hm, scale);
+        this.heightMap = HeightMaps.caching(hm, sectorRect, scale);
         this.config = config;
     }
 

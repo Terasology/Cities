@@ -37,7 +37,8 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
-import org.terasology.cities.terrain.CachingHeightMapBiLin;
+import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.cities.terrain.NoiseHeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.ChunkConstants;
@@ -133,7 +134,7 @@ public class SwingRasterizer {
                     BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_ARGB);
                     Brush brush = new SwingBrush(wx, wz, image, colorFunc);
 
-                    CachingHeightMapBiLin cachedHm = new CachingHeightMapBiLin(brush.getAffectedArea(), heightMap, 8);
+                    HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
                     TerrainInfo ti = new TerrainInfo(cachedHm);
 
                     drawBackground(image, wx, wz, ti);

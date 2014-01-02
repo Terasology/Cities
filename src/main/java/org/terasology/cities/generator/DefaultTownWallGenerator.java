@@ -17,7 +17,6 @@
 package org.terasology.cities.generator;
 
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.util.List;
 import java.util.Objects;
 

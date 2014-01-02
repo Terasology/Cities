@@ -22,7 +22,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * Provides several often-used methods
@@ -41,7 +41,7 @@ public abstract class AbstractRasterizer<T> implements Rasterizer<T> {
     protected void prepareFloor(Brush brush, Rectangle rc, HeightMap terrain, int baseHeight, BlockTypes floor) {
         
         // clear area above floor level
-        brush.fillRect(rc, baseHeight, new OffsetHeightMap(terrain, 1), BlockTypes.AIR);
+        brush.fillRect(rc, baseHeight, HeightMaps.offset(terrain, 1), BlockTypes.AIR);
 
         // lay floor level
         brush.fillRect(rc, baseHeight - 1, baseHeight, floor);

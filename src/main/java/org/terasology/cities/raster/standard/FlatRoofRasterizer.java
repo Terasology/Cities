@@ -23,9 +23,9 @@ import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.terrain.ConstantHeightMap;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
+import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * Converts a {@link FlatRoof} into blocks
@@ -64,7 +64,7 @@ public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
             }
         };
 
-        HeightMap bottomHm = new ConstantHeightMap(roof.getBaseHeight());
+        HeightMap bottomHm = HeightMaps.constant(roof.getBaseHeight());
         
         brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }

@@ -30,8 +30,8 @@ import org.terasology.cities.raster.ChunkBrush;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
-import org.terasology.cities.terrain.CachingHeightMap;
 import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.chunks.Chunk;
 import org.terasology.world.generator.FirstPassGenerator;
@@ -129,7 +129,7 @@ public class CityTerrainGenerator implements FirstPassGenerator {
 
         Brush brush = new ChunkBrush(chunk, theme);
 
-        CachingHeightMap cachedHm = new CachingHeightMap(brush.getAffectedArea(), heightMap, 1);
+        HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 1);
         TerrainInfo ti = new TerrainInfo(cachedHm); 
         
         drawCities(sector, ti, brush);

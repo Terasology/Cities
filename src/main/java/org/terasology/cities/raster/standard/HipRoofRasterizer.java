@@ -25,7 +25,7 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.math.TeraMath;
 
 /**
@@ -63,7 +63,7 @@ public class HipRoofRasterizer implements Rasterizer<HipRoof> {
             }
         };
 
-        brush.fillRect(area, hm, new OffsetHeightMap(hm, (int) roof.getPitch()), BlockTypes.ROOF_HIP);
+        brush.fillRect(area, hm, HeightMaps.offset(hm, (int) roof.getPitch()), BlockTypes.ROOF_HIP);
     }
 
 }

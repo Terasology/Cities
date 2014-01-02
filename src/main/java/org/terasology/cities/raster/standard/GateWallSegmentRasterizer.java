@@ -23,7 +23,7 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * Converts a {@link GateWallSegment} into blocks
@@ -66,7 +66,7 @@ public class GateWallSegmentRasterizer implements Rasterizer<GateWallSegment> {
             }
         };
         
-        HeightMap topHm = new OffsetHeightMap(terrain, height);
+        HeightMap topHm = HeightMaps.offset(terrain, height);
 
         
         brush.draw(bottomHm, topHm, x1, z1, x2, z2, BlockTypes.TOWER_WALL);

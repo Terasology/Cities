@@ -25,30 +25,27 @@ import org.slf4j.LoggerFactory;
  * A cache that stores a rectangular area
  * @author Martin Steiger
  */
-public class CachingHeightMap extends HeightMapAdapter {
+class CachingHeightMap extends HeightMapAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(CachingHeightMap.class);
     
     private final short[] height;
     private final Rectangle area;
     private final HeightMap hm;
-    private final int scale;
 
     /**
      * @param area the area to cache
      * @param hm the height map to use
-     * @param scale the scale level (should be a divisor of area.width and area.height)
      */
-    public CachingHeightMap(Rectangle area, HeightMap hm, int scale) {
+    public CachingHeightMap(Rectangle area, HeightMap hm) {
         this.area = area;
-        this.scale = scale;
         this.hm = hm;
-        this.height = new short[area.width * area.height / (scale * scale)];
+        this.height = new short[area.width * area.height];
         
-        for (int z = 0; z < area.height / scale; z++) {
-            for (int x = 0; x < area.width / scale; x++) {
-                int y = hm.apply(x * scale + area.x, z * scale + area.y);
-                height[z * area.width / scale + x] = (short) y;
+        for (int z = 0; z < area.height; z++) {
+            for (int x = 0; x < area.width; x++) {
+                int y = hm.apply(x + area.x, z + area.y);
+                height[z * area.width + x] = (short) y;
             }
         }
     }
@@ -59,9 +56,9 @@ public class CachingHeightMap extends HeightMapAdapter {
         boolean zOk = z >= area.y && z < area.y + area.height;
         
         if (xOk && zOk) {
-            int lx = (x - area.x) / scale;
-            int lz = (z - area.y) / scale;
-            return height[lz * area.width / scale + lx];
+            int lx = x - area.x;
+            int lz = z - area.y;
+            return height[lz * area.width + lx];
         }
         
         logger.debug("Accessing height map outside cached bounds -- referring to uncached height map");

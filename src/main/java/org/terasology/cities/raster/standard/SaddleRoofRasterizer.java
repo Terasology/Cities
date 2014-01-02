@@ -28,7 +28,7 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.OffsetHeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * Converts a {@link SaddleRoof} into blocks
@@ -69,7 +69,7 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
             }
         };
 
-        final HeightMap bottomHm = new OffsetHeightMap(topHm, -1);
+        final HeightMap bottomHm = HeightMaps.offset(topHm, -1);
         
         brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_SADDLE);
         
