@@ -16,6 +16,8 @@
 
 package org.terasology.cities.model;
 
+import javax.vecmath.Point2i;
+
 import com.google.common.base.Optional;
 
 /**
@@ -28,12 +30,11 @@ public class MedievalTown extends City {
 
     /**
      * @param name the name of the city
-     * @param diameter the city diameter in blocks
-     * @param x the x coord (in blocks)
-     * @param z the z coord (in blocks)
+     * @param radius the city radius in blocks
+     * @param coords the world coordinate in blocks
      */
-    public MedievalTown(String name, double diameter, int x, int z) {
-        super(name, diameter, x, z);
+    public MedievalTown(String name, Point2i coords, int radius) {
+        super(name, coords, radius);
     }
 
     /**

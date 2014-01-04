@@ -24,18 +24,18 @@ import javax.vecmath.Point2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
-import org.terasology.cities.AreaInfo;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
+import org.terasology.cities.model.Site;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
@@ -82,18 +82,18 @@ public class RoadShapeGeneratorTest  {
             }
         }); 
 
-        CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
+        SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
         double maxDist = 800;
-        Function<City, Set<City>> cc = new CityConnector(cpr, maxDist);
-        final Function<Sector, Set<UnorderedPair<City>>> sc = CachingFunction.wrap(new SectorConnector(cpr, cc));
+        Function<Site, Set<Site>> cc = new SiteConnector(cpr, maxDist);
+        final Function<Sector, Set<UnorderedPair<Site>>> sc = CachingFunction.wrap(new SectorConnector(cpr, cc));
 
-        final Function<UnorderedPair<City>, Road> rg = CachingFunction.wrap(new Function<UnorderedPair<City>, Road>() {
+        final Function<UnorderedPair<Site>, Road> rg = CachingFunction.wrap(new Function<UnorderedPair<Site>, Road>() {
             private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
             private RoadModifierRandom rmr = new RoadModifierRandom(0.01);
 
             @Override
-            public Road apply(UnorderedPair<City> input) {
+            public Road apply(UnorderedPair<Site> input) {
                 Road road = rgs.apply(input);
                 rmr.apply(road);
                 return road;
@@ -107,8 +107,8 @@ public class RoadShapeGeneratorTest  {
             public Set<Road> apply(Sector sector) {
                 Set<Road> allRoads = Sets.newHashSet();
                 
-                Set<UnorderedPair<City>> localConns = sc.apply(sector);
-                Set<UnorderedPair<City>> allConns = Sets.newHashSet(localConns);
+                Set<UnorderedPair<Site>> localConns = sc.apply(sector);
+                Set<UnorderedPair<Site>> allConns = Sets.newHashSet(localConns);
                 
                 // add all neighbors, because their roads might be passing through
                 for (Orientation dir : Orientation.values()) {
@@ -117,7 +117,7 @@ public class RoadShapeGeneratorTest  {
                     allConns.addAll(sc.apply(neighbor));
                 }
 
-                for (UnorderedPair<City> conn : allConns) {
+                for (UnorderedPair<Site> conn : allConns) {
                     Road road = rg.apply(conn);
                     allRoads.add(road);
                 }

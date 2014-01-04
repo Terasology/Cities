@@ -23,16 +23,16 @@ import java.util.Set;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
-import org.terasology.cities.AreaInfo;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
+import org.terasology.cities.model.Site;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
@@ -69,10 +69,10 @@ public class SectorConnectorTest  {
             }
         }); 
 
-        CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
+        SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
         double maxDist = 800;
-        Function<City, Set<City>> cc = new CityConnector(cpr, maxDist);
+        Function<Site, Set<Site>> cc = new SiteConnector(cpr, maxDist);
         
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
@@ -90,12 +90,12 @@ public class SectorConnectorTest  {
             for (int z = 0; z < sectors; z++) {
                 Sector sector = Sectors.getSector(x, z);
                 
-                Set<UnorderedPair<City>> conns = sc.apply(sector);
+                Set<UnorderedPair<Site>> conns = sc.apply(sector);
                 hits += conns.size();
                 
                 // if only one connection exists, it may be longer -> keep cities connected
                 if (conns.size() > 1) {
-                    for (UnorderedPair<City> conn : conns) {
+                    for (UnorderedPair<Site> conn : conns) {
                         assertTrue("distance > maxDist", Point2iUtils.distance(conn.getA().getPos(), conn.getB().getPos()) <= maxDist);
                     }
                 }

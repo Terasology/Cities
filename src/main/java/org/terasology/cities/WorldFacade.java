@@ -18,6 +18,9 @@ package org.terasology.cities;
 
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.vecmath.Point2i;
@@ -28,8 +31,8 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.generator.CityConnector;
-import org.terasology.cities.generator.CityPlacerRandom;
+import org.terasology.cities.generator.SiteConnector;
+import org.terasology.cities.generator.SiteFinderRandom;
 import org.terasology.cities.generator.DefaultTownWallGenerator;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
@@ -48,14 +51,20 @@ import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.Site;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
+import org.terasology.cities.testing.NameList;
 import org.terasology.engine.CoreRegistry;
 import org.terasology.math.TeraMath;
+import org.terasology.namegenerator.logic.generators.Markov2NameGenerator;
+import org.terasology.namegenerator.logic.generators.NameGenerator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -68,9 +77,9 @@ public class WorldFacade {
     
     private CachingFunction<Sector, Set<City>> decoratedCities;
 
-    private Function<City, Set<City>> connectedCities;
+    private Function<Site, Set<Site>> connectedCities;
 
-    private Function<Sector, Set<UnorderedPair<City>>> sectorConnections;
+    private Function<Sector, Set<UnorderedPair<Site>>> sectorConnections;
 
     private Function<Point2i, Junction> junctions;
 
@@ -83,7 +92,7 @@ public class WorldFacade {
      * @param heightMap the height map to use
      * @param config the world configuration
      */
-    public WorldFacade(String seed, final HeightMap heightMap, final CityWorldConfig config) {
+    public WorldFacade(final String seed, final HeightMap heightMap, final CityWorldConfig config) {
 
         junctions = new Function<Point2i, Junction>() {
 
@@ -103,22 +112,22 @@ public class WorldFacade {
         AreaInfo globalAreaInfo = new AreaInfo(config, heightMap);
         
         Function<? super Sector, AreaInfo> sectorInfos = Functions.constant(globalAreaInfo);
-        CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
-        final Function<Sector, Set<City>> cityMap = CachingFunction.wrap(cpr);
+        SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
+        final Function<Sector, Set<Site>> siteMap = CachingFunction.wrap(cpr);
         
         double maxDist = config.getMaxConnectedCitiesDistance();
-        connectedCities = new CityConnector(cityMap, maxDist);
+        connectedCities = new SiteConnector(siteMap, maxDist);
         connectedCities = CachingFunction.wrap(connectedCities);
         
-        sectorConnections = new SectorConnector(cityMap, connectedCities);
+        sectorConnections = new SectorConnector(siteMap, connectedCities);
         sectorConnections = CachingFunction.wrap(sectorConnections);
 
-        Function<UnorderedPair<City>, Road> rg = new Function<UnorderedPair<City>, Road>() {
+        Function<UnorderedPair<Site>, Road> rg = new Function<UnorderedPair<Site>, Road>() {
             private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
             private RoadModifierRandom rmr = new RoadModifierRandom(10);
 
             @Override
-            public Road apply(UnorderedPair<City> input) {
+            public Road apply(UnorderedPair<Site> input) {
                 Road road = rgs.apply(input);
                 rmr.apply(road);
                 return road;
@@ -126,7 +135,7 @@ public class WorldFacade {
             
         };
         
-        final Function<UnorderedPair<City>, Road> cachedRoadgen = CachingFunction.wrap(rg);
+        final Function<UnorderedPair<Site>, Road> cachedRoadgen = CachingFunction.wrap(rg);
 
         roadMap = new Function<Sector, Set<Road>>() {
 
@@ -134,8 +143,8 @@ public class WorldFacade {
             public Set<Road> apply(Sector sector) {
                 Set<Road> allRoads = Sets.newHashSet();
                 
-                Set<UnorderedPair<City>> localConns = sectorConnections.apply(sector);
-                Set<UnorderedPair<City>> allConns = Sets.newHashSet(localConns);
+                Set<UnorderedPair<Site>> localConns = sectorConnections.apply(sector);
+                Set<UnorderedPair<Site>> allConns = Sets.newHashSet(localConns);
                 
                 // add all neighbors, because their roads might be passing through
                 for (Orientation dir : Orientation.values()) {
@@ -144,7 +153,7 @@ public class WorldFacade {
                     allConns.addAll(sectorConnections.apply(neighbor));
                 }
 
-                for (UnorderedPair<City> conn : allConns) {
+                for (UnorderedPair<Site> conn : allConns) {
                     Road road = cachedRoadgen.apply(conn);
                     allRoads.add(road);
                 }
@@ -169,7 +178,10 @@ public class WorldFacade {
             
             @Override
             public Set<City> apply(Sector input) {
-                
+
+                int sectorSeed = Objects.hashCode(seed, input);
+                NameGenerator nameGen = new Markov2NameGenerator(sectorSeed, Arrays.asList(NameList.NAMES));
+
                 if (logger.isInfoEnabled()) {
                     Profiler.start(input);
                 }
@@ -178,7 +190,7 @@ public class WorldFacade {
                     Profiler.start(input + "sites");
                 }
                 
-                Set<City> cities = cityMap.apply(input);
+                Set<Site> sites = siteMap.apply(input);
 
                 if (logger.isInfoEnabled()) {
                     String timeStr = Profiler.getAsStringAndStop(input + "sites");
@@ -196,59 +208,57 @@ public class WorldFacade {
                     logger.info("Generated roads for {} in {}", input, timeStr);
                 }
                 
-                for (City city : cities) {
+                Set<City> cities = Sets.newHashSet();
+                
+                for (Site site : sites) {
                     
                     if (logger.isInfoEnabled()) {
-                        Profiler.start(city);
+                        Profiler.start(site);
                     }
                     
-                    int minX = city.getPos().x - TeraMath.ceilToInt(city.getDiameter() * 0.5);
-                    int maxX = city.getPos().x + TeraMath.ceilToInt(city.getDiameter() * 0.5);
-                    int minZ = city.getPos().y - TeraMath.ceilToInt(city.getDiameter() * 0.5);
-                    int maxZ = city.getPos().y + TeraMath.ceilToInt(city.getDiameter() * 0.5);
+                    int minX = site.getPos().x - site.getRadius();
+                    int minZ = site.getPos().y - site.getRadius();
                     
-                    Rectangle cityArea = new Rectangle(minX, minZ, maxX - minX, maxZ - minZ);
+                    Rectangle cityArea = new Rectangle(minX, minZ, site.getRadius() * 2, site.getRadius() * 2);
                     HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
 
                     AreaInfo si = new AreaInfo(config, cityAreaHeightMap); 
                     si.addBlockedArea(roadShape);
                     
-                    if (city instanceof MedievalTown) {
-                        MedievalTown town = (MedievalTown) city;
-                        TownWall tw = twg.generate(city, si);
-                        town.setTownWall(tw);
+                    String name = nameGen.nextName(5, 10);
+                    MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
+                    TownWall tw = twg.generate(town, si);
+                    town.setTownWall(tw);
 
-                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
-                        Shape townWallShape = twsg.computeShape(tw);
-                        si.addBlockedArea(townWallShape);
-                    }
-
-                    if (city instanceof MedievalTown) {
-                        Set<SimpleLot> lots = churchLotGenerator.generate(city, si);
-                        if (!lots.isEmpty()) {
-                            SimpleLot lot = lots.iterator().next();
-                            SimpleChurch church = sacg.generate(lot);
-                            lot.addBuilding(church);
-                            city.add(lot);
-                        }
+                    TownWallShapeGenerator twsg = new TownWallShapeGenerator();
+                    Shape townWallShape = twsg.computeShape(tw);
+                    si.addBlockedArea(townWallShape);
+                    Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
+                    if (!churchLots.isEmpty()) {
+                        SimpleLot lot = churchLots.iterator().next();
+                        SimpleChurch church = sacg.generate(lot);
+                        lot.addBuilding(church);
+                        town.add(lot);
                     }
                     
-                    Set<SimpleLot> lots = housingLotGenerator.generate(city, si);
+                    Set<SimpleLot> housingLots = housingLotGenerator.generate(town, si);
                     
-                    for (SimpleLot lot : lots) {
-                        city.add(lot);
+                    for (SimpleLot lot : housingLots) {
+                        town.add(lot);
                         
                         for (SimpleBuilding bldg : blgGenerator.apply(lot)) {
                             lot.addBuilding(bldg);
-                            SimpleFence fence = sfg.createFence(city, lot.getShape());
+                            SimpleFence fence = sfg.createFence(town, lot.getShape());
                             lot.setFence(fence);
                         }
                     }
                     
                     if (logger.isInfoEnabled()) {
-                        String timeStr = Profiler.getAsStringAndStop(city);
-                        logger.info("Generated city '{}' in {} in {}", city, input, timeStr);
-                    }                    
+                        String timeStr = Profiler.getAsStringAndStop(site);
+                        logger.info("Generated city '{}' in {} in {}", town, input, timeStr);
+                    }
+                    
+                    cities.add(town);
                 }
                 
                 if (logger.isInfoEnabled()) {

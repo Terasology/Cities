@@ -17,32 +17,26 @@
 package org.terasology.cities.model;
 
 import java.util.Objects;
-import java.util.Set;
 
 import javax.vecmath.Point2i;
-
-import com.google.common.collect.Sets;
 
 /**
  * Provides information on a city
  * @author Martin Steiger
  */
-public class City {
+public class Site {
 
     private final Point2i coords;
-    private final Set<Lot> lots = Sets.newHashSet();
-    private String name;
     private int radius;
 
     /**
-     * @param name the name of the city
      * @param radius the city radius in blocks
-     * @param coords the world coordinate in blocks
+     * @param bx the x coord (in blocks)
+     * @param bz the z coord (in blocks)
      */
-    public City(String name, Point2i coords, int radius) {
+    public Site(int bx, int bz, int radius) {
         this.radius = radius;
-        this.name = name;
-        this.coords = new Point2i(coords);
+        this.coords = new Point2i(bx, bz);
     }
 
     /**
@@ -51,26 +45,19 @@ public class City {
     public Point2i getPos() {
         return coords;
     }
+
+    /**
+     * @return the radius of the settlements in blocks
+     */
+    public int getRadius() {
+        return radius;
+    }
     
     /**
      * @return the city center in sectors
      */
     public Sector getSector() {
         return Sectors.getSectorForBlock(coords.x, coords.y);
-    }
-
-    /**
-     * @return the diameter of the city (in blocks)
-     */
-    public double getDiameter() {
-        return this.radius * 2;
-    }
-
-    /**
-     * @return all lots that are part of the city
-     */
-    public Set<Lot> getLots() {
-        return lots;
     }
 
     @Override
@@ -85,20 +72,6 @@ public class City {
 
     @Override
     public String toString() {
-        return getName();
-    }
-
-    /**
-     * @return the name of the city
-     */
-    private String getName() {
-        return name;
-    }
-
-    /**
-     * @param lot the lot to add
-     */
-    public void add(Lot lot) {
-        this.lots.add(lot);
+        return "Site " + coords + " (" + radius + ")";
     }
 }

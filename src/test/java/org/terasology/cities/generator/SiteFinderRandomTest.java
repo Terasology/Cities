@@ -23,25 +23,25 @@ import java.util.Set;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.AreaInfo;
+import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
+import org.terasology.cities.model.Site;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
 import com.google.common.base.Function;
 
 /**
- * Tests {@link CityPlacerRandom}
+ * Tests {@link SiteFinderRandom}
  * @author Martin Steiger
  */
-public class CityPlacerRandomTest  {
+public class SiteFinderRandomTest  {
 
-    private static final Logger logger = LoggerFactory.getLogger(CityPlacerRandomTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SiteFinderRandomTest.class);
     
     /**
      * Performs through tests and logs computation time and results
@@ -66,7 +66,7 @@ public class CityPlacerRandomTest  {
             }
         }); 
         
-        CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
+        SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
         
         Profiler.start("city-placement");
         
@@ -75,17 +75,17 @@ public class CityPlacerRandomTest  {
         int[] hits = new int[bins];
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Set<City> cities = cpr.apply(Sectors.getSector(x, z));
+                Set<Site> sites = cpr.apply(Sectors.getSector(x, z));
                 
-                assertTrue(cities.size() >= minPerSector);
-                assertTrue(cities.size() <= maxPerSector);
+                assertTrue(sites.size() >= minPerSector);
+                assertTrue(sites.size() <= maxPerSector);
 
-                int bin = cities.size() - minPerSector;
+                int bin = sites.size() - minPerSector;
                 hits[bin]++;
 
-                for (City city : cities) {
-                    assertTrue(city.getDiameter() >= minSize);
-                    assertTrue(city.getDiameter() <= maxSize);
+                for (Site site : sites) {
+                    assertTrue(site.getRadius() * 2 >= minSize);
+                    assertTrue(site.getRadius() * 2 <= maxSize);
                 }
             }
         }

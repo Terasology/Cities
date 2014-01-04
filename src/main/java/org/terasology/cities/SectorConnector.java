@@ -19,8 +19,8 @@ package org.terasology.cities;
 import java.util.Set;
 
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -29,31 +29,31 @@ import com.google.common.collect.Sets;
  * Defines connections for a sector
  * @author Martin Steiger
  */
-public class SectorConnector implements Function<Sector, Set<UnorderedPair<City>>> {
+public class SectorConnector implements Function<Sector, Set<UnorderedPair<Site>>> {
 
-    private final Function<Sector, Set<City>> cityMap;
-    private final Function<City, Set<City>> connectedCities;
+    private final Function<Sector, Set<Site>> siteMap;
+    private final Function<Site, Set<Site>> connectedCities;
 
     /**
-     * @param cityMap defines cities in a sector
-     * @param connectedCities defines pair-wise connections between cities
+     * @param siteMap defines sites in a sector
+     * @param connectedCities defines pair-wise connections between sites
      */
-    public SectorConnector(Function<Sector, Set<City>> cityMap, Function<City, Set<City>> connectedCities) {
-        this.cityMap = cityMap;
+    public SectorConnector(Function<Sector, Set<Site>> siteMap, Function<Site, Set<Site>> connectedCities) {
+        this.siteMap = siteMap;
         this.connectedCities = connectedCities;
     }
 
     @Override
-    public Set<UnorderedPair<City>> apply(Sector sector) {
-        Set<City> cities = Sets.newHashSet(cityMap.apply(sector));
+    public Set<UnorderedPair<Site>> apply(Sector sector) {
+        Set<Site> sites = Sets.newHashSet(siteMap.apply(sector));
 
-        Set<UnorderedPair<City>> connections = Sets.newHashSet();
+        Set<UnorderedPair<Site>> connections = Sets.newHashSet();
         
-        for (City city : cities) {
-            Set<City> conn = connectedCities.apply(city);
+        for (Site site : sites) {
+            Set<Site> conn = connectedCities.apply(site);
             
-            for (City other : conn) {
-                connections.add(new UnorderedPair<City>(city, other));
+            for (Site other : conn) {
+                connections.add(new UnorderedPair<Site>(site, other));
             }
         }
         

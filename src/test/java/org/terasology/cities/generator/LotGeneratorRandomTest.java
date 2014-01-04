@@ -30,16 +30,18 @@ import javax.vecmath.Point2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.AreaInfo;
+import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.model.Building;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.SimpleBuilding;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.Site;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
@@ -76,7 +78,7 @@ public class LotGeneratorRandomTest  {
                 return new AreaInfo(config, heightMap);
             }
         }); 
-        Function<Sector, Set<City>> cpr = CachingFunction.wrap(new CityPlacerRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize));
+        Function<Sector, Set<Site>> cpr = CachingFunction.wrap(new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize));
         
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
@@ -94,13 +96,14 @@ public class LotGeneratorRandomTest  {
         int bdgCount = 0;
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
-                Set<City> cities = cpr.apply(Sectors.getSector(x, z));
+                Set<Site> sites = cpr.apply(Sectors.getSector(x, z));
                 
-                for (City city : cities) {
-                    Point2i pos = city.getPos();
-                    double rad = city.getDiameter() * 0.5;
+                for (Site site : sites) {
+                    Point2i pos = site.getPos();
+                    int rad = site.getRadius();
                     Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
 
+                    City city = new MedievalTown("name", site.getPos(), rad);
                     Set<SimpleLot> lots = lg.generate(city, sectorInfos.apply(Sectors.getSector(x, z)));
                     List<SimpleLot> list = Lists.newArrayList(lots);
                     

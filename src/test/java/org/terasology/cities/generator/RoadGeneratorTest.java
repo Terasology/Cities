@@ -23,17 +23,17 @@ import javax.vecmath.Point2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
-import org.terasology.cities.AreaInfo;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
+import org.terasology.cities.model.Site;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
@@ -79,19 +79,19 @@ public class RoadGeneratorTest  {
             }
         }); 
 
-        CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
+        SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
         double maxDist = 800;
-        Function<City, Set<City>> cc = new CityConnector(cpr, maxDist);
-        Function<Sector, Set<UnorderedPair<City>>> sc = new SectorConnector(cpr, cc);
+        Function<Site, Set<Site>> cc = new SiteConnector(cpr, maxDist);
+        Function<Sector, Set<UnorderedPair<Site>>> sc = new SectorConnector(cpr, cc);
         sc = CachingFunction.wrap(sc);
 
-        Function<UnorderedPair<City>, Road> rg = new Function<UnorderedPair<City>, Road>() {
+        Function<UnorderedPair<Site>, Road> rg = new Function<UnorderedPair<Site>, Road>() {
             private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
             private RoadModifierRandom rmr = new RoadModifierRandom(0.01);
 
             @Override
-            public Road apply(UnorderedPair<City> input) {
+            public Road apply(UnorderedPair<Site> input) {
                 Road road = rgs.apply(input);
                 rmr.apply(road);
                 return road;
@@ -115,10 +115,10 @@ public class RoadGeneratorTest  {
             for (int z = 0; z < sectors; z++) {
                 Sector sector = Sectors.getSector(x, z);
                 
-                Set<UnorderedPair<City>> conns = sc.apply(sector);
+                Set<UnorderedPair<Site>> conns = sc.apply(sector);
                 hits += conns.size();
                 
-                for (UnorderedPair<City> conn : conns) {
+                for (UnorderedPair<Site> conn : conns) {
                     rg.apply(conn);
                 }
             }

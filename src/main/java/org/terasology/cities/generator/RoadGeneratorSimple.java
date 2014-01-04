@@ -20,9 +20,9 @@ import javax.vecmath.Point2i;
 
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
+import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
 
@@ -30,7 +30,7 @@ import com.google.common.base.Function;
  * Creates a simple, straight, road with no segments for a connection 
  * @author Martin Steiger
  */
-public class RoadGeneratorSimple implements Function<UnorderedPair<City>, Road> {
+public class RoadGeneratorSimple implements Function<UnorderedPair<Site>, Road> {
     
     private Function<Point2i, Junction> junctions;
     private double avgSegmentLength = 100;
@@ -43,10 +43,10 @@ public class RoadGeneratorSimple implements Function<UnorderedPair<City>, Road> 
     }
     
     @Override
-    public Road apply(UnorderedPair<City> pair) {
+    public Road apply(UnorderedPair<Site> pair) {
 
-        City a = pair.getA();
-        City b = pair.getB();
+        Site a = pair.getA();
+        Site b = pair.getB();
         
         Point2i posA = a.getPos();
         Point2i posB = b.getPos();
@@ -57,10 +57,12 @@ public class RoadGeneratorSimple implements Function<UnorderedPair<City>, Road> 
 
         addSegments(road, avgSegmentLength);
 
-        // here we define width as the log of the smaller city's size
-        double avgSize = Math.min(a.getDiameter(), b.getDiameter());
+        // here we define width as the log of the smaller site's size
+        double avgSize = Math.min(a.getRadius(), b.getRadius());
         float width = (float) Math.max(1.0, Math.log(avgSize));
         width = (float) Math.floor(width * 0.5);
+        
+        // TODO: check and remove
         road.setWidth(1.0f);
 
         return road;

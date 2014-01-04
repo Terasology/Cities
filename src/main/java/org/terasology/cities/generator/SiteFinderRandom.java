@@ -16,7 +16,6 @@
 
 package org.terasology.cities.generator;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,13 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.model.City;
-import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Sector;
-import org.terasology.cities.testing.NameList;
+import org.terasology.cities.model.Site;
 import org.terasology.math.TeraMath;
-import org.terasology.namegenerator.logic.generators.Markov2NameGenerator;
-import org.terasology.namegenerator.logic.generators.NameGenerator;
 import org.terasology.utilities.random.FastRandom;
 
 import com.google.common.base.Function;
@@ -44,9 +39,9 @@ import com.google.common.collect.Sets;
  * It checks for minimum distance to other cities in the SAME sector, but not others.
  * @author Martin Steiger
  */
-public class CityPlacerRandom implements Function<Sector, Set<City>> {
+public class SiteFinderRandom implements Function<Sector, Set<Site>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CityPlacerRandom.class);
+    private static final Logger logger = LoggerFactory.getLogger(SiteFinderRandom.class);
     
     private final String seed;
 
@@ -66,7 +61,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
      * @param minSize minimum settlement size
      * @param maxSize maximum settlement size 
      */
-    public CityPlacerRandom(String seed, Function<? super Sector, AreaInfo> sectorInfos, int minPerSector, int maxPerSector, int minSize, int maxSize) {
+    public SiteFinderRandom(String seed, Function<? super Sector, AreaInfo> sectorInfos, int minPerSector, int maxPerSector, int minSize, int maxSize) {
         this.seed = seed;
         this.sectorInfos = sectorInfos;
         this.minPerSector = minPerSector;
@@ -80,7 +75,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
      * @return a set of cities
      */
     @Override
-    public Set<City> apply(Sector sector) {
+    public Set<Site> apply(Sector sector) {
         final int maxTries = 3;
         
         // create deterministic random
@@ -88,19 +83,18 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
         int hash = Objects.hash(seed, sector);
         FastRandom fr = new FastRandom(hash);
 
-        Set<City> result = Sets.newHashSet();
+        Set<Site> result = Sets.newHashSet();
         
         int count = fr.nextInt(minPerSector, maxPerSector);
 
-        logger.debug("Creating {} cities in {}", count, sector);
+        logger.debug("Creating {} sites in {}", count, sector);
         
-        NameGenerator nameGen = new Markov2NameGenerator(hash, Arrays.asList(NameList.NAMES));
         AreaInfo si = sectorInfos.apply(sector);
         
         for (int i = 0; i < count; i++) {
 
             // try n times to randomly place a new city and check the distance to existing ones
-            City ci;
+            Site site;
             int tries = maxTries;
             do {
                 double nx = sc.x + fr.nextDouble();
@@ -113,42 +107,41 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
                 int cx = TeraMath.floorToInt(nx * Sector.SIZE + 0.5);
                 int cz = TeraMath.floorToInt(nz * Sector.SIZE + 0.5);
                 
-                String name = nameGen.nextName(5, 10);
-                ci = new MedievalTown(name, size, cx, cz);
+                site = new Site(cx, cz, (int) size / 2);
                 tries--;
                 
-            } while (!placementOk(ci, si, result) && tries >= 0);            
+            } while (!placementOk(site, si, result) && tries >= 0);            
 
             if (tries < 0) {
-                logger.debug("Could not place a new city at {}", sector);
+                logger.debug("Could not place a new site at {}", sector);
             } else {
-                logger.debug("{} - Creating city {} at {}", sector.toString(), ci.toString(), ci.getPos());
-                result.add(ci);
+                logger.debug("{} - Creating site {} at {}", sector.toString(), site.toString(), site.getPos());
+                result.add(site);
             }
         }
 
         return result;
     }
 
-    private boolean placementOk(City city, AreaInfo si, Set<City> others) {
+    private boolean placementOk(Site site, AreaInfo si, Set<Site> others) {
         final double minDistToOthers = 200;
         
-        if (!distanceToOthersOk(city, others, minDistToOthers)) {
+        if (!distanceToOthersOk(site, others, minDistToOthers)) {
             return false;
         }
         
-        if (si.isBlocked(city.getPos())) {
+        if (si.isBlocked(site.getPos())) {
             return false;
         }
         
         return true;
     }
     
-    private boolean distanceToOthersOk(City city, Set<City> cities, double minDist) {
+    private boolean distanceToOthersOk(Site city, Set<Site> others, double minDist) {
             
         Point2i pos = city.getPos();
 
-        for (City other : cities) {
+        for (Site other : others) {
             double distSq = Point2iUtils.distanceSquared(pos, other.getPos());
             if (distSq < minDist * minDist) {
                 return false;

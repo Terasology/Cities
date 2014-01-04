@@ -22,57 +22,57 @@ import javax.vecmath.Point2i;
 
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
 /**
- * Defines connections of a city to other cities in the same and neighboring sectors.
- * All cities within a given radius are connected. If none are found the closest city
+ * Defines connections of a site to other sites in the same and neighboring sectors.
+ * All sites within a given radius are connected. If none are found the closest site
  * is connected.
  * @author Martin Steiger
  */
-public class CityConnector implements Function<City, Set<City>> {
+public class SiteConnector implements Function<Site, Set<Site>> {
   
-    private final Function<Sector, Set<City>> cityMap;
+    private final Function<Sector, Set<Site>> siteMap;
     private final double maxDist;
 
     /**
-     * @param cityMap a function that defines cities
-     * @param maxDist the maximum distance between two connected cities
+     * @param siteMap a function that defines sites
+     * @param maxDist the maximum distance between two connected sites
      */
-    public CityConnector(Function<Sector, Set<City>> cityMap, double maxDist) {
-        this.cityMap = cityMap;
+    public SiteConnector(Function<Sector, Set<Site>> siteMap, double maxDist) {
+        this.siteMap = siteMap;
         this.maxDist = maxDist;
     }
     
     /**
-     * @param city the city of interest
-     * @return a set of connected cities (including those in neighbor sectors)
+     * @param site the site of interest
+     * @return a set of connected sites (including those in neighbor sectors)
      */
     @Override
-    public Set<City> apply(City city) {
+    public Set<Site> apply(Site site) {
         
-        Sector sector = city.getSector();
+        Sector sector = site.getSector();
         
-        Set<City> directNeighs = cityMap.apply(sector);
-        Set<City> cities = Sets.newHashSet(directNeighs); 
+        Set<Site> directNeighs = siteMap.apply(sector);
+        Set<Site> sites = Sets.newHashSet(directNeighs); 
 
         for (Orientation dir : Orientation.values()) {
             Sector neighbor = sector.getNeighbor(dir);
-            Set<City> neighCities = cityMap.apply(neighbor);
-            cities.addAll(neighCities);
+            Set<Site> neighCities = siteMap.apply(neighbor);
+            sites.addAll(neighCities);
         }
         
-        cities.remove(city);
+        sites.remove(site);
         
-        Set<City> result = citiesInRange(city, cities);
+        Set<Site> result = sitesInRange(site, sites);
         
         if (result.isEmpty()) {
-            Optional<City> closest = getClosest(city, cities);
+            Optional<Site> closest = getClosest(site, sites);
             if (closest.isPresent()) {
                 result.add(closest.get());
             }
@@ -82,17 +82,17 @@ public class CityConnector implements Function<City, Set<City>> {
     }
 
     /**
-     * @param city the city
-     * @param cities a set of cities in the neighborhood
-     * @return the closest city from the set
+     * @param site the site
+     * @param sites a set of sites in the neighborhood
+     * @return the closest site from the set
      */
-    private Optional<City> getClosest(City city, Set<City> cities) {
+    private Optional<Site> getClosest(Site site, Set<Site> sites) {
         
         double minDist = Double.MAX_VALUE;
-        Optional<City> best = Optional.absent();
-        Point2i pos = city.getPos();
+        Optional<Site> best = Optional.absent();
+        Point2i pos = site.getPos();
 
-        for (City other : cities) {
+        for (Site other : sites) {
             double distSq = Point2iUtils.distanceSquared(pos, other.getPos());
             if (distSq < minDist) {
                 minDist = distSq;
@@ -104,16 +104,16 @@ public class CityConnector implements Function<City, Set<City>> {
     }
 
     /**
-     * @param city the city
-     * @param neighbors a set of cities in the neighborhood
-     * @return all cities within maxDist
+     * @param site the site
+     * @param neighbors a set of sites in the neighborhood
+     * @return all sites within maxDist
      */
-    private Set<City> citiesInRange(City city, Set<City> neighbors) {
-        Set<City> closeCities = Sets.newHashSet(); 
+    private Set<Site> sitesInRange(Site site, Set<Site> neighbors) {
+        Set<Site> closeCities = Sets.newHashSet(); 
 
-        Point2i pos1 = city.getPos();
+        Point2i pos1 = site.getPos();
 
-        for (City other : neighbors) {
+        for (Site other : neighbors) {
             Point2i pos2 = other.getPos();
             double distSq = Point2iUtils.distanceSquared(pos1, pos2);
 
