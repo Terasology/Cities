@@ -22,39 +22,35 @@ import java.awt.geom.Path2D;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMaps;
 
 /**
- * TODO Type description
+ * Contains information on whether an area is blocked or not
  * @author Martin Steiger
  */
-public class SectorInfo {
+public class AreaInfo {
 
     private final HeightMap heightMap;  
     private final Path2D blockedArea = new Path2D.Double();
     private CityWorldConfig config;
-    private Rectangle sectorRect;
     
-    public SectorInfo(Sector sector, CityWorldConfig config, HeightMap hm) {
-        
-        int wx = sector.getCoords().x * Sector.SIZE;
-        int wz = sector.getCoords().y * Sector.SIZE;
-        int scale = 4;
-        
-        sectorRect = new Rectangle(wx, wz, Sector.SIZE, Sector.SIZE);
-        this.heightMap = HeightMaps.caching(hm, sectorRect, scale);
+    /**
+     * @param config the world config (sea level, etc)
+     * @param hm the height map to use
+     */
+    public AreaInfo(CityWorldConfig config, HeightMap hm) {
+
+        this.heightMap = hm;
         this.config = config;
     }
 
     /**
      * Marks an area as blocked 
-     * @param area the area shape to add
+     * @param shape the area shape to add
      */
-    public void addBlockedArea(Shape area) {
+    public void addBlockedArea(Shape shape) {
         
-        blockedArea.append(area, false);
+        blockedArea.append(shape, false);
     }
 
     /**

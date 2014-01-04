@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.CityWorldConfig;
-import org.terasology.cities.SectorInfo;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.model.City;
@@ -58,11 +58,11 @@ public class CityPlacerRandomTest  {
         
         final CityWorldConfig config = new CityWorldConfig();
         final HeightMap heightMap = HeightMaps.constant(10);
-        final Function<Sector, SectorInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, SectorInfo>() {
+        final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
 
             @Override
-            public SectorInfo apply(Sector input) {
-                return new SectorInfo(input, config, heightMap);
+            public AreaInfo apply(Sector input) {
+                return new AreaInfo(config, heightMap);
             }
         }); 
         

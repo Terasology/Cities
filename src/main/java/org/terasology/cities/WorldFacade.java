@@ -16,6 +16,7 @@
 
 package org.terasology.cities;
 
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Set;
 
@@ -46,9 +47,12 @@ import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.engine.CoreRegistry;
+import org.terasology.math.TeraMath;
 
 import com.google.common.base.Function;
+import com.google.common.base.Functions;
 import com.google.common.collect.Sets;
 
 /**
@@ -76,14 +80,6 @@ public class WorldFacade {
      */
     public WorldFacade(String seed, final HeightMap heightMap, final CityWorldConfig config) {
 
-        final Function<Sector, SectorInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, SectorInfo>() {
-
-            @Override
-            public SectorInfo apply(Sector input) {
-                return new SectorInfo(input, config, heightMap);
-            }
-        }); 
-                
         junctions = new Function<Point2i, Junction>() {
 
             @Override
@@ -99,6 +95,9 @@ public class WorldFacade {
         int minSize = config.getMinCityRadius();
         int maxSize = config.getMaxCityRadius();
         
+        AreaInfo globalAreaInfo = new AreaInfo(config, heightMap);
+        
+        Function<? super Sector, AreaInfo> sectorInfos = Functions.constant(globalAreaInfo);
         CityPlacerRandom cpr = new CityPlacerRandom(seed, sectorInfos, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
         final Function<Sector, Set<City>> cityMap = CachingFunction.wrap(cpr);
         
@@ -166,13 +165,21 @@ public class WorldFacade {
             @Override
             public Set<City> apply(Sector input) {
                 
-                SectorInfo si = sectorInfos.apply(input);
                 Set<City> cities = cityMap.apply(input);
                 
                 Shape roadShape = roadShapeFunc.apply(input);
-                si.addBlockedArea(roadShape);
 
                 for (City city : cities) {
+                    int minX = city.getPos().x - TeraMath.ceilToInt(city.getDiameter() * 0.5);
+                    int maxX = city.getPos().x + TeraMath.ceilToInt(city.getDiameter() * 0.5);
+                    int minZ = city.getPos().y - TeraMath.ceilToInt(city.getDiameter() * 0.5);
+                    int maxZ = city.getPos().y + TeraMath.ceilToInt(city.getDiameter() * 0.5);
+                    
+                    Rectangle cityArea = new Rectangle(minX, minZ, maxX - minX, maxZ - minZ);
+                    HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
+
+                    AreaInfo si = new AreaInfo(config, heightMap); 
+                    si.addBlockedArea(roadShape);
                     
                     if (city instanceof MedievalTown) {
                         MedievalTown town = (MedievalTown) city;
@@ -210,6 +217,7 @@ public class WorldFacade {
             }
         });
         
+        // this required by WorldEventReceiver
         CoreRegistry.putPermanently(WorldFacade.class, this);
     }
     

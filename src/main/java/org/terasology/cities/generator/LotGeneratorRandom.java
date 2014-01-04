@@ -27,7 +27,7 @@ import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.SectorInfo;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.utilities.random.FastRandom;
@@ -82,7 +82,7 @@ public class LotGeneratorRandom {
      * @param si describes the blocked area for a sector
      * @return a set of lots for that city within the city radius
      */
-    public Set<SimpleLot> generate(City city, SectorInfo si) {
+    public Set<SimpleLot> generate(City city, AreaInfo si) {
         Random rand = new FastRandom(Objects.hash(seed, city));
         
         Point2i center = city.getPos();

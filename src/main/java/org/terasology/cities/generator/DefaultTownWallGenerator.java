@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 import java.util.List;
 import java.util.Objects;
 
-import org.terasology.cities.SectorInfo;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.SimpleTower;
@@ -58,7 +58,7 @@ public class DefaultTownWallGenerator {
      * @param sectorInfo the blocked area
      * @return a town wall
      */
-    public TownWall generate(City city, SectorInfo sectorInfo) {
+    public TownWall generate(City city, AreaInfo sectorInfo) {
         Random rand = new MersenneRandom(Objects.hash(seed, city.hashCode()));
         
         int cx = city.getPos().x;
@@ -163,7 +163,7 @@ public class DefaultTownWallGenerator {
         return wall;
     }
 
-    private List<Boolean> getBlockedPos(List<Vector2i> tp, SectorInfo sectorInfo) {
+    private List<Boolean> getBlockedPos(List<Vector2i> tp, AreaInfo sectorInfo) {
         List<Boolean> list = Lists.newArrayList();
         
         for (Vector2i pos : tp) {

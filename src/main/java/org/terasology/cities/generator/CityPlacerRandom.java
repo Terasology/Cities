@@ -24,7 +24,7 @@ import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.SectorInfo;
+import org.terasology.cities.AreaInfo;
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.MedievalTown;
@@ -56,7 +56,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
     private final int minPerSector;
     private final int maxPerSector;
 
-    private Function<Sector, SectorInfo> sectorInfos;
+    private Function<? super Sector, AreaInfo> sectorInfos;
 
     /**
      * @param seed the seed
@@ -66,7 +66,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
      * @param minSize minimum settlement size
      * @param maxSize maximum settlement size 
      */
-    public CityPlacerRandom(String seed, Function<Sector, SectorInfo> sectorInfos, int minPerSector, int maxPerSector, int minSize, int maxSize) {
+    public CityPlacerRandom(String seed, Function<? super Sector, AreaInfo> sectorInfos, int minPerSector, int maxPerSector, int minSize, int maxSize) {
         this.seed = seed;
         this.sectorInfos = sectorInfos;
         this.minPerSector = minPerSector;
@@ -95,7 +95,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
         logger.debug("Creating {} cities in {}", count, sector);
         
         NameGenerator nameGen = new Markov2NameGenerator(hash, Arrays.asList(NameList.NAMES));
-        SectorInfo si = sectorInfos.apply(sector);
+        AreaInfo si = sectorInfos.apply(sector);
         
         for (int i = 0; i < count; i++) {
 
@@ -130,7 +130,7 @@ public class CityPlacerRandom implements Function<Sector, Set<City>> {
         return result;
     }
 
-    private boolean placementOk(City city, SectorInfo si, Set<City> others) {
+    private boolean placementOk(City city, AreaInfo si, Set<City> others) {
         final double minDistToOthers = 200;
         
         if (!distanceToOthersOk(city, others, minDistToOthers)) {

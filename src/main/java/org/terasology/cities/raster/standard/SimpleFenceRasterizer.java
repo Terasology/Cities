@@ -42,10 +42,6 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
             return;
         }
         
-        if (fenceRc.intersects(brushRc)) {
-            return;
-        }   
-        
         // for debugging only -- add +1 manually later
         HeightMap hm = HeightMaps.offset(ti.getHeightMap(), 1);
         
