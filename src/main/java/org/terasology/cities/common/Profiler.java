@@ -18,7 +18,10 @@ package org.terasology.cities.common;
 
 import java.util.Map;
 
-import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * A simple, but effective thread-safe profiler for micro-benchmarking.
@@ -27,7 +30,9 @@ import com.google.common.collect.Maps;
  */
 public final class Profiler {
     
-    private static final Map<Object, Long> TIME_MAP = Maps.newConcurrentMap();
+    private static final Logger logger = LoggerFactory.getLogger(Profiler.class);
+    
+    private static final Map<Object, Long> TIME_MAP = new MapMaker().makeMap();
     
     private Profiler() {
         // private constructor
@@ -38,16 +43,23 @@ public final class Profiler {
      * @param id an identifier object
      */
     public static void start(Object id) {
+        if (TIME_MAP.size() % 100 == 99) {
+            logger.warn("Number of active measurements suspiciously large ({})", TIME_MAP.size());
+        }
+            
         long time = measure();
-        TIME_MAP.put(id, time);
+        
+        if (TIME_MAP.put(id, time) != null) {
+            logger.warn("ID {} already existed - overwriting..", id);
+        }
     }
     
     /**
-     * Removes a measurement recording with the specified ID
+     * Get the measurement with the specified ID and stop the timer
      * @param id an identifier object
      * @return the time in milliseconds
      */
-    public static double stop(Object id) {
+    public static double getAndStop(Object id) {
         double time = get(id);
         TIME_MAP.remove(id);
         return time;
@@ -78,7 +90,18 @@ public final class Profiler {
         double time = get(id);
         return String.format("%.2fms.", time);
     }
-
+    
+    /**
+     * Get the time since start() was last called as formatted string (e.g. 334.22ms) and stop the timer
+     * @param id an identifier object
+     * @return the time in milliseconds as formatted string
+     */
+    public static String getAsStringAndStop(Object id) {
+        String str = getAsString(id);
+        TIME_MAP.remove(id);
+        return str;
+    }
+    
     private static long measure() {
         return System.nanoTime();
     }
