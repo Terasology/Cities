@@ -22,8 +22,11 @@ import java.util.Set;
 
 import javax.vecmath.Point2i;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.generator.CityConnector;
 import org.terasology.cities.generator.CityPlacerRandom;
@@ -61,6 +64,8 @@ import com.google.common.collect.Sets;
  */
 public class WorldFacade {
 
+    private static final Logger logger = LoggerFactory.getLogger(WorldFacade.class);
+    
     private CachingFunction<Sector, Set<City>> decoratedCities;
 
     private Function<City, Set<City>> connectedCities;
@@ -165,11 +170,38 @@ public class WorldFacade {
             @Override
             public Set<City> apply(Sector input) {
                 
-                Set<City> cities = cityMap.apply(input);
+                if (logger.isInfoEnabled()) {
+                    Profiler.start(input);
+                }
+
+                if (logger.isInfoEnabled()) {
+                    Profiler.start(input + "sites");
+                }
                 
+                Set<City> cities = cityMap.apply(input);
+
+                if (logger.isInfoEnabled()) {
+                    String timeStr = Profiler.getAsStringAndStop(input + "sites");
+                    logger.info("Generated settlement sites for {} in {}", input, timeStr);
+                }
+
+                if (logger.isInfoEnabled()) {
+                    Profiler.start(input + "roads");
+                }
+
                 Shape roadShape = roadShapeFunc.apply(input);
 
+                if (logger.isInfoEnabled()) {
+                    String timeStr = Profiler.getAsStringAndStop(input + "roads");
+                    logger.info("Generated roads for {} in {}", input, timeStr);
+                }
+                
                 for (City city : cities) {
+                    
+                    if (logger.isInfoEnabled()) {
+                        Profiler.start(city);
+                    }
+                    
                     int minX = city.getPos().x - TeraMath.ceilToInt(city.getDiameter() * 0.5);
                     int maxX = city.getPos().x + TeraMath.ceilToInt(city.getDiameter() * 0.5);
                     int minZ = city.getPos().y - TeraMath.ceilToInt(city.getDiameter() * 0.5);
@@ -178,7 +210,7 @@ public class WorldFacade {
                     Rectangle cityArea = new Rectangle(minX, minZ, maxX - minX, maxZ - minZ);
                     HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
 
-                    AreaInfo si = new AreaInfo(config, heightMap); 
+                    AreaInfo si = new AreaInfo(config, cityAreaHeightMap); 
                     si.addBlockedArea(roadShape);
                     
                     if (city instanceof MedievalTown) {
@@ -212,7 +244,18 @@ public class WorldFacade {
                             lot.setFence(fence);
                         }
                     }
+                    
+                    if (logger.isInfoEnabled()) {
+                        String timeStr = Profiler.getAsStringAndStop(city);
+                        logger.info("Generated city '{}' in {} in {}", city, input, timeStr);
+                    }                    
                 }
+                
+                if (logger.isInfoEnabled()) {
+                    String timeStr = Profiler.getAsStringAndStop(input);
+                    logger.info("Generated {} .. in {}", input, timeStr);
+                }
+
                 return cities;
             }
         });
