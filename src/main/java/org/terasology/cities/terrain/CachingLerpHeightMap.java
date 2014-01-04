@@ -34,13 +34,13 @@ class CachingLerpHeightMap extends HeightMapAdapter {
     private final Rectangle area;
     private final HeightMap hm;
     private final int scale;
-    private final int scaledWidth;
-    private final int scaledHeight;
+    private int scaledWidth;
+    private int scaledHeight;
 
     /**
      * @param area the area to cache
      * @param hm the height map to use
-     * @param scale the scale level (should be a divisor of area.width and area.height)
+     * @param scale the scale level
      */
     public CachingLerpHeightMap(Rectangle area, HeightMap hm, int scale) {
         this.area = area;
@@ -49,6 +49,16 @@ class CachingLerpHeightMap extends HeightMapAdapter {
         
         this.scaledWidth = area.width / scale + 1;
         this.scaledHeight = area.height / scale + 1;
+        
+        // if scale is not a divisor of the width -> round up
+        if (area.width % scale > 0) {
+            scaledWidth++;
+        }
+        
+        // if scale is not a divisor of the height -> round up
+        if (area.height % scale > 0) {
+            scaledHeight++;
+        }
 
         this.height = new short[scaledWidth * scaledHeight];
         
@@ -67,6 +77,7 @@ class CachingLerpHeightMap extends HeightMapAdapter {
         boolean zOk = (z >= area.y) && (z < area.y + area.height);
         
         if (xOk && zOk) {
+
             double lx = (x - area.x) / (double) scale;
             double lz = (z - area.y) / (double) scale;
 
@@ -89,7 +100,7 @@ class CachingLerpHeightMap extends HeightMapAdapter {
 
             double res = TeraMath.lerp(min, max, ipz);
 
-            return TeraMath.floorToInt(res + 0.5);
+            return TeraMath.floorToInt(res + 0.49);
         }
         
         logger.debug("Accessing height map outside cached bounds -- referring to uncached height map");
