@@ -46,12 +46,18 @@ public class ContourTracer {
     // 0 ... unlabeled
     // -1 ... previously visited background pixel
     // >0 ... valid label
-    private int[][] labelArray;
+    private Array2D labelArray;
 
     private final HeightMap dataMap;
     private final int width;
     private final int height;
 
+    /**
+     * @param orgHm the original height map to use
+     * @param width the width of the scanning area
+     * @param height the height of the scanning area
+     * @param threshold the sea level threshold
+     */
     public ContourTracer(final HeightMap orgHm, int width, int height, final int threshold) {
         // Create auxil. arrays, which are "padded", i.e.,
         // are 2 rows and 2 columns larger than the image:
@@ -59,13 +65,13 @@ public class ContourTracer {
         this.width = width;
         this.height = height;
         
-        labelArray = new int[height + 2][width + 2];
+        labelArray = new Array2D(width, height, 1, BACKGROUND);
 
         this.dataMap = new HeightMapAdapter() {
 
             @Override
             public int apply(int x, int z) {
-                if (orgHm.apply(x - 1, z - 1) > threshold) {
+                if (orgHm.apply(x, z) > threshold) {
                     return FOREGROUND;
                 } else {
                     return BACKGROUND;
@@ -74,6 +80,9 @@ public class ContourTracer {
         };
     }
 
+    /**
+     * @return a list of outer contours
+     */
     public List<Contour> getOuterContours() {
         if (outerContours == null) {
             outerContours = new ArrayList<>();
@@ -84,6 +93,9 @@ public class ContourTracer {
         return outerContours;
     }
 
+    /**
+     * @return a list of inner contours (islands)
+     */
     public List<Contour> getInnerContours() {
         if (innerContours == null) {
             outerContours = new ArrayList<>();
@@ -131,7 +143,7 @@ public class ContourTracer {
         boolean done = (xS == xT && yS == yT); // true if isolated pixel
 
         while (!done) {
-            labelArray[yC][xC] = label;
+            labelArray.set(xC, yC, label);
             pt = new Point(xC, yC);
             int dSearch = (dNext + 6) % 8;
             dNext = findNextPoint(pt, dSearch);
@@ -165,7 +177,7 @@ public class ContourTracer {
             int x = pt.x + delta[dir][0];
             int y = pt.y + delta[dir][1];
             if (dataMap.apply(x, y) == BACKGROUND) {
-                labelArray[y][x] = -1; // mark surrounding background pixels
+                labelArray.set(x, y, -1); // mark surrounding background pixels
                 dir = (dir + 1) % 8;
             } else { // found non-background pixel
                 pt.x = x;
@@ -181,26 +193,26 @@ public class ContourTracer {
         int maxLabel = 0;
         
         // scan top to bottom, left to right
-        for (int v = 1; v < height; v++) {
+        for (int v = 0; v < height; v++) {
             label = 0; // no label
-            for (int u = 1; u < width; u++) {
+            for (int u = 0; u < width; u++) {
 
                 if (dataMap.apply(u, v) == FOREGROUND) {
                     if (label != 0) { // keep using same label
-                        labelArray[v][u] = label;
+                        labelArray.set(u, v, label);
                     } else {
-                        label = labelArray[v][u];
+                        label = labelArray.get(u, v);
                         if (label == 0) { // unlabeled - new outer contour
                             maxLabel++;
                             label = maxLabel;
                             Contour oc = traceOuterContour(u, v, label);
                             outerContours.add(oc);
-                            labelArray[v][u] = label;
+                            labelArray.set(u, v, label);
                         }
                     }
                 } else {            // BACKGROUND pixel
                     if (label != 0) {
-                        if (labelArray[v][u] == 0) { // unlabeled - new inner
+                        if (labelArray.get(u, v) == 0) { // unlabeled - new inner
                                                      // contour
                             Contour ic = traceInnerContour(u - 1, v, label);
                             innerContours.add(ic);
@@ -210,15 +222,5 @@ public class ContourTracer {
                 }
             }
         }
-        // shift back to original coordinates
-        moveContoursBy(outerContours, -1, -1);
-        moveContoursBy(innerContours, -1, -1);
     }
-
-    private void moveContoursBy(List<Contour> contours, int dx, int dy) {
-        for (Contour c : contours) {
-            c.moveBy(dx, dy);
-        }
-    }
-
 }

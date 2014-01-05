@@ -22,14 +22,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Stores information on a contour
+ * @author Martin Steiger
+ */
 public class Contour {
 
     private final List<Point> points = new ArrayList<Point>();
 
+    /**
+     * @param n the point to add
+     */
     public void addPoint(Point n) {
         points.add(n);
     }
 
+    /**
+     * @return an AWT polygon of the data
+     */
     public Polygon makePolygon() {
         int m = points.size();
         
@@ -42,12 +52,6 @@ public class Contour {
             idx++;
         }
         return new Polygon(xPoints, yPoints, m);
-    }
-
-    public void moveBy(int dx, int dy) {
-        for (Point pt : points) {
-            pt.translate(dx, dy);
-        }
     }
 
     /**
