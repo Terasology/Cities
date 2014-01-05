@@ -17,6 +17,7 @@
 package org.terasology.cities.terrain;
 
 import java.awt.Rectangle;
+import java.util.List;
 
 /**
  * Provides access to different height maps
@@ -57,5 +58,43 @@ public final class HeightMaps {
      */
     public static HeightMap offset(HeightMap hm, int offset) {
         return new OffsetHeightMap(hm, offset);
+    }
+    
+    /**
+     * @param hm the backing height map
+     * @param scale the scale factor to use
+     * @return An height map that returns values at (x * scale, z * scale) 
+     */
+    public static HeightMap scalingArea(final HeightMap hm, final int scale) {
+        return new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                return hm.apply(x * scale, z * scale);
+            }
+        };
+    }
+    
+    /**
+     * @param hm the backing height map
+     * @param scale the scale factor to use
+     * @return An height map that returns y * scale 
+     */
+    public static HeightMap scalingHeight(final HeightMap hm, final int scale) {
+        return new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                return hm.apply(x, z) * scale;
+            }
+        };
+    }
+    
+    /**
+     * @param data the data
+     * @return An height map that returns the content of the string list 
+     */
+    public static HeightMap stringBased(List<String> data) {
+        return new StringHeightMap(data);
     }
 }
