@@ -58,7 +58,7 @@ public class ContourTracer {
      * @param height the height of the scanning area
      * @param threshold the sea level threshold
      */
-    public ContourTracer(final HeightMap orgHm, int width, int height, final int threshold) {
+    public ContourTracer(final HeightMap orgHm, final int width, final int height, final int threshold) {
         // Create auxil. arrays, which are "padded", i.e.,
         // are 2 rows and 2 columns larger than the image:
 
@@ -71,10 +71,16 @@ public class ContourTracer {
 
             @Override
             public int apply(int x, int z) {
-                if (orgHm.apply(x, z) > threshold) {
-                    return FOREGROUND;
-                } else {
+                if (x == -1 || z == -1)
                     return BACKGROUND;
+                
+                if (x == width || z == height)
+                    return BACKGROUND;
+                
+                if (orgHm.apply(x, z) > threshold) {
+                    return BACKGROUND;
+                } else {
+                    return FOREGROUND;
                 }
             }
         };
