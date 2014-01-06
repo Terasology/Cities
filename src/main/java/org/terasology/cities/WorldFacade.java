@@ -18,9 +18,7 @@ package org.terasology.cities;
 
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import javax.vecmath.Point2i;
@@ -31,8 +29,6 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.generator.SiteConnector;
-import org.terasology.cities.generator.SiteFinderRandom;
 import org.terasology.cities.generator.DefaultTownWallGenerator;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
@@ -41,6 +37,8 @@ import org.terasology.cities.generator.RoadShapeGenerator;
 import org.terasology.cities.generator.SimpleChurchGenerator;
 import org.terasology.cities.generator.SimpleFenceGenerator;
 import org.terasology.cities.generator.SimpleHousingGenerator;
+import org.terasology.cities.generator.SiteConnector;
+import org.terasology.cities.generator.SiteFinderRandom;
 import org.terasology.cities.generator.TownWallShapeGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
@@ -57,14 +55,12 @@ import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.cities.testing.NameList;
 import org.terasology.engine.CoreRegistry;
-import org.terasology.math.TeraMath;
 import org.terasology.namegenerator.logic.generators.Markov2NameGenerator;
 import org.terasology.namegenerator.logic.generators.NameGenerator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**

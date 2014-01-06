@@ -16,51 +16,34 @@
 
 package org.terasology.cities.contour;
 
-import java.util.Arrays;
-
 /**
- * Defines a 2D array with a padding border
+ * A 2D array based on ints
  * @author Martin Steiger
  */
-public class Array2D {
-    private final int border;
-    
-    private final int[][] data;
-    
-    /**
-     * @param width the width 
-     * @param height the height
-     * @param border the border thickness around
-     * @param initVal the initial value
-     */
-    public Array2D(int width, int height, int border, int initVal) {
-        data = new int[height + border * 2][width + border * 2];
-        
-        if (initVal != 0) {
-            for (int[] row : data) {
-                Arrays.fill(row, initVal);
-            }
-        }
-        
-        this.border = border;
-    }
+public interface IntArray2D {
 
     /**
      * @param x the x coord
      * @param y the y coord
      * @param value the value
      */
-    public void set(int x, int y, int value) {
-        data[y + border][x + border] = value;
-    }
+    void set(int x, int y, int value);
 
     /**
      * @param x the x coord
      * @param y the y coord
      * @return the value
      */
-    public int get(int x, int y) {
-        return data[y + border][x + border];
-    }
+    int get(int x, int y);
+
+    /**
+     * @return the width of the array
+     */
+    int getWidth();
     
+    /**
+     * @return the height of the array
+     */
+    int getHeight();
 }
+

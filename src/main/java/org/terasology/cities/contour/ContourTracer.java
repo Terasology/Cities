@@ -17,6 +17,7 @@
 package org.terasology.cities.contour;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,37 +47,42 @@ public class ContourTracer {
     // 0 ... unlabeled
     // -1 ... previously visited background pixel
     // >0 ... valid label
-    private Array2D labelArray;
+    private IntArray2D labelArray;
 
     private final HeightMap dataMap;
     private final int width;
     private final int height;
+    private final int offY;
+    private final int offX;
 
     /**
      * @param orgHm the original height map to use
-     * @param width the width of the scanning area
-     * @param height the height of the scanning area
+     * @param rc the scanning area
      * @param threshold the sea level threshold
      */
-    public ContourTracer(final HeightMap orgHm, final int width, final int height, final int threshold) {
-        // Create auxil. arrays, which are "padded", i.e.,
-        // are 2 rows and 2 columns larger than the image:
+    public ContourTracer(final HeightMap orgHm, final Rectangle rc, final int threshold) {
 
-        this.width = width;
-        this.height = height;
+        this.width = rc.width;
+        this.height = rc.height;
+        this.offX = rc.x;
+        this.offY = rc.y;
         
-        labelArray = new Array2D(width, height, 1, BACKGROUND);
-
+        labelArray = Arrays2D.create(width, height, 1, BACKGROUND);
+        labelArray = Arrays2D.translate(labelArray, -rc.x, -rc.y);
+        
         this.dataMap = new HeightMapAdapter() {
 
             @Override
             public int apply(int x, int z) {
-                if (x == -1 || z == -1)
-                    return BACKGROUND;
                 
-                if (x == width || z == height)
+                if (x - rc.x == -1 || z == rc.y - 1) {
                     return BACKGROUND;
+                }
                 
+                if (x == rc.x + width || z == rc.y + height) {
+                    return BACKGROUND;
+                }
+
                 if (orgHm.apply(x, z) > threshold) {
                     return BACKGROUND;
                 } else {
@@ -199,9 +205,9 @@ public class ContourTracer {
         int maxLabel = 0;
         
         // scan top to bottom, left to right
-        for (int v = 0; v < height; v++) {
+        for (int v = offY; v < offY + height; v++) {
             label = 0; // no label
-            for (int u = 0; u < width; u++) {
+            for (int u = offX; u < offX + width; u++) {
 
                 if (dataMap.apply(u, v) == FOREGROUND) {
                     if (label != 0) { // keep using same label

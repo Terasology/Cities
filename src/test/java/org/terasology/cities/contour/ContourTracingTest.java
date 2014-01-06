@@ -19,6 +19,7 @@ package org.terasology.cities.contour;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +53,8 @@ public class ContourTracingTest {
         int width = data.get(0).length();
         int height = data.size();
         
-        ContourTracer ct = new ContourTracer(HeightMaps.stringBased(data), width, height, ' ');
+        Rectangle rc = new Rectangle(0, 0, width, height);
+        ContourTracer ct = new ContourTracer(HeightMaps.stringBased(data), rc, ' ');
         List<Contour> all = Lists.newArrayList();
         all.addAll(ct.getOuterContours());
         all.addAll(ct.getInnerContours());
