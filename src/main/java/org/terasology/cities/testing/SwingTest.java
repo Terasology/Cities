@@ -56,7 +56,7 @@ public final class SwingTest {
         // align right border at the right border of the default screen 
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int screenWidth = gd.getDisplayMode().getWidth();
-        frame.setLocation(screenWidth - frame.getWidth(), 100);
+        frame.setLocation(screenWidth - frame.getWidth(), 40);
         
         // repaint every second to see changes while debugging
         int updateInteval = 1000;

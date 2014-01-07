@@ -57,5 +57,39 @@ public final class Arrays2D {
             }
         };
     }
+    
+    /**
+     * @param array the underlying array 
+     * @param defaultVal the value to return for OOB get() calls
+     * @return an instance that ignores invalid set() calls and returns getVal for OOB calls to get()
+     */
+    public static IntArray2D ignoreOutOfBounds(final IntArray2D array, final int defaultVal) {
+        return new DelegatingIntArray2D(array) {
+            private final int width = array.getWidth();
+            private final int height = array.getWidth();
+            
+            @Override
+            public void set(int x, int y, int value) {
+                boolean xOk = (x >= 0 && x < width);
+                boolean yOk = (y >= 0 && y < height);
+                
+                if (xOk && yOk) {
+                    super.set(x, y, value);
+                }
+            }
+            
+            @Override
+            public int get(int x, int y) {
+                boolean xOk = (x >= 0 && x < width);
+                boolean yOk = (y >= 0 && y < height);
 
+                if (xOk && yOk) {
+                    return super.get(x, y);
+                } else {
+                    return defaultVal;
+                }
+            }
+        };
+    }
+ 
 }
