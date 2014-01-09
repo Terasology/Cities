@@ -76,6 +76,14 @@ public class ContourTracer {
             @Override
             public int apply(int x, int z) {
 
+                if (x - rc.x == -1 || z == rc.y - 1) {
+                    return BACKGROUND;
+                }
+
+                if (x == rc.x + width || z == rc.y + height) {
+                    return BACKGROUND;
+                }
+                
                 if (orgHm.apply(x, z) > threshold) {
                     return BACKGROUND;
                 } else {
@@ -193,15 +201,6 @@ public class ContourTracer {
         return dir;
     }
     
-    /** 
-     * @param px the point x of interest
-     * @param py the point y of interest
-     * @return true if inside
-     */
-    private boolean isInside(int px, int py) {
-        return dataMap.apply(px - 1, py) != BACKGROUND;
-    }
-
     private void findAllContours() {
         int label = 0; // current label
         int maxLabel = 0;
@@ -214,7 +213,7 @@ public class ContourTracer {
                 if (dataMap.apply(u, v) == FOREGROUND) {
                     if (label != 0) { // keep using same label
                         labelArray.set(u, v, label);
-                    } else if (!isInside(u, v)) {
+                    } else {
                         label = labelArray.get(u, v);
                         if (label == 0) { // unlabeled - new outer contour
                             maxLabel++;
