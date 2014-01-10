@@ -21,7 +21,9 @@ import java.awt.Polygon;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Stores information on a contour
@@ -29,25 +31,31 @@ import java.util.Set;
  */
 public class Contour {
 
-    private final Set<Point> points = new LinkedHashSet<Point>();
+    private final Collection<Point> points = new LinkedHashSet<Point>();
+    private Collection<Point> simplifiedPoints;
+    private Polygon polygon;
 
     /**
      * @param n the point to add
      */
     public void addPoint(Point n) {
         points.add(new Point(n));
+        
+        simplifiedPoints = null;
+        polygon = null;
     }
 
     /**
+     * @param pts the point collection to use
      * @return an AWT polygon of the data
      */
-    public Polygon makePolygon() {
-        int m = points.size();
+    private static Polygon createPolygon(Collection<Point> pts) {
+        int m = pts.size();
         
         int[] xPoints = new int[m];
         int[] yPoints = new int[m];
         int idx = 0;
-        for (Point cpt : points) {
+        for (Point cpt : pts) {
             xPoints[idx] = cpt.x;
             yPoints[idx] = cpt.y;
             idx++;
@@ -55,6 +63,38 @@ public class Contour {
         return new Polygon(xPoints, yPoints, m);
     }
 
+    
+    /**
+     * Removes all points that lie on straight lines
+     * @param pts the list of points
+     * @return a <b>new collection</b> containing the points
+     */
+    private static List<Point> simplify(Collection<Point> pts) {
+
+        if (pts.size() < 2) {
+            return Lists.newArrayList(pts);
+        }
+
+        List<Point> result = Lists.newArrayList();
+
+        Point prev = pts.iterator().next();
+        Point dir = new Point();
+
+        for (Point p : pts) {
+            Point newdir = new Point(p.x - prev.x, p.y - prev.y);
+            if (!newdir.equals(dir)) {
+                result.add(prev);
+                dir = newdir;
+            }
+            prev = p;
+
+        }
+
+        result.add(prev);
+
+        return result;
+    }
+    
     /**
      * @return an unmodifiable sorted view on the points
      */
@@ -62,4 +102,55 @@ public class Contour {
         return Collections.unmodifiableCollection(points);
     }
 
+    /**
+     * @return a simplified version of the curve, containing only points at direction changes 
+     */
+    public Collection<Point> getSimplifiedCurve() {
+        if (simplifiedPoints == null) {
+            simplifiedPoints = simplify(points);
+        }
+
+        return simplifiedPoints;
+    }
+    
+    /**
+     * @return a polygon representing the curve
+     */
+    public Polygon getPolygon() {
+        if (polygon == null) {
+            polygon = createPolygon(getSimplifiedCurve());
+        }
+        
+        return polygon;
+    }
+    
+    /**
+     * @param pt the point to test
+     * @return true if the point lies on the border, false otherwise
+     */
+    public boolean isBorder(Point pt) {
+        return points.contains(pt);
+    }
+    
+    /**
+     * A point is considered to lie inside if and only if:
+     * <ul>
+     * <li> it lies completely inside the boundary <i>or</i>
+     * <li>
+     * it lies exactly on the boundary and the
+     * space immediately adjacent to the
+     * point in the increasing <code>X</code> direction is
+     * entirely inside the boundary <i>or</i>
+     * <li>
+     * it lies exactly on a horizontal boundary segment and the
+     * space immediately adjacent to the point in the
+     * increasing <code>Y</code> direction is inside the boundary.
+     * </ul>
+     * @param x the x coord
+     * @param y the y coord
+     * @return true if inside
+     */
+    public boolean isInside(double x, double y) {
+        return getPolygon().contains(x, y);
+    }
 }

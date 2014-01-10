@@ -19,8 +19,8 @@ package org.terasology.cities.contour;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,59 +28,59 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Tests the {@link ContourSimplifier} class
+ * Tests the {@link Contour} class
  * @author Martin Steiger
  */
-public class ContourSimplifierTest {
+public class ContourTest {
     
     /**
-     * Some simple tests
+     * Some simple tests on curve simplification
      */
     @Test
     public void test() {
-        List<Point> pts = new ArrayList<Point>();
+        Contour pts = new Contour();
 
         for (int i = 3; i < 5; i++) {
             Point p1 = new Point(i, 0);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
         for (int i = 0; i < 5; i++) {
             Point p1 = new Point(5 + i, i);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
 
         for (int i = 0; i < 5; i++) {
             Point p1 = new Point(10, i + 5);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
 
         for (int i = 0; i < 5; i++) {
             Point p1 = new Point(10 - i, 10 - i);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
 
         for (int i = 0; i < 5; i++) {
             Point p1 = new Point(5 - i, 5);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
 
         for (int i = 0; i < 5; i++) {
             Point p1 = new Point(0, 5 - i);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
 
         for (int i = 0; i < 3; i++) {
             Point p1 = new Point(i, 0);
-            pts.add(p1);
+            pts.addPoint(p1);
         }
-        List<Point> simplePts = ContourSimplifier.simplify(pts);
+        Collection<Point> simplePts = pts.getSimplifiedCurve();
     
         char[][] data = new char[11][11];
         for (int i = 0; i < data.length; i++) {
             Arrays.fill(data[i], ' ');
         }
     
-        for (Point p : pts) {
+        for (Point p : pts.getPoints()) {
             data[p.y][p.x] = 'O';
         }
     
