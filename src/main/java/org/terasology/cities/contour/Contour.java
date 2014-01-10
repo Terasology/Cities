@@ -18,9 +18,10 @@ package org.terasology.cities.contour;
 
 import java.awt.Point;
 import java.awt.Polygon;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Stores information on a contour
@@ -28,13 +29,13 @@ import java.util.List;
  */
 public class Contour {
 
-    private final List<Point> points = new ArrayList<Point>();
+    private final Set<Point> points = new LinkedHashSet<Point>();
 
     /**
      * @param n the point to add
      */
     public void addPoint(Point n) {
-        points.add(n);
+        points.add(new Point(n));
     }
 
     /**
@@ -55,10 +56,10 @@ public class Contour {
     }
 
     /**
-     * @return an unmodifiable view on the points
+     * @return an unmodifiable sorted view on the points
      */
-    public List<Point> getPoints() {
-        return Collections.unmodifiableList(points);
+    public Collection<Point> getPoints() {
+        return Collections.unmodifiableCollection(points);
     }
 
 }

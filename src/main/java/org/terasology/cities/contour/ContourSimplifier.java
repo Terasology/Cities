@@ -17,6 +17,7 @@
 package org.terasology.cities.contour;
 
 import java.awt.Point;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -36,7 +37,7 @@ public final class ContourSimplifier {
      * @param pts the list of points
      * @return a new list containing the points
      */
-    public static List<Point> simplify(List<Point> pts) {
+    public static List<Point> simplify(Collection<Point> pts) {
 
         if (pts.size() < 2) {
             return Lists.newArrayList(pts);
@@ -44,7 +45,7 @@ public final class ContourSimplifier {
 
         List<Point> result = Lists.newArrayList();
 
-        Point prev = pts.get(0);
+        Point prev = pts.iterator().next();
         Point dir = new Point();
 
         for (Point p : pts) {
