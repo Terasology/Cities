@@ -67,6 +67,13 @@ public class City {
     }
 
     /**
+     * @return the radius of the city (in blocks)
+     */
+    public double getRadius() {
+        return this.radius;
+    }
+    
+    /**
      * @return all lots that are part of the city
      */
     public Set<Lot> getLots() {
@@ -91,7 +98,7 @@ public class City {
     /**
      * @return the name of the city
      */
-    private String getName() {
+    public String getName() {
         return name;
     }
 

@@ -20,6 +20,9 @@ import java.math.RoundingMode;
 import java.util.Map;
 
 import javax.vecmath.Point2i;
+import javax.vecmath.Vector3f;
+
+import org.terasology.math.TeraMath;
 
 import com.google.common.collect.Maps;
 import com.google.common.math.IntMath;
@@ -61,6 +64,14 @@ public final class Sectors {
         return sector;
     }
 
+    /**
+     * @param pos the world position
+     * @return the sector
+     */
+    public static Sector getSectorForPosition(Vector3f pos) {
+        return getSectorForBlock(TeraMath.floorToInt(pos.x), TeraMath.floorToInt(pos.z));
+    }
+    
     /**
      * @param wx the world block x coord
      * @param wz the world block z coord

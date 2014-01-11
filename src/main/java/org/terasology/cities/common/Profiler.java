@@ -39,6 +39,16 @@ public final class Profiler {
     }
 
     /**
+     * Starts a measurement with a generated ID
+     * @return the generated ID
+     */
+    public static Object start() {
+        Object id = new Object();
+        start(id);
+        return id;
+    }
+    
+    /**
      * Starts a measurement with the specified ID
      * @param id an identifier object
      */
