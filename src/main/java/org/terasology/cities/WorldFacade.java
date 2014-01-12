@@ -22,7 +22,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import javax.vecmath.Point2i;
@@ -114,7 +113,8 @@ public class WorldFacade {
             @Override
             public Set<Lake> apply(Sector sector) {
 
-                NameGenerator ng = new Markov2NameGenerator(Objects.hashCode(seed, sector), Arrays.asList(NameList.NAMES));
+                Integer salt = 2354234;
+                NameGenerator ng = new Markov2NameGenerator(Objects.hashCode(salt, seed, sector), Arrays.asList(NameList.NAMES));
                 
                 int minSize = 2;
 

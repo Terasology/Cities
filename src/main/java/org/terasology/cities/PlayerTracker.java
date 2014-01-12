@@ -25,6 +25,7 @@ import javax.vecmath.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.NamedArea;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -34,9 +35,11 @@ import org.terasology.entitySystem.systems.In;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
+import org.terasology.logic.console.ConsoleColors;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
+import org.terasology.rendering.FontColor;
 
 import com.google.common.collect.Maps;
 
@@ -58,7 +61,7 @@ public class PlayerTracker implements ComponentSystem {
     @In
     private WorldFacade facade;
 
-    private final Map<String, City> cityMap = Maps.newHashMap();
+    private final Map<String, NamedArea> prevAreaMap = Maps.newHashMap();
     
     @Override
     public void initialise() {
@@ -78,10 +81,6 @@ public class PlayerTracker implements ComponentSystem {
     @ReceiveEvent
     public void onEnterBlock(OnEnterBlockEvent event, EntityRef entity) {
         LocationComponent loc = entity.getComponent(LocationComponent.class);
-//        CharacterComponent charcomp = entity.getComponent(CharacterComponent.class);
-//        EntityRef ccEnt = charcomp.controller;
-//        ClientComponent cc = ccEnt.getComponent(ClientComponent.class);
-//        DisplayInformationComponent info = cc.clientInfo.getComponent(DisplayInformationComponent.class);
         Vector3f worldPos = loc.getWorldPosition();
         Sector sector = Sectors.getSectorForPosition(worldPos);
         
@@ -94,35 +93,66 @@ public class PlayerTracker implements ComponentSystem {
         if (facade != null) {
             Set<City> settlements = facade.getCities(sector);
 
-            City prevCity = cityMap.get(id);        // can be null !
-            City newCity = null;
+            NamedArea prevArea = prevAreaMap.get(id);        // can be null !
+            NamedArea newArea = null;
 
             for (City s : settlements) {
-                double cx = s.getPos().x - worldPos.x;
-                double cz = s.getPos().y - worldPos.z;
-                
-                if (Math.sqrt(cx * cx + cz * cz) < s.getRadius()) {
-                    if (newCity != null) {
-                        logger.warn("{} appears to be in {} and {} at the same time!", name, newCity.getName(), s.getName());
+                if (s.isInside(worldPos)) {
+                    if (newArea != null) {
+                        logger.warn("{} appears to be in {} and {} at the same time!", name, newArea.getName(), s.getName());
                     }
                     
-                    newCity = s;
+                    newArea = s;
                 }
             }
             
-            if (!Objects.equals(newCity, prevCity)) {       // prevCity can be null
-                if (newCity == null) {
-                    console.addMessage(String.format("%s left %s", name, prevCity.getName()));
-                } else
-                if (prevCity == null) {
-                    console.addMessage(String.format("%s entered %s", name, newCity.getName()));
-                } else {
-                    console.addMessage(String.format("%s moved directly from %s to %s", name, prevCity.getName(), newCity.getName()));
+            if (!Objects.equals(newArea, prevArea)) {       // both can be null
+                if (newArea != null) {
+                    entity.send(new OnEnterAreaEvent(newArea));
                 }
+                if (prevArea != null) {
+                    entity.send(new OnLeaveAreaEvent(prevArea));
+                }
+
+                prevAreaMap.put(id, newArea);
             }
             
-            cityMap.put(id, newCity);
         }
     }
+    
+    /**
+     * Called whenever a named area is entered
+     * @param event the event
+     * @param entity the character entity reference "player:engine"
+     */
+    @ReceiveEvent
+    public void onEnterArea(OnEnterAreaEvent event, EntityRef entity) {
+        
+        Client client = networkSystem.getOwner(entity);
+        String playerName = String.format("%s (%s)", client.getName(), client.getId());
+        String areaName = event.getArea().getName();
 
+        playerName = FontColor.getColored(playerName, ConsoleColors.PLAYER);
+        areaName = FontColor.getColored(areaName, ConsoleColors.AREA);
+        
+        console.addMessage(playerName + " entered " + areaName);
+    }
+    
+    /**
+     * Called whenever a named area is entered
+     * @param event the event
+     * @param entity the character entity reference "player:engine"
+     */
+    @ReceiveEvent
+    public void onLeaveArea(OnLeaveAreaEvent event, EntityRef entity) {
+        
+        Client client = networkSystem.getOwner(entity);
+        String playerName = String.format("%s (%s)", client.getName(), client.getId());
+        String areaName = event.getArea().getName();
+
+        playerName = FontColor.getColored(playerName, ConsoleColors.PLAYER);
+        areaName = FontColor.getColored(areaName, ConsoleColors.AREA);
+        
+        console.addMessage(playerName + " left " + areaName);
+    }
 }
