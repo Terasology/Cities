@@ -16,9 +16,13 @@
 
 package org.terasology.cities;
 
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.vecmath.Point2i;
@@ -29,6 +33,8 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
+import org.terasology.cities.contour.Contour;
+import org.terasology.cities.contour.ContourTracer;
 import org.terasology.cities.generator.DefaultTownWallGenerator;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
@@ -42,6 +48,7 @@ import org.terasology.cities.generator.SiteFinderRandom;
 import org.terasology.cities.generator.TownWallShapeGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
+import org.terasology.cities.model.Lake;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
@@ -83,6 +90,8 @@ public class WorldFacade {
 
     private Function<Sector, Shape> roadShapeFunc;
 
+    private Function<Sector, Set<Lake>> lakeMap;
+
     /**
      * @param seed the seed value
      * @param heightMap the height map to use
@@ -99,6 +108,59 @@ public class WorldFacade {
             
         };
         junctions = CachingFunction.wrap(junctions);
+        
+        lakeMap = CachingFunction.wrap(new Function<Sector, Set<Lake>>() {
+
+            @Override
+            public Set<Lake> apply(Sector sector) {
+
+                NameGenerator ng = new Markov2NameGenerator(Objects.hashCode(seed, sector), Arrays.asList(NameList.NAMES));
+                
+                int minSize = 2;
+
+                int scale = 8;
+                int size = Sector.SIZE / scale;
+                HeightMap orgHm = HeightMaps.scalingArea(heightMap, scale);
+                Point2i coords = sector.getCoords();
+                
+                Rectangle sectorRect = new Rectangle(coords.x * size, coords.y * size, size, size);
+                ContourTracer ct = new ContourTracer(orgHm, sectorRect, new CityWorldConfig().getSeaLevel());
+                
+                Set<Lake> lakes = Sets.newHashSet();
+                
+                for (Contour c : ct.getOuterContours()) {
+                    Polygon polyLake = c.getPolygon();
+
+                    if (polyLake.getBounds().width > minSize
+                     && polyLake.getBounds().height > minSize) {
+                        Lake lake = new Lake(c, ng.nextName());
+                        
+                        for (Contour isl : ct.getInnerContours()) {
+                            Rectangle bboxIsland = isl.getPolygon().getBounds();
+                            
+                            if (polyLake.getBounds().contains(bboxIsland)) {
+                                if (allInside(polyLake, isl.getPoints())) {
+                                    lake.addIsland(isl);
+                                }
+                            }
+                        }
+                        
+                        lakes.add(lake);
+                    }
+                }
+                
+                return lakes;
+            }
+
+            private boolean allInside(Polygon polygon, Collection<Point> points) {
+                for (Point pt : points) {
+                    if (!polygon.contains(pt)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
         
         int minCitiesPerSector = config.getMinCitiesPerSector();
         int maxCitiesPerSector = config.getMaxCitiesPerSector();
@@ -293,4 +355,11 @@ public class WorldFacade {
         return decoratedCities.apply(sector);
     }
 
+    /**
+     * @param sector the sector
+     * @return a set of all lakes in that sector
+     */
+    public Set<Lake> getLakes(Sector sector) {
+        return lakeMap.apply(sector);
+    }
 }

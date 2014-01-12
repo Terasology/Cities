@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Point2i;
+import javax.vecmath.Vector3f;
 
 import com.google.common.collect.Sets;
 
@@ -27,7 +28,7 @@ import com.google.common.collect.Sets;
  * Provides information on a city
  * @author Martin Steiger
  */
-public class City {
+public class City implements NamedArea {
 
     private final Point2i coords;
     private final Set<Lot> lots = Sets.newHashSet();
@@ -80,6 +81,13 @@ public class City {
         return lots;
     }
 
+    /**
+     * @param lot the lot to add
+     */
+    public void add(Lot lot) {
+        this.lots.add(lot);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(coords, radius);
@@ -98,14 +106,16 @@ public class City {
     /**
      * @return the name of the city
      */
+    @Override
     public String getName() {
         return name;
     }
-
-    /**
-     * @param lot the lot to add
-     */
-    public void add(Lot lot) {
-        this.lots.add(lot);
+    
+    @Override
+    public boolean isInside(Vector3f pos) {
+        double cx = pos.x - pos.x;
+        double cz = pos.y - pos.z;
+        
+        return cx * cx + cz * cz < radius * radius;
     }
 }
