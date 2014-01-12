@@ -18,9 +18,9 @@ package org.terasology.cities.contour;
 
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -31,7 +31,11 @@ import com.google.common.collect.Lists;
  */
 public class Contour {
 
-    private final Collection<Point> points = new LinkedHashSet<Point>();
+    /**
+     * It would be nice a have a list implementation where contains() runs in O(1). 
+     * Unfortunately, LinkedHashSet removes duplicate entries. 
+     */
+    private final Collection<Point> points = new ArrayList<Point>();
     private Collection<Point> simplifiedPoints;
     private Polygon polygon;
 
@@ -122,14 +126,6 @@ public class Contour {
         }
         
         return polygon;
-    }
-    
-    /**
-     * @param pt the point to test
-     * @return true if the point lies on the border, false otherwise
-     */
-    public boolean isBorder(Point pt) {
-        return points.contains(pt);
     }
     
     /**
