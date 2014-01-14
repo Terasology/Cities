@@ -112,7 +112,7 @@ public class City implements NamedArea {
     }
     
     @Override
-    public boolean isInside(Vector3f pos) {
+    public boolean contains(Vector3f pos) {
         double cx = coords.x - pos.x;
         double cz = coords.y - pos.z;
         

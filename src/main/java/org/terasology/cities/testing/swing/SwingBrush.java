@@ -142,7 +142,7 @@ public class SwingBrush extends Brush {
             heightMap[lx][lz] = (short) y;
             float[] hsb = new float[3];
             Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);
-            hsb[2] = 0.5f + 0.5f * (float) TeraMath.clamp(y / 16f);
+            hsb[2] = hsb[2] * (0.5f + 0.5f * (float) TeraMath.clamp(y / 16f));
             image.setRGB(lx, lz, Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
         }
     }

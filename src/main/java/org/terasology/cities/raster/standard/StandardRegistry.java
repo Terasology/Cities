@@ -17,11 +17,11 @@
 package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.model.BattlementRoof;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.HipRoof;
+import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.PentRoof;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleChurch;
@@ -32,11 +32,10 @@ import org.terasology.cities.model.SimpleTower;
 import org.terasology.cities.model.SimpleWindow;
 import org.terasology.cities.model.SolidWallSegment;
 import org.terasology.cities.raster.RasterRegistry;
-import org.terasology.cities.raster.Rasterizer;
 
 /**
  * A thread-safe singleton implementation that provides 
- * all {@link Rasterizer} implementations from this package.
+ * all {@link org.terasology.cities.raster.Rasterizer} implementations from this package.
  * @author Martin Steiger
  */
 public final class StandardRegistry extends RasterRegistry {
@@ -44,7 +43,7 @@ public final class StandardRegistry extends RasterRegistry {
     private static final StandardRegistry INSTANCE = new StandardRegistry();
     
     private StandardRegistry() {
-        register(City.class, new CityRasterizer());
+        register(MedievalTown.class, new CityRasterizer());
         register(SimpleLot.class, new SimpleLotRasterizer());
         register(SimpleHome.class, new SimpleHomeRasterizer());
         register(SimpleWindow.class, new SimpleWindowRasterizer());

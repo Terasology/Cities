@@ -19,7 +19,7 @@ package org.terasology.cities.model;
 import java.awt.Shape;
 
 /**
- * TODO Type description
+ * Defines a building
  * @author Martin Steiger
  */
 public interface Building {

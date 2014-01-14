@@ -33,5 +33,5 @@ public interface NamedArea {
      * @param pos the position
      * @return true if inside the area
      */
-    boolean isInside(Vector3f pos);
+    boolean contains(Vector3f pos);
 }

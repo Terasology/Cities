@@ -21,7 +21,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
@@ -30,13 +33,16 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.WorldFacade;
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.contour.Contour;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.Lake;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
+import org.terasology.cities.raster.standard.StandardRegistry;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.cities.terrain.NoiseHeightMap;
@@ -69,7 +75,7 @@ public class SwingRasterizer {
         facade = new WorldFacade(seed, heightMap, config);
         
         themeMap.put(BlockTypes.AIR, new Color(0, 0, 0, 0));
-        themeMap.put(BlockTypes.ROAD_SURFACE, new Color(64, 64, 64));
+        themeMap.put(BlockTypes.ROAD_SURFACE, new Color(160, 40, 40));
         themeMap.put(BlockTypes.LOT_EMPTY, new Color(224, 224, 64));
         themeMap.put(BlockTypes.BUILDING_WALL, new Color(158, 158, 158));
         themeMap.put(BlockTypes.BUILDING_FLOOR, new Color(100, 100, 100));
@@ -99,10 +105,44 @@ public class SwingRasterizer {
             drawAccurately(g, sector);
         }
         
+        drawLakes(g, sector);
         drawFrame(g, sector);
         drawSectorText(g, sector);
     }
 
+    private void drawLakes(Graphics2D g, Sector sector) {
+        
+        int scale = 8;
+
+        Set<Lake> lakes = facade.getLakes(sector);
+
+        Graphics2D gc = (Graphics2D) g.create();
+        gc.scale(scale, scale);
+        gc.translate(0.5, 0.5);
+        gc.setStroke(new BasicStroke(2f / scale));
+        gc.setFont(gc.getFont().deriveFont(2f));
+        
+        for (Lake l : lakes) {
+            
+            Contour cont = l.getContour();
+            for (Point p : cont.getSimplifiedCurve()) {
+                double r = 0.2;
+                gc.draw(new Ellipse2D.Double(p.x - r, p.y - r, 2 * r, 2 * r));
+            }
+
+            Polygon poly = cont.getPolygon();
+            gc.draw(poly);
+            
+            int cx = (int) poly.getBounds().getCenterX();
+            int cy = (int) poly.getBounds().getCenterY();
+            
+            FontMetrics fm = gc.getFontMetrics();
+            int lw = fm.stringWidth(l.getName());
+            int lh = fm.getHeight();
+            gc.drawString(l.getName(), cx - lw / 2, cy - lh / 2);
+        }
+    }
+    
     private void drawAccurately(Graphics2D g, Sector sector) {
         int chunkSizeX = ChunkConstants.SIZE_X * 4;
         int chunkSizeZ = ChunkConstants.SIZE_Z * 4;
@@ -168,10 +208,10 @@ public class SwingRasterizer {
             cities.addAll(facade.getCities(sector.getNeighbor(dir)));
         }
     
-        CityRasterizer cr = new CityRasterizer();
-    
+        RasterRegistry registry = StandardRegistry.getInstance();
+
         for (City city : cities) {
-            cr.raster(brush, ti, city);
+            registry.rasterize(brush, ti, city);
         }
     }
     

@@ -16,10 +16,8 @@
 
 package org.terasology.cities.raster.standard;
 
-import org.terasology.cities.raster.RasterRegistry;
-
 /**
- * A dummy class that is only used for {@link RasterRegistry} to find the 
+ * A dummy class that is only used for {@link org.terasology.cities.raster.RasterRegistry} to find the 
  * name and a {@link ClassLoader} for this package
  * @author Martin Steiger
  */

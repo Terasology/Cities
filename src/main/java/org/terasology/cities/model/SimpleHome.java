@@ -19,7 +19,7 @@ package org.terasology.cities.model;
 import java.awt.Rectangle;
 
 /**
- * TODO Type description
+ * Defines a simple housing with only one room
  * @author Martin Steiger
  */
 public class SimpleHome extends SimpleBuilding {

@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
@@ -32,6 +34,8 @@ import com.google.common.collect.ImmutableList;
  * @author Martin Steiger
  */
 public class ContourTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ContourTest.class);
     
     /**
      * Some simple tests on curve simplification
@@ -90,7 +94,7 @@ public class ContourTest {
         }
         
         for (char[] line : data) {
-            System.out.println(new String(line));
+            logger.info(new String(line));
         }
     
         List<Point> shouldBe = ImmutableList.of(

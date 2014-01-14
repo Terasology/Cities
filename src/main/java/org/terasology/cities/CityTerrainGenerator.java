@@ -27,9 +27,10 @@ import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.ChunkBrush;
+import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.raster.standard.CityRasterizer;
 import org.terasology.cities.raster.standard.RoadRasterizer;
+import org.terasology.cities.raster.standard.StandardRegistry;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.world.WorldBiomeProvider;
@@ -149,11 +150,11 @@ public class CityTerrainGenerator implements FirstPassGenerator {
         for (Orientation dir : Orientation.values()) {
             cities.addAll(facade.getCities(sector.getNeighbor(dir)));
         }
-
-        CityRasterizer cr = new CityRasterizer();
+        
+        RasterRegistry registry = StandardRegistry.getInstance();
 
         for (City city : cities) {
-            cr.raster(brush, ti, city);
+            registry.rasterize(brush, ti, city);
         }
     }    
 }

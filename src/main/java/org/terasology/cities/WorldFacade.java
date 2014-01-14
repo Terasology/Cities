@@ -238,7 +238,7 @@ public class WorldFacade {
             public Set<City> apply(Sector input) {
 
                 int sectorSeed = Objects.hashCode(seed, input);
-                NameGenerator nameGen = new Markov2NameGenerator(sectorSeed, Arrays.asList(NameList.NAMES));
+                Markov2NameGenerator nameGen = new Markov2NameGenerator(sectorSeed, Arrays.asList(NameList.NAMES));
 
                 if (logger.isInfoEnabled()) {
                     Profiler.start(input);
@@ -285,12 +285,19 @@ public class WorldFacade {
                     
                     String name = nameGen.nextName(5, 10);
                     MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
-                    TownWall tw = twg.generate(town, si);
-                    town.setTownWall(tw);
 
-                    TownWallShapeGenerator twsg = new TownWallShapeGenerator();
-                    Shape townWallShape = twsg.computeShape(tw);
-                    si.addBlockedArea(townWallShape);
+                    // add a town wall if radius is larger than 1/4
+                    int minRadForTownWall = (config.getMinCityRadius() * 3 + config.getMaxCityRadius()) / 4;
+                    
+                    if (town.getRadius() > minRadForTownWall) {
+                        TownWall tw = twg.generate(town, si);
+                        town.setTownWall(tw);
+    
+                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
+                        Shape townWallShape = twsg.computeShape(tw);
+                        si.addBlockedArea(townWallShape);
+                    }
+                    
                     Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
                     if (!churchLots.isEmpty()) {
                         SimpleLot lot = churchLots.iterator().next();

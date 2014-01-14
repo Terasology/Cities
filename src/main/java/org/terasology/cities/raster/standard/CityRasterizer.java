@@ -18,7 +18,6 @@ package org.terasology.cities.raster.standard;
 
 import java.awt.geom.Ellipse2D;
 
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.raster.Brush;
@@ -27,13 +26,13 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 
 /**
- * Converts a {@link City} into blocks
+ * Converts a {@link MedievalTown} into blocks
  * @author Martin Steiger
  */
-public class CityRasterizer implements Rasterizer<City> {
+public class CityRasterizer implements Rasterizer<MedievalTown> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, City city) {
+    public void raster(Brush brush, TerrainInfo ti, MedievalTown city) {
 
         int cx = city.getPos().x;
         int cz = city.getPos().y;
@@ -51,8 +50,8 @@ public class CityRasterizer implements Rasterizer<City> {
             registry.rasterize(brush, ti, lot);
         }
         
-        if (city instanceof MedievalTown) {
-            new SimpleTownWallRasterizer().raster(brush, ti, ((MedievalTown)city).getTownWall().get());
+        if (city.getTownWall().isPresent()) {
+            new SimpleTownWallRasterizer().raster(brush, ti, city.getTownWall().get());
         }
     }
 }

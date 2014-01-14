@@ -56,7 +56,7 @@ public class Lake implements NamedArea {
      * Islands are considered part of the lake
      */
     @Override
-    public boolean isInside(Vector3f pos) {
+    public boolean contains(Vector3f pos) {
         return contour.isInside(pos.x, pos.z);
     }
     

@@ -24,7 +24,6 @@ import javax.vecmath.Vector3f;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.NamedArea;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
@@ -42,9 +41,10 @@ import org.terasology.network.NetworkSystem;
 import org.terasology.rendering.FontColor;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
- * Tracks player movements with respect to {@link City}
+ * Tracks player movements with respect to {@link NamedArea}s
  * @author Martin Steiger
  */
 @RegisterSystem
@@ -91,18 +91,22 @@ public class PlayerTracker implements ComponentSystem {
         
         // TODO: facade is null if a different WorldGenerator is used
         if (facade != null) {
-            Set<City> settlements = facade.getCities(sector);
 
             NamedArea prevArea = prevAreaMap.get(id);        // can be null !
             NamedArea newArea = null;
 
-            for (City s : settlements) {
-                if (s.isInside(worldPos)) {
+            Set<NamedArea> areas = Sets.newHashSet();
+            
+            areas.addAll(facade.getCities(sector));
+            areas.addAll(facade.getLakes(sector));
+
+            for (NamedArea area : areas) {
+                if (area.contains(worldPos)) {
                     if (newArea != null) {
-                        logger.warn("{} appears to be in {} and {} at the same time!", name, newArea.getName(), s.getName());
+                        logger.warn("{} appears to be in {} and {} at the same time!", name, newArea.getName(), area.getName());
                     }
                     
-                    newArea = s;
+                    newArea = area;
                 }
             }
             
