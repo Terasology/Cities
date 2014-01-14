@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+import org.terasology.cities.terrain.ConvertingHeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
 import com.google.common.collect.Lists;
@@ -54,7 +55,11 @@ public class ContourTracingTest {
         int height = data.size();
         
         Rectangle rc = new Rectangle(0, 0, width, height);
-        ContourTracer ct = new ContourTracer(HeightMaps.stringBased(data), rc, ' ');
+        ConvertingHeightMap hm = new ConvertingHeightMap(HeightMaps.stringBased(data));
+        hm.addConversion(Integer.valueOf('X'), 0);
+        hm.addConversion(Integer.valueOf(' '), 10);
+        
+        ContourTracer ct = new ContourTracer(hm, rc, 5);
         List<Contour> all = Lists.newArrayList();
         all.addAll(ct.getOuterContours());
         all.addAll(ct.getInnerContours());
