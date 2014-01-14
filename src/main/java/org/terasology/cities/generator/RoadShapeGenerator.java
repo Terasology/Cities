@@ -27,7 +27,6 @@ import java.util.Set;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Splines;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
@@ -91,7 +90,8 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
 
         pts.add(0, road.getStart().getCoords());
         pts.add(road.getEnd().getCoords());
-        Path2D path = Splines.getBezierSplinePath(pts, 0.2);
+//        Path2D path = Splines.getBezierSplinePath(pts, 0.2);
+        Path2D path = createSegmentPath(pts);
 
         float strokeWidth = (float) road.getWidth() * 3f;
             
@@ -102,6 +102,24 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
         Shape shape = thick.createStrokedShape(path);
 
         return shape;
+    }
+    
+    /**
+     * @param points a list of points
+     * @return a path of connected line segments
+     */
+    private static Path2D createSegmentPath(List<Point2i> points) {
+        Path2D path = new Path2D.Double();
+
+        path.moveTo(points.get(0).getX(), points.get(0).getY());
+
+        for (int i = 0; i < points.size() - 1; i++) {
+            Point2i p1 = points.get(i + 1);
+            path.lineTo(p1.getX(), p1.getY());
+        }
+
+        return path;
+
     }
 
     private boolean hitClip(Sector sector, Shape shape) {
