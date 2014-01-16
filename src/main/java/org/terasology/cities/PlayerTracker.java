@@ -86,6 +86,11 @@ public class PlayerTracker implements ComponentSystem {
         
         Client client = networkSystem.getOwner(entity);
         
+        // TODO: entity can be AI-controlled, too. These don't have an owner
+        if (client == null) {
+            return;
+        }
+        
         String id = client.getId();
         String name = client.getName();
         
