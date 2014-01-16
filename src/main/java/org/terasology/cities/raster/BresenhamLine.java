@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.common;
+package org.terasology.cities.raster;
 
 import java.awt.Color;
 import java.util.EnumSet;
 import java.util.Set;
-
-import org.terasology.math.TeraMath;
 
 /**
  * Based on code from the touchscreen-apps projects by Armin Joachimsmeyer
@@ -32,46 +30,68 @@ import org.terasology.math.TeraMath;
  * https://code.google.com/p/touchscreen-apps/source/browse/src/lib/thickLine.c
  * </p>
  */
-public abstract class Touch {
-    public static enum Overlap {
+public class BresenhamLine {
+    private static enum Overlap {
         MAJOR, // Overlap - first go major then minor direction
         MINOR; // Overlap - first go minor then major direction
     }
 
+    /**
+     * Thickness mode
+     */
     public static enum ThicknessMode {
+        /**
+         * Line goes through the center 
+         */
         MIDDLE, 
+        
+        /**
+         * Line goes along the border (clockwise) 
+         */
         CLOCKWISE, 
+
+        /**
+         * Line goes along the border (counter-clockwise) 
+         */
         COUNTERCLOCKWISE
     }
 
-    private static final int DISPLAY_MIN_X = 0;
-    private static final int DISPLAY_MIN_Y = 0;
-    private static final int DISPLAY_WIDTH = 1000;
-    private static final int DISPLAY_HEIGHT = 1000;
-
+    private final PixelDrawer pixelDrawer;
+    
     /**
-     * modified Bresenham
+     * @param pixelDrawer the instance that does the actual drawing
      */
-    void drawLine(int aXStart, int aYStart, int aXEnd, int aYEnd, Color aColor) {
-        drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, EnumSet.noneOf(Overlap.class), aColor);
+    public BresenhamLine(PixelDrawer pixelDrawer) {
+        this.pixelDrawer = pixelDrawer; 
     }
 
     /**
+     * Bresenham line with a thickness of 1
+     * @param xStart x0
+     * @param yStart y0
+     * @param xEnd x1
+     * @param yEnd y1
+     * @param color the color of the line
+     */
+    public void drawLine(int xStart, int yStart, int xEnd, int yEnd, Color color) {
+        drawLineOverlap(xStart, yStart, xEnd, yEnd, EnumSet.noneOf(Overlap.class), color);
+    }
+
+    /*
      * modified Bresenham with optional overlap (esp. for drawThickLine())
      * Overlap draws additional pixel when changing minor direction - for standard bresenham overlap = LINE_OVERLAP_NONE (0)
-     *
+     * <pre>
      *  Sample line:
-     *
      *    00+
      *     -0000+
      *         -0000+
      *             -00
-     *
      *  0 pixels are drawn for normal line without any overlap
      *  + pixels are drawn if LINE_OVERLAP_MAJOR
      *  - pixels are drawn if LINE_OVERLAP_MINOR
+     * </pre>
      */
-    void drawLineOverlap(int x0, int y0, int aXEnd, int aYEnd, Set<Overlap> aOverlap, Color aColor) {
+    private void drawLineOverlap(int xStart, int yStart, int xEnd, int yEnd, Set<Overlap> aOverlap, Color aColor) {
         int tDeltaX;
         int tDeltaY;
         int tDeltaXTimes2;
@@ -80,8 +100,8 @@ public abstract class Touch {
         int tStepX;
         int tStepY;
 
-        int aXStart = x0;
-        int aYStart = y0;
+        int aXStart = xStart;
+        int aYStart = yStart;
         
         /*
          * Clip to display size
@@ -114,13 +134,13 @@ public abstract class Touch {
 //            aYEnd = 0;
 //        }
 
-        if ((aXStart == aXEnd) || (aYStart == aYEnd)) {
+        if ((aXStart == xEnd) || (aYStart == yEnd)) {
             //horizontal or vertical line -> fillRect() is faster
-            fillRect(aXStart, aYStart, aXEnd, aYEnd, aColor);
+            fillRect(aXStart, aYStart, xEnd, yEnd, aColor);
         } else {
             //calculate direction
-            tDeltaX = aXEnd - aXStart;
-            tDeltaY = aYEnd - aYStart;
+            tDeltaX = xEnd - aXStart;
+            tDeltaY = yEnd - aYStart;
             if (tDeltaX < 0) {
                 tDeltaX = -tDeltaX;
                 tStepX = -1;
@@ -140,7 +160,7 @@ public abstract class Touch {
             if (tDeltaX > tDeltaY) {
                 // start value represents a half step in Y direction
                 tError = tDeltaYTimes2 - tDeltaX;
-                while (aXStart != aXEnd) {
+                while (aXStart != xEnd) {
                     // step in main direction
                     aXStart += tStepX;
                     if (tError >= 0) {
@@ -161,7 +181,7 @@ public abstract class Touch {
                 }
             } else {
                 tError = tDeltaXTimes2 - tDeltaY;
-                while (aYStart != aYEnd) {
+                while (aYStart != yEnd) {
                     aYStart += tStepY;
                     if (tError >= 0) {
                         if (aOverlap.contains(Overlap.MAJOR)) {
@@ -182,18 +202,18 @@ public abstract class Touch {
         }
     }
 
-    void fillRect(int x0, int y0, int x1, int y1, Color color) {
+    private void fillRect(int x0, int y0, int x1, int y1, Color color) {
 
         int sx = Math.min(x0, x1);
         int sy = Math.min(y0, y1);
         int ex = Math.max(x0, x1);
         int ey = Math.max(y0, y1);
 
-        sx = TeraMath.clamp(sx, DISPLAY_MIN_X, DISPLAY_MIN_X + DISPLAY_WIDTH - 1);
-        ex = TeraMath.clamp(ex, DISPLAY_MIN_X, DISPLAY_MIN_X + DISPLAY_WIDTH - 1);
-        
-        sy = TeraMath.clamp(sy, DISPLAY_MIN_Y, DISPLAY_MIN_Y + DISPLAY_HEIGHT - 1);
-        ey = TeraMath.clamp(ey, DISPLAY_MIN_Y, DISPLAY_MIN_Y + DISPLAY_HEIGHT - 1);
+//        sx = TeraMath.clamp(sx, DISPLAY_MIN_X, DISPLAY_MIN_X + DISPLAY_WIDTH - 1);
+//        ex = TeraMath.clamp(ex, DISPLAY_MIN_X, DISPLAY_MIN_X + DISPLAY_WIDTH - 1);
+//        
+//        sy = TeraMath.clamp(sy, DISPLAY_MIN_Y, DISPLAY_MIN_Y + DISPLAY_HEIGHT - 1);
+//        ey = TeraMath.clamp(ey, DISPLAY_MIN_Y, DISPLAY_MIN_Y + DISPLAY_HEIGHT - 1);
         
         for (int y = sy; y <= ey; y++) {
             for (int x = sx; x <= ex; x++) {
@@ -202,16 +222,20 @@ public abstract class Touch {
         }
     }
 
-    protected abstract void drawPixel(int aXStart, int i, Color aColor);
-
     /**
-     * Bresenham with thickness
-     * no pixel missed and every pixel only drawn once!
+     * Bresenham with thickness - no pixel missed and every pixel only drawn once!
+     * @param x0 x0
+     * @param y0 y0
+     * @param x1 x1
+     * @param y1 y1
+     * @param thickness the thickness 
+     * @param mode the mode
+     * @param color the color
      */
-    void drawThickLine(int x0, int y0, int x1, int y1, int aThickness, ThicknessMode aThicknessMode, Color aColor) {
+    public void drawThickLine(int x0, int y0, int x1, int y1, int thickness, ThicknessMode mode, Color color) {
 
-        if (aThickness <= 1) {
-            drawLineOverlap(x0, y0, x1, y1, EnumSet.noneOf(Overlap.class), aColor);
+        if (thickness <= 1) {
+            drawLineOverlap(x0, y0, x1, y1, EnumSet.noneOf(Overlap.class), color);
         }
 
         int tDeltaX;
@@ -227,36 +251,6 @@ public abstract class Touch {
         int aXEnd = x1;
         int aYEnd = y1;
         
-       /*
-         * Clip to display size
-         */
-        // ---- BUG ----
-        // TODO: invesigate and fix
-//        if (aXStart >= DISPLAY_WIDTH) {
-//            aXStart = DISPLAY_WIDTH - 1;
-//        }
-//        if (aXStart < 0) {
-//            aXStart = 0;
-//        }
-//        if (aXEnd >= DISPLAY_WIDTH) {
-//            aXEnd = DISPLAY_WIDTH - 1;
-//        }
-//        if (aXEnd < 0) {
-//            aXEnd = 0;
-//        }
-//        if (aYStart >= DISPLAY_HEIGHT) {
-//            aYStart = DISPLAY_HEIGHT - 1;
-//        }
-//        if (aYStart < 0) {
-//            aYStart = 0;
-//        }
-//        if (aYEnd >= DISPLAY_HEIGHT) {
-//            aYEnd = DISPLAY_HEIGHT - 1;
-//        }
-//        if (aYEnd < 0) {
-//            aYEnd = 0;
-//        }
-
         /**
          * For coordinatesystem with 0.0 topleft
          * Swap X and Y delta and calculate clockwise (new delta X inverted)
@@ -288,15 +282,15 @@ public abstract class Touch {
         // adjust for right direction of thickness from line origin
         int tDrawStartAdjustCount;
         
-        switch (aThicknessMode) {
+        switch (mode) {
         case COUNTERCLOCKWISE: 
-            tDrawStartAdjustCount = aThickness - 1;
+            tDrawStartAdjustCount = thickness - 1;
             break;
         case CLOCKWISE:
             tDrawStartAdjustCount = 0;
             break;
         case MIDDLE:
-            tDrawStartAdjustCount = aThickness / 2;
+            tDrawStartAdjustCount = thickness / 2;
             break;
             default:
                 throw new IllegalStateException();
@@ -305,7 +299,7 @@ public abstract class Touch {
         // which octant are we now
         if (tDeltaX >= tDeltaY) {
             if (tSwap) {
-                tDrawStartAdjustCount = (aThickness - 1) - tDrawStartAdjustCount;
+                tDrawStartAdjustCount = (thickness - 1) - tDrawStartAdjustCount;
                 tStepY = -tStepY;
             } else {
                 tStepX = -tStepX;
@@ -330,10 +324,10 @@ public abstract class Touch {
                 tError += tDeltaYTimes2;
             }
             //draw start line
-            drawLine(aXStart, aYStart, aXEnd, aYEnd, aColor);
+            drawLine(aXStart, aYStart, aXEnd, aYEnd, color);
             // draw aThickness lines
             tError = tDeltaYTimes2 - tDeltaX;
-            for (int i = aThickness; i > 1; i--) {
+            for (int i = thickness; i > 1; i--) {
                 // change X (main direction here)
                 aXStart += tStepX;
                 aXEnd += tStepX;
@@ -364,14 +358,14 @@ public abstract class Touch {
                     tOverlap = EnumSet.of(Overlap.MAJOR);
                 }
                 tError += tDeltaYTimes2;
-                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, aColor);
+                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, color);
             }
         } else {
             // the other octant
             if (tSwap) {
                 tStepX = -tStepX;
             } else {
-                tDrawStartAdjustCount = (aThickness - 1) - tDrawStartAdjustCount;
+                tDrawStartAdjustCount = (thickness - 1) - tDrawStartAdjustCount;
                 tStepY = -tStepY;
             }
             // adjust draw start point
@@ -387,9 +381,9 @@ public abstract class Touch {
                 tError += tDeltaXTimes2;
             }
             //draw start line
-            drawLine(aXStart, aYStart, aXEnd, aYEnd, aColor);
+            drawLine(aXStart, aYStart, aXEnd, aYEnd, color);
             tError = tDeltaXTimes2 - tDeltaY;
-            for (int i = aThickness; i > 1; i--) {
+            for (int i = thickness; i > 1; i--) {
                 aYStart += tStepY;
                 aYEnd += tStepY;
                 tOverlap = EnumSet.noneOf(Overlap.class);
@@ -400,15 +394,22 @@ public abstract class Touch {
                     tOverlap = EnumSet.of(Overlap.MAJOR);
                 }
                 tError += tDeltaXTimes2;
-                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, aColor);
+                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, color);
             }
         }
     }
     /**
-     * The same as before, but no clipping, some pixel are drawn twice (use LINE_OVERLAP_BOTH)
+     * Bresenham with thickness, but no clipping, some pixel are drawn twice (use LINE_OVERLAP_BOTH)
      * and direction of thickness changes for each octant (except for LINE_THICKNESS_MIDDLE and aThickness odd)
+     * @param x0 x0
+     * @param y0 y0
+     * @param x1 x1
+     * @param y1 y1
+     * @param thickness the thickness 
+     * @param mode the mode
+     * @param color the color
      */
-    void drawThickLineSimple(int x0, int y0, int x1, int y1, int aThickness, ThicknessMode aThicknessMode, Color aColor) {
+    public void drawThickLineSimple(int x0, int y0, int x1, int y1, int thickness, ThicknessMode mode, Color color) {
 
         int tDeltaX;
         int tDeltaY;
@@ -443,10 +444,10 @@ public abstract class Touch {
         Set<Overlap> tOverlap;
         // which octant are we now
         if (tDeltaX > tDeltaY) {
-            if (aThicknessMode == ThicknessMode.MIDDLE) {
+            if (mode == ThicknessMode.MIDDLE) {
                 // adjust draw start point
                 tError = tDeltaYTimes2 - tDeltaX;
-                for (int i = aThickness / 2; i > 0; i--) {
+                for (int i = thickness / 2; i > 0; i--) {
                     // change X (main direction here)
                     aXStart -= tStepX;
                     aXEnd -= tStepX;
@@ -460,10 +461,10 @@ public abstract class Touch {
                 }
             }
             //draw start line
-            drawLine(aXStart, aYStart, aXEnd, aYEnd, aColor);
+            drawLine(aXStart, aYStart, aXEnd, aYEnd, color);
             // draw aThickness lines
             tError = tDeltaYTimes2 - tDeltaX;
-            for (int i = aThickness; i > 1; i--) {
+            for (int i = thickness; i > 1; i--) {
                 // change X (main direction here)
                 aXStart += tStepX;
                 aXEnd += tStepX;
@@ -476,13 +477,13 @@ public abstract class Touch {
                     tOverlap = EnumSet.of(Overlap.MINOR, Overlap.MAJOR);
                 }
                 tError += tDeltaYTimes2;
-                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, aColor);
+                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, color);
             }
         } else {
             // adjust draw start point
-            if (aThicknessMode == ThicknessMode.MIDDLE) {
+            if (mode == ThicknessMode.MIDDLE) {
                 tError = tDeltaXTimes2 - tDeltaY;
-                for (int i = aThickness / 2; i > 0; i--) {
+                for (int i = thickness / 2; i > 0; i--) {
                     aYStart -= tStepY;
                     aYEnd -= tStepY;
                     if (tError >= 0) {
@@ -494,9 +495,9 @@ public abstract class Touch {
                 }
             }
             //draw start line
-            drawLine(aXStart, aYStart, aXEnd, aYEnd, aColor);
+            drawLine(aXStart, aYStart, aXEnd, aYEnd, color);
             tError = tDeltaXTimes2 - tDeltaY;
-            for (int i = aThickness; i > 1; i--) {
+            for (int i = thickness; i > 1; i--) {
                 aYStart += tStepY;
                 aYEnd += tStepY;
                 tOverlap = EnumSet.noneOf(Overlap.class);
@@ -507,9 +508,12 @@ public abstract class Touch {
                     tOverlap = EnumSet.of(Overlap.MINOR, Overlap.MAJOR);
                 }
                 tError += tDeltaXTimes2;
-                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, aColor);
+                drawLineOverlap(aXStart, aYStart, aXEnd, aYEnd, tOverlap, color);
             }
         }
     }
 
+    private void drawPixel(int x, int y, Color color) {
+        pixelDrawer.drawPixel(x, y, color);
+    }
 }

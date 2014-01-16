@@ -52,7 +52,7 @@ You can also use the main method in this class to view the generated world in a 
 
 ### Acknowledgements
 
-We would like to thank [D. Gilbert of Object Refinery Limited](http://www.object-refinery.com) for his support.
+We would like to thank [D. Gilbert of Object Refinery Limited](http://www.object-refinery.com) and Armin Joachimsmeyer for their friendly support.
 	
 
 ### Literature Overview
