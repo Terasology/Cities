@@ -40,7 +40,7 @@ public class BresenhamCircle {
      */
     public void fillCircle(int cx, int cy, int rad, Color color) {
         for (int y = 0; y <= rad; y++) {
-            for (int x = 0; x * x + y * y < rad * rad; x++) {
+            for (int x = 0; x * x + y * y <= (rad + 0.5) * (rad + 0.5); x++) {
                 drawPixel(cx + x, cy + y, color);
                 drawPixel(cx - x, cy + y, color);
                 drawPixel(cx - x, cy - y, color);
