@@ -20,7 +20,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -59,10 +58,7 @@ import org.terasology.cities.model.Site;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
-import org.terasology.cities.testing.NameList;
 import org.terasology.engine.CoreRegistry;
-import org.terasology.namegenerator.generators.MarkovNameGenerator;
-import org.terasology.namegenerator.generators.NameGenerator;
 import org.terasology.namegenerator.town.TownAffinityVector;
 import org.terasology.namegenerator.town.TownNameProvider;
 import org.terasology.namegenerator.waters.WaterNameProvider;
