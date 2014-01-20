@@ -25,9 +25,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.cities.terrain.ConvertingHeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /**
@@ -36,6 +39,11 @@ import com.google.common.collect.Lists;
  */
 public class ContourTracingTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(ContourTracingTest.class);
+
+    /**
+     * Tests contour tracing
+     */
     @Test
     public void test() {
         
@@ -82,6 +90,79 @@ public class ContourTracingTest {
         for (int line = 0; line < height; line++) {
             assertEquals("Line " + line, desired.get(line), reality.get(line));
         }
+    }
+
+    /**
+     * Some simple tests on curve simplification
+     */
+    @Test
+    public void testSimplification() {
+        Contour pts = new Contour();
+
+        for (int i = 3; i < 5; i++) {
+            Point p1 = new Point(i, 0);
+            pts.addPoint(p1);
+        }
+        for (int i = 0; i < 5; i++) {
+            Point p1 = new Point(5 + i, i);
+            pts.addPoint(p1);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            Point p1 = new Point(10, i + 5);
+            pts.addPoint(p1);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            Point p1 = new Point(10 - i, 10 - i);
+            pts.addPoint(p1);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            Point p1 = new Point(5 - i, 5);
+            pts.addPoint(p1);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            Point p1 = new Point(0, 5 - i);
+            pts.addPoint(p1);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Point p1 = new Point(i, 0);
+            pts.addPoint(p1);
+        }
+        Collection<Point> simplePts = pts.getSimplifiedCurve();
+    
+        char[][] data = new char[11][11];
+        for (int i = 0; i < data.length; i++) {
+            Arrays.fill(data[i], ' ');
+        }
+    
+        for (Point p : pts.getPoints()) {
+            data[p.y][p.x] = 'O';
+        }
+    
+    
+        for (Point p : simplePts) {
+            data[p.y][p.x] = 'X';
+        }
+        
+        for (char[] line : data) {
+            logger.info(new String(line));
+        }
+    
+        List<Point> shouldBe = ImmutableList.of(
+                new Point(3, 0),
+                new Point(5, 0),
+                new Point(10, 5),
+                new Point(10, 10),
+                new Point(5, 5),
+                new Point(0, 5),
+                new Point(0, 0),
+                new Point(2, 0));
+    
+        assertEquals(shouldBe, simplePts);
     }
     
     private List<String> drawContour(Collection<Contour> cts, int width, int height) {
