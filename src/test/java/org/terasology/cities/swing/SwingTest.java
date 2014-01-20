@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.testing;
+package org.terasology.cities.swing;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;

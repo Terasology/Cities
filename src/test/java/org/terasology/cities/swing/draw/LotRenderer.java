@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.testing.swing;
+package org.terasology.cities.swing.draw;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

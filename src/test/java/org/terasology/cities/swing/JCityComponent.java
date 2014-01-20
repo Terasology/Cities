@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.testing;
+package org.terasology.cities.swing;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
-import org.terasology.cities.testing.swing.SwingRasterizer;
+import org.terasology.cities.swing.draw.SwingRasterizer;
 import org.terasology.math.Vector2i;
 
 /**
