@@ -61,8 +61,8 @@ import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.cities.testing.NameList;
 import org.terasology.engine.CoreRegistry;
-import org.terasology.namegenerator.logic.generators.Markov2NameGenerator;
-import org.terasology.namegenerator.logic.generators.NameGenerator;
+import org.terasology.namegenerator.generators.MarkovNameGenerator;
+import org.terasology.namegenerator.generators.NameGenerator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -114,7 +114,7 @@ public class WorldFacade {
             public Set<Lake> apply(Sector sector) {
 
                 Integer salt = 2354234;
-                NameGenerator ng = new Markov2NameGenerator(Objects.hashCode(salt, seed, sector), Arrays.asList(NameList.NAMES));
+                NameGenerator ng = new MarkovNameGenerator(Objects.hashCode(salt, seed, sector), Arrays.asList(NameList.NAMES));
                 
                 int minSize = 2;
 
@@ -238,7 +238,7 @@ public class WorldFacade {
             public Set<City> apply(Sector input) {
 
                 int sectorSeed = Objects.hashCode(seed, input);
-                Markov2NameGenerator nameGen = new Markov2NameGenerator(sectorSeed, Arrays.asList(NameList.NAMES));
+                MarkovNameGenerator nameGen = new MarkovNameGenerator(sectorSeed, Arrays.asList(NameList.NAMES));
 
                 if (logger.isInfoEnabled()) {
                     Profiler.start(input);
