@@ -1,6 +1,6 @@
 {
     "id" : "Cities",
-    "version" : "0.2.0",
+    "version" : "0.3.0",
     "author" : "msteiger",
     "displayName" : "City Generation Module",
     "description" : "This module adds several generators for human settlements and roads",
@@ -11,7 +11,7 @@
         },
 		{
             "id" : "NameGenerator",
-            "minVersion" : "0.1.0"
+            "minVersion" : "0.2.3"
         },
 		{
             "id" : "Fences",

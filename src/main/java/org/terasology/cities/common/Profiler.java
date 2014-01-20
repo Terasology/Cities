@@ -111,8 +111,38 @@ public final class Profiler {
         TIME_MAP.remove(id);
         return str;
     }
-    
+
+    /**
+     * Get the time since start() was last called
+     * @param id an identifier object
+     * @return the time in milliseconds
+     */
+    public static double getAndReset(Object id) {
+        double val = get(id);
+        TIME_MAP.put(id, measure());
+        return val;
+    }
+
+    /**
+     * Get the time since start() was last called as formatted string (e.g. 334.22ms) and reset the timer
+     * @param id an identifier object
+     * @return the time in milliseconds as formatted string
+     */
+    public static String getAsStrindAndReset(Object id) {
+        String str = getAsString(id);
+        TIME_MAP.put(id, measure());
+        return str;
+    }
+
     private static long measure() {
         return System.nanoTime();
+    }
+
+    /**
+     * Removes the id, if it exists
+     * @param id an identifier object
+     */
+    public static void stop(Object id) {
+        TIME_MAP.remove(id);
     }
 }

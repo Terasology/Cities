@@ -61,8 +61,11 @@ import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.cities.testing.NameList;
 import org.terasology.engine.CoreRegistry;
-import org.terasology.namegenerator.logic.generators.Markov2NameGenerator;
-import org.terasology.namegenerator.logic.generators.NameGenerator;
+import org.terasology.namegenerator.generators.MarkovNameGenerator;
+import org.terasology.namegenerator.generators.NameGenerator;
+import org.terasology.namegenerator.town.TownAffinityVector;
+import org.terasology.namegenerator.town.TownNameProvider;
+import org.terasology.namegenerator.waters.WaterNameProvider;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -114,7 +117,8 @@ public class WorldFacade {
             public Set<Lake> apply(Sector sector) {
 
                 Integer salt = 2354234;
-                NameGenerator ng = new Markov2NameGenerator(Objects.hashCode(salt, seed, sector), Arrays.asList(NameList.NAMES));
+                int ngseed = Objects.hashCode(salt, seed, sector);
+                WaterNameProvider ng = new WaterNameProvider(ngseed, new DebugWaterTheme());
                 
                 int minSize = 2;
 
@@ -133,7 +137,7 @@ public class WorldFacade {
 
                     if (polyLake.getBounds().width > minSize
                      && polyLake.getBounds().height > minSize) {
-                        Lake lake = new Lake(c, ng.nextName());
+                        Lake lake = new Lake(c, ng.generateName());
                         
                         for (Contour isl : ct.getInnerContours()) {
                             Rectangle bboxIsland = isl.getPolygon().getBounds();
@@ -238,7 +242,7 @@ public class WorldFacade {
             public Set<City> apply(Sector input) {
 
                 int sectorSeed = Objects.hashCode(seed, input);
-                Markov2NameGenerator nameGen = new Markov2NameGenerator(sectorSeed, Arrays.asList(NameList.NAMES));
+                TownNameProvider nameGen = new TownNameProvider(sectorSeed, new DebugTownTheme());
 
                 if (logger.isInfoEnabled()) {
                     Profiler.start(input);
@@ -283,7 +287,7 @@ public class WorldFacade {
                     AreaInfo si = new AreaInfo(config, cityAreaHeightMap); 
                     si.addBlockedArea(roadShape);
                     
-                    String name = nameGen.nextName(5, 10);
+                    String name = nameGen.generateName(TownAffinityVector.create().prefix(0.2).postfix(0.2));
                     MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
 
                     // add a town wall if radius is larger than 1/4
