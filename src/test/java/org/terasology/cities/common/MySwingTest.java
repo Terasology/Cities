@@ -20,6 +20,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -83,6 +84,38 @@ public final class MySwingTest {
                         g.draw(new Line2D.Double(x + 0.5, y + 0.5, x + 0.5, y + 0.5)); 
                     }
                 };
+                
+                final Point st = new Point(210, 10);
+                final Point end = new Point(160, 80);
+
+                PixelDrawer pixelDrawer2 = new PixelDrawer() {
+                    @Override
+                     public void drawPixel(int x, int y, Color aColor) {
+                        int ax = st.x;
+                        int ay = st.y;
+                        int az = 10;
+                        int dx = end.x - st.x;
+                        int dy = end.y - st.y;
+                        int dz = 200;
+                        int ex = x;
+                        int ey = y;
+                        double lambda = getLamdba(ax, ay, dx, dy, ex, ey);
+                        int ez = getZ(lambda, az, dz);
+                        if (ez < az) {
+                            ez = az;
+                        }
+                        double kn = getKappaNorm(lambda, ax, ay, dx, dy, ex, ey);
+                        if (Math.abs(kn) < 0.75) {
+                            ez += 0xA08000;
+                        }
+                        if (Math.abs(kn) > 8) {
+                            ez += 0xA08000;
+                        }
+
+                        g.setColor(new Color(ez));
+                        g.draw(new Line2D.Double(x + 0.5, y + 0.5, x + 0.5, y + 0.5));
+                    }
+                }; 
 
                 BresenhamLine murphy = new BresenhamLine(pixelDrawer);
 
@@ -102,6 +135,7 @@ public final class MySwingTest {
                 murphy.drawThickLine(-15, 70, 10, 10, 8, BresenhamLine.ThicknessMode.MIDDLE, black);
 
                 BresenhamCircle bc = new BresenhamCircle(pixelDrawer);
+                BresenhamCircle bc2 = new BresenhamCircle(pixelDrawer2);
                 
                 for (int r = 1; r < 8; r++) {
                     bc.fillCircle(130, -10 + 15 * r, r, Color.GRAY);
@@ -114,7 +148,11 @@ public final class MySwingTest {
                 int dry = TeraMath.floorToInt(Math.cos(rot) * 15);
                 murphy.drawThickLine(50 + drx, 70 + dry, 50 - drx, 70 - dry, 3, mode, Color.MAGENTA);
                 rot += Math.toRadians(5);
-            }
+                
+                Color col = new Color(0x404000);
+                bc2.fillCircle(st.x, st.y, 8, Color.GRAY);
+                bc2.fillCircle(end.x, end.y, 8, Color.GRAY);
+                new BresenhamLine(pixelDrawer2).drawThickLine(st.x, st.y, end.x, end.y, 17, mode, col);             }
         });
 
         Timer t = new Timer();
@@ -131,4 +169,21 @@ public final class MySwingTest {
         frame.setSize(600, 400);
         frame.setVisible(true);
     }
+    
+
+    private static double getLamdba(int ax, int ay, int dx, int dy, int ex, int ey) {
+        return (double)(ey * dy - ay * dy - ax * dx + ex * dx) / (dy * dy + dx * dx);
+    }
+
+    private static int getZ(double lambda, int az, int dz) {
+        return (int) (az + lambda * dz);
+    }
+
+    private static double getKappa(double lambda, int ax, int ay, int dx, int dy, int ex, int ey) {
+        return (ax + lambda * dx - ex) / dy;
+    }
+
+    private static double getKappaNorm(double lambda, int ax, int ay, int dx, int dy, int ex, int ey) {
+        return getKappa(lambda, ax, ay, dx, dy, ex, ey) * Math.sqrt(dx * dx + dy * dy);
+    } 
 }
