@@ -56,6 +56,10 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
             return;
         }
         
+        if (heightMap == null) {
+            heightMap = new NoiseHeightMap();
+        }
+        
         heightMap.setSeed(seed);
         
         super.setWorldSeed(seed);
