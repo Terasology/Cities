@@ -18,17 +18,22 @@ package org.terasology.cities.raster.standard;
 
 import java.awt.BasicStroke;
 import java.awt.Shape;
-import java.awt.geom.Path2D;
+import java.awt.geom.Line2D;
 import java.util.List;
 
 import javax.vecmath.Point2i;
+import javax.vecmath.Point3d;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.common.PathUtils;
+import org.terasology.cities.common.Plane2d;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMapAdapter;
+import org.terasology.cities.terrain.HeightMaps;
+import org.terasology.math.TeraMath;
 
 import com.google.common.collect.Lists;
 
@@ -45,17 +50,36 @@ public class RoadRasterizer implements Rasterizer<Road> {
         pts.add(0, road.getStart().getCoords());
         pts.add(road.getEnd().getCoords());
 
-        Path2D path = PathUtils.createSegmentPath(pts);
-
         float strokeWidth = (float) road.getWidth();
-            
         int cap = BasicStroke.CAP_ROUND;    // end of path
         int join = BasicStroke.JOIN_ROUND;  // connected path segments
         BasicStroke thick = new BasicStroke(strokeWidth, cap, join);
 
-        Shape shape = thick.createStrokedShape(path);
-        
-        brush.fillShape(shape, ti.getHeightMap(), 1, BlockTypes.ROAD_SURFACE);
+        for (int i = 0; i < pts.size() - 1; i++) {
+            Point2i p0 = pts.get(i + 0);
+            Point2i p1 = pts.get(i + 1);
+
+            Line2D line = new Line2D.Double(p0.x, p0.y, p1.x, p1.y);
+            Shape shape = thick.createStrokedShape(line);
+
+            Point3d start = new Point3d(p0.x, p0.y, ti.getHeightMap().apply(p0.x, p0.y));
+            Point3d end = new Point3d(p1.x, p1.y, ti.getHeightMap().apply(p1.x, p1.y));
+            
+            final Plane2d plane = new Plane2d(start, end);
+            HeightMap hm = new HeightMapAdapter() {
+                
+                @Override
+                public int apply(int x, int z) {
+                    return  TeraMath.ceilToInt(plane.getZ(x, z));
+                }
+            };
+            
+            // clear area above floor level
+            brush.fillShape(shape, hm, HeightMaps.offset(ti.getHeightMap(), 1), BlockTypes.AIR);
+            brush.fillShape(shape, hm, 1, BlockTypes.ROAD_SURFACE);
+//
+//            brush.fillShape(shape, ti.getHeightMap(), hm, BlockTypes.ROAD_SURFACE);
+        }
     }
 
 }

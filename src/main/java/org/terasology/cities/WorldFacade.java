@@ -58,12 +58,12 @@ import org.terasology.cities.model.Site;
 import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
-import org.terasology.engine.CoreRegistry;
 import org.terasology.namegenerator.town.DebugTownTheme;
 import org.terasology.namegenerator.town.TownAffinityVector;
 import org.terasology.namegenerator.town.TownNameProvider;
 import org.terasology.namegenerator.waters.DebugWaterTheme;
 import org.terasology.namegenerator.waters.WaterNameProvider;
+import org.terasology.registry.CoreRegistry;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -338,7 +338,7 @@ public class WorldFacade {
         });
         
         // this required by WorldEventReceiver
-        CoreRegistry.putPermanently(WorldFacade.class, this);
+        CoreRegistry.put(WorldFacade.class, this);
     }
     
     /**
