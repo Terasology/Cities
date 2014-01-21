@@ -23,7 +23,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
@@ -37,6 +36,7 @@ import org.terasology.cities.contour.Contour;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lake;
 import org.terasology.cities.model.Lot;
+import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
@@ -195,10 +195,12 @@ public class SwingRasterizer {
     }
     
     private void drawRoads(Sector sector, TerrainInfo ti, Brush brush) {
-        Shape roadArea = facade.getRoadArea(sector);
+        Set<Road> roads = facade.getRoads(sector);
     
         RoadRasterizer rr = new RoadRasterizer();
-        rr.raster(brush, ti, roadArea);
+        for (Road road : roads) {
+            rr.raster(brush, ti, road);
+        }
     }
     
     private void drawCities(Sector sector, TerrainInfo ti, Brush brush) {
@@ -217,13 +219,13 @@ public class SwingRasterizer {
     
     private void drawRoads(Graphics2D g, Sector sector) {
         
-        Shape roadArea = facade.getRoadArea(sector);
-
-        g.setStroke(new BasicStroke());
-        g.setColor(new Color(224, 96, 32));
-        g.fill(roadArea);
-        g.setColor(Color.BLACK);
-        g.draw(roadArea);
+//        Shape roadArea = facade.getRoadArea(sector);
+//
+//        g.setStroke(new BasicStroke());
+//        g.setColor(new Color(224, 96, 32));
+//        g.fill(roadArea);
+//        g.setColor(Color.BLACK);
+//        g.draw(roadArea);
     }
 
     private void drawCities(Graphics2D g, Sector sector) {

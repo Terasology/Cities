@@ -59,8 +59,10 @@ import org.terasology.cities.model.TownWall;
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.engine.CoreRegistry;
+import org.terasology.namegenerator.town.DebugTownTheme;
 import org.terasology.namegenerator.town.TownAffinityVector;
 import org.terasology.namegenerator.town.TownNameProvider;
+import org.terasology.namegenerator.waters.DebugWaterTheme;
 import org.terasology.namegenerator.waters.WaterNameProvider;
 
 import com.google.common.base.Function;
@@ -350,10 +352,10 @@ public class WorldFacade {
      * @param sector the sector
      * @return a shape that describes the area of all roads
      */
-    public Shape getRoadArea(Sector sector) {
-        return roadShapeFunc.apply(sector);
+    public Set<Road> getRoads(Sector sector) {
+        return roadMap.apply(sector);
     }
-
+    
     /**
      * @param sector the sector
      * @return all cities in that sector

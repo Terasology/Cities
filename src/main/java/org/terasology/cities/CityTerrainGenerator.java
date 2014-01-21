@@ -16,13 +16,13 @@
 
 package org.terasology.cities;
 
-import java.awt.Shape;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.City;
+import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.raster.Brush;
@@ -138,10 +138,12 @@ public class CityTerrainGenerator implements FirstPassGenerator {
     }
 
     private void drawRoads(Sector sector, TerrainInfo ti, Brush brush) {
-        Shape roadArea = facade.getRoadArea(sector);
+        Set<Road> roads = facade.getRoads(sector);
 
         RoadRasterizer rr = new RoadRasterizer();
-        rr.raster(brush, ti, roadArea);
+        for (Road road : roads) {
+            rr.raster(brush, ti, road);
+        }
     }
 
     private void drawCities(Sector sector, TerrainInfo ti, Brush brush) {

@@ -99,7 +99,7 @@ public final class MySwingTest {
                         int dz = 200;
                         int ex = x;
                         int ey = y;
-                        double lambda = getLamdba(ax, ay, dx, dy, ex, ey);
+                        double lambda = getLambda(ax, ay, dx, dy, ex, ey);
                         int ez = getZ(lambda, az, dz);
                         if (ez < az) {
                             ez = az;
@@ -171,7 +171,7 @@ public final class MySwingTest {
     }
     
 
-    private static double getLamdba(int ax, int ay, int dx, int dy, int ex, int ey) {
+    private static double getLambda(int ax, int ay, int dx, int dy, int ex, int ey) {
         return (double)(ey * dy - ay * dy - ax * dx + ex * dx) / (dy * dy + dx * dx);
     }
 

@@ -25,12 +25,30 @@ import javax.vecmath.Point2i;
  * Some spline-related utilities
  * @author Martin Steiger
  */
-public final class Splines {
+public final class PathUtils {
     
-    private Splines() {
+    private PathUtils() {
         // private
     }
     
+    /**
+     * @param points a list of points
+     * @return a path of connected line segments
+     */
+    public static Path2D createSegmentPath(List<Point2i> points) {
+        Path2D path = new Path2D.Double();
+
+        path.moveTo(points.get(0).getX(), points.get(0).getY());
+
+        for (int i = 0; i < points.size() - 1; i++) {
+            Point2i p1 = points.get(i + 1);
+            path.lineTo(p1.getX(), p1.getY());
+        }
+
+        return path;
+
+    }
+
     /**
      * Create a bezier spline that passes through all given points
      * @param pts a list of points

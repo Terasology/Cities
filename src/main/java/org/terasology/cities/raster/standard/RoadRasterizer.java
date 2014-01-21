@@ -16,22 +16,46 @@
 
 package org.terasology.cities.raster.standard;
 
+import java.awt.BasicStroke;
 import java.awt.Shape;
+import java.awt.geom.Path2D;
+import java.util.List;
+
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.common.PathUtils;
+import org.terasology.cities.model.Road;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+
+import com.google.common.collect.Lists;
 
 /**
  * Draws road shapes on the terrain surface
  * @author Martin Steiger
  */
-public class RoadRasterizer implements Rasterizer<Shape> {
+public class RoadRasterizer implements Rasterizer<Road> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, Shape element) {
-        brush.fillShape(element, ti.getHeightMap(), 1, BlockTypes.ROAD_SURFACE);
+    public void raster(Brush brush, TerrainInfo ti, Road road) {
+        List<Point2i> pts = Lists.newArrayList(road.getPoints());
+
+        pts.add(0, road.getStart().getCoords());
+        pts.add(road.getEnd().getCoords());
+
+        Path2D path = PathUtils.createSegmentPath(pts);
+
+        float strokeWidth = (float) road.getWidth();
+            
+        int cap = BasicStroke.CAP_ROUND;    // end of path
+        int join = BasicStroke.JOIN_ROUND;  // connected path segments
+        BasicStroke thick = new BasicStroke(strokeWidth, cap, join);
+
+        Shape shape = thick.createStrokedShape(path);
+        
+        brush.fillShape(shape, ti.getHeightMap(), 1, BlockTypes.ROAD_SURFACE);
     }
 
 }

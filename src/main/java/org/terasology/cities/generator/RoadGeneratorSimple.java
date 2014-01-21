@@ -63,7 +63,7 @@ public class RoadGeneratorSimple implements Function<UnorderedPair<Site>, Road> 
         width = (float) Math.floor(width * 0.5);
         
         // TODO: check and remove
-        road.setWidth(1.0f);
+        road.setWidth(5.0f);
 
         return road;
     }
