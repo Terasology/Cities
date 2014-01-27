@@ -70,15 +70,14 @@ public class RoadRasterizer implements Rasterizer<Road> {
                 
                 @Override
                 public int apply(int x, int z) {
-                    return  TeraMath.ceilToInt(plane.getZ(x, z));
+                    return TeraMath.ceilToInt(plane.getZ(x, z));
                 }
             };
             
             // clear area above floor level
             brush.fillShape(shape, hm, HeightMaps.offset(ti.getHeightMap(), 1), BlockTypes.AIR);
             brush.fillShape(shape, hm, 1, BlockTypes.ROAD_SURFACE);
-//
-//            brush.fillShape(shape, ti.getHeightMap(), hm, BlockTypes.ROAD_SURFACE);
+            brush.fillShape(shape, ti.getHeightMap(), hm, BlockTypes.BUILDING_FOUNDATION);
         }
     }
 

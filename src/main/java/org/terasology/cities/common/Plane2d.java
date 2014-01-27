@@ -94,7 +94,7 @@ public class Plane2d {
      * @return the z value at that point (depends on lambda only)
      */
     public double getZ(double ex, double ey) {
-        return (int) (az + getLambda(ex, ey) * dz);
+        return (int) (az + getLambda(ex, ey) * dz + 0.5);
     }
 
     /**
