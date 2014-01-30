@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.terasology.cities.terrain.HeightMap;
-import org.terasology.engine.CoreRegistry;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.math.Vector2i;
 import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.block.Block;

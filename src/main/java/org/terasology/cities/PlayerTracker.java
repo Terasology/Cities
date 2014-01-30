@@ -30,7 +30,6 @@ import org.terasology.cities.model.Sectors;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.ComponentSystem;
-import org.terasology.entitySystem.systems.In;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
@@ -38,6 +37,7 @@ import org.terasology.logic.console.ConsoleColors;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
+import org.terasology.registry.In;
 import org.terasology.rendering.FontColor;
 
 import com.google.common.collect.Maps;

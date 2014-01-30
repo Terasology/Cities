@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.terasology.cities.terrain.HeightMap;
 import org.terasology.core.config.WorldGenerationConfig;
-import org.terasology.engine.CoreRegistry;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.WorldBiomeProvider;
