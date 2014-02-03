@@ -44,7 +44,7 @@ final class BlockTheme implements Function<BlockTypes, Block> {
      */
     public BlockTheme() {
         map.put(BlockTypes.AIR, BlockManager.getAir());
-        defaultBlock = blockManager.getBlock("core:Stone");
+        defaultBlock = blockManager.getBlock("Cities:pink");
     }
 
     /**
@@ -54,11 +54,12 @@ final class BlockTheme implements Function<BlockTypes, Block> {
     public void register(BlockTypes blockType, String blockUri) {
         Block block = blockManager.getBlock(blockUri);
         
-        if (block == null) {
-            logger.warn("Could not resolve block URI \"{}\" - skipping", blockUri);
-        } else {
-            map.put(blockType, block);
-        }
+        if (block == null || block.equals(BlockManager.getAir())) {
+            logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
+            block = defaultBlock;
+        } 
+
+        map.put(blockType, block);
     }
     
     /**
