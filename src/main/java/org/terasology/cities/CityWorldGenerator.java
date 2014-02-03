@@ -16,6 +16,8 @@
 
 package org.terasology.cities;
 
+import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.cities.terrain.NoiseHeightMap;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
@@ -27,7 +29,8 @@ import org.terasology.world.generator.RegisterWorldGenerator;
 @RegisterWorldGenerator(id = "city", displayName = "City World")
 public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
-    private NoiseHeightMap heightMap;
+    private NoiseHeightMap noiseMap;
+    private HeightMap heightMap;
 
     /**
      * @param uri the uri
@@ -42,7 +45,8 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         // TODO: this should come from elsewhere
         CityWorldConfig config = new CityWorldConfig();
         
-        heightMap = new NoiseHeightMap();
+        noiseMap = new NoiseHeightMap();
+        heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
         
         register(new HeightMapTerrainGenerator(heightMap, config));
 //        register(new BoundaryGenerator(heightMap));
@@ -57,10 +61,11 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         }
         
         if (heightMap == null) {
-            heightMap = new NoiseHeightMap();
+            noiseMap = new NoiseHeightMap();
+            heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
         }
         
-        heightMap.setSeed(seed);
+        noiseMap.setSeed(seed);
         
         super.setWorldSeed(seed);
     }

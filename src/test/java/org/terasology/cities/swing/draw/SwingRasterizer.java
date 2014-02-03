@@ -60,7 +60,7 @@ import com.google.common.collect.Sets;
 public class SwingRasterizer {
 
     private final WorldFacade facade;
-    private final NoiseHeightMap heightMap;
+    private final HeightMap heightMap;
     
     private final Map<BlockTypes, Color> themeMap = Maps.newConcurrentMap();
     
@@ -68,8 +68,9 @@ public class SwingRasterizer {
      * @param seed the seed value
      */
     public SwingRasterizer(String seed) {
-        heightMap = new NoiseHeightMap();
-        heightMap.setSeed(seed);
+        NoiseHeightMap noiseMap = new NoiseHeightMap();
+        noiseMap.setSeed(seed);
+        heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
         
         CityWorldConfig config = new CityWorldConfig();
         facade = new WorldFacade(seed, heightMap, config);

@@ -97,4 +97,56 @@ public final class HeightMaps {
     public static HeightMap stringBased(List<String> data) {
         return new StringHeightMap(data);
     }
+
+    /**
+     * @param hm the height map
+     * @return a height map that is mirror along the diagonal (1, -1)
+     */
+    public static HeightMap symmetricAlongZ(final HeightMap hm) {
+        return new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                if (x < 0) {
+                    return hm.apply(-x, z);
+                }
+                return hm.apply(x, z);
+            }
+        };
+    }
+
+    /**
+     * @param hm the height map
+     * @return a height map that is mirror along the diagonal (1, -1)
+     */
+    public static HeightMap symmetricAlongX(final HeightMap hm) {
+        return new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                if (z < 0) {
+                    return hm.apply(x, -z);
+                }
+                return hm.apply(x, z);
+            }
+        };
+    }
+
+    /**
+     * @param hm the height map
+     * @return a height map that is mirror along the diagonal (1, -1)
+     */
+    public static HeightMap symmetricAlongDiagonal(final HeightMap hm) {
+        return new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                if (x + z < 0) {
+                    int dist = x + z;
+                    return hm.apply(x - dist, z - dist);
+                }
+                return hm.apply(x, z);
+            }
+        };
+    }
 }
