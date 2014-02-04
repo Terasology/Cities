@@ -19,6 +19,10 @@ package org.terasology.cities.terrain;
 import java.awt.Rectangle;
 import java.util.List;
 
+import org.terasology.cities.contour.IntArray2D;
+
+import com.google.common.math.IntMath;
+
 /**
  * Provides access to different height maps
  * @author Martin Steiger
@@ -149,4 +153,21 @@ public final class HeightMaps {
             }
         };
     }
+    
+
+    /**
+     * @param array the underlying array
+     * @return a height map that is mirror along the diagonal (1, -1)
+     */
+    public static HeightMap fromArray2D(final IntArray2D array) {
+        return new HeightMapAdapter() {
+
+            @Override
+            public int apply(int x, int z) {
+                int lx = IntMath.mod(x, array.getWidth());
+                int lz = IntMath.mod(z, array.getHeight());
+                return array.get(lx, lz);
+            }
+        };
+    }    
 }
