@@ -292,5 +292,56 @@ public abstract class Brush {
                 z += sy;
             }
         }
-    }    
+    }
+    
+    /**
+     * Horn's algorithm B. K. P. Horn: Circle Generators for Display Devices.
+     * Computer Graphics and Image Processing 5, 2 (June 1976)
+     * @param cx the center x
+     * @param cy the center y
+     * @param rad the radius
+     * @param hm the height map
+     * @param type the block type to set
+     */
+    public void drawCircle(int cx, int cy, int rad, HeightMap hm, BlockTypes type) {
+        int d = -rad;
+        int x = rad;
+        int y = 0;
+        while (y <= x) {
+            setBlock(cx + x, cy + y, hm.apply(cx + x, cy + y), type);
+            setBlock(cx - x, cy + y, hm.apply(cx - x, cy + y), type);
+            setBlock(cx - x, cy - y, hm.apply(cx - x, cy - y), type);
+            setBlock(cx + x, cy - y, hm.apply(cx + x, cy - y), type);
+
+            setBlock(cx + y, cy + x, hm.apply(cx + y, cy + x), type);
+            setBlock(cx - y, cy + x, hm.apply(cx - y, cy + x), type);
+            setBlock(cx - y, cy - x, hm.apply(cx - y, cy - x), type);
+            setBlock(cx + y, cy - x, hm.apply(cx + y, cy - x), type);
+
+            d = d + 2 * y + 1;
+            y = y + 1;
+            if (d > 0) {
+                d = d - 2 * x + 2;
+                x = x - 1;
+            }
+        }
+    }
+    
+    /**
+     * @param cx the center x
+     * @param cy the center y
+     * @param rad the radius
+     * @param hm the height map
+     * @param type the block type to set
+     */
+    public void fillCircle(int cx, int cy, int rad, HeightMap hm, BlockTypes type) {
+        for (int y = 0; y <= rad; y++) {
+            for (int x = 0; x * x + y * y <= (rad + 0.5) * (rad + 0.5); x++) {
+                setBlock(cx + x, cy + y, hm.apply(cx + x, cy + y), type);
+                setBlock(cx - x, cy + y, hm.apply(cx - x, cy + y), type);
+                setBlock(cx - x, cy - y, hm.apply(cx - x, cy - y), type);
+                setBlock(cx + x, cy - y, hm.apply(cx + x, cy - y), type);
+            }
+        }
+    }
 }

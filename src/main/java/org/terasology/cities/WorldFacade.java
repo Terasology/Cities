@@ -184,7 +184,7 @@ public class WorldFacade {
 
         Function<UnorderedPair<Site>, Road> rg = new Function<UnorderedPair<Site>, Road>() {
             private RoadGeneratorSimple rgs = new RoadGeneratorSimple(junctions);
-            private RoadModifierRandom rmr = new RoadModifierRandom(10);
+            private RoadModifierRandom rmr = new RoadModifierRandom(0.5);
 
             @Override
             public Road apply(UnorderedPair<Site> input) {

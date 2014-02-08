@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 MovingBlocks
+ * Copyright 2014 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,39 @@
 
 package org.terasology.cities.model;
 
-import java.awt.Rectangle;
+import java.awt.Shape;
+
 
 /**
- * A roof with rectangular shape
+ * An abstract base class for different roof types
  * @author Martin Steiger
  */
-public class RectangularRoof extends AbstractRoof {
-    
+public abstract class AbstractRoof implements Roof {
+
+    private int baseHeight;
+    private Shape shape;
+
     /**
-     * @param rc the roof area
+     * @param shape the roof area
      * @param baseHeight the base height of the roof
      */
-    public RectangularRoof(Rectangle rc, int baseHeight) {
-        super(rc, baseHeight);
+    public AbstractRoof(Shape shape, int baseHeight) {
+        this.shape = shape;
+        this.baseHeight = baseHeight;
+    }
+    
+    /**
+     * @return the base height of the roof
+     */
+    public int getBaseHeight() {
+        return baseHeight;
     }
 
     /**
-     * @return the roof area
+     * @return the building layout
      */
     @Override
-    public Rectangle getArea() {
-        return (Rectangle)super.getArea();
+    public Shape getArea() {
+        return this.shape;
     }
 }

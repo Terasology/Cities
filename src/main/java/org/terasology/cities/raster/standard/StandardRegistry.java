@@ -17,12 +17,14 @@
 package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.model.BattlementRoof;
+import org.terasology.cities.model.ConicRoof;
 import org.terasology.cities.model.DomeRoof;
 import org.terasology.cities.model.FlatRoof;
 import org.terasology.cities.model.GateWallSegment;
 import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.PentRoof;
+import org.terasology.cities.model.RoundTower;
 import org.terasology.cities.model.SaddleRoof;
 import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleFence;
@@ -52,9 +54,11 @@ public final class StandardRegistry extends RasterRegistry {
         register(SaddleRoof.class, new SaddleRoofRasterizer());
         register(DomeRoof.class, new DomeRoofRasterizer());
         register(PentRoof.class, new PentRoofRasterizer());
+        register(ConicRoof.class, new ConicRoofRasterizer());
         register(BattlementRoof.class, new FlatRoofRasterizer());   // not sure if this is a good idea
         register(SimpleFence.class, new SimpleFenceRasterizer());
         register(SimpleTower.class, new SimpleTowerRasterizer());
+        register(RoundTower.class, new RoundTowerRasterizer());
         register(SolidWallSegment.class, new SolidWallSegmentRasterizer());
         register(GateWallSegment.class, new GateWallSegmentRasterizer());
         register(SimpleChurch.class, new SimpleChurchRasterizer());

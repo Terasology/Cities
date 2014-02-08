@@ -26,7 +26,7 @@ import com.google.common.collect.Sets;
  * Defines a building in the most common sense
  * @author Martin Steiger
  */
-public class AbstractBuilding implements Building {
+public abstract class AbstractBuilding implements Building {
     
     private final Set<Window> windows = Sets.newHashSet();
     private final Shape layout;
