@@ -19,12 +19,12 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.BuildingPart;
-import org.terasology.cities.model.Roof;
-import org.terasology.cities.model.SimpleBuildingPart;
-import org.terasology.cities.model.SimpleChurch;
-import org.terasology.cities.model.SimpleDoor;
-import org.terasology.cities.model.Window;
+import org.terasology.cities.model.bldg.BuildingPart;
+import org.terasology.cities.model.bldg.SimpleBuildingPart;
+import org.terasology.cities.model.bldg.SimpleChurch;
+import org.terasology.cities.model.bldg.SimpleDoor;
+import org.terasology.cities.model.bldg.Window;
+import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;

@@ -16,23 +16,23 @@
 
 package org.terasology.cities.raster.standard;
 
-import org.terasology.cities.model.BattlementRoof;
-import org.terasology.cities.model.ConicRoof;
-import org.terasology.cities.model.DomeRoof;
-import org.terasology.cities.model.FlatRoof;
-import org.terasology.cities.model.GateWallSegment;
-import org.terasology.cities.model.HipRoof;
 import org.terasology.cities.model.MedievalTown;
-import org.terasology.cities.model.PentRoof;
-import org.terasology.cities.model.RoundTower;
-import org.terasology.cities.model.SaddleRoof;
-import org.terasology.cities.model.SimpleChurch;
 import org.terasology.cities.model.SimpleFence;
-import org.terasology.cities.model.SimpleHome;
 import org.terasology.cities.model.SimpleLot;
-import org.terasology.cities.model.SimpleTower;
-import org.terasology.cities.model.SimpleWindow;
-import org.terasology.cities.model.SolidWallSegment;
+import org.terasology.cities.model.bldg.GateWallSegment;
+import org.terasology.cities.model.bldg.RoundTower;
+import org.terasology.cities.model.bldg.SimpleChurch;
+import org.terasology.cities.model.bldg.SimpleHome;
+import org.terasology.cities.model.bldg.SimpleTower;
+import org.terasology.cities.model.bldg.SimpleWindow;
+import org.terasology.cities.model.bldg.SolidWallSegment;
+import org.terasology.cities.model.roof.BattlementRoof;
+import org.terasology.cities.model.roof.ConicRoof;
+import org.terasology.cities.model.roof.DomeRoof;
+import org.terasology.cities.model.roof.FlatRoof;
+import org.terasology.cities.model.roof.HipRoof;
+import org.terasology.cities.model.roof.PentRoof;
+import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.raster.RasterRegistry;
 
 /**

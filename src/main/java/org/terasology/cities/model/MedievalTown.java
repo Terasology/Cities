@@ -18,6 +18,8 @@ package org.terasology.cities.model;
 
 import javax.vecmath.Point2i;
 
+import org.terasology.cities.model.bldg.TownWall;
+
 import com.google.common.base.Optional;
 
 /**

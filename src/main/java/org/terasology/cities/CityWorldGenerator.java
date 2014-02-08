@@ -16,9 +16,9 @@
 
 package org.terasology.cities;
 
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMaps;
-import org.terasology.cities.terrain.NoiseHeightMap;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMaps;
+import org.terasology.cities.heightmap.NoiseHeightMap;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
 import org.terasology.world.generator.RegisterWorldGenerator;

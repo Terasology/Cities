@@ -17,8 +17,8 @@
 package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.Building;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.cities.model.bldg.Building;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;

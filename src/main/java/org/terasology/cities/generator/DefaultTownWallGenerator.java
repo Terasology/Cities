@@ -22,11 +22,11 @@ import java.util.Objects;
 
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.GateWallSegment;
-import org.terasology.cities.model.SimpleTower;
-import org.terasology.cities.model.SolidWallSegment;
-import org.terasology.cities.model.TownWall;
-import org.terasology.cities.model.WallSegment;
+import org.terasology.cities.model.bldg.GateWallSegment;
+import org.terasology.cities.model.bldg.SimpleTower;
+import org.terasology.cities.model.bldg.SolidWallSegment;
+import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.cities.model.bldg.WallSegment;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;

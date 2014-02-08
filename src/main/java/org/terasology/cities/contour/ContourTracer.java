@@ -21,8 +21,10 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMapAdapter;
+import org.terasology.cities.array.Arrays2D;
+import org.terasology.cities.array.IntArray2D;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMapAdapter;
 
 /**
  * Heavily inspired by sample code from the book 

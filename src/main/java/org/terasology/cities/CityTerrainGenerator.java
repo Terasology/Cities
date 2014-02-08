@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
@@ -31,8 +33,6 @@ import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.RoadRasterizer;
 import org.terasology.cities.raster.standard.StandardRegistry;
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.chunks.Chunk;
 import org.terasology.world.generator.FirstPassGenerator;

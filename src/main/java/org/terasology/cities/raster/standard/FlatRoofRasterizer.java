@@ -19,13 +19,13 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.FlatRoof;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMapAdapter;
+import org.terasology.cities.heightmap.HeightMaps;
+import org.terasology.cities.model.roof.FlatRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.HeightMaps;
 
 /**
  * Converts a {@link FlatRoof} into blocks

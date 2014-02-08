@@ -28,10 +28,10 @@ import java.util.TimerTask;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import org.terasology.cities.raster.BresenhamCircle;
-import org.terasology.cities.raster.BresenhamLine;
-import org.terasology.cities.raster.BresenhamLine.ThicknessMode;
-import org.terasology.cities.raster.PixelDrawer;
+import org.terasology.cities.swing.draw.BresenhamCircle;
+import org.terasology.cities.swing.draw.BresenhamLine;
+import org.terasology.cities.swing.draw.PixelDrawer;
+import org.terasology.cities.swing.draw.BresenhamLine.ThicknessMode;
 import org.terasology.math.TeraMath;
 
 /**

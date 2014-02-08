@@ -27,8 +27,8 @@ import java.util.List;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.terrain.ConvertingHeightMap;
-import org.terasology.cities.terrain.HeightMaps;
+import org.terasology.cities.heightmap.ConvertingHeightMap;
+import org.terasology.cities.heightmap.HeightMaps;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

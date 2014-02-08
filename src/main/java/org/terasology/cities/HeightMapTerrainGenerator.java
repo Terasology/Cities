@@ -19,7 +19,7 @@ package org.terasology.cities;
 import java.util.Collections;
 import java.util.Map;
 
-import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.math.Vector2i;
 import org.terasology.world.WorldBiomeProvider;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.core.config.WorldGenerationConfig;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.utilities.random.FastRandom;

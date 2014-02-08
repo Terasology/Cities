@@ -21,9 +21,9 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 
-import org.terasology.cities.model.Tower;
-import org.terasology.cities.model.TownWall;
-import org.terasology.cities.model.WallSegment;
+import org.terasology.cities.model.bldg.Tower;
+import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.cities.model.bldg.WallSegment;
 import org.terasology.math.Vector2i;
 
 /**

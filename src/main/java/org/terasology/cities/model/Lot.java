@@ -20,6 +20,8 @@ import java.awt.Shape;
 import java.util.Collections;
 import java.util.Set;
 
+import org.terasology.cities.model.bldg.Building;
+
 import com.google.common.collect.Sets;
 
 /**

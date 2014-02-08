@@ -23,8 +23,8 @@ import java.awt.geom.Rectangle2D;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.common.LineUtilities;
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMaps;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 
 /**

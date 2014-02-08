@@ -22,7 +22,7 @@ import java.awt.geom.Path2D;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.terrain.HeightMap;
+import org.terasology.cities.heightmap.HeightMap;
 
 /**
  * Contains information on whether an area is blocked or not

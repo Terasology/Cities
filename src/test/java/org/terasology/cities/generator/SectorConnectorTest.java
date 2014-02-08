@@ -30,11 +30,11 @@ import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.common.Profiler;
 import org.terasology.cities.common.UnorderedPair;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMaps;
 
 import com.google.common.base.Function;
 

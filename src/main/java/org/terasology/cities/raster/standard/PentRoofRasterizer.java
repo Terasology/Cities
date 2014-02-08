@@ -20,13 +20,13 @@ import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.common.Rectangles;
-import org.terasology.cities.model.PentRoof;
+import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.cities.heightmap.HeightMapAdapter;
+import org.terasology.cities.heightmap.HeightMaps;
+import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
-import org.terasology.cities.terrain.HeightMap;
-import org.terasology.cities.terrain.HeightMapAdapter;
-import org.terasology.cities.terrain.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.Vector2i;
 

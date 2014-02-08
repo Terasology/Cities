@@ -20,10 +20,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Set;
 
-import org.terasology.cities.model.Building;
 import org.terasology.cities.model.Lot;
-import org.terasology.cities.model.SimpleChurch;
-import org.terasology.cities.model.SimpleHome;
+import org.terasology.cities.model.bldg.Building;
+import org.terasology.cities.model.bldg.SimpleChurch;
+import org.terasology.cities.model.bldg.SimpleHome;
 
 /**
  * Draws lots and the contained buildings

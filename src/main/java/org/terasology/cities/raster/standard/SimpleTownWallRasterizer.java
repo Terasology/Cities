@@ -16,9 +16,9 @@
 
 package org.terasology.cities.raster.standard;
 
-import org.terasology.cities.model.Tower;
-import org.terasology.cities.model.TownWall;
-import org.terasology.cities.model.WallSegment;
+import org.terasology.cities.model.bldg.Tower;
+import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.cities.model.bldg.WallSegment;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
