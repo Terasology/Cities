@@ -33,7 +33,7 @@ import com.google.common.base.Function;
 public class RoadGeneratorSimple implements Function<UnorderedPair<Site>, Road> {
     
     private Function<Point2i, Junction> junctions;
-    private double avgSegmentLength = 100;
+    private double avgSegmentLength = 40;
 
     /**
      * @param junctions gives junctions based on location

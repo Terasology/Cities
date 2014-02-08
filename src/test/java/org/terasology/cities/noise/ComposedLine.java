@@ -22,10 +22,18 @@ import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.vecmath.Point2i;
 
 import org.terasology.cities.common.Point2cd;
 import org.terasology.cities.common.Point2d;
 import org.terasology.cities.common.Point2md;
+import org.terasology.cities.common.UnorderedPair;
+import org.terasology.cities.generator.RoadGeneratorSimple;
+import org.terasology.cities.model.Junction;
+import org.terasology.cities.model.Road;
+import org.terasology.cities.model.Site;
+
+import com.google.common.base.Function;
 
 /**
  * Visual test of {@link Wave}
@@ -53,18 +61,34 @@ public final class ComposedLine {
                 super.paintComponent(g1);
                 final Graphics2D g = (Graphics2D) g1;
 
-                Random r = new Random(123212);
-                Wave w0 = Wave.getHat(1.0, new double[] { r.nextDouble() - 0.5 });
-                Wave w1 = Wave.getHat(0.5, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
-                Wave w2 = Wave.getHat(0.25, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
+                Function<Point2i, Junction> junctions = new Function<Point2i, Junction>() {
 
-                int cnt = 23;
+                    @Override
+                    public Junction apply(Point2i input) {
+                        return new Junction(input);
+                    }
+                    
+                };
+
+                Point2d start = new Point2cd(50, 100);
+                Point2d end = new Point2cd(450, 200);
+                Site a = new Site(50, 100, 1);
+                Site b = new Site(450, 200, 1);
+                Road road = new RoadGeneratorSimple(junctions).apply(new UnorderedPair<Site>(a, b));
+                
+                Random r = new Random();
+                Wave w0 = Wave.getSine(1.0, new double[] { r.nextDouble() - 0.5 });
+                Wave w1 = Wave.getSine(0.5, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
+                Wave w2 = Wave.getSine(0.25, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
+
                 int oldX = 0;
                 int oldY = 0;
-                Point2cd start = new Point2cd(50, 200);
-                Point2cd end = new Point2cd(450, 200);
+
+                int cnt = road.getPoints().size();
+                System.out.println("CNT " + cnt);
                 for (int i = 0; i < cnt; i++) {
-                    double ip = (double) i / (cnt - 1);
+                    double ip = (i + 1.0) / (cnt + 1);
+                    System.out.println("ip " + ip);
                     Point2md seg = Point2d.ipol(start, end, ip);
 
                     seg.subY(w0.get(ip) * 200);
@@ -80,6 +104,9 @@ public final class ComposedLine {
                     oldX = x;
                     oldY = y;
                 }
+
+                g.drawOval(a.getPos().x - 4, a.getPos().y - 4, 8, 8);
+                g.drawOval(b.getPos().x - 4, b.getPos().y - 4, 8, 8);
 
             }
 
