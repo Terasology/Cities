@@ -35,7 +35,7 @@ public class Contour {
      * It would be nice a have a list implementation where contains() runs in O(1). 
      * Unfortunately, LinkedHashSet removes duplicate entries. 
      */
-    private final Collection<Point> points = new ArrayList<Point>();
+    private final List<Point> points = new ArrayList<Point>();
     private Collection<Point> simplifiedPoints;
     private Polygon polygon;
 
@@ -73,7 +73,7 @@ public class Contour {
      * @param pts the list of points
      * @return a <b>new collection</b> containing the points
      */
-    private static List<Point> simplify(Collection<Point> pts) {
+    private static List<Point> simplify(List<Point> pts) {
 
         if (pts.size() < 2) {
             return Lists.newArrayList(pts);
@@ -81,20 +81,25 @@ public class Contour {
 
         List<Point> result = Lists.newArrayList();
 
-        Point prev = pts.iterator().next();
-        Point dir = new Point();
+        Point first = pts.iterator().next();
+        Point last = pts.get(pts.size() - 1);
+        Point prev = last;
+        Point prevDir = new Point(first.x - last.x, first.y - last.y);
 
         for (Point p : pts) {
             Point newdir = new Point(p.x - prev.x, p.y - prev.y);
-            if (!newdir.equals(dir)) {
+            if (!newdir.equals(prevDir)) {
                 result.add(prev);
-                dir = newdir;
+                prevDir = newdir;
             }
             prev = p;
-
         }
 
-        result.add(prev);
+        // do the same with the last point in the collection
+        Point newdir = new Point(first.x - prev.x, first.y - prev.y);
+        if (!newdir.equals(prevDir)) {
+            result.add(prev);
+        }
 
         return result;
     }
