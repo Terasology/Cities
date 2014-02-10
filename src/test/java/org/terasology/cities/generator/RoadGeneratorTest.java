@@ -108,7 +108,7 @@ public class RoadGeneratorTest  {
         
         logger.info("Generating roads for {} sectors", sectors * sectors);
         
-        Profiler.start("road-gen");
+        Profiler pRoadGen = Profiler.start();
 
         int hits = 0;
         for (int x = 0; x < sectors; x++) {
@@ -124,6 +124,6 @@ public class RoadGeneratorTest  {
             }
         }
         
-        logger.info("Created {} roads in {}", hits, Profiler.getAsString("road-gen"));
+        logger.info("Created {} roads in {}", hits, pRoadGen.getAsString());
     }
 }

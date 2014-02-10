@@ -16,133 +16,75 @@
 
 package org.terasology.cities.common;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.MapMaker;
-
 /**
  * A simple, but effective thread-safe profiler for micro-benchmarking.
- * Use start() with an arbitrary object identifier to start, get() for intermediate results, and stop() for the final timing.
+ * Use start() with an arbitrary object identifier to start, get() for results
  * @author Martin Steiger
  */
 public final class Profiler {
     
-    private static final Logger logger = LoggerFactory.getLogger(Profiler.class);
-    
-    private static final Map<Object, Long> TIME_MAP = new MapMaker().makeMap();
+    private long start;
     
     private Profiler() {
-        // private constructor
+        start = measure();
     }
 
     /**
      * Starts a measurement with a generated ID
      * @return the generated ID
      */
-    public static Object start() {
-        Object id = new Object();
-        start(id);
+    public static Profiler start() {
+        Profiler id = new Profiler();
+        
         return id;
     }
     
     /**
-     * Starts a measurement with the specified ID
-     * @param id an identifier object
-     */
-    public static void start(Object id) {
-        if (TIME_MAP.size() % 100 == 99) {
-            logger.warn("Number of active measurements suspiciously large ({})", TIME_MAP.size());
-        }
-            
-        long time = measure();
-        
-        if (TIME_MAP.put(id, time) != null) {
-            logger.warn("ID {} already existed - overwriting..", id);
-        }
-    }
-    
-    /**
-     * Get the measurement with the specified ID and stop the timer
-     * @param id an identifier object
+     * Get the time
      * @return the time in milliseconds
      */
-    public static double getAndStop(Object id) {
-        double time = get(id);
-        TIME_MAP.remove(id);
-        return time;
+    public double get() {
+        long now = measure();
+        return (now - start) / 1000000.0;
     }
 
     /**
-     * Get the time since start() was last called
-     * @param id an identifier object
-     * @return the time in milliseconds
-     */
-    public static double get(Object id) {
-        Long start = TIME_MAP.get(id);
-        long time = measure();
-
-        if (start == null) {
-            throw new IllegalArgumentException("Invalid id '" + String.valueOf(id) + "'");
-        }
-
-        return (time - start) / 1000000.0;
-    }
-
-    /**
-     * Get the time since start() was last called as formatted string (e.g. 334.22ms)
-     * @param id an identifier object
+     * Get the time as formatted string (e.g. 334.22ms)
      * @return the time in milliseconds as formatted string
      */
-    public static String getAsString(Object id) {
-        double time = get(id);
-        return String.format("%.2fms.", time);
-    }
-    
-    /**
-     * Get the time since start() was last called as formatted string (e.g. 334.22ms) and stop the timer
-     * @param id an identifier object
-     * @return the time in milliseconds as formatted string
-     */
-    public static String getAsStringAndStop(Object id) {
-        String str = getAsString(id);
-        TIME_MAP.remove(id);
-        return str;
+    public String getAsString() {
+        return asString(get());
     }
 
     /**
-     * Get the time since start() was last called
-     * @param id an identifier object
+     * Get the time and reset the timer
      * @return the time in milliseconds
      */
-    public static double getAndReset(Object id) {
-        double val = get(id);
-        TIME_MAP.put(id, measure());
+    public double getAndReset() {
+        long now = measure();
+        double val = (now - start) / 1000000.0;
+        start = now;
         return val;
     }
 
     /**
-     * Get the time since start() was last called as formatted string (e.g. 334.22ms) and reset the timer
-     * @param id an identifier object
+     * Get the time as formatted string (e.g. 334.22ms) and reset the timer
      * @return the time in milliseconds as formatted string
      */
-    public static String getAsStrindAndReset(Object id) {
-        String str = getAsString(id);
-        TIME_MAP.put(id, measure());
-        return str;
+    public String getAsStringAndReset() {
+        return asString(getAndReset());
     }
-
+    
+    /**
+     * @param value in milliseconds
+     * @return a formatted string (e.g. 334.22ms)
+     */
+    private static String asString(double value) {
+        return String.format("%.2fms.", value);
+    }
+    
     private static long measure() {
         return System.nanoTime();
     }
 
-    /**
-     * Removes the id, if it exists
-     * @param id an identifier object
-     */
-    public static void stop(Object id) {
-        TIME_MAP.remove(id);
-    }
 }

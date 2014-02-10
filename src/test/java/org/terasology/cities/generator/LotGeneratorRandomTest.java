@@ -90,7 +90,7 @@ public class LotGeneratorRandomTest  {
         LotGeneratorRandom lg = new LotGeneratorRandom(seed);
         SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
         
-        Profiler.start("lot-generator");
+        Profiler pLotGen = Profiler.start();
         
         int lotCount = 0;
         int bdgCount = 0;
@@ -138,7 +138,7 @@ public class LotGeneratorRandomTest  {
             }
         }
 
-        logger.info("Created {} lots with {} buildings in {}", lotCount, bdgCount, Profiler.getAsString("lot-generator"));
+        logger.info("Created {} lots with {} buildings in {}", lotCount, bdgCount, pLotGen.getAsString());
     }
     
 }

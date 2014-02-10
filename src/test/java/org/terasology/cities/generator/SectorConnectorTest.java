@@ -83,7 +83,7 @@ public class SectorConnectorTest  {
         
         SectorConnector sc = new SectorConnector(cpr, cc);
 
-        Profiler.start("city-connector");
+        Profiler pConn = Profiler.start();
 
         int hits = 0;
         for (int x = 0; x < sectors; x++) {
@@ -102,6 +102,6 @@ public class SectorConnectorTest  {
             }
         }
         
-        logger.info("Created {} connections in {}", hits, Profiler.getAsString("city-connector"));
+        logger.info("Created {} connections in {}", hits, pConn.getAsString());
     }
 }

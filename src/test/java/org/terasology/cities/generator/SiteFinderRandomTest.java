@@ -68,7 +68,7 @@ public class SiteFinderRandomTest  {
         
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
         
-        Profiler.start("city-placement");
+        Profiler pPlacement = Profiler.start();
         
         int bins = maxPerSector - minPerSector + 1;
         
@@ -97,7 +97,7 @@ public class SiteFinderRandomTest  {
         
         assertTrue(sum <= sectors * sectors);
         
-        logger.info("Created {} sectors in {}", sum, Profiler.getAsString("city-placement"));
+        logger.info("Created {} sectors in {}", sum, pPlacement.getAsString());
         for (int i = 0; i < bins; i++) {
             logger.info("Created {} sectors with {} cities", hits[i], i + minPerSector);
         }

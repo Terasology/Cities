@@ -241,39 +241,41 @@ public class WorldFacade {
 
                 int sectorSeed = Objects.hashCode(seed, input);
                 TownNameProvider nameGen = new TownNameProvider(sectorSeed, new DebugTownTheme());
+                Profiler pAll = null;
+                Profiler pSites = null;
+                Profiler pRoads = null;
 
                 if (logger.isInfoEnabled()) {
-                    Profiler.start(input);
+                    pAll = Profiler.start();
                 }
 
                 if (logger.isInfoEnabled()) {
-                    Profiler.start(input + "sites");
+                    pSites = Profiler.start();
                 }
                 
                 Set<Site> sites = siteMap.apply(input);
 
                 if (logger.isInfoEnabled()) {
-                    String timeStr = Profiler.getAsStringAndStop(input + "sites");
-                    logger.info("Generated settlement sites for {} in {}", input, timeStr);
+                    logger.info("Generated settlement sites for {} in {}", input, pSites.getAsString());
                 }
 
                 if (logger.isInfoEnabled()) {
-                    Profiler.start(input + "roads");
+                    pRoads = Profiler.start();
                 }
 
                 Shape roadShape = roadShapeFunc.apply(input);
 
                 if (logger.isInfoEnabled()) {
-                    String timeStr = Profiler.getAsStringAndStop(input + "roads");
-                    logger.info("Generated roads for {} in {}", input, timeStr);
+                    logger.info("Generated roads for {} in {}", input, pRoads.getAsString());
                 }
                 
                 Set<City> cities = Sets.newHashSet();
                 
                 for (Site site : sites) {
                     
+                    Profiler pSite = null;
                     if (logger.isInfoEnabled()) {
-                        Profiler.start(site);
+                        pSite = Profiler.start();
                     }
                     
                     int minX = site.getPos().x - site.getRadius();
@@ -321,16 +323,14 @@ public class WorldFacade {
                     }
                     
                     if (logger.isInfoEnabled()) {
-                        String timeStr = Profiler.getAsStringAndStop(site);
-                        logger.info("Generated city '{}' in {} in {}", town, input, timeStr);
+                        logger.info("Generated city '{}' in {} in {}", town, input, pSite.getAsString());
                     }
                     
                     cities.add(town);
                 }
                 
                 if (logger.isInfoEnabled()) {
-                    String timeStr = Profiler.getAsStringAndStop(input);
-                    logger.info("Generated {} .. in {}", input, timeStr);
+                    logger.info("Generated {} .. in {}", input, pAll.getAsString());
                 }
 
                 return cities;

@@ -139,7 +139,7 @@ public class RoadShapeGeneratorTest  {
 
         Function<Sector, Shape> roadShapeFunc = new RoadShapeGenerator(roadMap);
   
-        Profiler.start("road-shapes");
+        Profiler pRoadShapes = Profiler.start();
 
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
@@ -149,6 +149,6 @@ public class RoadShapeGeneratorTest  {
             }
         }
         
-        logger.info("Created road shapes in {}", Profiler.getAsString("road-shapes"));
+        logger.info("Created road shapes in {}", pRoadShapes.getAsString());
     }
 }
