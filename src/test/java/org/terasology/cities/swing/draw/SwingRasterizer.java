@@ -28,6 +28,9 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasology.benchmark.Profiler;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.WorldFacade;
@@ -38,7 +41,6 @@ import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.heightmap.NoiseHeightMap;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lake;
-import org.terasology.cities.model.Lot;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.raster.Brush;
@@ -58,6 +60,8 @@ import com.google.common.collect.Sets;
  * @author Martin Steiger
  */
 public class SwingRasterizer {
+
+    private static final Logger logger = LoggerFactory.getLogger(SwingRasterizer.class);
 
     private final WorldFacade facade;
     private final HeightMap heightMap;
@@ -96,16 +100,7 @@ public class SwingRasterizer {
      */
     public void rasterizeSector(Graphics2D g, Sector sector) {
 
-        boolean drawFast = false;
-        
-        if (drawFast) {
-            drawNoiseBackgroundFast(g, sector);
-            drawRoads(g, sector);
-            drawCities(g, sector);
-        } else {
-            drawAccurately(g, sector);
-        }
-        
+        drawAccurately(g, sector);
         drawLakes(g, sector);
         drawFrame(g, sector);
         drawSectorText(g, sector);
@@ -165,6 +160,10 @@ public class SwingRasterizer {
             }
         };
         
+        double timeBack = 0;
+        double timeCities = 0;
+        double timeRoads = 0;
+        
         for (int cz = 0; cz < chunksZ; cz++) {
             for (int cx = 0; cx < chunksX; cx++) {
                 int wx = sector.getCoords().x * Sector.SIZE + cx * chunkSizeX;
@@ -178,9 +177,13 @@ public class SwingRasterizer {
                     HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
                     TerrainInfo ti = new TerrainInfo(cachedHm);
 
+                    Object p = Profiler.start();
                     drawBackground(image, wx, wz, ti);
+                    timeBack += Profiler.getAndReset(p);
                     drawCities(sector, ti, brush);
+                    timeCities += Profiler.getAndReset(p);
                     drawRoads(sector, ti, brush);
+                    timeRoads += Profiler.getAndStop(p);
 
                     int ix = wx;
                     int iy = wz;
@@ -188,6 +191,10 @@ public class SwingRasterizer {
                 }
             }
         }
+
+        logger.debug(sector + " Background " + String.format("%.2fms.", timeBack));
+        logger.debug(sector + " Cities " + String.format("%.2fms.", timeCities));
+        logger.debug(sector + " Roads " + String.format("%.2fms.", timeRoads));
         
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);
@@ -218,39 +225,6 @@ public class SwingRasterizer {
         }
     }
     
-    private void drawRoads(Graphics2D g, Sector sector) {
-        
-//        Shape roadArea = facade.getRoadArea(sector);
-//
-//        g.setStroke(new BasicStroke());
-//        g.setColor(new Color(224, 96, 32));
-//        g.fill(roadArea);
-//        g.setColor(Color.BLACK);
-//        g.draw(roadArea);
-    }
-
-    private void drawCities(Graphics2D g, Sector sector) {
-        CityRasterizerSimple sr = new CityRasterizerSimple(); 
-        LotRenderer lr = new LotRenderer();
-        
-        Set<City> cities = Sets.newHashSet(facade.getCities(sector));
-        
-        // add all neighbors, because their cities might reach into this sector
-        for (Orientation dir : Orientation.values()) {
-            Sector neighbor = sector.getNeighbor(dir);
-
-            cities.addAll(facade.getCities(neighbor));
-        }
-        
-        for (City city : cities) {
-            Set<Lot> lots = city.getLots();
-            
-            lr.rasterLots(g, lots);
-            sr.rasterCity(g, city);
-            drawCityName(g, city);
-        }
-    }
-
     private void drawCityName(Graphics2D g, City ci) {
         String text = ci.toString();
 
@@ -265,36 +239,6 @@ public class SwingRasterizer {
         g.drawString(text, cx - width / 2, cz + (float) ci.getDiameter() * 0.5f + 10f);
     }
 
-    private void drawNoiseBackgroundFast(Graphics2D g, Sector sector) {
-        int scale = 4;
-        int maxHeight = 20;
-        int size = Sector.SIZE / scale;
-        BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-
-        for (int y = 0; y < size; y++) {
-            for (int x = 0; x < size; x++) {
-                int gx = sector.getCoords().x * Sector.SIZE + x * scale;
-                int gz = sector.getCoords().y * Sector.SIZE + y * scale;
-                int height = heightMap.apply(gx, gz);
-                int b = TeraMath.clamp(255 - (maxHeight - height) * 5, 0, 255);
-
-                Color c;
-                if (height <= 2) {
-                    c = Color.BLUE; 
-                } else {
-                    c = new Color(b, b, b);
-                }
-                
-                img.setRGB(x, y, c.getRGB());
-            }
-        }
-
-        int offX = Sector.SIZE * sector.getCoords().x;
-        int offZ = Sector.SIZE * sector.getCoords().y;
-
-        g.drawImage(img, offX, offZ, Sector.SIZE, Sector.SIZE, null);
-    }
-    
     private void drawBackground(BufferedImage image, int wx, int wz, TerrainInfo ti) {
         int width = image.getWidth();
         int height = image.getHeight();
