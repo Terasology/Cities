@@ -17,6 +17,7 @@
 package org.terasology.cities.raster.standard;
 
 import java.awt.BasicStroke;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.vecmath.Point2i;
 import javax.vecmath.Point3d;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.common.BoundingBox;
 import org.terasology.cities.common.Plane2d;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMapAdapter;
@@ -49,6 +51,12 @@ public class RoadRasterizer implements Rasterizer<Road> {
 
         pts.add(0, road.getStart().getCoords());
         pts.add(road.getEnd().getCoords());
+        
+        // if not affected, exit now 
+        Rectangle rc = BoundingBox.getBoundingRect(pts).get();
+        if (!brush.affects(rc)) {
+            return;
+        }
 
         float strokeWidth = (float) road.getWidth();
         int cap = BasicStroke.CAP_ROUND;    // end of path
