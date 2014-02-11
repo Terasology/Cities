@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Profiler;
+import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.contour.Contour;
 import org.terasology.cities.contour.ContourTracer;
@@ -241,16 +241,16 @@ public class WorldFacade {
 
                 int sectorSeed = Objects.hashCode(seed, input);
                 TownNameProvider nameGen = new TownNameProvider(sectorSeed, new DebugTownTheme());
-                Profiler pAll = null;
-                Profiler pSites = null;
-                Profiler pRoads = null;
+                Timer pAll = null;
+                Timer pSites = null;
+                Timer pRoads = null;
 
                 if (logger.isInfoEnabled()) {
-                    pAll = Profiler.start();
+                    pAll = Timer.start();
                 }
 
                 if (logger.isInfoEnabled()) {
-                    pSites = Profiler.start();
+                    pSites = Timer.start();
                 }
                 
                 Set<Site> sites = siteMap.apply(input);
@@ -260,7 +260,7 @@ public class WorldFacade {
                 }
 
                 if (logger.isInfoEnabled()) {
-                    pRoads = Profiler.start();
+                    pRoads = Timer.start();
                 }
 
                 Shape roadShape = roadShapeFunc.apply(input);
@@ -273,9 +273,9 @@ public class WorldFacade {
                 
                 for (Site site : sites) {
                     
-                    Profiler pSite = null;
+                    Timer pSite = null;
                     if (logger.isInfoEnabled()) {
-                        pSite = Profiler.start();
+                        pSite = Timer.start();
                     }
                     
                     int minX = site.getPos().x - site.getRadius();

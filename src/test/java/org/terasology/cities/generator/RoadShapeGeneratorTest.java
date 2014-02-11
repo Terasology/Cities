@@ -29,7 +29,7 @@ import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Profiler;
+import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -139,7 +139,7 @@ public class RoadShapeGeneratorTest  {
 
         Function<Sector, Shape> roadShapeFunc = new RoadShapeGenerator(roadMap);
   
-        Profiler pRoadShapes = Profiler.start();
+        Timer pRoadShapes = Timer.start();
 
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {

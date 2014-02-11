@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.common.Profiler;
+import org.terasology.cities.common.Timer;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.Sector;
@@ -68,7 +68,7 @@ public class SiteFinderRandomTest  {
         
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
         
-        Profiler pPlacement = Profiler.start();
+        Timer pPlacement = Timer.start();
         
         int bins = maxPerSector - minPerSector + 1;
         

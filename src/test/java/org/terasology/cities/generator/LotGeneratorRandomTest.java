@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.common.Profiler;
+import org.terasology.cities.common.Timer;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.City;
@@ -90,7 +90,7 @@ public class LotGeneratorRandomTest  {
         LotGeneratorRandom lg = new LotGeneratorRandom(seed);
         SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
         
-        Profiler pLotGen = Profiler.start();
+        Timer pLotGen = Timer.start();
         
         int lotCount = 0;
         int bdgCount = 0;

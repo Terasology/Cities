@@ -35,6 +35,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.WorldFacade;
 import org.terasology.cities.common.Orientation;
+import org.terasology.cities.common.Timer;
 import org.terasology.cities.contour.Contour;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -160,9 +161,9 @@ public class SwingRasterizer {
             }
         };
         
-        double timeBack = 0;
-        double timeCities = 0;
-        double timeRoads = 0;
+        Timer timeBack = Timer.startPaused();
+        Timer timeCities = Timer.startPaused();
+        Timer timeRoads = Timer.startPaused();
         
         for (int cz = 0; cz < chunksZ; cz++) {
             for (int cx = 0; cx < chunksX; cx++) {
@@ -177,13 +178,17 @@ public class SwingRasterizer {
                     HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
                     TerrainInfo ti = new TerrainInfo(cachedHm);
 
-                    Object p = Profiler.start();
+                    timeBack.resume();
                     drawBackground(image, wx, wz, ti);
-                    timeBack += Profiler.getAndReset(p);
+                    timeBack.pause();
+                    
+                    timeCities.resume();
                     drawCities(sector, ti, brush);
-                    timeCities += Profiler.getAndReset(p);
+                    timeCities.pause();
+                    
+                    timeRoads.resume();
                     drawRoads(sector, ti, brush);
-                    timeRoads += Profiler.getAndStop(p);
+                    timeRoads.pause();
 
                     int ix = wx;
                     int iy = wz;
@@ -192,9 +197,9 @@ public class SwingRasterizer {
             }
         }
 
-        logger.debug(sector + " Background " + String.format("%.2fms.", timeBack));
-        logger.debug(sector + " Cities " + String.format("%.2fms.", timeCities));
-        logger.debug(sector + " Roads " + String.format("%.2fms.", timeRoads));
+        logger.debug(sector + " Background " + timeBack.getAsString());
+        logger.debug(sector + " Cities " + timeCities.getAsString());
+        logger.debug(sector + " Roads " + timeRoads.getAsString());
         
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);

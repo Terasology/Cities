@@ -28,7 +28,7 @@ import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.common.Profiler;
+import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -83,7 +83,7 @@ public class SectorConnectorTest  {
         
         SectorConnector sc = new SectorConnector(cpr, cc);
 
-        Profiler pConn = Profiler.start();
+        Timer pConn = Timer.start();
 
         int hits = 0;
         for (int x = 0; x < sectors; x++) {
