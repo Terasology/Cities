@@ -29,7 +29,7 @@ import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.ComponentSystem;
+import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
@@ -48,7 +48,7 @@ import com.google.common.collect.Sets;
  * @author Martin Steiger
  */
 @RegisterSystem
-public class PlayerTracker implements ComponentSystem {
+public class PlayerTracker extends BaseComponentSystem {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerTracker.class);
     
@@ -63,16 +63,6 @@ public class PlayerTracker implements ComponentSystem {
 
     private final Map<String, NamedArea> prevAreaMap = Maps.newHashMap();
     
-    @Override
-    public void initialise() {
-        // empty
-    }
-
-    @Override
-    public void shutdown() {
-        // empty
-    }
-
     /**
      * Called whenever a block is entered
      * @param event the event

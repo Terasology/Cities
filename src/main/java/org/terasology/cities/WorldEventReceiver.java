@@ -17,7 +17,7 @@ package org.terasology.cities;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.ComponentSystem;
+import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.registry.In;
 import org.terasology.world.WorldComponent;
@@ -29,21 +29,11 @@ import org.terasology.world.chunks.event.PurgeWorldEvent;
  * @author Martin Steiger
  */
 @RegisterSystem
-public class WorldEventReceiver implements ComponentSystem {
+public class WorldEventReceiver extends BaseComponentSystem {
 
     @In
     private WorldFacade worldFacade;
     
-    @Override
-    public void initialise() {
-        // not needed
-    }
-
-    @Override
-    public void shutdown() {
-        // not needed
-    }
-
     /**
      * @param event the event
      * @param worldEntity the world entity (empty)
