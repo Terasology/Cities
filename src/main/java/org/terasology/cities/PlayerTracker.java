@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3f;
 
 import org.slf4j.Logger;
@@ -71,8 +72,9 @@ public class PlayerTracker extends BaseComponentSystem {
     @ReceiveEvent
     public void onEnterBlock(OnEnterBlockEvent event, EntityRef entity) {
         LocationComponent loc = entity.getComponent(LocationComponent.class);
-        Vector3f worldPos = loc.getWorldPosition();
-        Sector sector = Sectors.getSectorForPosition(worldPos);
+        Vector3f worldPos3d = loc.getWorldPosition();
+        Vector2d worldPos = new Vector2d(worldPos3d.x, worldPos3d.z);
+        Sector sector = Sectors.getSectorForPosition(worldPos3d);
         
         Client client = networkSystem.getOwner(entity);
         

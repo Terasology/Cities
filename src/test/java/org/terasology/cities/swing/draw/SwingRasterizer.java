@@ -109,35 +109,31 @@ public class SwingRasterizer {
 
     private void drawLakes(Graphics2D g, Sector sector) {
         
-        int scale = 8;
-
         Set<Lake> lakes = facade.getLakes(sector);
 
-        Graphics2D gc = (Graphics2D) g.create();
-        gc.scale(scale, scale);
-        gc.translate(0.5, 0.5);
-        gc.setStroke(new BasicStroke(2f / scale));
-        gc.setFont(gc.getFont().deriveFont(2f));
+        g.setStroke(new BasicStroke(2.0f));
         
         for (Lake l : lakes) {
             
             Contour cont = l.getContour();
             for (Point p : cont.getSimplifiedCurve()) {
-                double r = 0.2;
-                gc.draw(new Ellipse2D.Double(p.x - r, p.y - r, 2 * r, 2 * r));
+                int r = 3;
+                g.fillOval(p.x - r, p.y - r, 2 * r, 2 * r);
             }
 
             Polygon poly = cont.getPolygon();
-            gc.draw(poly);
+            g.draw(poly);
             
             int cx = (int) poly.getBounds().getCenterX();
             int cy = (int) poly.getBounds().getCenterY();
             
-            FontMetrics fm = gc.getFontMetrics();
+            FontMetrics fm = g.getFontMetrics();
             int lw = fm.stringWidth(l.getName());
             int lh = fm.getHeight();
-            gc.drawString(l.getName(), cx - lw / 2, cy - lh / 2);
+            g.drawString(l.getName(), cx - lw / 2, cy - lh / 2);
         }
+        
+        g.setStroke(new BasicStroke());
     }
     
     private void drawAccurately(Graphics2D g, Sector sector) {

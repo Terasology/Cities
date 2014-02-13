@@ -154,4 +154,33 @@ public class Contour {
     public boolean isInside(double x, double y) {
         return getPolygon().contains(x, y);
     }
+
+    /**
+     * @param tx the x translation
+     * @param ty the y translation
+     * @return the scaled contour
+     */
+    public Contour translate(int tx, int ty) {
+        Contour c = new Contour();
+
+        for (Point pt : points) {
+            c.addPoint(new Point(pt.x + tx, pt.y + ty));
+        }
+        
+        return c;
+    }
+    
+    /**
+     * @param scale the scale factor
+     * @return the scaled contour
+     */
+    public Contour scale(int scale) {
+        Contour c = new Contour();
+
+        for (Point pt : points) {
+            c.addPoint(new Point(pt.x * scale, pt.y * scale));
+        }
+        
+        return c;
+    }
 }

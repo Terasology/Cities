@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Point2i;
-import javax.vecmath.Vector3f;
+import javax.vecmath.Vector2d;
 
 import com.google.common.collect.Sets;
 
@@ -112,9 +112,9 @@ public class City implements NamedArea {
     }
     
     @Override
-    public boolean contains(Vector3f pos) {
+    public boolean contains(Vector2d pos) {
         double cx = coords.x - pos.x;
-        double cz = coords.y - pos.z;
+        double cz = coords.y - pos.y;
         
         return cx * cx + cz * cz < radius * radius;
     }

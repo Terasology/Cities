@@ -19,6 +19,7 @@ package org.terasology.cities.model;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3f;
 
 import org.terasology.cities.contour.Contour;
@@ -56,8 +57,8 @@ public class Lake implements NamedArea {
      * Islands are considered part of the lake
      */
     @Override
-    public boolean contains(Vector3f pos) {
-        return contour.isInside(pos.x, pos.z);
+    public boolean contains(Vector2d pos) {
+        return contour.isInside(pos.x, pos.y);
     }
     
     /**

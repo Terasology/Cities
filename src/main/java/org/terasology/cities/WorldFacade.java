@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,7 @@ import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Lake;
 import org.terasology.cities.model.MedievalTown;
+import org.terasology.cities.model.NamedArea;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.SimpleFence;
@@ -119,7 +122,7 @@ public class WorldFacade {
                 int ngseed = Objects.hashCode(salt, seed, sector);
                 WaterNameProvider ng = new WaterNameProvider(ngseed, new DebugWaterTheme());
                 
-                int minSize = 2;
+                int minSize = 16;
 
                 int scale = 8;
                 int size = Sector.SIZE / scale;
@@ -132,11 +135,12 @@ public class WorldFacade {
                 Set<Lake> lakes = Sets.newHashSet();
                 
                 for (Contour c : ct.getOuterContours()) {
-                    Polygon polyLake = c.getPolygon();
+                    Contour scaledContour = c.scale(scale);
+                    Polygon polyLake = scaledContour.getPolygon();
 
                     if (polyLake.getBounds().width > minSize
                      && polyLake.getBounds().height > minSize) {
-                        Lake lake = new Lake(c, ng.generateName());
+                        Lake lake = new Lake(scaledContour, ng.generateName());
                         
                         for (Contour isl : ct.getInnerContours()) {
                             Rectangle bboxIsland = isl.getPolygon().getBounds();
@@ -206,22 +210,41 @@ public class WorldFacade {
                 
                 Set<UnorderedPair<Site>> localConns = sectorConnections.apply(sector);
                 Set<UnorderedPair<Site>> allConns = Sets.newHashSet(localConns);
+                Set<Lake> allBlockedAreas = Sets.newHashSet(lakeMap.apply(sector));
                 
                 // add all neighbors, because their roads might be passing through
                 for (Orientation dir : Orientation.values()) {
                     Sector neighbor = sector.getNeighbor(dir);
 
                     allConns.addAll(sectorConnections.apply(neighbor));
+                    allBlockedAreas.addAll(lakeMap.apply(sector));
                 }
 
                 for (UnorderedPair<Site> conn : allConns) {
                     Road road = cachedRoadgen.apply(conn);
-                    allRoads.add(road);
+                    
+                    if (!isBlocked(road, lakeMap.apply(sector))) {
+                        allRoads.add(road);
+                    }
                 }
 
                 return allRoads;
             }
+            
+            public boolean isBlocked(Road road, Set<? extends NamedArea> blockedAreas) {
+                for (Point2i pt : road.getPoints()) {
+                    Vector2d v = new Vector2d(pt.x, pt.y);
+                    for (NamedArea area : blockedAreas) {
+                        if (area.contains(v)) {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
         };
+        
         
         roadMap = CachingFunction.wrap(roadMap);
 
