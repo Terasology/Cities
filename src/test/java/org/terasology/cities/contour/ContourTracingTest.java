@@ -153,15 +153,13 @@ public class ContourTracingTest {
         }
     
         List<Point> shouldBe = ImmutableList.of(
-                new Point(3, 0),
                 new Point(5, 0),
                 new Point(10, 5),
                 new Point(10, 10),
                 new Point(5, 5),
                 new Point(0, 5),
-                new Point(0, 0),
-                new Point(2, 0));
-    
+                new Point(0, 0));
+        
         assertEquals(shouldBe, simplePts);
     }
     

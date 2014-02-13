@@ -172,7 +172,7 @@ public final class MySwingTest {
     
 
     private static double getLambda(int ax, int ay, int dx, int dy, int ex, int ey) {
-        return (double)(ey * dy - ay * dy - ax * dx + ex * dx) / (dy * dy + dx * dx);
+        return (double) (ey * dy - ay * dy - ax * dx + ex * dx) / (dy * dy + dx * dx);
     }
 
     private static int getZ(double lambda, int az, int dz) {

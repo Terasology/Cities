@@ -197,9 +197,9 @@ public class SwingRasterizer {
             }
         }
 
-        logger.debug(sector + " Background {}ms.", timeBack.elapsed(TimeUnit.MILLISECONDS));
-        logger.debug(sector + " Cities {}ms.", timeCities.elapsed(TimeUnit.MILLISECONDS));
-        logger.debug(sector + " Roads {}ms.", timeRoads.elapsed(TimeUnit.MILLISECONDS));
+        logger.debug("{} Background {}ms.", sector, timeBack.elapsed(TimeUnit.MILLISECONDS));
+        logger.debug("{} Cities {}ms.", sector, timeCities.elapsed(TimeUnit.MILLISECONDS));
+        logger.debug("{} Roads {}ms.", sector, timeRoads.elapsed(TimeUnit.MILLISECONDS));
         
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);

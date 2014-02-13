@@ -77,18 +77,17 @@ public final class ComposedLine {
                 Road road = new RoadGeneratorSimple(junctions).apply(new UnorderedPair<Site>(a, b));
                 
                 Random r = new Random();
-                Wave w0 = Wave.getSine(1.0, new double[] { r.nextDouble() - 0.5 });
-                Wave w1 = Wave.getSine(0.5, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
-                Wave w2 = Wave.getSine(0.25, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
+                Wave w0 = Wave.getSine(1.0, new double[] {r.nextDouble() - 0.5});
+                Wave w1 = Wave.getSine(0.5, new double[] {r.nextDouble() - 0.5, r.nextDouble() - 0.5});
+                Wave w2 = Wave.getSine(0.25, new double[] {r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5});
 
                 int oldX = 0;
                 int oldY = 0;
 
                 int cnt = road.getPoints().size();
-                System.out.println("CNT " + cnt);
+
                 for (int i = 0; i < cnt; i++) {
                     double ip = (i + 1.0) / (cnt + 1);
-                    System.out.println("ip " + ip);
                     Point2md seg = Point2d.ipol(start, end, ip);
 
                     seg.subY(w0.get(ip) * 200);

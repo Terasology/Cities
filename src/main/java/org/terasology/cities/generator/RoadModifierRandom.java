@@ -65,9 +65,9 @@ public class RoadModifierRandom  {
         double length = start.dist(end);
         double factor = length * randomness;
 
-        Wave w0 = Wave.getHat(1.0, new double[] { r.nextDouble() - 0.5 });
-        Wave w1 = Wave.getHat(0.5, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
-        Wave w2 = Wave.getHat(0.25, new double[] { r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5 });
+        Wave w0 = Wave.getHat(1.0, new double[] {r.nextDouble() - 0.5});
+        Wave w1 = Wave.getHat(0.5, new double[] {r.nextDouble() - 0.5, r.nextDouble() - 0.5});
+        Wave w2 = Wave.getHat(0.25, new double[] {r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5, r.nextDouble() - 0.5});
 
         int cnt = road.getPoints().size();
         for (int i = 0; i < cnt; i++) {
