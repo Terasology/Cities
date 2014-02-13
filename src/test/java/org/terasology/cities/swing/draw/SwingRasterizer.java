@@ -27,15 +27,14 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.benchmark.Profiler;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.WorldFacade;
 import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.contour.Contour;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -53,6 +52,7 @@ import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.ChunkConstants;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -161,9 +161,9 @@ public class SwingRasterizer {
             }
         };
         
-        Timer timeBack = Timer.startPaused();
-        Timer timeCities = Timer.startPaused();
-        Timer timeRoads = Timer.startPaused();
+        Stopwatch timeBack = Stopwatch.createUnstarted();
+        Stopwatch timeCities = Stopwatch.createUnstarted();
+        Stopwatch timeRoads = Stopwatch.createUnstarted();
         
         for (int cz = 0; cz < chunksZ; cz++) {
             for (int cx = 0; cx < chunksX; cx++) {
@@ -178,17 +178,17 @@ public class SwingRasterizer {
                     HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
                     TerrainInfo ti = new TerrainInfo(cachedHm);
 
-                    timeBack.resume();
+                    timeBack.start();
                     drawBackground(image, wx, wz, ti);
-                    timeBack.pause();
+                    timeBack.stop();
                     
-                    timeCities.resume();
+                    timeCities.start();
                     drawCities(sector, ti, brush);
-                    timeCities.pause();
+                    timeCities.stop();
                     
-                    timeRoads.resume();
+                    timeRoads.start();
                     drawRoads(sector, ti, brush);
-                    timeRoads.pause();
+                    timeRoads.stop();
 
                     int ix = wx;
                     int iy = wz;
@@ -197,9 +197,9 @@ public class SwingRasterizer {
             }
         }
 
-        logger.debug(sector + " Background " + timeBack.getAsString());
-        logger.debug(sector + " Cities " + timeCities.getAsString());
-        logger.debug(sector + " Roads " + timeRoads.getAsString());
+        logger.debug(sector + " Background {}ms.", timeBack.elapsed(TimeUnit.MILLISECONDS));
+        logger.debug(sector + " Cities {}ms.", timeCities.elapsed(TimeUnit.MILLISECONDS));
+        logger.debug(sector + " Roads {}ms.", timeRoads.elapsed(TimeUnit.MILLISECONDS));
         
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);

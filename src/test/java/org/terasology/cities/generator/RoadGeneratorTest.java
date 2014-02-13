@@ -17,6 +17,7 @@
 package org.terasology.cities.generator;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
 
@@ -27,7 +28,6 @@ import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -38,6 +38,7 @@ import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 
 /**
  * Tests {@link SectorConnector}
@@ -108,7 +109,7 @@ public class RoadGeneratorTest  {
         
         logger.info("Generating roads for {} sectors", sectors * sectors);
         
-        Timer pRoadGen = Timer.start();
+        Stopwatch pRoadGen = Stopwatch.createStarted();
 
         int hits = 0;
         for (int x = 0; x < sectors; x++) {
@@ -124,6 +125,6 @@ public class RoadGeneratorTest  {
             }
         }
         
-        logger.info("Created {} roads in {}", hits, pRoadGen.getAsString());
+        logger.info("Created {} roads in {}ms", hits, pRoadGen.elapsed(TimeUnit.MILLISECONDS));
     }
 }

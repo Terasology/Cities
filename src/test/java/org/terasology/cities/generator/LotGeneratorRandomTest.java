@@ -24,6 +24,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
 
@@ -33,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.City;
@@ -46,6 +46,7 @@ import org.terasology.cities.model.bldg.Building;
 import org.terasology.cities.model.bldg.SimpleBuilding;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 /**
@@ -90,7 +91,7 @@ public class LotGeneratorRandomTest  {
         LotGeneratorRandom lg = new LotGeneratorRandom(seed);
         SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
         
-        Timer pLotGen = Timer.start();
+        Stopwatch pLotGen = Stopwatch.createStarted();
         
         int lotCount = 0;
         int bdgCount = 0;
@@ -138,7 +139,7 @@ public class LotGeneratorRandomTest  {
             }
         }
 
-        logger.info("Created {} lots with {} buildings in {}", lotCount, bdgCount, pLotGen.getAsString());
+        logger.info("Created {} lots with {} buildings in {}ms.", lotCount, bdgCount, pLotGen.elapsed(TimeUnit.MILLISECONDS));
     }
     
 }

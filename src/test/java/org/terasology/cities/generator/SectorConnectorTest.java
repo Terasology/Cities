@@ -19,6 +19,7 @@ package org.terasology.cities.generator;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -28,7 +29,6 @@ import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -37,6 +37,7 @@ import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 
 /**
  * Tests {@link SectorConnector}
@@ -83,7 +84,7 @@ public class SectorConnectorTest  {
         
         SectorConnector sc = new SectorConnector(cpr, cc);
 
-        Timer pConn = Timer.start();
+        Stopwatch pConn = Stopwatch.createStarted();
 
         int hits = 0;
         for (int x = 0; x < sectors; x++) {
@@ -102,6 +103,6 @@ public class SectorConnectorTest  {
             }
         }
         
-        logger.info("Created {} connections in {}", hits, pConn.getAsString());
+        logger.info("Created {} connections in {}ms.", hits, pConn.elapsed(TimeUnit.MILLISECONDS));
     }
 }

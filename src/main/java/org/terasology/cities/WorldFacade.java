@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
 
@@ -29,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.contour.Contour;
 import org.terasology.cities.contour.ContourTracer;
@@ -68,6 +68,7 @@ import org.terasology.registry.CoreRegistry;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Objects;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 
 /**
@@ -241,41 +242,41 @@ public class WorldFacade {
 
                 int sectorSeed = Objects.hashCode(seed, input);
                 TownNameProvider nameGen = new TownNameProvider(sectorSeed, new DebugTownTheme());
-                Timer pAll = null;
-                Timer pSites = null;
-                Timer pRoads = null;
+                Stopwatch pAll = null;
+                Stopwatch pSites = null;
+                Stopwatch pRoads = null;
 
                 if (logger.isInfoEnabled()) {
-                    pAll = Timer.start();
+                    pAll = Stopwatch.createStarted();
                 }
 
                 if (logger.isInfoEnabled()) {
-                    pSites = Timer.start();
+                    pSites = Stopwatch.createStarted();
                 }
                 
                 Set<Site> sites = siteMap.apply(input);
 
                 if (logger.isInfoEnabled()) {
-                    logger.info("Generated settlement sites for {} in {}", input, pSites.getAsString());
+                    logger.info("Generated settlement sites for {} in {}ms.", input, pSites.elapsed(TimeUnit.MILLISECONDS));
                 }
 
                 if (logger.isInfoEnabled()) {
-                    pRoads = Timer.start();
+                    pRoads = Stopwatch.createStarted();
                 }
 
                 Shape roadShape = roadShapeFunc.apply(input);
 
                 if (logger.isInfoEnabled()) {
-                    logger.info("Generated roads for {} in {}", input, pRoads.getAsString());
+                    logger.info("Generated roads for {} in {}ms.", input, pRoads.elapsed(TimeUnit.MILLISECONDS));
                 }
                 
                 Set<City> cities = Sets.newHashSet();
                 
                 for (Site site : sites) {
                     
-                    Timer pSite = null;
+                    Stopwatch pSite = null;
                     if (logger.isInfoEnabled()) {
-                        pSite = Timer.start();
+                        pSite = Stopwatch.createStarted();
                     }
                     
                     int minX = site.getPos().x - site.getRadius();
@@ -323,14 +324,14 @@ public class WorldFacade {
                     }
                     
                     if (logger.isInfoEnabled()) {
-                        logger.info("Generated city '{}' in {} in {}", town, input, pSite.getAsString());
+                        logger.info("Generated city '{}' in {} in {}ms.", town, input, pSite.elapsed(TimeUnit.MILLISECONDS));
                     }
                     
                     cities.add(town);
                 }
                 
                 if (logger.isInfoEnabled()) {
-                    logger.info("Generated {} .. in {}", input, pAll.getAsString());
+                    logger.info("Generated {} .. in {}ms.", input, pAll.elapsed(TimeUnit.MILLISECONDS));
                 }
 
                 return cities;

@@ -19,6 +19,7 @@ package org.terasology.cities.generator;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.Sector;
@@ -34,6 +34,7 @@ import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 
 /**
  * Tests {@link SiteFinderRandom}
@@ -68,7 +69,7 @@ public class SiteFinderRandomTest  {
         
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
         
-        Timer pPlacement = Timer.start();
+        Stopwatch pPlacement = Stopwatch.createStarted();
         
         int bins = maxPerSector - minPerSector + 1;
         
@@ -97,7 +98,7 @@ public class SiteFinderRandomTest  {
         
         assertTrue(sum <= sectors * sectors);
         
-        logger.info("Created {} sectors in {}", sum, pPlacement.getAsString());
+        logger.info("Created {} sectors in {}ms.", sum, pPlacement.elapsed(TimeUnit.MILLISECONDS));
         for (int i = 0; i < bins; i++) {
             logger.info("Created {} sectors with {} cities", hits[i], i + minPerSector);
         }

@@ -18,6 +18,7 @@ package org.terasology.cities.generator;
 
 import java.awt.Shape;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
 
@@ -29,7 +30,6 @@ import org.terasology.cities.CityWorldConfig;
 import org.terasology.cities.SectorConnector;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Timer;
 import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -40,6 +40,7 @@ import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 
 /**
@@ -139,7 +140,7 @@ public class RoadShapeGeneratorTest  {
 
         Function<Sector, Shape> roadShapeFunc = new RoadShapeGenerator(roadMap);
   
-        Timer pRoadShapes = Timer.start();
+        Stopwatch pRoadShapes = Stopwatch.createStarted();
 
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
@@ -149,6 +150,6 @@ public class RoadShapeGeneratorTest  {
             }
         }
         
-        logger.info("Created road shapes in {}", pRoadShapes.getAsString());
+        logger.info("Created road shapes in {}ms.", pRoadShapes.elapsed(TimeUnit.MILLISECONDS));
     }
 }
