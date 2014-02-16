@@ -17,14 +17,16 @@
 package org.terasology.cities.raster;
 
 import java.awt.Rectangle;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.math.Side;
 import org.terasology.world.block.Block;
 import org.terasology.world.chunks.Chunk;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 
 /**
@@ -36,14 +38,14 @@ public class ChunkBrush extends Brush {
     private static final Logger logger = LoggerFactory.getLogger(ChunkBrush.class);
     
     private final Chunk chunk;
-    private final Function<BlockTypes, Block> blockType;
+    private final BlockTheme blockType;
     private final Rectangle affectedArea;
     
     /**
      * @param chunk the chunk to work on
      * @param blockType a mapping String type -> block
      */
-    public ChunkBrush(Chunk chunk, Function<BlockTypes, Block> blockType) {
+    public ChunkBrush(Chunk chunk, BlockTheme blockType) {
         this.blockType = blockType;
         this.chunk = chunk;
         
@@ -77,7 +79,18 @@ public class ChunkBrush extends Brush {
     public void setBlock(int x, int y, int z, BlockTypes type) {
         setBlock(x, y, z, blockType.apply(type));
     }
-
+    
+    /**
+     * @param x x in world coords
+     * @param y y in world coords
+     * @param z z in world coords
+     * @param type the block type 
+     */
+    @Override
+    public void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side) {
+        setBlock(x, y, z, blockType.apply(type, side));
+    }
+    
     /**
      * @param x x in world coords
      * @param y y in world coords

@@ -19,11 +19,13 @@ package org.terasology.cities.swing.draw;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.Brush;
+import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 
 import com.google.common.base.Function;
@@ -91,6 +93,12 @@ public class SwingBrush extends Brush {
         setBlock(x, y, z, blockColor.apply(type));
     }
 
+    @Override
+    public void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side) {
+        setBlock(x, y, z, blockColor.apply(type));
+    }
+
+    
     /**
      * @param x x in world coords
      * @param y y in world coords

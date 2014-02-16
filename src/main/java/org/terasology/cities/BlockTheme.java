@@ -17,12 +17,17 @@
 package org.terasology.cities;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.math.Side;
+import org.terasology.math.SideBitFlag;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
+import org.terasology.world.block.BlockUri;
+import org.terasology.world.block.family.BlockFamily;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
@@ -31,13 +36,15 @@ import com.google.common.collect.Maps;
  * A mapping from block types (as defined in {@link BlockTypes}) to actual blocks
  * @author Martin Steiger
  */
-final class BlockTheme implements Function<BlockTypes, Block> {
+public final class BlockTheme implements Function<BlockTypes, Block> {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockTheme.class);
 
     private final Map<BlockTypes, Block> map = Maps.newConcurrentMap();
+    private final Map<BlockTypes, BlockFamily> familyMap = Maps.newConcurrentMap();
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
     private final Block defaultBlock;
+    private final BlockFamily defaultFamily;
 
     /**
      * Setup the mapping with defaults 
@@ -45,6 +52,7 @@ final class BlockTheme implements Function<BlockTypes, Block> {
     public BlockTheme() {
         map.put(BlockTypes.AIR, BlockManager.getAir());
         defaultBlock = blockManager.getBlock("Cities:pink");
+        defaultFamily = blockManager.getBlockFamily("Cities:pink");
     }
 
     /**
@@ -60,6 +68,21 @@ final class BlockTheme implements Function<BlockTypes, Block> {
         } 
 
         map.put(blockType, block);
+    }
+
+    /**
+     * @param blockType the block type (as defined in BlockTypes} 
+     * @param blockUri the block uri
+     */
+    public void registerFamily(BlockTypes blockType, String blockUri) {
+        BlockFamily block = blockManager.getBlockFamily(blockUri);
+        
+        if (block == null) {
+            logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
+            block = defaultFamily;
+        } 
+
+        familyMap.put(blockType, block);
     }
     
     /**
@@ -80,6 +103,33 @@ final class BlockTheme implements Function<BlockTypes, Block> {
             logger.warn("Could not resolve block type \"{}\" - using default", input);
         }
 
+        return block;
+    }
+
+    /**
+     * @param input the block type
+     * @param side the connected sides
+     * @return the block
+     */
+    public Block apply(BlockTypes input, Set<Side> side) {
+
+        BlockFamily family = familyMap.get(input);
+
+        if (family == null) {
+            family = defaultFamily;
+            logger.warn("Could not resolve block type \"{}\" - using default", input);
+        }
+
+        BlockUri familyUri = family.getURI().getFamilyUri();
+        String identifier = family.getURI().getIdentifier();
+        byte flags = SideBitFlag.getSides(side);
+        BlockUri blockUri = new BlockUri(familyUri, identifier + flags);
+        Block block = family.getBlockFor(blockUri);
+        
+        if (block == null) {
+            block = family.getArchetypeBlock();
+        }
+        
         return block;
     }
 }

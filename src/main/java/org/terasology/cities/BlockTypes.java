@@ -83,48 +83,13 @@ public enum BlockTypes {
     TOWER_WALL,
 
     /**
-     * Fence along top (east-west)
+     * Fence
      */
-    FENCE_TOP,
+    FENCE,
 
     /**
-     * Fence along bottom (east-west)
+     * Fence gate
      */
-    FENCE_BOTTOM,
-
-    /**
-     * Fence along left (north-south)
-     */
-    FENCE_LEFT,
-
-    /**
-     * Fence along right (north-south)
-     */
-    FENCE_RIGHT,
-
-    /**
-     * Fence corner (south-west)
-     */
-    FENCE_SW,
-
-    /**
-     * Fence corner (south-east)
-     */
-    FENCE_SE,
-
-    /**
-     * Fence corner (north-west)
-     */
-    FENCE_NW,
-
-    /**
-     * Fence corner (north-east)
-     */
-    FENCE_NE,
-
-    FENCE_GATE_TOP,
-    FENCE_GATE_LEFT,
-    FENCE_GATE_RIGHT,
-    FENCE_GATE_BOTTOM;
+    FENCE_GATE,
 
 }

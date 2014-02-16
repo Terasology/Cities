@@ -20,11 +20,13 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.common.LineUtilities;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
+import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 
 /**
@@ -189,6 +191,15 @@ public abstract class Brush {
     public abstract void setBlock(int x, int y, int z, BlockTypes type);
     
     /**
+     * @param x x in world coords
+     * @param y y in world coords
+     * @param z z in world coords
+     * @param type the block type
+     * @param side the side (used to find the right block from the family)
+     */
+    public abstract void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side);
+
+    /**
      * @return the maximum drawing height
      */
     public abstract int getMaxHeight();
@@ -344,4 +355,5 @@ public abstract class Brush {
             }
         }
     }
+
 }

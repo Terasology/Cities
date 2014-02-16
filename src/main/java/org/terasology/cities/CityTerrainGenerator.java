@@ -76,21 +76,9 @@ public class CityTerrainGenerator implements FirstPassGenerator {
         theme.register(BlockTypes.TOWER_WALL, "Cities:stonawall1");
 
         // -- require Fences modules
-        theme.register(BlockTypes.FENCE_TOP, "Fences:Fence.front");
-        theme.register(BlockTypes.FENCE_BOTTOM, "Fences:Fence.back");
-        theme.register(BlockTypes.FENCE_LEFT, "Fences:Fence.left");
-        theme.register(BlockTypes.FENCE_RIGHT, "Fences:Fence.right");
-        
-        theme.register(BlockTypes.FENCE_SW, "Fences:FenceCorner.right");
-        theme.register(BlockTypes.FENCE_SE, "Fences:FenceCorner.front");
-        theme.register(BlockTypes.FENCE_NW, "Fences:FenceCorner.back");
-        theme.register(BlockTypes.FENCE_NE, "Fences:FenceCorner.left");
-
+        theme.registerFamily(BlockTypes.FENCE, "Fences:Fence");
         // there is no fence gate :-(
-        theme.register(BlockTypes.FENCE_GATE_TOP, "Engine:Air");
-        theme.register(BlockTypes.FENCE_GATE_LEFT, "Engine:Air");
-        theme.register(BlockTypes.FENCE_GATE_RIGHT, "Engine:Air");
-        theme.register(BlockTypes.FENCE_GATE_BOTTOM, "Engine:Air");
+        theme.registerFamily(BlockTypes.FENCE_GATE, "Engine:Air");
     }
 
     @Override

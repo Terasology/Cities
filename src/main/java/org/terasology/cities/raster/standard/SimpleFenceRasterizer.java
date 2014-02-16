@@ -17,6 +17,8 @@
 package org.terasology.cities.raster.standard;
 
 import java.awt.Rectangle;
+import java.util.EnumSet;
+import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.heightmap.HeightMap;
@@ -25,6 +27,7 @@ import org.terasology.cities.model.SimpleFence;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.math.Side;
 import org.terasology.math.Vector2i;
 
 /**
@@ -63,33 +66,33 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
 
         // top wall is in brush area
         if (ftop >= btop && ftop <= bbot) {
-            wallX(brush, hm, wallX1, wallX2, ftop, BlockTypes.FENCE_TOP);
+            wallX(brush, hm, wallX1, wallX2, ftop, BlockTypes.FENCE, EnumSet.of(Side.LEFT, Side.RIGHT));
         }
 
         // bottom wall is in brush area
         if (fbot >= btop && fbot <= bbot) {
-            wallX(brush, hm, wallX1, wallX2, fbot, BlockTypes.FENCE_BOTTOM);
+            wallX(brush, hm, wallX1, wallX2, fbot, BlockTypes.FENCE, EnumSet.of(Side.LEFT, Side.RIGHT));
         }
 
         // left wall is in brush area
         if (fleft >= bleft && fleft <= bright) {
-            wallZ(brush, hm, fleft, wallZ1, wallZ2, BlockTypes.FENCE_LEFT);
+            wallZ(brush, hm, fleft, wallZ1, wallZ2, BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.BACK));
         }       
 
         // right wall is in brush area
         if (fright >= bleft && fright <= bright) {
-            wallZ(brush, hm, fright, wallZ1, wallZ2, BlockTypes.FENCE_RIGHT);
+            wallZ(brush, hm, fright, wallZ1, wallZ2, BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.BACK));
         }       
 
         // top-left corner post
         if (brushRc.contains(fleft, ftop)) {
             int y = hm.apply(fleft, ftop);
             
-            brush.setBlock(fleft, y, ftop, BlockTypes.FENCE_NW);
+            brush.setBlock(fleft, y, ftop, BlockTypes.FENCE, EnumSet.of(Side.BACK, Side.RIGHT));
 
             // add higher posts if necessary
             if (hm.apply(fleft + 1, ftop) > y || hm.apply(fleft, ftop + 1) > y) {
-                brush.setBlock(fleft, y + 1, ftop, BlockTypes.FENCE_NW);
+                brush.setBlock(fleft, y + 1, ftop, BlockTypes.FENCE, EnumSet.of(Side.BACK, Side.RIGHT));
             }
         }
 
@@ -97,11 +100,11 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         if (brushRc.contains(fleft, fbot)) {
             int y = hm.apply(fleft, fbot);
             
-            brush.setBlock(fleft, y, fbot, BlockTypes.FENCE_SW);
+            brush.setBlock(fleft, y, fbot, BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.RIGHT));
 
             // add higher posts if necessary
             if (hm.apply(fleft + 1, fbot) > y || hm.apply(fleft, fbot - 1) > y) {
-                brush.setBlock(fleft, y + 1, fbot, BlockTypes.FENCE_SW);
+                brush.setBlock(fleft, y + 1, fbot, BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.RIGHT));
             }
         }
 
@@ -109,11 +112,11 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         if (brushRc.contains(fright, fbot)) {
             int y = hm.apply(fright, fbot);
 
-            brush.setBlock(fright, y, fbot, BlockTypes.FENCE_SE);
+            brush.setBlock(fright, y, fbot, BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.LEFT));
 
             // add higher posts if necessary
             if (hm.apply(fright - 1, fbot) > y || hm.apply(fright, fbot - 1) > y) {
-                brush.setBlock(fright, y + 1, fbot, BlockTypes.FENCE_SE);
+                brush.setBlock(fright, y + 1, fbot, BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.LEFT));
             }
         }
 
@@ -121,60 +124,61 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         if (brushRc.contains(fright, ftop)) {
             int y = hm.apply(fright, ftop);
             
-            brush.setBlock(fright, y, ftop, BlockTypes.FENCE_NE);
+            brush.setBlock(fright, y, ftop, BlockTypes.FENCE, EnumSet.of(Side.BACK, Side.LEFT));
 
             // add higher posts if necessary
             if (hm.apply(fright - 1, ftop) > y || hm.apply(fright, ftop + 1) > y) {
-                brush.setBlock(fright, y + 1, ftop, BlockTypes.FENCE_NE);
+                brush.setBlock(fright, y + 1, ftop, BlockTypes.FENCE, EnumSet.of(Side.BACK, Side.LEFT));
             }
         }
         
         Vector2i gatePos = fence.getGate();
         
         if (brushRc.contains(gatePos.x, gatePos.y)) {
-            BlockTypes gateBlock = null;
+            BlockTypes gateBlock = BlockTypes.FENCE_GATE;
+            Side side = null;
             if (gatePos.x == fleft) { // left side
-                gateBlock = BlockTypes.FENCE_GATE_LEFT;
+                side = Side.LEFT;
             }
             if (gatePos.y == ftop) { // left side
-                gateBlock = BlockTypes.FENCE_GATE_TOP;
+                side = Side.TOP;
             }
             if (gatePos.x == fright) { // right side
-                gateBlock = BlockTypes.FENCE_GATE_RIGHT;
+                side = Side.RIGHT;
             }
             if (gatePos.y == fbot) { // left side
-                gateBlock = BlockTypes.FENCE_GATE_BOTTOM;
+                side = Side.BACK;
             }
             
             if (gateBlock != null) {
                 int y = hm.apply(gatePos.x, gatePos.y);
-                brush.setBlock(gatePos.x, y, gatePos.y, gateBlock);
+                brush.setBlock(gatePos.x, y, gatePos.y, gateBlock, EnumSet.of(side));
             }
         }
     }
 
-    private void wallX(Brush brush, HeightMap hm, int x1, int x2, int z, BlockTypes type) {
+    private void wallX(Brush brush, HeightMap hm, int x1, int x2, int z, BlockTypes type, Set<Side> side) {
         for (int x = x1; x <= x2; x++) {
             int y = hm.apply(x, z);
             
-            brush.setBlock(x, y, z, type);
+            brush.setBlock(x, y, z, type, side);
             
             // if one of the neighbors is higher, add one fence block on top
             if (hm.apply(x - 1, z) > y || hm.apply(x + 1, z) > y) {
-                brush.setBlock(x, y + 1, z, type);
+                brush.setBlock(x, y + 1, z, type, side);
             }
         }
     }
     
-    private void wallZ(Brush brush, HeightMap hm, int x, int z1, int z2, BlockTypes type) {
+    private void wallZ(Brush brush, HeightMap hm, int x, int z1, int z2, BlockTypes type, Set<Side> side) {
         for (int z = z1; z <= z2; z++) {
             int y = hm.apply(x, z);
             
-            brush.setBlock(x, y, z, type);
+            brush.setBlock(x, y, z, type, side);
 
             // if one of the neighbors is higher, add one fence block on top
             if (hm.apply(x, z - 1) > y || hm.apply(x, z + 1) > y) {
-                brush.setBlock(x, y + 1, z, type);
+                brush.setBlock(x, y + 1, z, type, side);
             }
             
         }
