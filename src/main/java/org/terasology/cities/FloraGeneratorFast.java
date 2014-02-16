@@ -90,7 +90,16 @@ public class FloraGeneratorFast implements FirstPassGenerator {
         for (int x = 0; x < chunk.getChunkSizeX(); x++) {
             for (int z = 0; z < chunk.getChunkSizeZ(); z++) {
                 int y = heightMap.apply(x, z);
-                generateGrassAndFlowers(chunk, x, y, z, random);
+                Block targetBlock = chunk.getBlock(x, y, z);
+                
+                // check for grass and air above
+                if (targetBlock.equals(grassBlock)) {
+                    Block blockOnTop = chunk.getBlock(x, y + 1, z);
+                    
+                    if (blockOnTop.equals(BlockManager.getAir())) {
+                        generateGrassAndFlowers(chunk, x, y, z, random);
+                    }
+                }
             }
         }
     }
@@ -105,29 +114,26 @@ public class FloraGeneratorFast implements FirstPassGenerator {
      * @param random the RNG
      */
     private void generateGrassAndFlowers(Chunk c, int x, int y, int z, Random random) {
-        Block targetBlock = c.getBlock(x, y, z);
-        if (targetBlock.equals(grassBlock)) {
 
-            if (random.nextFloat() < config.getGrassDensity(Biome.PLAINS)) {
-                /*
-                 * Generate tall grass.
-                 */
-                double rand = random.nextGaussian();
+        if (random.nextFloat() < config.getGrassDensity(Biome.PLAINS)) {
+            /*
+             * Generate tall grass.
+             */
+            double rand = random.nextGaussian();
 
-                if (rand > -0.4 && rand < 0.4) {
-                    c.setBlock(x, y + 1, z, tallGrass1);
-                } else if (rand > -0.6 && rand < 0.6) {
-                    c.setBlock(x, y + 1, z, tallGrass2);
-                } else {
-                    c.setBlock(x, y + 1, z, tallGrass3);
-                }
+            if (rand > -0.4 && rand < 0.4) {
+                c.setBlock(x, y + 1, z, tallGrass1);
+            } else if (rand > -0.6 && rand < 0.6) {
+                c.setBlock(x, y + 1, z, tallGrass2);
+            } else {
+                c.setBlock(x, y + 1, z, tallGrass3);
+            }
 
-                /*
-                 * Generate flowers.
-                 */
-                if (random.nextGaussian() < -2) {
-                    c.setBlock(x, y + 1, z, random.nextItem(flowers));
-                }
+            /*
+             * Generate flowers.
+             */
+            if (random.nextGaussian() < -2) {
+                c.setBlock(x, y + 1, z, random.nextItem(flowers));
             }
         }
     }
