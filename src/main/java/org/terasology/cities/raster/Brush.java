@@ -319,15 +319,15 @@ public abstract class Brush {
         int x = rad;
         int y = 0;
         while (y <= x) {
-            setBlock(cx + x, cy + y, hm.apply(cx + x, cy + y), type);
-            setBlock(cx - x, cy + y, hm.apply(cx - x, cy + y), type);
-            setBlock(cx - x, cy - y, hm.apply(cx - x, cy - y), type);
-            setBlock(cx + x, cy - y, hm.apply(cx + x, cy - y), type);
+            setBlock(cx + x, hm.apply(cx + x, cy + y), cy + y, type);
+            setBlock(cx - x, hm.apply(cx - x, cy + y), cy + y, type);
+            setBlock(cx - x, hm.apply(cx - x, cy - y), cy - y, type);
+            setBlock(cx + x, hm.apply(cx + x, cy - y), cy - y, type);
 
-            setBlock(cx + y, cy + x, hm.apply(cx + y, cy + x), type);
-            setBlock(cx - y, cy + x, hm.apply(cx - y, cy + x), type);
-            setBlock(cx - y, cy - x, hm.apply(cx - y, cy - x), type);
-            setBlock(cx + y, cy - x, hm.apply(cx + y, cy - x), type);
+            setBlock(cx + y, hm.apply(cx + y, cy + x), cy + x, type);
+            setBlock(cx - y, hm.apply(cx - y, cy + x), cy + x, type);
+            setBlock(cx - y, hm.apply(cx - y, cy - x), cy - x, type);
+            setBlock(cx + y, hm.apply(cx + y, cy - x), cy - x, type);
 
             d = d + 2 * y + 1;
             y = y + 1;
@@ -342,16 +342,33 @@ public abstract class Brush {
      * @param cx the center x
      * @param cy the center y
      * @param rad the radius
+     * @param pen the pen to draw
+     */
+    public void fillCircle(int cx, int cy, int rad, Pen pen) {
+        for (int y = 0; y <= rad; y++) {
+            for (int x = 0; x * x + y * y <= (rad + 0.5) * (rad + 0.5); x++) {
+                pen.draw(cx + x, cy + y);
+                pen.draw(cx - x, cy + y);
+                pen.draw(cx - x, cy - y);
+                pen.draw(cx + x, cy - y);
+            }
+        }
+    }
+    
+    /**
+     * @param cx the center x
+     * @param cy the center y
+     * @param rad the radius
      * @param hm the height map
      * @param type the block type to set
      */
     public void fillCircle(int cx, int cy, int rad, HeightMap hm, BlockTypes type) {
         for (int y = 0; y <= rad; y++) {
             for (int x = 0; x * x + y * y <= (rad + 0.5) * (rad + 0.5); x++) {
-                setBlock(cx + x, cy + y, hm.apply(cx + x, cy + y), type);
-                setBlock(cx - x, cy + y, hm.apply(cx - x, cy + y), type);
-                setBlock(cx - x, cy - y, hm.apply(cx - x, cy - y), type);
-                setBlock(cx + x, cy - y, hm.apply(cx + x, cy - y), type);
+                setBlock(cx + x, hm.apply(cx + x, cy + y), cy + y, type);
+                setBlock(cx - x, hm.apply(cx - x, cy + y), cy + y, type);
+                setBlock(cx - x, hm.apply(cx - x, cy - y), cy - y, type);
+                setBlock(cx + x, hm.apply(cx + x, cy - y), cy - y, type);
             }
         }
     }

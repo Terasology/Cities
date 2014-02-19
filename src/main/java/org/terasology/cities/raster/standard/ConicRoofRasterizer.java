@@ -53,7 +53,7 @@ public class ConicRoofRasterizer implements Rasterizer<ConicRoof> {
                 int rz = z - centerY;
 
                 // relative distance to border of the roof
-                double dist = Math.sqrt(rx * rx + rz * rz) / rad;
+                double dist = rad - Math.sqrt(rx * rx + rz * rz);
 
                 int y = TeraMath.floorToInt(roof.getBaseHeight() + dist * roof.getPitch());
                 return y;

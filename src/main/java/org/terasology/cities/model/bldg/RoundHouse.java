@@ -23,10 +23,12 @@ import javax.vecmath.Point2i;
 import org.terasology.cities.model.roof.ConicRoof;
 
 /**
- * A round tower with a conic roof
+ * A round house with a conic roof
  * @author Martin Steiger
  */
-public class RoundTower extends AbstractBuilding implements Tower {
+public class RoundHouse extends AbstractBuilding {
+
+    private SimpleDoor door;
 
     /**
      * @param center the center of the tower
@@ -34,13 +36,29 @@ public class RoundTower extends AbstractBuilding implements Tower {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public RoundTower(Point2i center, int radius, int baseHeight, int wallHeight) {
+    public RoundHouse(Point2i center, int radius, int baseHeight, int wallHeight) {
         super(
             new Ellipse2D.Double(center.x - radius, center.y - radius, 2 * radius, 2 * radius),
-            new ConicRoof(center, radius + 2, baseHeight + wallHeight, 1),
+            new ConicRoof(center, radius + 1, baseHeight + wallHeight, 1),
             baseHeight,
             wallHeight);
     }
+
+    
+    /**
+     * @return the door
+     */
+    public SimpleDoor getDoor() {
+        return door;
+    }
+
+    /**
+     * @param door the door
+     */
+    public void setDoor(SimpleDoor door) {
+        this.door = door;
+    }
+
 
     @Override
     public Ellipse2D getLayout() {

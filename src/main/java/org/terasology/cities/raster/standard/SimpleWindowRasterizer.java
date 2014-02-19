@@ -30,7 +30,7 @@ public class SimpleWindowRasterizer implements Rasterizer<SimpleWindow> {
 
     @Override
     public void raster(Brush brush, TerrainInfo ti, SimpleWindow wnd) {
-        brush.fillRect(wnd.getRect(), wnd.getBaseHeight(), wnd.getTopHeight(), BlockTypes.AIR);
+        brush.fillRect(wnd.getRect(), wnd.getBaseHeight() + 1, wnd.getTopHeight() + 1, BlockTypes.AIR);
     }
 
 }

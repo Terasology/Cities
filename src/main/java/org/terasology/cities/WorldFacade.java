@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
 import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -338,7 +337,7 @@ public class WorldFacade {
                     
                     for (SimpleLot lot : housingLots) {
                         town.add(lot);
-                        
+
                         for (SimpleBuilding bldg : blgGenerator.apply(lot)) {
                             lot.addBuilding(bldg);
                             SimpleFence fence = sfg.createFence(town, lot.getShape());
