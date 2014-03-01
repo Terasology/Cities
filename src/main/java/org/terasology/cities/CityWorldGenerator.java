@@ -16,12 +16,18 @@
 
 package org.terasology.cities;
 
+import java.util.Map;
+
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.heightmap.NoiseHeightMap;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
 import org.terasology.world.generator.RegisterWorldGenerator;
+import org.terasology.world.generator.WorldConfigurator;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 /**
  * @author Martin Steiger
@@ -69,4 +75,31 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         
         super.setWorldSeed(seed);
     }
+    
+//    private EntityRef getWorldEntity() {
+//        EntityManager entityManager = CoreRegistry.get(EntityManager.class);
+//
+//        for (EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)) {
+//            return entity;
+//        }
+//        return EntityRef.NULL;
+//    }
+
+    @Override
+    public Optional<WorldConfigurator> getConfigurator() {
+
+        WorldConfigurator wc = new WorldConfigurator() {
+
+            @Override
+            public Map<String, Object> getProperties() {
+                CityConfigComponent configComp = new CityConfigComponent();
+                Map<String, Object> map = Maps.newHashMap();
+                map.put("General", configComp);
+                return map;
+            }
+
+        };
+
+        return Optional.of(wc);
+    }    
 }
