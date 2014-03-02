@@ -29,6 +29,13 @@ public class NoiseHeightMap extends HeightMapAdapter {
     private Noise2D terrainNoise;
 
     /**
+     * Setup default noise-based height map
+     */
+    public NoiseHeightMap() {
+        setSeed("default");
+    }
+    
+    /**
      * @param seed the seed value
      */
     public void setSeed(String seed) {

@@ -20,6 +20,7 @@ import java.awt.Rectangle;
 import java.util.List;
 
 import org.terasology.cities.array.IntArray2D;
+import org.terasology.math.Vector2i;
 
 import com.google.common.math.IntMath;
 
@@ -106,15 +107,16 @@ public final class HeightMaps {
      * @param hm the height map
      * @return a height map that is mirror along the diagonal (1, -1)
      */
-    public static HeightMap symmetricAlongZ(final HeightMap hm) {
-        return new HeightMapAdapter() {
+    public static SymmetricHeightMap symmetricAlongZ(HeightMap hm) {
+        return new AbstractSymmetricHeightMap(hm) {
 
             @Override
-            public int apply(int x, int z) {
-                if (x < 0) {
-                    return hm.apply(-x, z);
-                }
-                return hm.apply(x, z);
+            public boolean isMirrored(int x, int z) {
+                return (x < 0);
+            }
+            
+            public Vector2i getMirrored(int x, int z) {
+                return new Vector2i(-x, z);
             }
         };
     }
@@ -123,15 +125,16 @@ public final class HeightMaps {
      * @param hm the height map
      * @return a height map that is mirror along the diagonal (1, -1)
      */
-    public static HeightMap symmetricAlongX(final HeightMap hm) {
-        return new HeightMapAdapter() {
+    public static SymmetricHeightMap symmetricAlongX(HeightMap hm) {
+        return new AbstractSymmetricHeightMap(hm) {
 
             @Override
-            public int apply(int x, int z) {
-                if (z < 0) {
-                    return hm.apply(x, -z);
-                }
-                return hm.apply(x, z);
+            public boolean isMirrored(int x, int z) {
+                return (z < 0);
+            }
+            
+            public Vector2i getMirrored(int x, int z) {
+                return new Vector2i(-x, z);
             }
         };
     }
@@ -140,16 +143,18 @@ public final class HeightMaps {
      * @param hm the height map
      * @return a height map that is mirror along the diagonal (1, -1)
      */
-    public static HeightMap symmetricAlongDiagonal(final HeightMap hm) {
-        return new HeightMapAdapter() {
+    public static SymmetricHeightMap symmetricAlongDiagonal(final HeightMap hm) {
+        return new AbstractSymmetricHeightMap(hm) {
 
             @Override
-            public int apply(int x, int z) {
-                if (x + z < 0) {
-                    int dist = x + z;
-                    return hm.apply(x - dist, z - dist);
-                }
-                return hm.apply(x, z);
+            public boolean isMirrored(int x, int z) {
+                return (x + z < 0);
+            }
+            
+            @Override
+            public Vector2i getMirrored(int x, int z) {
+                int dist = x + z;
+                return new Vector2i(x - dist, z - dist);
             }
         };
     }
