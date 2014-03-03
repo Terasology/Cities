@@ -105,32 +105,32 @@ public final class HeightMaps {
 
     /**
      * @param hm the height map
-     * @return a height map that is mirror along the diagonal (1, -1)
+     * @return a height map that is mirror along the z axis (0, 1)
      */
     public static SymmetricHeightMap symmetricAlongZ(HeightMap hm) {
         return new AbstractSymmetricHeightMap(hm) {
 
             @Override
             public boolean isMirrored(int x, int z) {
-                return (x < 0);
+                return (z < 0);
             }
             
             public Vector2i getMirrored(int x, int z) {
-                return new Vector2i(-x, z);
+                return new Vector2i(x, -z);
             }
         };
     }
 
     /**
      * @param hm the height map
-     * @return a height map that is mirror along the diagonal (1, -1)
+     * @return a height map that is mirror along the x axis (1, 0)
      */
     public static SymmetricHeightMap symmetricAlongX(HeightMap hm) {
         return new AbstractSymmetricHeightMap(hm) {
 
             @Override
             public boolean isMirrored(int x, int z) {
-                return (z < 0);
+                return (x < 0);
             }
             
             public Vector2i getMirrored(int x, int z) {
