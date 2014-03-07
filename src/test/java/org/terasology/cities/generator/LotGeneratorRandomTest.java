@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
-import org.terasology.cities.CityWorldConfig;
+import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -70,7 +70,7 @@ public class LotGeneratorRandomTest  {
         int minSize = 30;
         int maxSize = 200;
         
-        final CityWorldConfig config = new CityWorldConfig();
+        final CityTerrainComponent config = new CityTerrainComponent();
         final HeightMap heightMap = HeightMaps.constant(10);
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
 

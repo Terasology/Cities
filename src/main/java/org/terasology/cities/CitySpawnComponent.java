@@ -16,38 +16,30 @@
 
 package org.terasology.cities;
 
+import org.terasology.entitySystem.Component;
+import org.terasology.rendering.nui.properties.Range;
+
 /**
- * The configuration for this module
+ * Configuration for the {@link CityWorldGenerator}
  * @author Martin Steiger
  */
-public class CityWorldConfig {
+public class CitySpawnComponent implements Component {
 
-    // terrain
-    private int seaLevel = 2;
-    private int snowLine = 40;
-    
-    // settlement spawning points
+    @Range(min = 1, max = 5, increment = 1, precision = 1)
     private int minCitiesPerSector = 1;
-    private int maxCitiesPerSector = 2;
-    private int minRadius = 50;
-    private int maxRadius = 250;
-
-    private double maxCityDistance = 750d;
-
-    /**
-     * @return the sea level
-     */
-    public int getSeaLevel() {
-        return seaLevel;
-    }
     
-    /**
-     * @return the snow line
-     */
-    public int getSnowLine() {
-        return snowLine;
-    }
+    @Range(min = 1, max = 5, increment = 1, precision = 1)
+    private int maxCitiesPerSector = 2;
 
+    @Range(label = "Minimal town size", description = "Minimal town size in blocks", min = 10, max = 150, increment = 10, precision = 1)
+    private int minRadius = 50;
+
+    @Range(label = "Maximum town size", description = "Maximum town size in blocks", min = 100, max = 350, increment = 10, precision = 1)
+    private int maxRadius = 250;
+    
+    @Range(label = "Minimum distance between towns", min = 100, max = 1000, increment = 10, precision = 1)
+    private double maxCityDistance = 750d;
+    
     /**
      * @return the minimal number of settlements per sector
      */
@@ -81,5 +73,5 @@ public class CityWorldConfig {
      */
     public double getMaxConnectedCitiesDistance() {
         return maxCityDistance;
-    }
+    }    
 }

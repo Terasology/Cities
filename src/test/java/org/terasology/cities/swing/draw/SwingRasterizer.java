@@ -23,7 +23,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.CityWorldConfig;
+import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.WorldFacade;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.contour.Contour;
@@ -77,8 +76,7 @@ public class SwingRasterizer {
         noiseMap.setSeed(seed);
         heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
         
-        CityWorldConfig config = new CityWorldConfig();
-        facade = new WorldFacade(seed, heightMap, config);
+        facade = new WorldFacade(seed, heightMap);
         
         themeMap.put(BlockTypes.AIR, new Color(0, 0, 0, 0));
         themeMap.put(BlockTypes.ROAD_SURFACE, new Color(160, 40, 40));

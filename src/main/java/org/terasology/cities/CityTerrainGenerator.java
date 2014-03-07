@@ -50,17 +50,13 @@ public class CityTerrainGenerator implements FirstPassGenerator {
     private final BlockTheme theme = new BlockTheme();
     private WorldFacade facade;
 
-    private final CityWorldConfig config;
-    
     // private WorldBiomeProvider worldBiomeProvider;
 
     /**
      * @param heightMap the height map to use
-     * @param config the world config
      */
-    public CityTerrainGenerator(HeightMap heightMap, CityWorldConfig config) {
+    public CityTerrainGenerator(HeightMap heightMap) {
         this.heightMap = heightMap;
-        this.config = config;
 
         theme.register(BlockTypes.ROAD_SURFACE, "core:Gravel");
         theme.register(BlockTypes.LOT_EMPTY, "core:dirt");
@@ -84,7 +80,7 @@ public class CityTerrainGenerator implements FirstPassGenerator {
     @Override
     public void setWorldSeed(String worldSeed) {
 
-        facade = new WorldFacade(worldSeed, heightMap, config);
+        facade = new WorldFacade(worldSeed, heightMap);
         
     }
 

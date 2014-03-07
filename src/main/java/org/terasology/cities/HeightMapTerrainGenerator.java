@@ -51,15 +51,16 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
     private final Block dirt = blockManager.getBlock("core:Dirt");
     private final Block water = blockManager.getBlock("core:water");
 
-    private final CityWorldConfig config;
-    
+    private final CityTerrainComponent config;
+
     /**
      * @param heightMap the height map to use
-     * @param config the configuration
      */
-    public HeightMapTerrainGenerator(HeightMap heightMap, CityWorldConfig config) {
+    public HeightMapTerrainGenerator(HeightMap heightMap) {
         this.heightMap = heightMap;
-        this.config = config;
+        
+        config = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
+
     }
 
     /**
@@ -116,6 +117,7 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      */
     @Override
     public void generateChunk(Chunk chunk) {
+        
         int seaLevel = config.getSeaLevel();
         int snowLine = config.getSnowLine();
 

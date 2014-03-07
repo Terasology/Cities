@@ -23,6 +23,7 @@ import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.heightmap.NoiseHeightMap;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
+import org.terasology.entitySystem.Component;
 import org.terasology.world.generator.RegisterWorldGenerator;
 import org.terasology.world.generator.WorldConfigurator;
 
@@ -37,7 +38,7 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
     private NoiseHeightMap noiseMap;
     private HeightMap heightMap;
-
+    
     /**
      * @param uri the uri
      */
@@ -48,15 +49,12 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
     @Override
     public void initialize() {
 
-        // TODO: this should come from elsewhere
-        CityWorldConfig config = new CityWorldConfig();
-        
         noiseMap = new NoiseHeightMap();
         heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
         
-        register(new HeightMapTerrainGenerator(heightMap, config));
+        register(new HeightMapTerrainGenerator(heightMap));
 //        register(new BoundaryGenerator(heightMap));
-        register(new CityTerrainGenerator(heightMap, config));
+        register(new CityTerrainGenerator(heightMap));
         register(new FloraGeneratorFast(heightMap));
     }
     
@@ -75,15 +73,6 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         
         super.setWorldSeed(seed);
     }
-    
-//    private EntityRef getWorldEntity() {
-//        EntityManager entityManager = CoreRegistry.get(EntityManager.class);
-//
-//        for (EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)) {
-//            return entity;
-//        }
-//        return EntityRef.NULL;
-//    }
 
     @Override
     public Optional<WorldConfigurator> getConfigurator() {
@@ -91,10 +80,10 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         WorldConfigurator wc = new WorldConfigurator() {
 
             @Override
-            public Map<String, Object> getProperties() {
-                CityConfigComponent configComp = new CityConfigComponent();
-                Map<String, Object> map = Maps.newHashMap();
-                map.put("General", configComp);
+            public Map<String, Component> getProperties() {
+                Map<String, Component> map = Maps.newHashMap();
+                map.put("Terrain", new CityTerrainComponent());
+                map.put("Spawning", new CitySpawnComponent());
                 return map;
             }
 

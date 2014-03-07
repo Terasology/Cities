@@ -24,20 +24,36 @@ import org.terasology.rendering.nui.properties.Range;
  * Configuration for the {@link CityWorldGenerator}
  * @author Martin Steiger
  */
-public class CityConfigComponent implements Component {
+public class CityTerrainComponent implements Component {
 
-    @Range(min = 1, max = 5, increment = 1, precision = 1)
-    private int minCitiesPerSector = 1;
+    @Range(label = "Sea Level", description = "Height of the sea level", min = 1, max = 6, increment = 1, precision = 1)
+    private int seaLevel = 2;
     
-    @Range(min = 1, max = 5, increment = 1, precision = 1)
-    private int maxCitiesPerSector = 2;
-
-    @Range(min = 10, max = 150, increment = 10, precision = 1)
-    private int minRadius = 50;
-
-    @Range(min = 100, max = 350, increment = 10, precision = 1)
-    private int maxRadius = 250;
+    @Range(label = "Snow Line", description = "Height of the snow line", min = 20, max = 60, increment = 1, precision = 1)
+    private int snowLine = 40;
     
     @Checkbox(label = "Symmetric World", description = "Check to create an axis-symmetric world")
     private boolean symmetric = true;
+    
+    /**
+     * @return the sea level
+     */
+    public int getSeaLevel() {
+        return seaLevel;
+    }
+    
+    /**
+     * @return the snow line
+     */
+    public int getSnowLine() {
+        return snowLine;
+    }
+
+    /**
+     * @return true if the world is symmetric
+     */
+    public boolean isSymmetric() {
+        return symmetric;
+    }
+    
 }

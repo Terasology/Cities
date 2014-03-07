@@ -32,13 +32,13 @@ public class AreaInfo {
 
     private final HeightMap heightMap;  
     private final Path2D blockedArea = new Path2D.Double();
-    private CityWorldConfig config;
+    private final CityTerrainComponent config;
     
     /**
      * @param config the world config (sea level, etc)
      * @param hm the height map to use
      */
-    public AreaInfo(CityWorldConfig config, HeightMap hm) {
+    public AreaInfo(CityTerrainComponent config, HeightMap hm) {
 
         this.heightMap = hm;
         this.config = config;

@@ -60,12 +60,15 @@ import org.terasology.cities.model.Site;
 import org.terasology.cities.model.bldg.SimpleBuilding;
 import org.terasology.cities.model.bldg.SimpleChurch;
 import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.entitySystem.entity.EntityManager;
+import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.namegenerator.town.DebugTownTheme;
 import org.terasology.namegenerator.town.TownAffinityVector;
 import org.terasology.namegenerator.town.TownNameProvider;
 import org.terasology.namegenerator.waters.DebugWaterTheme;
 import org.terasology.namegenerator.waters.WaterNameProvider;
 import org.terasology.registry.CoreRegistry;
+import org.terasology.world.WorldComponent;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -98,10 +101,12 @@ public class WorldFacade {
     /**
      * @param seed the seed value
      * @param heightMap the height map to use
-     * @param config the world configuration
      */
-    public WorldFacade(final String seed, final HeightMap heightMap, final CityWorldConfig config) {
+    public WorldFacade(final String seed, final HeightMap heightMap) {
 
+        final CityTerrainComponent terrainConfig = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
+        final CitySpawnComponent spawnConfig = WorldFacade.getWorldEntity().getComponent(CitySpawnComponent.class);
+        
         junctions = new Function<Point2i, Junction>() {
 
             @Override
@@ -129,7 +134,7 @@ public class WorldFacade {
                 Point2i coords = sector.getCoords();
                 
                 Rectangle sectorRect = new Rectangle(coords.x * size, coords.y * size, size, size);
-                ContourTracer ct = new ContourTracer(orgHm, sectorRect, new CityWorldConfig().getSeaLevel());
+                ContourTracer ct = new ContourTracer(orgHm, sectorRect, terrainConfig.getSeaLevel());
                 
                 Set<Lake> lakes = Sets.newHashSet();
                 
@@ -168,18 +173,18 @@ public class WorldFacade {
             }
         });
         
-        int minCitiesPerSector = config.getMinCitiesPerSector();
-        int maxCitiesPerSector = config.getMaxCitiesPerSector();
-        int minSize = config.getMinCityRadius();
-        int maxSize = config.getMaxCityRadius();
+        int minCitiesPerSector = spawnConfig.getMinCitiesPerSector();
+        int maxCitiesPerSector = spawnConfig.getMaxCitiesPerSector();
+        int minSize = spawnConfig.getMinCityRadius();
+        int maxSize = spawnConfig.getMaxCityRadius();
         
-        AreaInfo globalAreaInfo = new AreaInfo(config, heightMap);
+        AreaInfo globalAreaInfo = new AreaInfo(terrainConfig, heightMap);
         
         Function<? super Sector, AreaInfo> sectorInfos = Functions.constant(globalAreaInfo);
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
         final Function<Sector, Set<Site>> siteMap = CachingFunction.wrap(cpr);
         
-        double maxDist = config.getMaxConnectedCitiesDistance();
+        double maxDist = spawnConfig.getMaxConnectedCitiesDistance();
         connectedCities = new SiteConnector(siteMap, maxDist);
         connectedCities = CachingFunction.wrap(connectedCities);
         
@@ -307,14 +312,14 @@ public class WorldFacade {
                     Rectangle cityArea = new Rectangle(minX, minZ, site.getRadius() * 2, site.getRadius() * 2);
                     HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
 
-                    AreaInfo si = new AreaInfo(config, cityAreaHeightMap); 
+                    AreaInfo si = new AreaInfo(terrainConfig, cityAreaHeightMap); 
                     si.addBlockedArea(roadShape);
                     
                     String name = nameGen.generateName(TownAffinityVector.create().prefix(0.2).postfix(0.2));
                     MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
 
                     // add a town wall if radius is larger than 1/4
-                    int minRadForTownWall = (config.getMinCityRadius() * 3 + config.getMaxCityRadius()) / 4;
+                    int minRadForTownWall = (spawnConfig.getMinCityRadius() * 3 + spawnConfig.getMaxCityRadius()) / 4;
                     
                     if (town.getRadius() > minRadForTownWall) {
                         TownWall tw = twg.generate(town, si);
@@ -394,4 +399,14 @@ public class WorldFacade {
     public Set<Lake> getLakes(Sector sector) {
         return lakeMap.apply(sector);
     }
+    
+    
+    public static EntityRef getWorldEntity() {
+        EntityManager entityManager = CoreRegistry.get(EntityManager.class);
+
+        for (EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)) {
+            return entity;
+        }
+        return EntityRef.NULL;
+    }    
 }
