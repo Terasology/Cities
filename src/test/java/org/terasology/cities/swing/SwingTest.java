@@ -37,10 +37,13 @@ public final class SwingTest {
 
     /**
      * @param args ignored
+     * @throws Exception if setup fails
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         String seed = "a";
+        
+        SwingEnvironment.setup();
 
         final JFrame frame = new JFrame();
         final JLabel status = new JLabel();
