@@ -26,12 +26,12 @@ import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+
+import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.WorldFacade;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.contour.Contour;
@@ -42,6 +42,7 @@ import org.terasology.cities.model.City;
 import org.terasology.cities.model.Lake;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.Sectors;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
@@ -51,7 +52,6 @@ import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.ChunkConstants;
 
 import com.google.common.base.Function;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -67,6 +67,19 @@ public class SwingRasterizer {
     private final HeightMap heightMap;
     
     private final Map<BlockTypes, Color> themeMap = Maps.newConcurrentMap();
+	private Function<BlockTypes, Color> colorFunc = new Function<BlockTypes, Color>() {
+        
+        @Override
+        public Color apply(BlockTypes input) {
+            Color color = themeMap.get(input);
+            
+            if (color == null) {
+                color = Color.GRAY;
+            }
+            
+            return color;
+        }
+    };
     
     /**
      * @param seed the seed value
@@ -135,72 +148,42 @@ public class SwingRasterizer {
     }
     
     private void drawAccurately(Graphics2D g, Sector sector) {
-        int chunkSizeX = ChunkConstants.SIZE_X * 4;
-        int chunkSizeZ = ChunkConstants.SIZE_Z * 4;
-        
-        int chunksX = Sector.SIZE / chunkSizeX;
-        int chunksZ = Sector.SIZE / chunkSizeZ;
-        
-        Function<BlockTypes, Color> colorFunc = new Function<BlockTypes, Color>() {
-            
-            @Override
-            public Color apply(BlockTypes input) {
-                Color color = themeMap.get(input);
-                
-                if (color == null) {
-                    color = Color.GRAY;
-                }
-                
-                return color;
-            }
-        };
-        
-        Stopwatch timeBack = Stopwatch.createUnstarted();
-        Stopwatch timeCities = Stopwatch.createUnstarted();
-        Stopwatch timeRoads = Stopwatch.createUnstarted();
-        
-        for (int cz = 0; cz < chunksZ; cz++) {
-            for (int cx = 0; cx < chunksX; cx++) {
-                int wx = sector.getCoords().x * Sector.SIZE + cx * chunkSizeX;
-                int wz = sector.getCoords().y * Sector.SIZE + cz * chunkSizeZ;
-
-                if (g.hitClip(wx, wz, chunkSizeX, chunkSizeZ)) {
-
-                    BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_ARGB);
-                    Brush brush = new SwingBrush(wx, wz, image, colorFunc);
-
-                    HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
-                    TerrainInfo ti = new TerrainInfo(cachedHm);
-
-                    timeBack.start();
-                    drawBackground(image, wx, wz, ti);
-                    timeBack.stop();
-                    
-                    timeCities.start();
-                    drawCities(sector, ti, brush);
-                    timeCities.stop();
-                    
-                    timeRoads.start();
-                    drawRoads(sector, ti, brush);
-                    timeRoads.stop();
-
-                    int ix = wx;
-                    int iy = wz;
-                    g.drawImage(image, ix, iy, null);
-                }
-            }
-        }
-
-        logger.debug("{} Background {}ms.", sector, timeBack.elapsed(TimeUnit.MILLISECONDS));
-        logger.debug("{} Cities {}ms.", sector, timeCities.elapsed(TimeUnit.MILLISECONDS));
-        logger.debug("{} Roads {}ms.", sector, timeRoads.elapsed(TimeUnit.MILLISECONDS));
         
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);
         }
-
     }
-    
+
+
+	public void rasterizeChunk(Graphics2D g, Point2i coord) {
+
+		int chunkSizeX = ChunkConstants.SIZE_X;
+		int chunkSizeZ = ChunkConstants.SIZE_Z;
+
+        int wx = coord.getX() * chunkSizeX;
+        int wz = coord.getY() * chunkSizeZ;
+        
+        Sector sector = Sectors.getSectorForBlock(wx, wz);
+
+        if (g.hitClip(wx, wz, chunkSizeX, chunkSizeZ)) {
+
+            BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_ARGB);
+            Brush brush = new SwingBrush(wx, wz, image, colorFunc);
+
+            HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
+            TerrainInfo ti = new TerrainInfo(cachedHm);
+
+            drawBackground(image, wx, wz, ti);
+            drawCities(sector, ti, brush);
+            drawRoads(sector, ti, brush);
+
+            int ix = wx;
+            int iy = wz;
+            g.drawImage(image, ix, iy, null);
+        }
+		
+	}
+
     private void drawRoads(Sector sector, TerrainInfo ti, Brush brush) {
         Set<Road> roads = facade.getRoads(sector);
     

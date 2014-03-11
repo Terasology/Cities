@@ -34,6 +34,7 @@ import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.swing.draw.SwingRasterizer;
 import org.terasology.math.Vector2i;
+import org.terasology.world.chunks.ChunkConstants;
 
 /**
  * A JComponent that displays the rasterized images using a virtual camera
@@ -44,8 +45,6 @@ final class JCityComponent extends JComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(JCityComponent.class);
     
-    final BufferedImage image = new BufferedImage(4 * 256, 3 * 256, BufferedImage.TYPE_INT_ARGB);
-
     final Vector2i cameraPos = new Vector2i(-350, 450);
 
     private JLabel label;
@@ -99,59 +98,54 @@ final class JCityComponent extends JComponent {
     public boolean isFocusable() {
         return true;
     }
-
-    @Override
-    public Dimension getPreferredSize() {
-        if (isPreferredSizeSet()) {
-            return super.getPreferredSize();
-        }
-
-        return new Dimension(image.getWidth(), image.getHeight());
-    }
     
     @Override
     protected void paintComponent(Graphics g1) {
         
         super.paintComponent(g1);
-
-        final int imgWidth = image.getWidth();
-        final int imgHeight = image.getHeight();
-
-        Graphics2D g = image.createGraphics();
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(0, 0, imgWidth, imgHeight);
-
+        
+        Graphics2D g = (Graphics2D) g1;
+        
         int scale = 2;
              
-        try {
-            g.setColor(Color.BLACK);
+        g.setColor(Color.BLACK);
 
-            g.scale(scale, scale);
-            g.translate(cameraPos.x, cameraPos.y);
+        g.scale(scale, scale);
+        g.translate(cameraPos.x, cameraPos.y);
 
-            
-            int camOffX = (int) Math.floor(cameraPos.x / (double) Sector.SIZE);
-            int camOffZ = (int) Math.floor(cameraPos.y / (double) Sector.SIZE);
+         
+        int camChunkOffX = (int) Math.floor(cameraPos.x / (double) ChunkConstants.SIZE_X);
+        int camChunkOffZ = (int) Math.floor(cameraPos.y / (double) ChunkConstants.SIZE_Z);
 
-            int numX = imgWidth / (Sector.SIZE * scale) + 1;
-            int numZ = imgHeight / (Sector.SIZE * scale) + 1;
-            
-            logger.debug("Drawing {}x{} tiles", numX + 1, numZ + 1);
+        int numChunkX = getWidth() / (ChunkConstants.SIZE_X * scale) + 1;
+        int numChunkZ = getHeight() / (ChunkConstants.SIZE_Z * scale) + 1;
+        
+        logger.debug("Drawing {}x{} chunks", numChunkX + 1, numChunkZ + 1);
 
-            for (int z = -1; z < numZ; z++) {
-                for (int x = -1; x < numX; x++) {
-                    Point2i coord = new Point2i(x - camOffX, z - camOffZ);
-                    Sector sector = Sectors.getSector(coord);
-                    g.setClip((x - camOffX) * Sector.SIZE, (z - camOffZ) * Sector.SIZE, Sector.SIZE, Sector.SIZE);
-                    rasterizer.rasterizeSector(g, sector);
-                }
+        for (int z = -1; z < numChunkZ; z++) {
+            for (int x = -1; x < numChunkX; x++) {
+                Point2i coord = new Point2i(x - camChunkOffX, z - camChunkOffZ);
+                rasterizer.rasterizeChunk(g, coord);
             }
-            g.setClip(null);
-        } finally {
-            g.dispose();
         }
         
-        g1.drawImage(image, 0, 0, null);
+        int camOffX = (int) Math.floor(cameraPos.x / (double) Sector.SIZE);
+        int camOffZ = (int) Math.floor(cameraPos.y / (double) Sector.SIZE);
+
+        int numSecX = getWidth() / (Sector.SIZE * scale) + 1;
+        int numSecZ = getHeight() / (Sector.SIZE * scale) + 1;
+
+        logger.debug("Drawing {}x{} sectors", numSecX + 1, numSecZ + 1);
+
+        for (int z = -1; z < numSecZ; z++) {
+            for (int x = -1; x < numSecX; x++) {
+                Point2i coord = new Point2i(x - camOffX, z - camOffZ);
+                Sector sector = Sectors.getSector(coord);
+                g.setClip((x - camOffX) * Sector.SIZE, (z - camOffZ) * Sector.SIZE, Sector.SIZE, Sector.SIZE);
+                rasterizer.rasterizeSector(g, sector);
+            }
+        }
+        g.setClip(null);
     }
     
 }
