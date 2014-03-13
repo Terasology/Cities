@@ -19,8 +19,9 @@ package org.terasology.cities.heightmap;
 import java.awt.Rectangle;
 import java.util.List;
 
+import javax.vecmath.Point2i;
+
 import org.terasology.cities.array.IntArray2D;
-import org.terasology.math.Vector2i;
 
 import com.google.common.math.IntMath;
 
@@ -115,8 +116,8 @@ public final class HeightMaps {
                 return (z < 0);
             }
             
-            public Vector2i getMirrored(int x, int z) {
-                return new Vector2i(x, -z);
+            public Point2i getMirrored(int x, int z) {
+                return new Point2i(x, -z);
             }
         };
     }
@@ -133,8 +134,8 @@ public final class HeightMaps {
                 return (x < 0);
             }
             
-            public Vector2i getMirrored(int x, int z) {
-                return new Vector2i(-x, z);
+            public Point2i getMirrored(int x, int z) {
+                return new Point2i(-x, z);
             }
         };
     }
@@ -152,9 +153,9 @@ public final class HeightMaps {
             }
             
             @Override
-            public Vector2i getMirrored(int x, int z) {
+            public Point2i getMirrored(int x, int z) {
                 int dist = x + z;
-                return new Vector2i(x - dist, z - dist);
+                return new Point2i(x - dist, z - dist);
             }
         };
     }

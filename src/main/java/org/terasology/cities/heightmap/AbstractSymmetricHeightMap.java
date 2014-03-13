@@ -16,7 +16,7 @@
 
 package org.terasology.cities.heightmap;
 
-import org.terasology.math.Vector2i;
+import javax.vecmath.Point2i;
 
 
 /**
@@ -44,12 +44,12 @@ public abstract class AbstractSymmetricHeightMap extends HeightMapAdapter implem
     }
 
     @Override
-    public boolean isMirrored(Vector2i v) {
+    public boolean isMirrored(Point2i v) {
         return isMirrored(v.x, v.y);
     }
     
     @Override
-    public Vector2i getMirrored(Vector2i v) {
+    public Point2i getMirrored(Point2i v) {
         return getMirrored(v.x, v.y);
     }
 

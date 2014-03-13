@@ -16,6 +16,8 @@
 
 package org.terasology.cities.heightmap;
 
+import javax.vecmath.Point2i;
+
 import org.terasology.math.Vector2i;
 
 /**
@@ -28,7 +30,7 @@ public interface SymmetricHeightMap extends HeightMap {
      * @param v the position coordinate
      * @return true if the location is on the "mirrored" part of the height map
      */
-    boolean isMirrored(Vector2i v);
+    boolean isMirrored(Point2i v);
 
     /**
      * @param x the x coordinate
@@ -38,16 +40,16 @@ public interface SymmetricHeightMap extends HeightMap {
     boolean isMirrored(int x, int z);
 
     /**
-     * @param v the position coordinates
+     * @param sc the position coordinates
      * @return the mirrored position
      */
-    Vector2i getMirrored(Vector2i v);
+    Point2i getMirrored(Point2i sc);
     
     /**
      * @param x the x position coordinate
      * @param z the z position coordinate
      * @return the mirrored position
      */
-    Vector2i getMirrored(int x, int z);
+    Point2i getMirrored(int x, int z);
 
 }

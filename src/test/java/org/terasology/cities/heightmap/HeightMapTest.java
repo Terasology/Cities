@@ -16,11 +16,14 @@
 
 package org.terasology.cities.heightmap;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Random;
 
+import javax.vecmath.Point2i;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.terasology.math.Vector2i;
 
 /**
  * Some tests on {@link HeightMap}s
@@ -36,7 +39,7 @@ public class HeightMapTest {
         SymmetricHeightMap shm = HeightMaps.symmetricAlongX(hm);
         basicSymmetryTest(shm);
         
-        assertEquals(new Vector2i(-123, 456), shm.getMirrored(new Vector2i(123, 456)));
+        assertEquals(new Point2i(-123, 456), shm.getMirrored(new Point2i(123, 456)));
     }
     
     @Test
@@ -44,7 +47,7 @@ public class HeightMapTest {
         SymmetricHeightMap shm = HeightMaps.symmetricAlongZ(hm);
         basicSymmetryTest(shm);
         
-        assertEquals(new Vector2i(123, -456), shm.getMirrored(new Vector2i(123, 456)));
+        assertEquals(new Point2i(123, -456), shm.getMirrored(new Point2i(123, 456)));
     }
     
     @Test
@@ -52,29 +55,29 @@ public class HeightMapTest {
         SymmetricHeightMap shm = HeightMaps.symmetricAlongDiagonal(hm);
         basicSymmetryTest(shm);
         
-        assertEquals(new Vector2i(100, 0), shm.getMirrored(new Vector2i(0, -100)));
-        assertEquals(new Vector2i(0, 100), shm.getMirrored(new Vector2i(-100, 0)));
-        assertEquals(new Vector2i(10, 10), shm.getMirrored(new Vector2i(-10, -10)));
+        assertEquals(new Point2i(100, 0), shm.getMirrored(new Point2i(0, -100)));
+        assertEquals(new Point2i(0, 100), shm.getMirrored(new Point2i(-100, 0)));
+        assertEquals(new Point2i(10, 10), shm.getMirrored(new Point2i(-10, -10)));
     }
     
     private void basicSymmetryTest(SymmetricHeightMap shm) {
-        assertEquals(new Vector2i(0, 0), shm.getMirrored(new Vector2i(0, 0)));
+        assertEquals(new Point2i(0, 0), shm.getMirrored(new Point2i(0, 0)));
         
         for (int i = 0; i < 100; i++) {
-            Vector2i test = nextRandomPos();
+            Point2i test = nextRandomPos();
             
             assertEquals(shm.isMirrored(test), shm.isMirrored(test.x, test.y));
     
             boolean isMirrored = shm.isMirrored(test);
-            Vector2i mirrored = shm.getMirrored(test);
+            Point2i mirrored = shm.getMirrored(test);
             
             assertTrue(isMirrored != shm.isMirrored(mirrored));
             assertEquals(test, shm.getMirrored(mirrored));
         }
     }
     
-    private Vector2i nextRandomPos() {
-        return new Vector2i(r.nextInt(1000) - 500, r.nextInt(1000) - 500);
+    private Point2i nextRandomPos() {
+        return new Point2i(r.nextInt(1000) - 500, r.nextInt(1000) - 500);
     }
 
 }
