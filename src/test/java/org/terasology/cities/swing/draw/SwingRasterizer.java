@@ -65,22 +65,22 @@ public class SwingRasterizer {
 
     private final WorldFacade facade;
     private final HeightMap heightMap;
-    
+
     private final Map<BlockTypes, Color> themeMap = Maps.newConcurrentMap();
-	private Function<BlockTypes, Color> colorFunc = new Function<BlockTypes, Color>() {
-        
+    private Function<BlockTypes, Color> colorFunc = new Function<BlockTypes, Color>() {
+
         @Override
         public Color apply(BlockTypes input) {
             Color color = themeMap.get(input);
-            
+
             if (color == null) {
                 color = Color.GRAY;
             }
-            
+
             return color;
         }
     };
-    
+
     /**
      * @param seed the seed value
      */
@@ -154,15 +154,14 @@ public class SwingRasterizer {
         }
     }
 
+    public void rasterizeChunk(Graphics2D g, Point2i coord) {
 
-	public void rasterizeChunk(Graphics2D g, Point2i coord) {
-
-		int chunkSizeX = ChunkConstants.SIZE_X;
-		int chunkSizeZ = ChunkConstants.SIZE_Z;
+        int chunkSizeX = ChunkConstants.SIZE_X;
+        int chunkSizeZ = ChunkConstants.SIZE_Z;
 
         int wx = coord.getX() * chunkSizeX;
         int wz = coord.getY() * chunkSizeZ;
-        
+
         Sector sector = Sectors.getSectorForBlock(wx, wz);
 
         if (g.hitClip(wx, wz, chunkSizeX, chunkSizeZ)) {
@@ -181,8 +180,8 @@ public class SwingRasterizer {
             int iy = wz;
             g.drawImage(image, ix, iy, null);
         }
-		
-	}
+
+    }
 
     private void drawRoads(Sector sector, TerrainInfo ti, Brush brush) {
         Set<Road> roads = facade.getRoads(sector);
