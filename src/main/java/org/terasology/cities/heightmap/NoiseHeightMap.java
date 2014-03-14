@@ -38,6 +38,13 @@ public class NoiseHeightMap extends HeightMapAdapter {
     /**
      * @param seed the seed value
      */
+    public NoiseHeightMap(String seed) {
+        setSeed(seed);
+    }
+    
+    /**
+     * @param seed the seed value
+     */
     public void setSeed(String seed) {
         terrainNoise = new BrownianNoise2D(new SimplexNoise(seed.hashCode()), 6);
     }

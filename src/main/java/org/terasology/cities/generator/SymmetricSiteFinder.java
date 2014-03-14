@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.Point2iUtils;
 import org.terasology.cities.heightmap.SymmetricHeightMap;
 import org.terasology.cities.model.Sector;
+import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
 
 import com.google.common.base.Function;
@@ -61,13 +62,13 @@ public class SymmetricSiteFinder implements Function<Sector, Set<Site>> {
         int minDist = 200;
 
         // create deterministic random
-        Point2i sc = sector.getCoords();
+        Point2i secPos = sector.getCoords();
 
-        Point2i mirrPos = heightMap.getMirrored(sc);
-        Set<Site> base = baseFinder.apply(sector);
-        Set<Site> result = new HashSet<>(base.size());
+        Point2i mirrSecPos = heightMap.getMirrored(secPos);
+        Set<Site> result = new HashSet<>();
 
-        if (sc.equals(mirrPos)) {
+        if (secPos.equals(mirrSecPos)) {
+            Set<Site> base = baseFinder.apply(sector);
 
             for (Site site : base) {
                 Point2i pos = site.getPos();
@@ -93,20 +94,24 @@ public class SymmetricSiteFinder implements Function<Sector, Set<Site>> {
             return result;
         }
 
-        if (!heightMap.isMirrored(sc)) {
+        if (!heightMap.isMirrored(secPos)) {
+            Set<Site> base = baseFinder.apply(sector);
+
             for (Site site : base) {
                 Point2i pos = site.getPos();
                 Point2i newPos = heightMap.getMirrored(pos);
 
                 // check if distance to its own mirror site is ok
                 double distSq = Point2iUtils.distanceSquared(pos, newPos);
-                if (distSq < minDist * minDist) {
+                if (distSq > minDist * minDist) {
                     result.add(site);
                 }
             }
             return result;
 
         } else {
+            Sector mirrorSector = Sectors.getSector(mirrSecPos);
+            Set<Site> base = baseFinder.apply(mirrorSector);
 
             for (Site site : base) {
                 Point2i pos = site.getPos();
@@ -115,7 +120,7 @@ public class SymmetricSiteFinder implements Function<Sector, Set<Site>> {
 
                 // check if distance to its own mirror site is ok
                 double distSq = Point2iUtils.distanceSquared(pos, newPos);
-                if (distSq < minDist * minDist) {
+                if (distSq > minDist * minDist) {
                     result.add(mirrorSite);
                 }
             }
