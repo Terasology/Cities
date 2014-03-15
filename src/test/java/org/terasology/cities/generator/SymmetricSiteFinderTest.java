@@ -23,9 +23,8 @@ import java.util.Set;
 
 import javax.vecmath.Point2i;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.common.CachingFunction;
@@ -45,22 +44,30 @@ import com.google.common.collect.Collections2;
  */
 public class SymmetricSiteFinderTest  {
 
-    private static final Logger logger = LoggerFactory.getLogger(SymmetricSiteFinderTest.class);
-    
-    /**
-     * Performs through tests and logs computation time and results
-     */
-    @Test
-    public void test() {
+    private static Function<Site, Point2i> site2pos = new Function<Site, Point2i>() {
+
+        @Override
+        public Point2i apply(Site input) {
+            return input.getPos();
+        }
+        
+    };
+
+    private SymmetricSiteFinder symFinder;
+    private SymmetricHeightMap heightMap;
+
+    private final int minPerSector = 2;
+    private final int maxPerSector = 5;
+
+    @Before
+    public void setup() {
         String seed = "asd";
         
-        int minPerSector = 1;
-        int maxPerSector = 3;
         int minSize = 10;
         int maxSize = 100;
         
         final CityTerrainComponent config = new CityTerrainComponent();
-        final SymmetricHeightMap heightMap = HeightMaps.symmetricAlongDiagonal(new NoiseHeightMap(seed));
+        heightMap = HeightMaps.symmetricAlongDiagonal(new NoiseHeightMap(seed));
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
 
             @Override
@@ -71,29 +78,39 @@ public class SymmetricSiteFinderTest  {
         
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
-        SymmetricSiteFinder symFinder = new SymmetricSiteFinder(cpr, heightMap);
-        
+        symFinder = new SymmetricSiteFinder(cpr, heightMap);
+    }
+    
+    @Test
+    public void testDifferent() {
+
         Sector sectorA = Sectors.getSector(4, 8);
-        Sector sectorA2 = Sectors.getSector(-8, -4);
+        Sector sectorB = Sectors.getSector(-8, -4);
 
         Set<Site> sitesA = symFinder.apply(sectorA);
-        Set<Site> sitesA2 = symFinder.apply(sectorA2);
+        Set<Site> sitesB = symFinder.apply(sectorB);
         
-        Function<Site, Point2i> site2pos = new Function<Site, Point2i>() {
+        assertMirrored(sitesA, sitesB);
+    }
 
-            @Override
-            public Point2i apply(Site input) {
-                return input.getPos();
-            }
-            
-        };
-        
+    @Test
+    public void testSame() {
+
+        Sector sectorA = Sectors.getSector(1, -1);
+
+        Set<Site> sitesA = symFinder.apply(sectorA);
+        assertTrue(sitesA.size() > minPerSector);
+        assertTrue(sitesA.size() < maxPerSector);
+        assertMirrored(sitesA, sitesA);
+    }
+    
+    private void assertMirrored(Set<Site> sitesA, Set<Site> sitesB) {
         Collection<Point2i> posA = Collections2.transform(sitesA, site2pos);
-        Collection<Point2i> posA2 = Collections2.transform(sitesA2, site2pos);
+        Collection<Point2i> posB = Collections2.transform(sitesB, site2pos);
         
         for (Point2i pos : posA) {
             Point2i mirrored = heightMap.getMirrored(pos);
-            assertTrue(posA2.contains(mirrored));
+            assertTrue(posB.contains(mirrored));
         }
     }
 }

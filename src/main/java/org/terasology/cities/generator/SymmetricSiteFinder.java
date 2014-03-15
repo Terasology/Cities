@@ -80,7 +80,7 @@ public class SymmetricSiteFinder implements Function<Sector, Set<Site>> {
 
                     // check if distance to its own mirror site is ok
                     double distSq = Point2iUtils.distanceSquared(pos, newPos);
-                    if (distSq < minDist * minDist) {
+                    if (distSq > minDist * minDist) {
                         result.add(mirrorSite);
                         result.add(site);
                     }
