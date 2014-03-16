@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities;
+package org.terasology.cities.events;
 
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +25,7 @@ import javax.vecmath.Vector3f;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.WorldFacade;
 import org.terasology.cities.model.NamedArea;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;

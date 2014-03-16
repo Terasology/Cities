@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.cities;
+package org.terasology.cities.events;
 
 import org.terasology.cities.model.NamedArea;
 import org.terasology.entitySystem.event.Event;
@@ -21,18 +21,18 @@ import org.terasology.entitySystem.event.Event;
 /**
  * @author Martin Steiger
  */
-public class OnEnterAreaEvent implements Event {
+public class OnLeaveAreaEvent implements Event {
     private final NamedArea area;
 
     /**
-     * @param area the area that was entered
+     * @param area the area that was left
      */
-    public OnEnterAreaEvent(NamedArea area) {
+    public OnLeaveAreaEvent(NamedArea area) {
         this.area = area;
     }
 
     /**
-     * @return the area that was entered
+     * @return the area that was left
      */
     public NamedArea getArea() {
         return area;
