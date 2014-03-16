@@ -38,6 +38,7 @@ import org.terasology.logic.console.ConsoleColors;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.rendering.FontColor;
 
@@ -59,9 +60,6 @@ public class PlayerTracker extends BaseComponentSystem {
     @In
     private Console console;
     
-    @In
-    private WorldFacade facade;
-
     private final Map<String, NamedArea> prevAreaMap = Maps.newHashMap();
     
     /**
@@ -87,6 +85,7 @@ public class PlayerTracker extends BaseComponentSystem {
         String name = client.getName();
         
         // TODO: facade is null if a different WorldGenerator is used
+        WorldFacade facade = CoreRegistry.get(WorldFacade.class);
         if (facade != null) {
 
             NamedArea prevArea = prevAreaMap.get(id);        // can be null !

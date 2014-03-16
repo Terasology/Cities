@@ -32,6 +32,7 @@ import javax.vecmath.Point2i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.WorldFacade;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.contour.Contour;
@@ -224,7 +225,9 @@ public class SwingRasterizer {
         int width = image.getWidth();
         int height = image.getHeight();
         int maxHeight = 20;
-        
+
+        CityTerrainComponent terrainConfig = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
+
         for (int z = 0; z < height; z++) {
             for (int x = 0; x < width; x++) {
                 int gx = wx + x;
@@ -233,7 +236,7 @@ public class SwingRasterizer {
                 int b = TeraMath.clamp(255 - (maxHeight - y) * 5, 0, 255);
 
                 Color c;
-                if (y <= 2) {
+                if (y <= terrainConfig.getSeaLevel()) {
                     c = Color.BLUE; 
                 } else {
                     c = new Color(b, b, b);

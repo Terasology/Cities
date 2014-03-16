@@ -22,7 +22,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -100,13 +99,18 @@ final class JCityComponent extends JComponent {
     }
     
     @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(768, 768);
+    }
+    
+    @Override
     protected void paintComponent(Graphics g1) {
         
         super.paintComponent(g1);
         
         Graphics2D g = (Graphics2D) g1;
         
-        int scale = 2;
+        int scale = 1;
              
         g.setColor(Color.BLACK);
 
@@ -141,11 +145,9 @@ final class JCityComponent extends JComponent {
             for (int x = -1; x < numSecX; x++) {
                 Point2i coord = new Point2i(x - camOffX, z - camOffZ);
                 Sector sector = Sectors.getSector(coord);
-                g.setClip((x - camOffX) * Sector.SIZE, (z - camOffZ) * Sector.SIZE, Sector.SIZE, Sector.SIZE);
                 rasterizer.rasterizeSector(g, sector);
             }
         }
-        g.setClip(null);
     }
     
 }
