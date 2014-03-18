@@ -23,9 +23,14 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point2i;
 
@@ -53,6 +58,10 @@ import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.ChunkConstants;
 
 import com.google.common.base.Function;
+import com.google.common.base.Stopwatch;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -81,6 +90,13 @@ public class SwingRasterizer {
             return color;
         }
     };
+
+    private LoadingCache<String, Stopwatch> debugMap = CacheBuilder.newBuilder().build(
+        new CacheLoader<String, Stopwatch>() {
+            @Override
+            public Stopwatch load(String key) {
+                return Stopwatch.createUnstarted();
+            }});
 
     /**
      * @param seed the seed value
@@ -113,10 +129,41 @@ public class SwingRasterizer {
      */
     public void rasterizeSector(Graphics2D g, Sector sector) {
 
-        drawAccurately(g, sector);
+        Stopwatch sw = debugMap.getUnchecked(sector.toString());
+        sw.start();
+        
+        drawCityNames(g, sector);
         drawLakes(g, sector);
         drawFrame(g, sector);
         drawSectorText(g, sector);
+        
+        sw.stop();
+    }
+    
+    public void drawDebug(Graphics2D go) {
+        Graphics2D g = (Graphics2D) go.create();
+        g.setTransform(new AffineTransform());
+
+        FontMetrics fm = g.getFontMetrics();
+        g.setColor(Color.BLACK);
+
+        int x = 10;
+        int y = 10 + fm.getAscent();
+        int dy = fm.getHeight();
+        
+        List<String> keys = new ArrayList<>(debugMap.asMap().keySet());
+        Collections.sort(keys);
+        
+        for (String entry : keys) {
+            long time = debugMap.getUnchecked(entry).elapsed(TimeUnit.MILLISECONDS);
+            String str = String.format("%s: %dms.", entry, time);
+            g.drawString(str, x, y);
+            y += dy;
+        }
+
+        debugMap.invalidateAll();
+        
+        g.dispose();
     }
 
     private void drawLakes(Graphics2D g, Sector sector) {
@@ -148,7 +195,7 @@ public class SwingRasterizer {
         g.setStroke(new BasicStroke());
     }
     
-    private void drawAccurately(Graphics2D g, Sector sector) {
+    private void drawCityNames(Graphics2D g, Sector sector) {
         
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);
@@ -164,23 +211,37 @@ public class SwingRasterizer {
         int wz = coord.getY() * chunkSizeZ;
 
         Sector sector = Sectors.getSectorForBlock(wx, wz);
-
+        
         if (g.hitClip(wx, wz, chunkSizeX, chunkSizeZ)) {
 
-            BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_ARGB);
+            Stopwatch swBK = debugMap.getUnchecked("RASTER Background");
+            Stopwatch swCt = debugMap.getUnchecked("RASTER Cities");
+            Stopwatch swRd = debugMap.getUnchecked("RASTER Roads");
+            
+            BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_RGB);
             Brush brush = new SwingBrush(wx, wz, image, colorFunc);
 
             HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 8);
             TerrainInfo ti = new TerrainInfo(cachedHm);
 
+            swBK.start();
             drawBackground(image, wx, wz, ti);
+            swBK.stop();
+            
+            swCt.start();
             drawCities(sector, ti, brush);
+            swCt.stop();
+            
+            swRd.start();
             drawRoads(sector, ti, brush);
+            swRd.stop();
 
             int ix = wx;
             int iy = wz;
             g.drawImage(image, ix, iy, null);
+
         }
+
 
     }
 

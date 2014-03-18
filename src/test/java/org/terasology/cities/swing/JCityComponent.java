@@ -111,13 +111,12 @@ final class JCityComponent extends JComponent {
         Graphics2D g = (Graphics2D) g1;
         
         int scale = 1;
-             
+
         g.setColor(Color.BLACK);
 
         g.scale(scale, scale);
         g.translate(cameraPos.x, cameraPos.y);
 
-         
         int camChunkOffX = (int) Math.floor(cameraPos.x / (double) ChunkConstants.SIZE_X);
         int camChunkOffZ = (int) Math.floor(cameraPos.y / (double) ChunkConstants.SIZE_Z);
 
@@ -148,6 +147,9 @@ final class JCityComponent extends JComponent {
                 rasterizer.rasterizeSector(g, sector);
             }
         }
+        
+        rasterizer.drawDebug(g);
+        
     }
     
 }
