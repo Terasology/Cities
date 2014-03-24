@@ -35,7 +35,6 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
-import org.terasology.logic.console.ConsoleColors;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
@@ -133,8 +132,8 @@ public class PlayerTracker extends BaseComponentSystem {
         String playerName = String.format("%s (%s)", client.getName(), client.getId());
         String areaName = event.getArea().getName();
 
-        playerName = FontColor.getColored(playerName, ConsoleColors.PLAYER);
-        areaName = FontColor.getColored(areaName, ConsoleColors.AREA);
+        playerName = FontColor.getColored(playerName, CitiesColors.PLAYER);
+        areaName = FontColor.getColored(areaName, CitiesColors.AREA);
         
         console.addMessage(playerName + " entered " + areaName);
     }
@@ -151,8 +150,8 @@ public class PlayerTracker extends BaseComponentSystem {
         String playerName = String.format("%s (%s)", client.getName(), client.getId());
         String areaName = event.getArea().getName();
 
-        playerName = FontColor.getColored(playerName, ConsoleColors.PLAYER);
-        areaName = FontColor.getColored(areaName, ConsoleColors.AREA);
+        playerName = FontColor.getColored(playerName, CitiesColors.PLAYER);
+        areaName = FontColor.getColored(areaName, CitiesColors.AREA);
         
         console.addMessage(playerName + " left " + areaName);
     }
