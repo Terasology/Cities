@@ -144,7 +144,7 @@ final class SwingEnvironment {
 
         CodeSource tsCodeSource = TerasologyEngine.class.getProtectionDomain().getCodeSource();
         assetManager.addAssetSource(new ClasspathSource(TerasologyConstants.ENGINE_MODULE, tsCodeSource,
-                TerasologyConstants.ASSETS_SUBDIRECTORY, TerasologyConstants.OVERRIDES_SUBDIRECTORY));
+                TerasologyConstants.ASSETS_SUBDIRECTORY, TerasologyConstants.OVERRIDES_SUBDIRECTORY, TerasologyConstants.DELTAS_SUBDIRECTORY));
         
         assetManager.setAssetFactory(AssetType.PREFAB, new AssetFactory<PrefabData, Prefab>() {
 
@@ -190,7 +190,7 @@ final class SwingEnvironment {
     }
 
     private static void setupModuleManager() {
-        ModuleManagerImpl moduleManager = new ModuleManagerImpl(new ModuleSecurityManager());
+        ModuleManagerImpl moduleManager = new ModuleManagerImpl(new ModuleSecurityManager(), true);
         CoreRegistry.put(ModuleManager.class, moduleManager);
     }
 
