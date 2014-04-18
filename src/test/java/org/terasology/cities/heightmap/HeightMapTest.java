@@ -24,6 +24,8 @@ import java.util.Random;
 import javax.vecmath.Point2i;
 
 import org.junit.Test;
+import org.terasology.cities.symmetry.Symmetries;
+import org.terasology.cities.symmetry.Symmetry;
 
 /**
  * Some tests on {@link HeightMap}s
@@ -36,43 +38,52 @@ public class HeightMapTest {
     
     @Test
     public void symmetricAlongXTest() {
-        SymmetricHeightMap shm = HeightMaps.symmetricAlongX(hm);
-        basicSymmetryTest(shm);
+        Symmetry sym = Symmetries.alongX();
+        basicSymmetryTest(sym);
         
-        assertEquals(new Point2i(-123, 456), shm.getMirrored(new Point2i(123, 456)));
+        assertEquals(new Point2i(123, -457), sym.getMirrored(new Point2i(123, 456)));
     }
     
     @Test
     public void symmetricAlongZTest() {
-        SymmetricHeightMap shm = HeightMaps.symmetricAlongZ(hm);
-        basicSymmetryTest(shm);
+        Symmetry sym = Symmetries.alongZ();
+        basicSymmetryTest(sym);
         
-        assertEquals(new Point2i(123, -456), shm.getMirrored(new Point2i(123, 456)));
+        assertEquals(new Point2i(-124, 456), sym.getMirrored(new Point2i(123, 456)));
     }
     
     @Test
-    public void symmetricAlongDiagTest() {
-        SymmetricHeightMap shm = HeightMaps.symmetricAlongDiagonal(hm);
-        basicSymmetryTest(shm);
+    public void symmetricAlongPosDiagTest() {
+        Symmetry sym = Symmetries.alongPositiveDiagonal();
+        basicSymmetryTest(sym);
         
-        assertEquals(new Point2i(100, 0), shm.getMirrored(new Point2i(0, -100)));
-        assertEquals(new Point2i(0, 100), shm.getMirrored(new Point2i(-100, 0)));
-        assertEquals(new Point2i(10, 10), shm.getMirrored(new Point2i(-10, -10)));
+        assertEquals(new Point2i(100, 0), sym.getMirrored(new Point2i(0, 100)));
+        assertEquals(new Point2i(0, 100), sym.getMirrored(new Point2i(100, 0)));
+        assertEquals(new Point2i(10, 10), sym.getMirrored(new Point2i(10, 10)));
     }
     
-    private void basicSymmetryTest(SymmetricHeightMap shm) {
-        assertEquals(new Point2i(0, 0), shm.getMirrored(new Point2i(0, 0)));
+    @Test
+    public void symmetricAlongNegDiagTest() {
+        Symmetry sym = Symmetries.alongNegativeDiagonal();
+        basicSymmetryTest(sym);
+        
+        assertEquals(new Point2i(99, -1), sym.getMirrored(new Point2i(0, -100)));
+        assertEquals(new Point2i(-1, 99), sym.getMirrored(new Point2i(-100, 0)));
+        assertEquals(new Point2i(9, 9), sym.getMirrored(new Point2i(-10, -10)));
+    }
+    
+    private void basicSymmetryTest(Symmetry sym) {
         
         for (int i = 0; i < 100; i++) {
             Point2i test = nextRandomPos();
             
-            assertEquals(shm.isMirrored(test), shm.isMirrored(test.x, test.y));
+            assertEquals(sym.isMirrored(test), sym.isMirrored(test.x, test.y));
     
-            boolean isMirrored = shm.isMirrored(test);
-            Point2i mirrored = shm.getMirrored(test);
+            boolean isMirrored = sym.isMirrored(test);
+            Point2i mirrored = sym.getMirrored(test);
             
-            assertTrue(isMirrored != shm.isMirrored(mirrored));
-            assertEquals(test, shm.getMirrored(mirrored));
+            assertTrue(isMirrored != sym.isMirrored(mirrored));
+            assertEquals(test, sym.getMirrored(mirrored));
         }
     }
     

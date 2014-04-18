@@ -21,6 +21,7 @@ import java.util.Map;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.heightmap.NoiseHeightMap;
+import org.terasology.cities.symmetry.Symmetries;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
 import org.terasology.entitySystem.Component;
@@ -50,7 +51,7 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
     public void initialize() {
 
         noiseMap = new NoiseHeightMap();
-        heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
+        heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
         
         register(new HeightMapTerrainGenerator(heightMap));
 //        register(new BoundaryGenerator(heightMap));
@@ -66,7 +67,7 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         
         if (heightMap == null) {
             noiseMap = new NoiseHeightMap();
-            heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
+            heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
         }
         
         noiseMap.setSeed(seed);

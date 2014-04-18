@@ -16,6 +16,7 @@
 
 package org.terasology.cities.generator;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -28,12 +29,14 @@ import org.junit.Test;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.common.CachingFunction;
+import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.heightmap.NoiseHeightMap;
-import org.terasology.cities.heightmap.SymmetricHeightMap;
 import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
+import org.terasology.cities.symmetry.Symmetries;
+import org.terasology.cities.symmetry.Symmetry;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -54,7 +57,7 @@ public class SymmetricSiteFinderTest  {
     };
 
     private SymmetricSiteFinder symFinder;
-    private SymmetricHeightMap heightMap;
+    private Symmetry symmetry = Symmetries.alongPositiveDiagonal();
 
     private final int minPerSector = 2;
     private final int maxPerSector = 5;
@@ -67,7 +70,7 @@ public class SymmetricSiteFinderTest  {
         int maxSize = 100;
         
         final CityTerrainComponent config = new CityTerrainComponent();
-        heightMap = HeightMaps.symmetricAlongDiagonal(new NoiseHeightMap(seed));
+        final HeightMap heightMap = HeightMaps.symmetric(new NoiseHeightMap(seed), symmetry);
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
 
             @Override
@@ -78,14 +81,14 @@ public class SymmetricSiteFinderTest  {
         
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
-        symFinder = new SymmetricSiteFinder(cpr, heightMap);
+        symFinder = new SymmetricSiteFinder(cpr, symmetry);
     }
     
     @Test
     public void testDifferent() {
 
         Sector sectorA = Sectors.getSector(4, 8);
-        Sector sectorB = Sectors.getSector(-8, -4);
+        Sector sectorB = Sectors.getSector(symmetry.getMirrored(4, 8));
 
         Set<Site> sitesA = symFinder.apply(sectorA);
         Set<Site> sitesB = symFinder.apply(sectorB);
@@ -96,11 +99,12 @@ public class SymmetricSiteFinderTest  {
     @Test
     public void testSame() {
 
-        Sector sectorA = Sectors.getSector(1, -1);
+        Sector sectorA = Sectors.getSector(1, 1);
+        Sector sectorB = Sectors.getSector(symmetry.getMirrored(1, 1));
 
+        assertEquals(sectorA, sectorB);
+        
         Set<Site> sitesA = symFinder.apply(sectorA);
-        assertTrue(sitesA.size() > minPerSector);
-        assertTrue(sitesA.size() < maxPerSector);
         assertMirrored(sitesA, sitesA);
     }
     
@@ -109,7 +113,7 @@ public class SymmetricSiteFinderTest  {
         Collection<Point2i> posB = Collections2.transform(sitesB, site2pos);
         
         for (Point2i pos : posA) {
-            Point2i mirrored = heightMap.getMirrored(pos);
+            Point2i mirrored = symmetry.getMirrored(pos);
             assertTrue(posB.contains(mirrored));
         }
     }

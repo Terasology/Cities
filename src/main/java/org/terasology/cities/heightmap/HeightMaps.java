@@ -19,9 +19,8 @@ package org.terasology.cities.heightmap;
 import java.awt.Rectangle;
 import java.util.List;
 
-import javax.vecmath.Point2i;
-
 import org.terasology.cities.array.IntArray2D;
+import org.terasology.cities.symmetry.Symmetry;
 
 import com.google.common.math.IntMath;
 
@@ -106,60 +105,22 @@ public final class HeightMaps {
 
     /**
      * @param hm the height map
-     * @return a height map that is mirror along the z axis (0, 1)
+     * @param sym the symmetry
+     * @return a symmetric height map
      */
-    public static SymmetricHeightMap symmetricAlongZ(HeightMap hm) {
-        return new AbstractSymmetricHeightMap(hm) {
-
+    public static HeightMap symmetric(final HeightMap hm, final Symmetry sym) {
+        return new HeightMapAdapter() {
             @Override
-            public boolean isMirrored(int x, int z) {
-                return (z < 0);
+            public int apply(int x, int z) {
+                if (sym.isMirrored(x, z)) {
+                    return hm.apply(sym.getMirrored(x, z));
+                } else {
+                    return hm.apply(x, z);            
+                }
             }
-            
-            public Point2i getMirrored(int x, int z) {
-                return new Point2i(x, -z);
-            }
+
         };
     }
-
-    /**
-     * @param hm the height map
-     * @return a height map that is mirror along the x axis (1, 0)
-     */
-    public static SymmetricHeightMap symmetricAlongX(HeightMap hm) {
-        return new AbstractSymmetricHeightMap(hm) {
-
-            @Override
-            public boolean isMirrored(int x, int z) {
-                return (x < 0);
-            }
-            
-            public Point2i getMirrored(int x, int z) {
-                return new Point2i(-x, z);
-            }
-        };
-    }
-
-    /**
-     * @param hm the height map
-     * @return a height map that is mirror along the diagonal (1, -1)
-     */
-    public static SymmetricHeightMap symmetricAlongDiagonal(final HeightMap hm) {
-        return new AbstractSymmetricHeightMap(hm) {
-
-            @Override
-            public boolean isMirrored(int x, int z) {
-                return (x + z < 0);
-            }
-            
-            @Override
-            public Point2i getMirrored(int x, int z) {
-                int dist = x + z;
-                return new Point2i(x - dist, z - dist);
-            }
-        };
-    }
-    
 
     /**
      * @param array the underlying array

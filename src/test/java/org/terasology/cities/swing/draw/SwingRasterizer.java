@@ -54,6 +54,7 @@ import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.RoadRasterizer;
 import org.terasology.cities.raster.standard.StandardRegistry;
+import org.terasology.cities.symmetry.Symmetries;
 import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.ChunkConstants;
 
@@ -104,7 +105,7 @@ public class SwingRasterizer {
     public SwingRasterizer(String seed) {
         NoiseHeightMap noiseMap = new NoiseHeightMap();
         noiseMap.setSeed(seed);
-        heightMap = HeightMaps.symmetricAlongDiagonal(noiseMap);
+        heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
         
         facade = new WorldFacade(seed, heightMap);
         
