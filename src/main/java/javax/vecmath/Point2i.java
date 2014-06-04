@@ -39,9 +39,7 @@ import java.lang.Math;
  *
  * @since vecmath 1.4
  */
-public class Point2i extends Tuple2i implements java.io.Serializable {
-
-    static final long serialVersionUID = 9208072376494084954L;
+public class Point2i extends Tuple2i {
 
     /**
      * Constructs and initializes a Point2i from the specified

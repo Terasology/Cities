@@ -39,9 +39,7 @@ import java.lang.Math;
  *
  * @since vecmath 1.4
  */
-public abstract class Tuple2i implements java.io.Serializable, Cloneable {
-
-    static final long serialVersionUID = -3555701650170169638L;
+public abstract class Tuple2i implements Cloneable {
 
     /**
      * The x coordinate.
