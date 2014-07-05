@@ -39,8 +39,6 @@ import org.terasology.engine.TerasologyConstants;
 import org.terasology.engine.TerasologyEngine;
 import org.terasology.engine.bootstrap.EntitySystemBuilder;
 import org.terasology.engine.module.ModuleManager;
-import org.terasology.engine.module.ModuleManagerImpl;
-import org.terasology.engine.module.ModuleSecurityManager;
 import org.terasology.engine.paths.PathManager;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityManager;
@@ -49,6 +47,7 @@ import org.terasology.entitySystem.entity.internal.EngineEntityManager;
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.entitySystem.prefab.PrefabData;
 import org.terasology.entitySystem.prefab.internal.PojoPrefab;
+import org.terasology.module.ModuleEnvironment;
 import org.terasology.network.NetworkSystem;
 import org.terasology.reflection.reflect.ReflectionReflectFactory;
 import org.terasology.registry.CoreRegistry;
@@ -74,17 +73,17 @@ import org.terasology.world.generator.WorldConfigurator;
 final class SwingEnvironment {
 
     private static final Logger logger = LoggerFactory.getLogger(SwingEnvironment.class);
-    
+
     private SwingEnvironment() {
         // empty
     }
-    
+
     /**
      * Default setup order
      * @throws IOException 
      */
     static void setup() throws IOException {
-        
+
         PathManager.getInstance().useDefaultHomePath();
 
         setupConfig();
@@ -107,10 +106,11 @@ final class SwingEnvironment {
     private static void setupEntitySystem() {
         ModuleManager moduleManager = CoreRegistry.get(ModuleManager.class);
         NetworkSystem networkSystem = CoreRegistry.get(NetworkSystem.class);
-        
-        EntitySystemBuilder builder = new EntitySystemBuilder();
-        EngineEntityManager engineEntityManager = builder.build(moduleManager, networkSystem, new ReflectionReflectFactory());
 
+        EntitySystemBuilder builder = new EntitySystemBuilder();
+
+        ModuleEnvironment env = moduleManager.getEnvironment();
+        EngineEntityManager engineEntityManager = builder.build(env, networkSystem, new ReflectionReflectFactory());
         CoreRegistry.put(EngineEntityManager.class, engineEntityManager);
     }
 
@@ -125,8 +125,10 @@ final class SwingEnvironment {
 
     private static void setupEmptyAssetManager() {
         ModuleManager moduleManager = CoreRegistry.get(ModuleManager.class);
-        AssetManager assetManager = new AssetManager(moduleManager);
-        
+
+        ModuleEnvironment env = moduleManager.getEnvironment();
+        AssetManager assetManager = new AssetManager(env);
+
         // mock an empy asset factory for all asset types
         for (AssetType type : AssetType.values()) {
             assetManager.setAssetFactory(type, mock(AssetFactory.class));
@@ -134,18 +136,14 @@ final class SwingEnvironment {
 
         CoreRegistry.put(AssetManager.class, assetManager);
     }
-    
+
     private static void setupAssetManager() {
         setupEmptyAssetManager();
-        
+
         AssetManager assetManager = CoreRegistry.get(AssetManager.class);
         AudioManager audioManager = CoreRegistry.get(AudioManager.class);
         AssetType.registerAssetTypes(assetManager);
 
-        CodeSource tsCodeSource = TerasologyEngine.class.getProtectionDomain().getCodeSource();
-        assetManager.addAssetSource(new ClasspathSource(TerasologyConstants.ENGINE_MODULE, tsCodeSource,
-                TerasologyConstants.ASSETS_SUBDIRECTORY, TerasologyConstants.OVERRIDES_SUBDIRECTORY, TerasologyConstants.DELTAS_SUBDIRECTORY));
-        
         assetManager.setAssetFactory(AssetType.PREFAB, new AssetFactory<PrefabData, Prefab>() {
 
             @Override
@@ -170,7 +168,7 @@ final class SwingEnvironment {
 
         assetManager.setAssetFactory(AssetType.SOUND, audioManager.getStaticSoundFactory());
         assetManager.setAssetFactory(AssetType.MUSIC, audioManager.getStreamingSoundFactory());
-    }        
+    }
 
     private static void setupAudio() {
         NullAudioManager audioManager = new NullAudioManager();
@@ -185,12 +183,12 @@ final class SwingEnvironment {
             logger.error("Failed to load config", e);
             config = new Config();
         }
-        
+
         CoreRegistry.put(Config.class, config);
     }
 
     private static void setupModuleManager() {
-        ModuleManagerImpl moduleManager = new ModuleManagerImpl(new ModuleSecurityManager(), true);
+        ModuleManager moduleManager = new ModuleManager();
         CoreRegistry.put(ModuleManager.class, moduleManager);
     }
 
@@ -204,22 +202,22 @@ final class SwingEnvironment {
         EntityManager entityManager = CoreRegistry.get(EntityManager.class);
         EntityRef worldEntity = entityManager.create();
         worldEntity.addComponent(new WorldComponent());
-        
+
         SimpleUri uri = new SimpleUri("cities:city");
         CityWorldGenerator worldGen = new CityWorldGenerator(null);
-        
+
         Config config = CoreRegistry.get(Config.class);
-        
+
         WorldConfigurator configurator = worldGen.getConfigurator().get();
         for (Entry<String, Component> entry : configurator.getProperties().entrySet()) {
             Component comp = config.getModuleConfig(uri, entry.getKey(), entry.getValue().getClass());
-            
+
             if (comp == null) {
                 comp = entry.getValue();
             }
-            
+
             worldEntity.addComponent(comp);
-        }        
+        }
     }
 
 }
