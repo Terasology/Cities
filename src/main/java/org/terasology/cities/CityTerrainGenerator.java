@@ -16,10 +16,7 @@
 
 package org.terasology.cities;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
 import org.terasology.cities.common.Orientation;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.heightmap.HeightMaps;
@@ -34,16 +31,18 @@ import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.RoadRasterizer;
 import org.terasology.cities.raster.standard.StandardRegistry;
 import org.terasology.world.WorldBiomeProvider;
-import org.terasology.world.chunks.Chunk;
-import org.terasology.world.generator.FirstPassGenerator;
+import org.terasology.world.chunks.CoreChunk;
+import org.terasology.world.generator.ChunkGenerationPass;
 
-import com.google.common.collect.Sets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Generates roads and settlements on top of a given terrain
  * @author Martin Steiger
  */
-public class CityTerrainGenerator implements FirstPassGenerator {
+public class CityTerrainGenerator implements ChunkGenerationPass {
 
     private final HeightMap heightMap;
 
@@ -81,7 +80,7 @@ public class CityTerrainGenerator implements FirstPassGenerator {
     public void setWorldSeed(String worldSeed) {
 
         facade = new WorldFacade(worldSeed, heightMap);
-        
+
     }
 
     @Override
@@ -106,17 +105,17 @@ public class CityTerrainGenerator implements FirstPassGenerator {
     }
 
     @Override
-    public void generateChunk(Chunk chunk) {
-        int wx = chunk.getBlockWorldPosX(0);
-        int wz = chunk.getBlockWorldPosZ(0);
+    public void generateChunk(CoreChunk chunk) {
+        int wx = chunk.chunkToWorldPositionX(0);
+        int wz = chunk.chunkToWorldPositionZ(0);
 
         Sector sector = Sectors.getSectorForBlock(wx, wz);
 
         Brush brush = new ChunkBrush(chunk, theme);
 
         HeightMap cachedHm = HeightMaps.caching(heightMap, brush.getAffectedArea(), 1);
-        TerrainInfo ti = new TerrainInfo(cachedHm); 
-        
+        TerrainInfo ti = new TerrainInfo(cachedHm);
+
         drawCities(sector, ti, brush);
         drawRoads(sector, ti, brush);
     }
@@ -136,11 +135,11 @@ public class CityTerrainGenerator implements FirstPassGenerator {
         for (Orientation dir : Orientation.values()) {
             cities.addAll(facade.getCities(sector.getNeighbor(dir)));
         }
-        
+
         RasterRegistry registry = StandardRegistry.getInstance();
 
         for (City city : cities) {
             registry.rasterize(brush, ti, city);
         }
-    }    
+    }
 }
