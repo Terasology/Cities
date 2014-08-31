@@ -29,7 +29,6 @@ import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.generator.DefaultTownWallGenerator;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
@@ -53,6 +52,7 @@ import org.terasology.cities.model.Site;
 import org.terasology.cities.model.bldg.SimpleBuilding;
 import org.terasology.cities.model.bldg.SimpleChurch;
 import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.commonworld.CachingFunction;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.UnorderedPair;
@@ -74,6 +74,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Objects;
 import com.google.common.base.Stopwatch;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Sets;
 
 /**
@@ -83,8 +84,8 @@ import com.google.common.collect.Sets;
 public class WorldFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(WorldFacade.class);
-    
-    private CachingFunction<Sector, Set<City>> decoratedCities;
+
+    private LoadingCache<Sector, Set<City>> decoratedCities;
 
     private Function<Site, Set<Site>> connectedCities;
 
@@ -106,17 +107,17 @@ public class WorldFacade {
 
         final CityTerrainComponent terrainConfig = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
         final CitySpawnComponent spawnConfig = WorldFacade.getWorldEntity().getComponent(CitySpawnComponent.class);
-        
+
         junctions = new Function<Point2i, Junction>() {
 
             @Override
             public Junction apply(Point2i input) {
                 return new Junction(input);
             }
-            
+
         };
         junctions = CachingFunction.wrap(junctions);
-        
+
         lakeMap = CachingFunction.wrap(new Function<Sector, Set<Lake>>() {
 
             @Override
@@ -125,19 +126,19 @@ public class WorldFacade {
                 Integer salt = 2354234;
                 int ngseed = Objects.hashCode(salt, seed, sector);
                 WaterNameProvider ng = new WaterNameProvider(ngseed, new DebugWaterTheme());
-                
+
                 int minSize = 16;
 
                 int scale = 8;
                 int size = Sector.SIZE / scale;
                 HeightMap orgHm = HeightMaps.scalingArea(heightMap, scale);
                 Point2i coords = sector.getCoords();
-                
+
                 Rectangle sectorRect = new Rectangle(coords.x * size, coords.y * size, size, size);
                 ContourTracer ct = new ContourTracer(orgHm, sectorRect, terrainConfig.getSeaLevel());
-                
+
                 Set<Lake> lakes = Sets.newHashSet();
-                
+
                 for (Contour c : ct.getOuterContours()) {
                     Contour scaledContour = c.scale(scale);
                     Polygon polyLake = scaledContour.getPolygon();
@@ -145,21 +146,21 @@ public class WorldFacade {
                     if (polyLake.getBounds().width > minSize
                      && polyLake.getBounds().height > minSize) {
                         Lake lake = new Lake(scaledContour, ng.generateName());
-                        
+
                         for (Contour isl : ct.getInnerContours()) {
                             Rectangle bboxIsland = isl.getPolygon().getBounds();
-                            
+
                             if (polyLake.getBounds().contains(bboxIsland)) {
                                 if (allInside(polyLake, isl.getPoints())) {
                                     lake.addIsland(isl);
                                 }
                             }
                         }
-                        
+
                         lakes.add(lake);
                     }
                 }
-                
+
                 return lakes;
             }
 
@@ -172,22 +173,22 @@ public class WorldFacade {
                 return true;
             }
         });
-        
+
         int minCitiesPerSector = spawnConfig.getMinCitiesPerSector();
         int maxCitiesPerSector = spawnConfig.getMaxCitiesPerSector();
         int minSize = spawnConfig.getMinCityRadius();
         int maxSize = spawnConfig.getMaxCityRadius();
-        
+
         AreaInfo globalAreaInfo = new AreaInfo(terrainConfig, heightMap);
-        
+
         Function<? super Sector, AreaInfo> sectorInfos = Functions.constant(globalAreaInfo);
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minCitiesPerSector, maxCitiesPerSector, minSize, maxSize);
         final Function<Sector, Set<Site>> siteMap = CachingFunction.wrap(cpr);
-        
+
         double maxDist = spawnConfig.getMaxConnectedCitiesDistance();
         connectedCities = new SiteConnector(siteMap, maxDist);
         connectedCities = CachingFunction.wrap(connectedCities);
-        
+
         sectorConnections = new SectorConnector(siteMap, connectedCities);
         sectorConnections = CachingFunction.wrap(sectorConnections);
 
@@ -201,9 +202,9 @@ public class WorldFacade {
                 rmr.apply(road);
                 return road;
             }
-            
+
         };
-        
+
         final Function<UnorderedPair<Site>, Road> cachedRoadgen = CachingFunction.wrap(rg);
 
         roadMap = new Function<Sector, Set<Road>>() {
@@ -211,11 +212,11 @@ public class WorldFacade {
             @Override
             public Set<Road> apply(Sector sector) {
                 Set<Road> allRoads = Sets.newHashSet();
-                
+
                 Set<UnorderedPair<Site>> localConns = sectorConnections.apply(sector);
                 Set<UnorderedPair<Site>> allConns = Sets.newHashSet(localConns);
                 Set<Lake> allBlockedAreas = Sets.newHashSet(lakeMap.apply(sector));
-                
+
                 // add all neighbors, because their roads might be passing through
                 for (Orientation dir : Orientation.values()) {
                     Sector neighbor = sector.getNeighbor(dir);
@@ -226,7 +227,7 @@ public class WorldFacade {
 
                 for (UnorderedPair<Site> conn : allConns) {
                     Road road = cachedRoadgen.apply(conn);
-                    
+
                     if (!isBlocked(road, lakeMap.apply(sector))) {
                         allRoads.add(road);
                     }
@@ -234,7 +235,7 @@ public class WorldFacade {
 
                 return allRoads;
             }
-            
+
             public boolean isBlocked(Road road, Set<? extends NamedArea> blockedAreas) {
                 for (Point2i pt : road.getPoints()) {
                     Vector2d v = new Vector2d(pt.x, pt.y);
@@ -248,13 +249,13 @@ public class WorldFacade {
                 return false;
             }
         };
-        
-        
+
+
         roadMap = CachingFunction.wrap(roadMap);
 
         roadShapeFunc = new RoadShapeGenerator(roadMap);
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
-        
+
         final DefaultTownWallGenerator twg = new DefaultTownWallGenerator(seed, heightMap);
         final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
         final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 25d, 40d, 1, 100);
@@ -263,7 +264,7 @@ public class WorldFacade {
         final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);
 
         decoratedCities = CachingFunction.wrap(new Function<Sector, Set<City>>() {
-            
+
             @Override
             public Set<City> apply(Sector input) {
 
@@ -280,7 +281,7 @@ public class WorldFacade {
                 if (logger.isInfoEnabled()) {
                     pSites = Stopwatch.createStarted();
                 }
-                
+
                 Set<Site> sites = siteMap.apply(input);
 
                 if (logger.isInfoEnabled()) {
@@ -296,40 +297,40 @@ public class WorldFacade {
                 if (logger.isInfoEnabled()) {
                     logger.info("Generated roads for {} in {}ms.", input, pRoads.elapsed(TimeUnit.MILLISECONDS));
                 }
-                
+
                 Set<City> cities = Sets.newHashSet();
-                
+
                 for (Site site : sites) {
-                    
+
                     Stopwatch pSite = null;
                     if (logger.isInfoEnabled()) {
                         pSite = Stopwatch.createStarted();
                     }
-                    
+
                     int minX = site.getPos().x - site.getRadius();
                     int minZ = site.getPos().y - site.getRadius();
-                    
+
                     Rectangle cityArea = new Rectangle(minX, minZ, site.getRadius() * 2, site.getRadius() * 2);
                     HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
 
-                    AreaInfo si = new AreaInfo(terrainConfig, cityAreaHeightMap); 
+                    AreaInfo si = new AreaInfo(terrainConfig, cityAreaHeightMap);
                     si.addBlockedArea(roadShape);
-                    
+
                     String name = nameGen.generateName(TownAffinityVector.create().prefix(0.2).postfix(0.2));
                     MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
 
                     // add a town wall if radius is larger than 1/4
                     int minRadForTownWall = (spawnConfig.getMinCityRadius() * 3 + spawnConfig.getMaxCityRadius()) / 4;
-                    
+
                     if (town.getRadius() > minRadForTownWall) {
                         TownWall tw = twg.generate(town, si);
                         town.setTownWall(tw);
-    
+
                         TownWallShapeGenerator twsg = new TownWallShapeGenerator();
                         Shape townWallShape = twsg.computeShape(tw);
                         si.addBlockedArea(townWallShape);
                     }
-                    
+
                     Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
                     if (!churchLots.isEmpty()) {
                         SimpleLot lot = churchLots.iterator().next();
@@ -337,9 +338,9 @@ public class WorldFacade {
                         lot.addBuilding(church);
                         town.add(lot);
                     }
-                    
+
                     Set<SimpleLot> housingLots = housingLotGenerator.generate(town, si);
-                    
+
                     for (SimpleLot lot : housingLots) {
                         town.add(lot);
 
@@ -349,14 +350,14 @@ public class WorldFacade {
                             lot.setFence(fence);
                         }
                     }
-                    
+
                     if (logger.isInfoEnabled()) {
                         logger.info("Generated city '{}' in {} in {}ms.", town, input, pSite.elapsed(TimeUnit.MILLISECONDS));
                     }
-                    
+
                     cities.add(town);
                 }
-                
+
                 if (logger.isInfoEnabled()) {
                     logger.info("Generated {} .. in {}ms.", input, pAll.elapsed(TimeUnit.MILLISECONDS));
                 }
@@ -364,11 +365,11 @@ public class WorldFacade {
                 return cities;
             }
         });
-        
+
         // this required by WorldEventReceiver
         CoreRegistry.put(WorldFacade.class, this);
     }
-    
+
     /**
      * Clears the caches
      */
@@ -383,7 +384,7 @@ public class WorldFacade {
     public Set<Road> getRoads(Sector sector) {
         return roadMap.apply(sector);
     }
-    
+
     /**
      * @param sector the sector
      * @return all cities in that sector
@@ -399,8 +400,8 @@ public class WorldFacade {
     public Set<Lake> getLakes(Sector sector) {
         return lakeMap.apply(sector);
     }
-    
-    
+
+
     public static EntityRef getWorldEntity() {
         EntityManager entityManager = CoreRegistry.get(EntityManager.class);
 
@@ -408,5 +409,5 @@ public class WorldFacade {
             return entity;
         }
         return EntityRef.NULL;
-    }    
+    }
 }
