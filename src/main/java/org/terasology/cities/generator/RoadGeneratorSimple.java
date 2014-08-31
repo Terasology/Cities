@@ -18,11 +18,11 @@ package org.terasology.cities.generator;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
+import org.terasology.commonworld.UnorderedPair;
+import org.terasology.commonworld.geom.Point2iUtils;
 
 import com.google.common.base.Function;
 

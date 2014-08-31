@@ -19,9 +19,9 @@ package org.terasology.cities;
 import java.util.Collections;
 import java.util.Map;
 
-import org.terasology.cities.model.Sector;
-import org.terasology.registry.CoreRegistry;
+import org.terasology.commonworld.Sector;
 import org.terasology.math.Vector2i;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;

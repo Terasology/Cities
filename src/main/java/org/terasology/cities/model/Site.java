@@ -20,6 +20,9 @@ import java.util.Objects;
 
 import javax.vecmath.Point2i;
 
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.Sectors;
+
 /**
  * Provides information on a city
  * @author Martin Steiger

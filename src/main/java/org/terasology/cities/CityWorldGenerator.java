@@ -18,10 +18,10 @@ package org.terasology.cities;
 
 import java.util.Map;
 
-import org.terasology.cities.heightmap.HeightMap;
-import org.terasology.cities.heightmap.HeightMaps;
-import org.terasology.cities.heightmap.NoiseHeightMap;
-import org.terasology.cities.symmetry.Symmetries;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMaps;
+import org.terasology.commonworld.heightmap.NoiseHeightMap;
+import org.terasology.commonworld.symmetry.Symmetries;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
 import org.terasology.engine.SimpleUri;
 import org.terasology.entitySystem.Component;

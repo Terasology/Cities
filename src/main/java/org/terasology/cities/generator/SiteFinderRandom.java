@@ -24,9 +24,9 @@ import javax.vecmath.Point2i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
-import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Site;
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.geom.Point2iUtils;
 import org.terasology.math.TeraMath;
 import org.terasology.utilities.random.FastRandom;
 

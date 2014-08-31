@@ -16,14 +16,14 @@
 
 package org.terasology.cities.model.roof;
 
-import static org.terasology.cities.common.Orientation.EAST;
-import static org.terasology.cities.common.Orientation.NORTH;
-import static org.terasology.cities.common.Orientation.SOUTH;
-import static org.terasology.cities.common.Orientation.WEST;
+import static org.terasology.commonworld.Orientation.EAST;
+import static org.terasology.commonworld.Orientation.NORTH;
+import static org.terasology.commonworld.Orientation.SOUTH;
+import static org.terasology.commonworld.Orientation.WEST;
 
 import java.awt.Rectangle;
 
-import org.terasology.cities.common.Orientation;
+import org.terasology.commonworld.Orientation;
 
 import com.google.common.base.Preconditions;
 

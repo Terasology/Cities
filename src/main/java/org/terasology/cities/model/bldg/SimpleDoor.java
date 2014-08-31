@@ -18,7 +18,7 @@ package org.terasology.cities.model.bldg;
 
 import java.awt.Rectangle;
 
-import org.terasology.cities.common.Orientation;
+import org.terasology.commonworld.Orientation;
 
 /**
  * A simple, rectangular door with fixed height and orientation

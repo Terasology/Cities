@@ -29,9 +29,9 @@ import javax.vecmath.Point2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.Sectors;
 import org.terasology.cities.swing.draw.SwingRasterizer;
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.Sectors;
 import org.terasology.math.Vector2i;
 import org.terasology.world.chunks.ChunkConstants;
 

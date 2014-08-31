@@ -22,6 +22,9 @@ import java.util.Set;
 import javax.vecmath.Point2i;
 import javax.vecmath.Vector2d;
 
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.Sectors;
+
 import com.google.common.collect.Sets;
 
 /**

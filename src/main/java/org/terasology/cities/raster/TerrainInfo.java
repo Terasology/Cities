@@ -16,7 +16,7 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.cities.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
  * Some terrain info for {@link Rasterizer}s

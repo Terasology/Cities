@@ -20,9 +20,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3f;
 
-import org.terasology.cities.contour.Contour;
+import org.terasology.commonworld.contour.Contour;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;

@@ -19,8 +19,6 @@ package org.terasology.cities.raster.standard;
 import java.awt.geom.Ellipse2D;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.heightmap.HeightMap;
-import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.bldg.RoundHouse;
 import org.terasology.cities.model.bldg.SimpleDoor;
 import org.terasology.cities.model.bldg.Window;
@@ -29,6 +27,8 @@ import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMaps;
 
 /**
  * Converts a {@link RoundHouse} into blocks

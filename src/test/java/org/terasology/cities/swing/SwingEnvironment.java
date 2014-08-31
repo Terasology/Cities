@@ -19,7 +19,6 @@ package org.terasology.cities.swing;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
-import java.security.CodeSource;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -28,15 +27,12 @@ import org.terasology.asset.AssetFactory;
 import org.terasology.asset.AssetManager;
 import org.terasology.asset.AssetType;
 import org.terasology.asset.AssetUri;
-import org.terasology.asset.sources.ClasspathSource;
 import org.terasology.audio.AudioManager;
 import org.terasology.audio.nullAudio.NullAudioManager;
 import org.terasology.cities.CityWorldGenerator;
 import org.terasology.config.Config;
 import org.terasology.engine.ComponentSystemManager;
 import org.terasology.engine.SimpleUri;
-import org.terasology.engine.TerasologyConstants;
-import org.terasology.engine.TerasologyEngine;
 import org.terasology.engine.bootstrap.EntitySystemBuilder;
 import org.terasology.engine.module.ModuleManager;
 import org.terasology.engine.paths.PathManager;

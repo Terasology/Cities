@@ -19,9 +19,9 @@ package org.terasology.cities.generator;
 import java.awt.Rectangle;
 import java.util.Objects;
 
-import org.terasology.cities.common.Orientation;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.SimpleFence;
+import org.terasology.commonworld.Orientation;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;

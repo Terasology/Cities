@@ -18,9 +18,9 @@ package org.terasology.cities;
 
 import java.util.Set;
 
-import org.terasology.cities.common.UnorderedPair;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Site;
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.UnorderedPair;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;

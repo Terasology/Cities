@@ -21,13 +21,13 @@ import java.math.RoundingMode;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Rectangles;
-import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.bldg.RoundHouse;
 import org.terasology.cities.model.bldg.SimpleDoor;
 import org.terasology.cities.model.bldg.SimpleWindow;
+import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.geom.Rectangles;
+import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Vector2i;
 
 import com.google.common.math.IntMath;

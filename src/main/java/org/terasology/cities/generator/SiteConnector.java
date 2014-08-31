@@ -20,10 +20,10 @@ import java.util.Set;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Point2iUtils;
-import org.terasology.cities.model.Sector;
 import org.terasology.cities.model.Site;
+import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.geom.Point2iUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;

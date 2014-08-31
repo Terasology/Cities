@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-import org.terasology.cities.common.Orientation;
-import org.terasology.cities.common.Rectangles;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.bldg.SimpleBuilding;
 import org.terasology.cities.model.bldg.SimpleDoor;
@@ -32,6 +30,8 @@ import org.terasology.cities.model.roof.DomeRoof;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.model.roof.SaddleRoof;
+import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.geom.Rectangles;
 import org.terasology.math.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;

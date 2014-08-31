@@ -27,11 +27,11 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.heightmap.HeightMap;
-import org.terasology.cities.heightmap.HeightMaps;
-import org.terasology.cities.model.Sector;
-import org.terasology.cities.model.Sectors;
 import org.terasology.cities.model.Site;
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.Sectors;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMaps;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;

@@ -18,7 +18,7 @@ package org.terasology.cities.model;
 
 import java.awt.Rectangle;
 
-import org.terasology.cities.common.Orientation;
+import org.terasology.commonworld.Orientation;
 import org.terasology.math.Vector2i;
 
 /**

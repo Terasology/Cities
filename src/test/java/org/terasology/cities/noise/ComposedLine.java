@@ -24,14 +24,14 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Point2cd;
-import org.terasology.cities.common.Point2d;
-import org.terasology.cities.common.Point2md;
-import org.terasology.cities.common.UnorderedPair;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
+import org.terasology.commonworld.UnorderedPair;
+import org.terasology.commonworld.geom.Point2cd;
+import org.terasology.commonworld.geom.Point2d;
+import org.terasology.commonworld.geom.Point2md;
 
 import com.google.common.base.Function;
 
@@ -40,11 +40,11 @@ import com.google.common.base.Function;
  * @author Martin Steiger
  */
 public final class ComposedLine {
-    
+
     private ComposedLine() {
         // empty
     }
-    
+
     /**
      * @param args (ignored)
      */
@@ -67,7 +67,7 @@ public final class ComposedLine {
                     public Junction apply(Point2i input) {
                         return new Junction(input);
                     }
-                    
+
                 };
 
                 Point2d start = new Point2cd(50, 100);
@@ -75,7 +75,7 @@ public final class ComposedLine {
                 Site a = new Site(50, 100, 1);
                 Site b = new Site(450, 200, 1);
                 Road road = new RoadGeneratorSimple(junctions).apply(new UnorderedPair<Site>(a, b));
-                
+
                 Random r = new Random();
                 Wave w0 = Wave.getSine(1.0, new double[] {r.nextDouble() - 0.5});
                 Wave w1 = Wave.getSine(0.5, new double[] {r.nextDouble() - 0.5, r.nextDouble() - 0.5});

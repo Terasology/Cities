@@ -27,10 +27,10 @@ import java.util.Set;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.PathUtils;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
-import org.terasology.cities.model.Sector;
+import org.terasology.commonworld.Sector;
+import org.terasology.commonworld.geom.PathUtils;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

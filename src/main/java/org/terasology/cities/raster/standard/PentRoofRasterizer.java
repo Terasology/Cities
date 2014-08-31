@@ -19,14 +19,14 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.common.Rectangles;
-import org.terasology.cities.heightmap.HeightMap;
-import org.terasology.cities.heightmap.HeightMapAdapter;
-import org.terasology.cities.heightmap.HeightMaps;
 import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.commonworld.geom.Rectangles;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMapAdapter;
+import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.Vector2i;
 

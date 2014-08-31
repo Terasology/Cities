@@ -23,9 +23,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.common.LineUtilities;
-import org.terasology.cities.heightmap.HeightMap;
-import org.terasology.cities.heightmap.HeightMaps;
+import org.terasology.commonworld.geom.LineUtilities;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 

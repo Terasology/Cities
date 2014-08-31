@@ -30,8 +30,8 @@ import javax.swing.JFrame;
 
 import org.terasology.cities.swing.draw.BresenhamCircle;
 import org.terasology.cities.swing.draw.BresenhamLine;
-import org.terasology.cities.swing.draw.PixelDrawer;
 import org.terasology.cities.swing.draw.BresenhamLine.ThicknessMode;
+import org.terasology.cities.swing.draw.PixelDrawer;
 import org.terasology.math.TeraMath;
 
 /**

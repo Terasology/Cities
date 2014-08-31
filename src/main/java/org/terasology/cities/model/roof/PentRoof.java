@@ -18,7 +18,7 @@ package org.terasology.cities.model.roof;
 
 import java.awt.Rectangle;
 
-import org.terasology.cities.common.Orientation;
+import org.terasology.commonworld.Orientation;
 
 import com.google.common.base.Preconditions;
 

@@ -20,11 +20,11 @@ import java.util.Objects;
 
 import javax.vecmath.Point2i;
 
-import org.terasology.cities.common.Point2cd;
-import org.terasology.cities.common.Point2d;
-import org.terasology.cities.common.Point2md;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.noise.Wave;
+import org.terasology.commonworld.geom.Point2cd;
+import org.terasology.commonworld.geom.Point2d;
+import org.terasology.commonworld.geom.Point2md;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 
