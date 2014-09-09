@@ -20,7 +20,6 @@ import com.google.common.base.Function;
 import org.terasology.cities.model.Sector;
 import org.terasology.math.Vector2i;
 import org.terasology.registry.CoreRegistry;
-import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
@@ -31,6 +30,7 @@ import java.util.Map;
 
 /**
  * Draws chunk and sector borders
+ *
  * @author Martin Steiger
  */
 public class BoundaryGenerator implements ChunkGenerationPass {
@@ -46,11 +46,6 @@ public class BoundaryGenerator implements ChunkGenerationPass {
      */
     public BoundaryGenerator(Function<Vector2i, Integer> heightMap) {
         this.heightMap = heightMap;
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider biomeProvider) {
-        // ignore
     }
 
     @Override

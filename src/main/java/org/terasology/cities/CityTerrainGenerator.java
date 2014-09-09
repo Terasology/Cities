@@ -30,7 +30,6 @@ import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.cities.raster.standard.RoadRasterizer;
 import org.terasology.cities.raster.standard.StandardRegistry;
-import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generator.ChunkGenerationPass;
 
@@ -40,6 +39,7 @@ import java.util.Set;
 
 /**
  * Generates roads and settlements on top of a given terrain
+ *
  * @author Martin Steiger
  */
 public class CityTerrainGenerator implements ChunkGenerationPass {
@@ -81,11 +81,6 @@ public class CityTerrainGenerator implements ChunkGenerationPass {
 
         facade = new WorldFacade(worldSeed, heightMap);
 
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider worldBiomeProvider) {
-//        this.worldBiomeProvider = worldBiomeProvider;
     }
 
     /**

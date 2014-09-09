@@ -19,11 +19,10 @@ package org.terasology.cities;
 import com.google.common.collect.Lists;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.core.config.WorldGenerationConfig;
+import org.terasology.core.world.Biome;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
-import org.terasology.world.WorldBiomeProvider;
-import org.terasology.world.WorldBiomeProvider.Biome;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
@@ -37,16 +36,17 @@ import java.util.Objects;
 /**
  * Generates flowers and high grass. It's fast, because it
  * uses a height map to find the terrain layer.
+ *
  * @author Martin Steiger
  */
 public class FloraGeneratorFast implements ChunkGenerationPass {
 
-    private static final String[] FLOWER_BLOCKS = new String[] {
+    private static final String[] FLOWER_BLOCKS = new String[]{
             "core:YellowFlower", "core:RedFlower",
             "core:BrownShroom", "core:BigBrownShroom", "core:RedShroom",
             "core:RedClover", "core:Lavender", "core:Iris", "core:GlowbellBloom", "core:Glowbell",
             "core:DeadBush", "core:Dandelion", "core:Tulip",
-            "core:Cotton1", "core:Cotton2", "core:Cotton3", "core:Cotton4", "core:Cotton5", "core:Cotton6" };
+            "core:Cotton1", "core:Cotton2", "core:Cotton3", "core:Cotton4", "core:Cotton5", "core:Cotton6"};
 
     private Block grassBlock;
     private Block tallGrass1;
@@ -105,10 +105,10 @@ public class FloraGeneratorFast implements ChunkGenerationPass {
     /**
      * Generates grass or a flower on the given chunk.
      *
-     * @param c The chunk
-     * @param x Position on the x-axis
-     * @param y Position on the y-axis
-     * @param z Position on the z-axis
+     * @param c      The chunk
+     * @param x      Position on the x-axis
+     * @param y      Position on the y-axis
+     * @param z      Position on the z-axis
      * @param random the RNG
      */
     private void generateGrassAndFlowers(CoreChunk c, int x, int y, int z, Random random) {
@@ -143,11 +143,6 @@ public class FloraGeneratorFast implements ChunkGenerationPass {
 
     @Override
     public void setInitParameters(final Map<String, String> initParameters) {
-        // ignore
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider biomeProvider) {
         // ignore
     }
 }

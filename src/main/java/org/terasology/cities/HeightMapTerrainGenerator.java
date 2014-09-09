@@ -20,7 +20,6 @@ import com.google.common.base.Function;
 import org.terasology.cities.heightmap.HeightMap;
 import org.terasology.math.Vector2i;
 import org.terasology.registry.CoreRegistry;
-import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
@@ -68,11 +67,6 @@ public class HeightMapTerrainGenerator implements ChunkGenerationPass {
      */
     public Function<Vector2i, Integer> getHeightMap() {
         return heightMap;
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider worldBiomeProvider) {
-        // ignore
     }
 
     /**
