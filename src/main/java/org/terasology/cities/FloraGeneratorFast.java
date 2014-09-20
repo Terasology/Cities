@@ -23,31 +23,31 @@ import java.util.Objects;
 
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.core.config.WorldGenerationConfig;
+import org.terasology.core.world.Biome;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
-import org.terasology.world.WorldBiomeProvider;
-import org.terasology.world.WorldBiomeProvider.Biome;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
-import org.terasology.world.chunks.Chunk;
-import org.terasology.world.generator.FirstPassGenerator;
+import org.terasology.world.chunks.CoreChunk;
+import org.terasology.world.generator.ChunkGenerationPass;
 
 import com.google.common.collect.Lists;
 
 /**
- * Generates flowers and high grass. It's fast, because it 
+ * Generates flowers and high grass. It's fast, because it
  * uses a height map to find the terrain layer.
+ *
  * @author Martin Steiger
  */
-public class FloraGeneratorFast implements FirstPassGenerator {
+public class FloraGeneratorFast implements ChunkGenerationPass {
 
-    private static final String[] FLOWER_BLOCKS = new String[] {
-            "core:YellowFlower", "core:RedFlower", 
+    private static final String[] FLOWER_BLOCKS = new String[]{
+            "core:YellowFlower", "core:RedFlower",
             "core:BrownShroom", "core:BigBrownShroom", "core:RedShroom",
             "core:RedClover", "core:Lavender", "core:Iris", "core:GlowbellBloom", "core:Glowbell",
             "core:DeadBush", "core:Dandelion", "core:Tulip",
-            "core:Cotton1", "core:Cotton2", "core:Cotton3", "core:Cotton4", "core:Cotton5", "core:Cotton6" };
+            "core:Cotton1", "core:Cotton2", "core:Cotton3", "core:Cotton4", "core:Cotton5", "core:Cotton6"};
 
     private Block grassBlock;
     private Block tallGrass1;
@@ -73,29 +73,28 @@ public class FloraGeneratorFast implements FirstPassGenerator {
         for (String blockUrn : FLOWER_BLOCKS) {
             flowers.add(blockManager.getBlock(blockUrn));
         }
-        
+
         this.heightMap = heightMap;
     }
 
-    @Override
     public void setWorldSeed(String seed) {
         this.worldSeed = seed;
     }
 
     @Override
-    public void generateChunk(Chunk chunk) {
-        int seed = Objects.hash(worldSeed.hashCode(), chunk.getPos());
-        
+    public void generateChunk(CoreChunk chunk) {
+        int seed = Objects.hash(worldSeed.hashCode(), chunk.getPosition());
+
         Random random = new FastRandom(seed);
         for (int x = 0; x < chunk.getChunkSizeX(); x++) {
             for (int z = 0; z < chunk.getChunkSizeZ(); z++) {
                 int y = heightMap.apply(x, z);
                 Block targetBlock = chunk.getBlock(x, y, z);
-                
+
                 // check for grass and air above
                 if (targetBlock.equals(grassBlock)) {
                     Block blockOnTop = chunk.getBlock(x, y + 1, z);
-                    
+
                     if (blockOnTop.equals(BlockManager.getAir())) {
                         generateGrassAndFlowers(chunk, x, y, z, random);
                     }
@@ -107,13 +106,13 @@ public class FloraGeneratorFast implements FirstPassGenerator {
     /**
      * Generates grass or a flower on the given chunk.
      *
-     * @param c The chunk
-     * @param x Position on the x-axis
-     * @param y Position on the y-axis
-     * @param z Position on the z-axis
+     * @param c      The chunk
+     * @param x      Position on the x-axis
+     * @param y      Position on the y-axis
+     * @param z      Position on the z-axis
      * @param random the RNG
      */
-    private void generateGrassAndFlowers(Chunk c, int x, int y, int z, Random random) {
+    private void generateGrassAndFlowers(CoreChunk c, int x, int y, int z, Random random) {
 
         if (random.nextFloat() < config.getGrassDensity(Biome.PLAINS)) {
             /*
@@ -145,11 +144,6 @@ public class FloraGeneratorFast implements FirstPassGenerator {
 
     @Override
     public void setInitParameters(final Map<String, String> initParameters) {
-        // ignore
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider biomeProvider) {
         // ignore
     }
 }
