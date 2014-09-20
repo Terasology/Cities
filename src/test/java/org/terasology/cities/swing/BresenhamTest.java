@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.common;
+package org.terasology.cities.swing;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -28,22 +28,19 @@ import java.util.TimerTask;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import org.terasology.cities.swing.draw.BresenhamCircle;
-import org.terasology.cities.swing.draw.BresenhamLine;
-import org.terasology.cities.swing.draw.BresenhamLine.ThicknessMode;
-import org.terasology.cities.swing.draw.PixelDrawer;
+import org.terasology.cities.swing.BresenhamLine.ThicknessMode;
 import org.terasology.math.TeraMath;
 
 /**
  * Not really a JUnit test class
  * @author Martin Steiger
  */
-public final class MySwingTest {
-    
-    private MySwingTest() {
+public final class BresenhamTest {
+
+    private BresenhamTest() {
         // empty
     }
-    
+
     /**
      * @param args ignored
      */
@@ -53,9 +50,9 @@ public final class MySwingTest {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.add(new JComponent() {
-            
+
             private static final long serialVersionUID = -3019274194814342555L;
-            
+
             private double rot;
 
             @Override
@@ -81,10 +78,10 @@ public final class MySwingTest {
                     @Override
                     public void drawPixel(int x, int y, Color aColor) {
                         g.setColor(aColor);
-                        g.draw(new Line2D.Double(x + 0.5, y + 0.5, x + 0.5, y + 0.5)); 
+                        g.draw(new Line2D.Double(x + 0.5, y + 0.5, x + 0.5, y + 0.5));
                     }
                 };
-                
+
                 final Point st = new Point(210, 10);
                 final Point end = new Point(160, 80);
 
@@ -115,7 +112,7 @@ public final class MySwingTest {
                         g.setColor(new Color(ez));
                         g.draw(new Line2D.Double(x + 0.5, y + 0.5, x + 0.5, y + 0.5));
                     }
-                }; 
+                };
 
                 BresenhamLine murphy = new BresenhamLine(pixelDrawer);
 
@@ -136,19 +133,19 @@ public final class MySwingTest {
 
                 BresenhamCircle bc = new BresenhamCircle(pixelDrawer);
                 BresenhamCircle bc2 = new BresenhamCircle(pixelDrawer2);
-                
+
                 for (int r = 1; r < 8; r++) {
                     bc.fillCircle(130, -10 + 15 * r, r, Color.GRAY);
                     bc.drawCircle(110, -10 + 15 * r, r, Color.BLUE);
                 }
 
                 murphy.drawThickLine(-15, 70, 10, 10, 8, BresenhamLine.ThicknessMode.MIDDLE, black);
-                
+
                 int drx = TeraMath.floorToInt(Math.sin(rot) * 15);
                 int dry = TeraMath.floorToInt(Math.cos(rot) * 15);
                 murphy.drawThickLine(50 + drx, 70 + dry, 50 - drx, 70 - dry, 3, mode, Color.MAGENTA);
                 rot += Math.toRadians(5);
-                
+
                 Color col = new Color(0x404000);
                 bc2.fillCircle(st.x, st.y, 8, Color.GRAY);
                 bc2.fillCircle(end.x, end.y, 8, Color.GRAY);
@@ -169,7 +166,7 @@ public final class MySwingTest {
         frame.setSize(600, 400);
         frame.setVisible(true);
     }
-    
+
 
     private static double getLambda(int ax, int ay, int dx, int dy, int ex, int ey) {
         return (double) (ey * dy - ay * dy - ax * dx + ex * dx) / (dy * dy + dx * dx);
@@ -185,5 +182,5 @@ public final class MySwingTest {
 
     private static double getKappaNorm(double lambda, int ax, int ay, int dx, int dy, int ex, int ey) {
         return getKappa(lambda, ax, ay, dx, dy, ex, ey) * Math.sqrt(dx * dx + dy * dy);
-    } 
+    }
 }

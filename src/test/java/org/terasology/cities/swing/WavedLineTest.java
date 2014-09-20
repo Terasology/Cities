@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.noise;
+package org.terasology.cities.swing;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,6 +28,7 @@ import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
+import org.terasology.cities.noise.Wave;
 import org.terasology.commonworld.UnorderedPair;
 import org.terasology.commonworld.geom.Point2cd;
 import org.terasology.commonworld.geom.Point2d;
@@ -39,9 +40,9 @@ import com.google.common.base.Function;
  * Visual test of {@link Wave}
  * @author Martin Steiger
  */
-public final class ComposedLine {
+public final class WavedLineTest {
 
-    private ComposedLine() {
+    private WavedLineTest() {
         // empty
     }
 
