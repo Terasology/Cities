@@ -22,21 +22,21 @@ import java.util.Map;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Vector2i;
 import org.terasology.registry.CoreRegistry;
-import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
-import org.terasology.world.chunks.Chunk;
-import org.terasology.world.generator.FirstPassGenerator;
+import org.terasology.world.chunks.CoreChunk;
+import org.terasology.world.generator.ChunkGenerationPass;
 import org.terasology.world.liquid.LiquidData;
 import org.terasology.world.liquid.LiquidType;
 
 import com.google.common.base.Function;
 
 /**
- * Generates terrain based on a height map function 
+ * Generates terrain based on a height map function
+ *
  * @author Martin Steiger
  */
-public class HeightMapTerrainGenerator implements FirstPassGenerator {
+public class HeightMapTerrainGenerator implements ChunkGenerationPass {
 
     private Function<Vector2i, Integer> heightMap;
 
@@ -58,7 +58,7 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      */
     public HeightMapTerrainGenerator(HeightMap heightMap) {
         this.heightMap = heightMap;
-        
+
         config = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
 
     }
@@ -68,11 +68,6 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      */
     public Function<Vector2i, Integer> getHeightMap() {
         return heightMap;
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider worldBiomeProvider) {
-        // ignore
     }
 
     /**
@@ -95,7 +90,7 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
     public void setWorldSeed(String seed) {
         // ignore
     }
-    
+
     /**
      * The generated terrain looks like this
      * <pre>
@@ -104,7 +99,7 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      * ---------------------------
      *  GRASS       surfaceHeight && < snowLine
      *  SNOW        surfaceHeight && >= snowLine
-     *  SAND        surfaceHeight && seaLevel + 1 
+     *  SAND        surfaceHeight && seaLevel + 1
      * ---------------------------
      *  DIRT        < surfaceHeight && < snowLine
      *  STONE       < surfaceHeight && >= snowLine
@@ -116,15 +111,18 @@ public class HeightMapTerrainGenerator implements FirstPassGenerator {
      * </pre>
      */
     @Override
-    public void generateChunk(Chunk chunk) {
-        
+    public void generateChunk(CoreChunk chunk) {
+        if (chunk.getPosition().y != 0) {
+            return;
+        }
+
         int seaLevel = config.getSeaLevel();
         int snowLine = config.getSnowLine();
 
         for (int x = 0; x < chunk.getChunkSizeX(); x++) {
             for (int z = 0; z < chunk.getChunkSizeZ(); z++) {
-                int wx = chunk.getBlockWorldPosX(x);
-                int wz = chunk.getBlockWorldPosZ(z);
+                int wx = chunk.chunkToWorldPositionX(x);
+                int wz = chunk.chunkToWorldPositionZ(z);
 
                 int surfaceHeight = heightMap.apply(new Vector2i(wx, wz));
 

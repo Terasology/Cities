@@ -22,20 +22,20 @@ import java.util.Map;
 import org.terasology.commonworld.Sector;
 import org.terasology.math.Vector2i;
 import org.terasology.registry.CoreRegistry;
-import org.terasology.world.WorldBiomeProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
-import org.terasology.world.chunks.Chunk;
-import org.terasology.world.generator.FirstPassGenerator;
+import org.terasology.world.chunks.CoreChunk;
+import org.terasology.world.generator.ChunkGenerationPass;
 
 import com.google.common.base.Function;
 
 /**
  * Draws chunk and sector borders
+ *
  * @author Martin Steiger
  */
-public class BoundaryGenerator implements FirstPassGenerator {
-    
+public class BoundaryGenerator implements ChunkGenerationPass {
+
     private Function<Vector2i, Integer> heightMap;
 
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
@@ -47,11 +47,6 @@ public class BoundaryGenerator implements FirstPassGenerator {
      */
     public BoundaryGenerator(Function<Vector2i, Integer> heightMap) {
         this.heightMap = heightMap;
-    }
-
-    @Override
-    public void setWorldBiomeProvider(WorldBiomeProvider biomeProvider) {
-        // ignore
     }
 
     @Override
@@ -70,10 +65,10 @@ public class BoundaryGenerator implements FirstPassGenerator {
     }
 
     @Override
-    public void generateChunk(Chunk chunk) {
-        
-        int wx = chunk.getBlockWorldPosX(0);
-        int wz = chunk.getBlockWorldPosZ(0);
+    public void generateChunk(CoreChunk chunk) {
+
+        int wx = chunk.chunkToWorldPositionX(0);
+        int wz = chunk.chunkToWorldPositionZ(0);
 
         for (int z = 0; z < chunk.getChunkSizeZ(); z++) {
             for (int x = 0; x < chunk.getChunkSizeX(); x++) {
@@ -87,7 +82,7 @@ public class BoundaryGenerator implements FirstPassGenerator {
                 if (x == 0 && (wx % Sector.SIZE == 0)) {
                     block = sectorBorder;
                 }
-                
+
                 if (z == 0 && (wz % Sector.SIZE == 0)) {
                     block = sectorBorder;
                 }
