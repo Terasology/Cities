@@ -24,10 +24,10 @@ import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 @Produces(SurfaceHeightFacet.class)
-public class HeightMapCompatabilityFacetProvider implements FacetProvider {
+public class HeightMapCompatibilityFacetProvider implements FacetProvider {
     HeightMap heightMap;
 
-    public HeightMapCompatabilityFacetProvider(HeightMap heightMap) {
+    public HeightMapCompatibilityFacetProvider(HeightMap heightMap) {
         this.heightMap = heightMap;
     }
 

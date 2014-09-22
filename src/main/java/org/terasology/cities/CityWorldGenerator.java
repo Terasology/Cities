@@ -79,7 +79,7 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         noiseMap.setSeed(seed);
 
         world = new WorldBuilder(0)
-                .addProvider(new HeightMapCompatabilityFacetProvider(heightMap))
+                .addProvider(new HeightMapCompatibilityFacetProvider(heightMap))
                 .addProvider(new SeaLevelProvider(2))
                 .addProvider(new World2dPreviewProvider())
                 .build();
