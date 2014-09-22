@@ -16,20 +16,23 @@
 
 package org.terasology.cities;
 
-import java.util.Map;
-
+import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.commonworld.heightmap.NoiseHeightMap;
 import org.terasology.commonworld.symmetry.Symmetries;
 import org.terasology.core.world.generator.AbstractBaseWorldGenerator;
+import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
+import org.terasology.core.world.generator.facetProviders.World2dPreviewProvider;
 import org.terasology.engine.SimpleUri;
 import org.terasology.entitySystem.Component;
+import org.terasology.world.generation.World;
+import org.terasology.world.generation.WorldBuilder;
 import org.terasology.world.generator.RegisterWorldGenerator;
 import org.terasology.world.generator.WorldConfigurator;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Maps;
+import java.util.Map;
 
 /**
  * @author Martin Steiger
@@ -37,6 +40,7 @@ import com.google.common.collect.Maps;
 @RegisterWorldGenerator(id = "city", displayName = "City World")
 public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
+    World world;
     private NoiseHeightMap noiseMap;
     private HeightMap heightMap;
     
@@ -57,6 +61,8 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 //        register(new BoundaryGenerator(heightMap));
         register(new CityTerrainGenerator(heightMap));
         register(new FloraGeneratorFast(heightMap));
+
+        world.initialize();
     }
     
     @Override
@@ -71,6 +77,12 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         }
         
         noiseMap.setSeed(seed);
+
+        world = new WorldBuilder(0)
+                .addProvider(new HeightMapCompatabilityFacetProvider(heightMap))
+                .addProvider(new SeaLevelProvider(2))
+                .addProvider(new World2dPreviewProvider())
+                .build();
         
         super.setWorldSeed(seed);
     }
@@ -91,5 +103,10 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
         };
 
         return Optional.of(wc);
-    }    
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
+    }
 }
