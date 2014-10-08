@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.core.config.WorldGenerationConfig;
-import org.terasology.core.world.Biome;
+import org.terasology.core.world.CoreBiome;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
@@ -114,7 +114,7 @@ public class FloraGeneratorFast implements ChunkGenerationPass {
      */
     private void generateGrassAndFlowers(CoreChunk c, int x, int y, int z, Random random) {
 
-        if (random.nextFloat() < config.getGrassDensity(Biome.PLAINS)) {
+        if (random.nextFloat() < config.getGrassDensity(CoreBiome.PLAINS)) {
             /*
              * Generate tall grass.
              */
