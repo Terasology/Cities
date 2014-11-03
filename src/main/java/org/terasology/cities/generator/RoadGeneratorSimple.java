@@ -16,13 +16,13 @@
 
 package org.terasology.cities.generator;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.UnorderedPair;
-import org.terasology.commonworld.geom.Point2iUtils;
+import org.terasology.commonworld.geom.Vector2iUtils;
 
 import com.google.common.base.Function;
 
@@ -32,13 +32,13 @@ import com.google.common.base.Function;
  */
 public class RoadGeneratorSimple implements Function<UnorderedPair<Site>, Road> {
     
-    private Function<Point2i, Junction> junctions;
+    private Function<Vector2i, Junction> junctions;
     private double avgSegmentLength = 40;
 
     /**
      * @param junctions gives junctions based on location
      */
-    public RoadGeneratorSimple(Function<Point2i, Junction> junctions) {
+    public RoadGeneratorSimple(Function<Vector2i, Junction> junctions) {
         this.junctions = junctions;
     }
     
@@ -48,8 +48,8 @@ public class RoadGeneratorSimple implements Function<UnorderedPair<Site>, Road> 
         Site a = pair.getA();
         Site b = pair.getB();
         
-        Point2i posA = a.getPos();
-        Point2i posB = b.getPos();
+        Vector2i posA = a.getPos();
+        Vector2i posB = b.getPos();
 
         Junction junA = junctions.apply(posA);
         Junction junB = junctions.apply(posB);
@@ -74,15 +74,15 @@ public class RoadGeneratorSimple implements Function<UnorderedPair<Site>, Road> 
      * @return a road with segments
      */
     protected Road addSegments(Road road, double avgDist) {
-        Point2i coordsA = road.getStart().getCoords();
-        Point2i coordsB = road.getEnd().getCoords();
+        Vector2i coordsA = road.getStart().getCoords();
+        Vector2i coordsB = road.getEnd().getCoords();
         
-        double dist = Point2iUtils.distance(coordsA, coordsB);
+        double dist = Vector2iUtils.distance(coordsA, coordsB);
 
         int segments = (int) (dist / avgDist + 0.5);
 
         for (int i = 1; i < segments; i++) {
-            Point2i p = Point2iUtils.interpolate(coordsA, coordsB, i / (double) segments);
+            Vector2i p = Vector2iUtils.interpolate(coordsA, coordsB, i / (double) segments);
 
             road.add(p);
         }

@@ -32,7 +32,7 @@ import org.terasology.commonworld.CachingFunction;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.UnorderedPair;
-import org.terasology.commonworld.geom.Point2iUtils;
+import org.terasology.commonworld.geom.Vector2iUtils;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 
@@ -97,7 +97,7 @@ public class SectorConnectorTest  {
                 // if only one connection exists, it may be longer -> keep cities connected
                 if (conns.size() > 1) {
                     for (UnorderedPair<Site> conn : conns) {
-                        assertTrue("distance > maxDist", Point2iUtils.distance(conn.getA().getPos(), conn.getB().getPos()) <= maxDist);
+                        assertTrue("distance > maxDist", Vector2iUtils.distance(conn.getA().getPos(), conn.getB().getPos()) <= maxDist);
                     }
                 }
             }

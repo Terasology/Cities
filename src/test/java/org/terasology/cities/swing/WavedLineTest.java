@@ -22,7 +22,7 @@ import java.util.Random;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.model.Junction;
@@ -62,10 +62,10 @@ public final class WavedLineTest {
                 super.paintComponent(g1);
                 final Graphics2D g = (Graphics2D) g1;
 
-                Function<Point2i, Junction> junctions = new Function<Point2i, Junction>() {
+                Function<Vector2i, Junction> junctions = new Function<Vector2i, Junction>() {
 
                     @Override
-                    public Junction apply(Point2i input) {
+                    public Junction apply(Vector2i input) {
                         return new Junction(input);
                     }
 

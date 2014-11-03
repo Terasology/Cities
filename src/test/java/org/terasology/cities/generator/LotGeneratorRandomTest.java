@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -100,7 +100,7 @@ public class LotGeneratorRandomTest  {
                 Set<Site> sites = cpr.apply(Sectors.getSector(x, z));
                 
                 for (Site site : sites) {
-                    Point2i pos = site.getPos();
+                    Vector2i pos = site.getPos();
                     int rad = site.getRadius();
                     Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
 

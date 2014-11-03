@@ -18,7 +18,7 @@ package org.terasology.cities.model;
 
 import java.util.Objects;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
@@ -29,7 +29,7 @@ import org.terasology.commonworld.Sectors;
  */
 public class Site {
 
-    private final Point2i coords;
+    private final Vector2i coords;
     private int radius;
 
     /**
@@ -39,13 +39,13 @@ public class Site {
      */
     public Site(int bx, int bz, int radius) {
         this.radius = radius;
-        this.coords = new Point2i(bx, bz);
+        this.coords = new Vector2i(bx, bz);
     }
 
     /**
      * @return the city center in block world coordinates
      */
-    public Point2i getPos() {
+    public Vector2i getPos() {
         return coords;
     }
 

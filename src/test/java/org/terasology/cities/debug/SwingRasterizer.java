@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,7 +203,7 @@ public class SwingRasterizer {
         }
     }
 
-    public void rasterizeChunk(Graphics2D g, Point2i coord) {
+    public void rasterizeChunk(Graphics2D g, Vector2i coord) {
 
         int chunkSizeX = ChunkConstants.SIZE_X;
         int chunkSizeZ = ChunkConstants.SIZE_Z;

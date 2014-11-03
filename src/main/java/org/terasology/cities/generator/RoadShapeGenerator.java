@@ -25,7 +25,7 @@ import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.Set;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
@@ -87,7 +87,7 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
     }
     
     private Shape getRoadShape(Road road) {
-        List<Point2i> pts = Lists.newArrayList(road.getPoints());
+        List<Vector2i> pts = Lists.newArrayList(road.getPoints());
 
         pts.add(0, road.getStart().getCoords());
         pts.add(road.getEnd().getCoords());
@@ -108,7 +108,7 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
     private boolean hitClip(Sector sector, Shape shape) {
         Rectangle shapeBounds = shape.getBounds();
 
-        Point2i coords = sector.getCoords();
+        Vector2i coords = sector.getCoords();
         int bx = coords.x * Sector.SIZE;
         int bz = coords.y * Sector.SIZE;
         Rectangle secRect = new Rectangle(bx, bz, Sector.SIZE, Sector.SIZE);
@@ -116,7 +116,7 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
         return shapeBounds.intersects(secRect);
     }
 
-    private Shape createPlaza(Point2i pos, double radius) {
+    private Shape createPlaza(Vector2i pos, double radius) {
         double x = pos.x - radius * 0.5;
         double y = pos.y - radius * 0.5;
 

@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
@@ -85,7 +85,7 @@ public class LotGeneratorRandom {
     public Set<SimpleLot> generate(City city, AreaInfo si) {
         Random rand = new FastRandom(Objects.hash(seed, city));
         
-        Point2i center = city.getPos();
+        Vector2i center = city.getPos();
         
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
         double maxLotDiam = maxSize * Math.sqrt(2);

@@ -19,7 +19,7 @@ package org.terasology.cities.generator;
 import java.awt.Rectangle;
 import java.math.RoundingMode;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.bldg.RoundHouse;
@@ -72,7 +72,7 @@ public class RoundHouseGenerator {
         int baseHeight = heightMap.apply(probeRc.x , probeRc.y);
         int sideHeight = 4;
 
-        RoundHouse house = new RoundHouse(new Point2i(centerX, centerY), towerRad, baseHeight, sideHeight);
+        RoundHouse house = new RoundHouse(new Vector2i(centerX, centerY), towerRad, baseHeight, sideHeight);
 
         SimpleDoor entrance = new SimpleDoor(doorOrientation, doorRc, baseHeight, baseHeight + entranceHeight);
         house.setDoor(entrance);

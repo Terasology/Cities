@@ -19,7 +19,7 @@ package org.terasology.cities.model;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 import javax.vecmath.Vector2d;
 
 import org.terasology.commonworld.Sector;
@@ -33,7 +33,7 @@ import com.google.common.collect.Sets;
  */
 public class City implements NamedArea {
 
-    private final Point2i coords;
+    private final Vector2i coords;
     private final Set<Lot> lots = Sets.newHashSet();
     private String name;
     private int radius;
@@ -43,16 +43,16 @@ public class City implements NamedArea {
      * @param radius the city radius in blocks
      * @param coords the world coordinate in blocks
      */
-    public City(String name, Point2i coords, int radius) {
+    public City(String name, Vector2i coords, int radius) {
         this.radius = radius;
         this.name = name;
-        this.coords = new Point2i(coords);
+        this.coords = new Vector2i(coords);
     }
 
     /**
      * @return the city center in block world coordinates
      */
-    public Point2i getPos() {
+    public Vector2i getPos() {
         return coords;
     }
     

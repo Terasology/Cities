@@ -19,7 +19,7 @@ package org.terasology.cities.generator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -61,10 +61,10 @@ public class RoadGeneratorTest  {
         int minSize = 10;
         int maxSize = 100;
 
-        final Function<Point2i, Junction> junctions = CachingFunction.wrap(new Function<Point2i, Junction>() {
+        final Function<Vector2i, Junction> junctions = CachingFunction.wrap(new Function<Vector2i, Junction>() {
 
             @Override
-            public Junction apply(Point2i input) {
+            public Junction apply(Vector2i input) {
                 return new Junction(input);
             }
             

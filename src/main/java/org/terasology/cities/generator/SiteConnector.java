@@ -18,12 +18,12 @@ package org.terasology.cities.generator;
 
 import java.util.Set;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
-import org.terasology.commonworld.geom.Point2iUtils;
+import org.terasology.commonworld.geom.Vector2iUtils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -90,10 +90,10 @@ public class SiteConnector implements Function<Site, Set<Site>> {
         
         double minDist = Double.MAX_VALUE;
         Optional<Site> best = Optional.absent();
-        Point2i pos = site.getPos();
+        Vector2i pos = site.getPos();
 
         for (Site other : sites) {
-            double distSq = Point2iUtils.distanceSquared(pos, other.getPos());
+            double distSq = Vector2iUtils.distanceSquared(pos, other.getPos());
             if (distSq < minDist) {
                 minDist = distSq;
                 best = Optional.of(other);
@@ -111,11 +111,11 @@ public class SiteConnector implements Function<Site, Set<Site>> {
     private Set<Site> sitesInRange(Site site, Set<Site> neighbors) {
         Set<Site> closeCities = Sets.newHashSet(); 
 
-        Point2i pos1 = site.getPos();
+        Vector2i pos1 = site.getPos();
 
         for (Site other : neighbors) {
-            Point2i pos2 = other.getPos();
-            double distSq = Point2iUtils.distanceSquared(pos1, pos2);
+            Vector2i pos2 = other.getPos();
+            double distSq = Vector2iUtils.distanceSquared(pos1, pos2);
 
             if (distSq < maxDist * maxDist) {
                 closeCities.add(other);

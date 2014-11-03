@@ -18,7 +18,7 @@ package org.terasology.cities.generator;
 
 import java.util.Objects;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.cities.model.Road;
 import org.terasology.cities.noise.Wave;
@@ -56,8 +56,8 @@ public class RoadModifierRandom  {
      * @param road the road to modify
      */
     public void apply(Road road) {
-        Point2i startPos = road.getStart().getCoords();
-        Point2i endPos = road.getEnd().getCoords();
+        Vector2i startPos = road.getStart().getCoords();
+        Vector2i endPos = road.getEnd().getCoords();
         Random r = new FastRandom(Objects.hash(startPos, endPos));
 
         Point2d start = new Point2cd(startPos.x, startPos.y);
@@ -81,7 +81,7 @@ public class RoadModifierRandom  {
             int x = (int) (seg.getX() + 0.5);
             int y = (int) (seg.getY() + 0.5);
 
-            Point2i pt = road.getPoints().get(i); 
+            Vector2i pt = road.getPoints().get(i); 
             pt.x = x;
             pt.y = y;
         }

@@ -22,7 +22,7 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.util.List;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 import javax.vecmath.Point3d;
 
 import org.terasology.cities.BlockTypes;
@@ -47,7 +47,7 @@ public class RoadRasterizer implements Rasterizer<Road> {
 
     @Override
     public void raster(Brush brush, TerrainInfo ti, Road road) {
-        List<Point2i> pts = Lists.newArrayList(road.getPoints());
+        List<Vector2i> pts = Lists.newArrayList(road.getPoints());
 
         pts.add(0, road.getStart().getCoords());
         pts.add(road.getEnd().getCoords());
@@ -64,8 +64,8 @@ public class RoadRasterizer implements Rasterizer<Road> {
         BasicStroke thick = new BasicStroke(strokeWidth, cap, join);
 
         for (int i = 0; i < pts.size() - 1; i++) {
-            Point2i p0 = pts.get(i + 0);
-            Point2i p1 = pts.get(i + 1);
+            Vector2i p0 = pts.get(i + 0);
+            Vector2i p1 = pts.get(i + 1);
 
             Line2D line = new Line2D.Double(p0.x, p0.y, p1.x, p1.y);
             Shape shape = thick.createStrokedShape(line);

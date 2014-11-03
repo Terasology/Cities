@@ -19,14 +19,14 @@ package org.terasology.cities.generator;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Sector;
-import org.terasology.commonworld.geom.Point2iUtils;
+import org.terasology.commonworld.geom.Vector2iUtils;
 import org.terasology.math.TeraMath;
 import org.terasology.utilities.random.FastRandom;
 
@@ -79,7 +79,7 @@ public class SiteFinderRandom implements Function<Sector, Set<Site>> {
         final int maxTries = 3;
         
         // create deterministic random
-        Point2i sc = sector.getCoords();
+        Vector2i sc = sector.getCoords();
         int hash = Objects.hash(seed, sector);
         FastRandom fr = new FastRandom(hash);
 
@@ -139,10 +139,10 @@ public class SiteFinderRandom implements Function<Sector, Set<Site>> {
     
     private boolean distanceToOthersOk(Site city, Set<Site> others, double minDist) {
             
-        Point2i pos = city.getPos();
+        Vector2i pos = city.getPos();
 
         for (Site other : others) {
-            double distSq = Point2iUtils.distanceSquared(pos, other.getPos());
+            double distSq = Vector2iUtils.distanceSquared(pos, other.getPos());
             if (distSq < minDist * minDist) {
                 return false;
             }

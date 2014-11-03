@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.terasology.commonworld.heightmap.HeightMap;
 
@@ -87,7 +87,7 @@ public class AreaInfo {
      * @param pos the coordinate
      * @return true if blocked, false otherwise
      */
-    public boolean isBlocked(Point2i pos) {
+    public boolean isBlocked(Vector2i pos) {
         return isBlocked(pos.x, pos.y);
     }
     

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +47,10 @@ import com.google.common.collect.Collections2;
  */
 public class SymmetricSiteFinderTest  {
 
-    private static Function<Site, Point2i> site2pos = new Function<Site, Point2i>() {
+    private static Function<Site, Vector2i> site2pos = new Function<Site, Vector2i>() {
 
         @Override
-        public Point2i apply(Site input) {
+        public Vector2i apply(Site input) {
             return input.getPos();
         }
         
@@ -109,11 +109,11 @@ public class SymmetricSiteFinderTest  {
     }
     
     private void assertMirrored(Set<Site> sitesA, Set<Site> sitesB) {
-        Collection<Point2i> posA = Collections2.transform(sitesA, site2pos);
-        Collection<Point2i> posB = Collections2.transform(sitesB, site2pos);
+        Collection<Vector2i> posA = Collections2.transform(sitesA, site2pos);
+        Collection<Vector2i> posB = Collections2.transform(sitesB, site2pos);
         
-        for (Point2i pos : posA) {
-            Point2i mirrored = symmetry.getMirrored(pos);
+        for (Vector2i pos : posA) {
+            Vector2i mirrored = symmetry.getMirrored(pos);
             assertTrue(posB.contains(mirrored));
         }
     }

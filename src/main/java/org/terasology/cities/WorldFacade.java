@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.vecmath.Point2i;
+import org.terasology.math.Vector2i;
 import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class WorldFacade {
 
     private Function<Sector, Set<UnorderedPair<Site>>> sectorConnections;
 
-    private Function<Point2i, Junction> junctions;
+    private Function<Vector2i, Junction> junctions;
 
     private Function<Sector, Set<Road>> roadMap;
 
@@ -108,10 +108,10 @@ public class WorldFacade {
         final CityTerrainComponent terrainConfig = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
         final CitySpawnComponent spawnConfig = WorldFacade.getWorldEntity().getComponent(CitySpawnComponent.class);
 
-        junctions = new Function<Point2i, Junction>() {
+        junctions = new Function<Vector2i, Junction>() {
 
             @Override
-            public Junction apply(Point2i input) {
+            public Junction apply(Vector2i input) {
                 return new Junction(input);
             }
 
@@ -132,7 +132,7 @@ public class WorldFacade {
                 int scale = 8;
                 int size = Sector.SIZE / scale;
                 HeightMap orgHm = HeightMaps.scalingArea(heightMap, scale);
-                Point2i coords = sector.getCoords();
+                Vector2i coords = sector.getCoords();
 
                 Rectangle sectorRect = new Rectangle(coords.x * size, coords.y * size, size, size);
                 ContourTracer ct = new ContourTracer(orgHm, sectorRect, terrainConfig.getSeaLevel());
@@ -237,7 +237,7 @@ public class WorldFacade {
             }
 
             public boolean isBlocked(Road road, Set<? extends NamedArea> blockedAreas) {
-                for (Point2i pt : road.getPoints()) {
+                for (Vector2i pt : road.getPoints()) {
                     Vector2d v = new Vector2d(pt.x, pt.y);
                     for (NamedArea area : blockedAreas) {
                         if (area.contains(v)) {
