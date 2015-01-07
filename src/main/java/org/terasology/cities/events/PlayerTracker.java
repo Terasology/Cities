@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3f;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +35,7 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
 import org.terasology.registry.CoreRegistry;
@@ -53,15 +53,15 @@ import com.google.common.collect.Sets;
 public class PlayerTracker extends BaseComponentSystem {
 
     private static final Logger logger = LoggerFactory.getLogger(PlayerTracker.class);
-    
+
     @In
     private NetworkSystem networkSystem;
-    
+
     @In
     private Console console;
-    
+
     private final Map<String, NamedArea> prevAreaMap = Maps.newHashMap();
-    
+
     /**
      * Called whenever a block is entered
      * @param event the event
@@ -73,17 +73,17 @@ public class PlayerTracker extends BaseComponentSystem {
         Vector3f worldPos3d = loc.getWorldPosition();
         Vector2d worldPos = new Vector2d(worldPos3d.x, worldPos3d.z);
         Sector sector = Sectors.getSectorForPosition(worldPos3d);
-        
+
         Client client = networkSystem.getOwner(entity);
-        
+
         // TODO: entity can be AI-controlled, too. These don't have an owner
         if (client == null) {
             return;
         }
-        
+
         String id = client.getId();
         String name = client.getName();
-        
+
         // TODO: facade is null if a different WorldGenerator is used
         WorldFacade facade = CoreRegistry.get(WorldFacade.class);
         if (facade != null) {
@@ -92,7 +92,7 @@ public class PlayerTracker extends BaseComponentSystem {
             NamedArea newArea = null;
 
             Set<NamedArea> areas = Sets.newHashSet();
-            
+
             areas.addAll(facade.getCities(sector));
             areas.addAll(facade.getLakes(sector));
 
@@ -101,11 +101,11 @@ public class PlayerTracker extends BaseComponentSystem {
                     if (newArea != null) {
                         logger.warn("{} appears to be in {} and {} at the same time!", name, newArea.getName(), area.getName());
                     }
-                    
+
                     newArea = area;
                 }
             }
-            
+
             if (!Objects.equals(newArea, prevArea)) {       // both can be null
                 if (newArea != null) {
                     entity.send(new OnEnterAreaEvent(newArea));
@@ -116,10 +116,10 @@ public class PlayerTracker extends BaseComponentSystem {
 
                 prevAreaMap.put(id, newArea);
             }
-            
+
         }
     }
-    
+
     /**
      * Called whenever a named area is entered
      * @param event the event
@@ -127,17 +127,17 @@ public class PlayerTracker extends BaseComponentSystem {
      */
     @ReceiveEvent
     public void onEnterArea(OnEnterAreaEvent event, EntityRef entity) {
-        
+
         Client client = networkSystem.getOwner(entity);
         String playerName = String.format("%s (%s)", client.getName(), client.getId());
         String areaName = event.getArea().getName();
 
         playerName = FontColor.getColored(playerName, CitiesColors.PLAYER);
         areaName = FontColor.getColored(areaName, CitiesColors.AREA);
-        
+
         console.addMessage(playerName + " entered " + areaName);
     }
-    
+
     /**
      * Called whenever a named area is entered
      * @param event the event
@@ -145,14 +145,14 @@ public class PlayerTracker extends BaseComponentSystem {
      */
     @ReceiveEvent
     public void onLeaveArea(OnLeaveAreaEvent event, EntityRef entity) {
-        
+
         Client client = networkSystem.getOwner(entity);
         String playerName = String.format("%s (%s)", client.getName(), client.getId());
         String areaName = event.getArea().getName();
 
         playerName = FontColor.getColored(playerName, CitiesColors.PLAYER);
         areaName = FontColor.getColored(areaName, CitiesColors.AREA);
-        
+
         console.addMessage(playerName + " left " + areaName);
     }
 }
