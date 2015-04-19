@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 MovingBlocks
+ * Copyright 2015 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,13 +28,11 @@ import org.terasology.cities.model.bldg.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.geom.Rectangles;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.math.Vector2i;
 
 import com.google.common.math.IntMath;
 
 /**
  * Generates round houses
- * @author Martin Steiger
  */
 public class RoundHouseGenerator {
     private HeightMap heightMap;

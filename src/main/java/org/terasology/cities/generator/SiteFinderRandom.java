@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 MovingBlocks
+ * Copyright 2015 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,6 @@ import com.google.common.collect.Sets;
  * Creates a set of cities for a given sector.
  * Cities are places randomly.
  * It checks for minimum distance to other cities in the SAME sector, but not others.
- * @author Martin Steiger
  */
 public class SiteFinderRandom implements Function<Sector, Set<Site>> {
 
