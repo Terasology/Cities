@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 MovingBlocks
+ * Copyright 2015 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import org.terasology.world.chunks.event.PurgeWorldEvent;
 /**
  * Receives events for {@link WorldComponent} and delegates
  * the "purgeWorld" command to the {@link WorldFacade} class.
- * @author Martin Steiger
  */
 @RegisterSystem
 public class WorldEventReceiver extends BaseComponentSystem {

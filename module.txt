@@ -7,11 +7,11 @@
     "dependencies" : [
         {
             "id" : "Core",
-            "minVersion" : "0.1.0"
+            "minVersion" : "0.53.1"
         },
         {
             "id" : "NameGenerator",
-            "minVersion" : "0.2.3"
+            "minVersion" : "0.4.0"
         },
         {
             "id" : "Fences",
@@ -19,7 +19,7 @@
         },
         {
             "id" : "CommonWorld",
-            "minVersion" : "0.1.1"
+            "minVersion" : "0.1.2"
         }
     ],
     "isServerSideOnly" : false,
