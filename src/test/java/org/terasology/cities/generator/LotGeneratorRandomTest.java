@@ -39,7 +39,7 @@ import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.Site;
 import org.terasology.cities.model.bldg.Building;
 import org.terasology.cities.model.bldg.SimpleBuilding;
-import org.terasology.commonworld.CachingFunction;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -56,7 +56,7 @@ import com.google.common.collect.Lists;
 public class LotGeneratorRandomTest  {
 
     private static final Logger logger = LoggerFactory.getLogger(LotGeneratorRandomTest.class);
-    
+
     /**
      * Performs through tests and logs computation time and results
      */
@@ -64,12 +64,12 @@ public class LotGeneratorRandomTest  {
     public void test() {
         String seed = "asd";
         int sectors = 10;       // sectors * sectors will be created
-        
+
         int minPerSector = 1;
         int maxPerSector = 3;
         int minSize = 30;
         int maxSize = 200;
-        
+
         final CityTerrainComponent config = new CityTerrainComponent();
         final HeightMap heightMap = HeightMaps.constant(10);
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
@@ -78,27 +78,27 @@ public class LotGeneratorRandomTest  {
             public AreaInfo apply(Sector input) {
                 return new AreaInfo(config, heightMap);
             }
-        }); 
+        });
         Function<Sector, Set<Site>> cpr = CachingFunction.wrap(new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize));
-        
+
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
                 Sector sector = Sectors.getSector(x, z);
                 cpr.apply(sector);   // fill the cache
             }
         }
-        
+
         LotGeneratorRandom lg = new LotGeneratorRandom(seed);
         SimpleHousingGenerator shg = new SimpleHousingGenerator(seed, heightMap);
-        
+
         Stopwatch pLotGen = Stopwatch.createStarted();
-        
+
         int lotCount = 0;
         int bdgCount = 0;
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
                 Set<Site> sites = cpr.apply(Sectors.getSector(x, z));
-                
+
                 for (Site site : sites) {
                     Vector2i pos = site.getPos();
                     int rad = site.getRadius();
@@ -107,26 +107,26 @@ public class LotGeneratorRandomTest  {
                     City city = new MedievalTown("name", site.getPos(), rad);
                     Set<SimpleLot> lots = lg.generate(city, sectorInfos.apply(Sectors.getSector(x, z)));
                     List<SimpleLot> list = Lists.newArrayList(lots);
-                    
+
                     lotCount += lots.size();
-                    
+
                     for (SimpleLot lot : lots) {
                         Rectangle2D lotBbox = lot.getShape().getBounds2D();
-                        
+
                         assertTrue("lot not in city bounding circle", cityBbox.contains(lotBbox));
-                        
+
                         for (SimpleBuilding blg : shg.apply(lot)) {
                             lot.addBuilding(blg);
                         }
-                        
+
                         for (Building bld : lot.getBuildings()) {
                             Rectangle2D bldgBbox = bld.getLayout().getBounds2D();
                             assertTrue("building not inside lot", lotBbox.contains(bldgBbox));
                         }
-                        
+
                         bdgCount += lot.getBuildings().size();
                     }
-                    
+
                     // test all lots pairwise for overlap
                     for (int i = 0; i < list.size(); i++) {
                         Rectangle a = list.get(i).getShape();
@@ -141,6 +141,6 @@ public class LotGeneratorRandomTest  {
 
         logger.info("Created {} lots with {} buildings in {}ms.", lotCount, bdgCount, pLotGen.elapsed(TimeUnit.MILLISECONDS));
     }
-    
+
 }
 

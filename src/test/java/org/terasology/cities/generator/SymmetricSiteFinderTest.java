@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityTerrainComponent;
 import org.terasology.cities.model.Site;
-import org.terasology.commonworld.CachingFunction;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -53,7 +53,7 @@ public class SymmetricSiteFinderTest  {
         public Vector2i apply(Site input) {
             return input.getPos();
         }
-        
+
     };
 
     private SymmetricSiteFinder symFinder;
@@ -65,10 +65,10 @@ public class SymmetricSiteFinderTest  {
     @Before
     public void setup() {
         String seed = "asd";
-        
+
         int minSize = 10;
         int maxSize = 100;
-        
+
         final CityTerrainComponent config = new CityTerrainComponent();
         final HeightMap heightMap = HeightMaps.symmetric(new NoiseHeightMap(seed), symmetry);
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
@@ -77,13 +77,13 @@ public class SymmetricSiteFinderTest  {
             public AreaInfo apply(Sector input) {
                 return new AreaInfo(config, heightMap);
             }
-        }); 
-        
+        });
+
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
         symFinder = new SymmetricSiteFinder(cpr, symmetry);
     }
-    
+
     @Test
     public void testDifferent() {
 
@@ -92,7 +92,7 @@ public class SymmetricSiteFinderTest  {
 
         Set<Site> sitesA = symFinder.apply(sectorA);
         Set<Site> sitesB = symFinder.apply(sectorB);
-        
+
         assertMirrored(sitesA, sitesB);
     }
 
@@ -103,15 +103,15 @@ public class SymmetricSiteFinderTest  {
         Sector sectorB = Sectors.getSector(symmetry.getMirrored(1, 1));
 
         assertEquals(sectorA, sectorB);
-        
+
         Set<Site> sitesA = symFinder.apply(sectorA);
         assertMirrored(sitesA, sitesA);
     }
-    
+
     private void assertMirrored(Set<Site> sitesA, Set<Site> sitesB) {
         Collection<Vector2i> posA = Collections2.transform(sitesA, site2pos);
         Collection<Vector2i> posB = Collections2.transform(sitesB, site2pos);
-        
+
         for (Vector2i pos : posA) {
             Vector2i mirrored = symmetry.getMirrored(pos);
             assertTrue(posB.contains(mirrored));

@@ -30,7 +30,7 @@ import org.terasology.cities.SectorConnector;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
-import org.terasology.commonworld.CachingFunction;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.UnorderedPair;
@@ -47,7 +47,7 @@ import com.google.common.base.Stopwatch;
 public class RoadGeneratorTest  {
 
     private static final Logger logger = LoggerFactory.getLogger(RoadGeneratorTest.class);
-    
+
     /**
      * Performs through tests and logs computation time and results
      */
@@ -55,7 +55,7 @@ public class RoadGeneratorTest  {
     public void test() {
         String seed = "asd";
         int sectors = 10;       // sectors * sectors will be created
-        
+
         int minPerSector = 1;
         int maxPerSector = 3;
         int minSize = 10;
@@ -67,9 +67,9 @@ public class RoadGeneratorTest  {
             public Junction apply(Vector2i input) {
                 return new Junction(input);
             }
-            
+
         });
-        
+
         final CityTerrainComponent config = new CityTerrainComponent();
         final HeightMap heightMap = HeightMaps.constant(10);
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
@@ -78,7 +78,7 @@ public class RoadGeneratorTest  {
             public AreaInfo apply(Sector input) {
                 return new AreaInfo(config, heightMap);
             }
-        }); 
+        });
 
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
@@ -97,7 +97,7 @@ public class RoadGeneratorTest  {
                 rmr.apply(road);
                 return road;
             }
-            
+
         };
 
         for (int x = 0; x < sectors; x++) {
@@ -106,25 +106,25 @@ public class RoadGeneratorTest  {
                 sc.apply(sector);   // fill the cache
             }
         }
-        
+
         logger.info("Generating roads for {} sectors", sectors * sectors);
-        
+
         Stopwatch pRoadGen = Stopwatch.createStarted();
 
         int hits = 0;
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
                 Sector sector = Sectors.getSector(x, z);
-                
+
                 Set<UnorderedPair<Site>> conns = sc.apply(sector);
                 hits += conns.size();
-                
+
                 for (UnorderedPair<Site> conn : conns) {
                     rg.apply(conn);
                 }
             }
         }
-        
+
         logger.info("Created {} roads in {}ms", hits, pRoadGen.elapsed(TimeUnit.MILLISECONDS));
     }
 }

@@ -52,7 +52,7 @@ import org.terasology.cities.model.Site;
 import org.terasology.cities.model.bldg.SimpleBuilding;
 import org.terasology.cities.model.bldg.SimpleChurch;
 import org.terasology.cities.model.bldg.TownWall;
-import org.terasology.commonworld.CachingFunction;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.UnorderedPair;

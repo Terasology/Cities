@@ -31,7 +31,7 @@ import org.terasology.cities.SectorConnector;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
-import org.terasology.commonworld.CachingFunction;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
@@ -50,7 +50,7 @@ import com.google.common.collect.Sets;
 public class RoadShapeGeneratorTest  {
 
     private static final Logger logger = LoggerFactory.getLogger(RoadShapeGeneratorTest.class);
-    
+
     /**
      * Performs through tests and logs computation time and results
      */
@@ -58,7 +58,7 @@ public class RoadShapeGeneratorTest  {
     public void test() {
         String seed = "asd";
         int sectors = 10;       // sectors * sectors will be created
-        
+
         int minPerSector = 1;
         int maxPerSector = 3;
         int minSize = 10;
@@ -70,9 +70,9 @@ public class RoadShapeGeneratorTest  {
             public Junction apply(Vector2i input) {
                 return new Junction(input);
             }
-            
+
         });
-        
+
         final CityTerrainComponent config = new CityTerrainComponent();
         final HeightMap heightMap = HeightMaps.constant(10);
         final Function<Sector, AreaInfo> sectorInfos = CachingFunction.wrap(new Function<Sector, AreaInfo>() {
@@ -81,7 +81,7 @@ public class RoadShapeGeneratorTest  {
             public AreaInfo apply(Sector input) {
                 return new AreaInfo(config, heightMap);
             }
-        }); 
+        });
 
         SiteFinderRandom cpr = new SiteFinderRandom(seed, sectorInfos, minPerSector, maxPerSector, minSize, maxSize);
 
@@ -99,18 +99,18 @@ public class RoadShapeGeneratorTest  {
                 rmr.apply(road);
                 return road;
             }
-            
+
         });
-        
+
         Function<Sector, Set<Road>> roadMap = new Function<Sector, Set<Road>>() {
 
             @Override
             public Set<Road> apply(Sector sector) {
                 Set<Road> allRoads = Sets.newHashSet();
-                
+
                 Set<UnorderedPair<Site>> localConns = sc.apply(sector);
                 Set<UnorderedPair<Site>> allConns = Sets.newHashSet(localConns);
-                
+
                 // add all neighbors, because their roads might be passing through
                 for (Orientation dir : Orientation.values()) {
                     Sector neighbor = sector.getNeighbor(dir);
@@ -126,7 +126,7 @@ public class RoadShapeGeneratorTest  {
                 return allRoads;
             }
         };
-        
+
         roadMap = CachingFunction.wrap(roadMap);
 
         for (int x = 0; x < sectors; x++) {
@@ -135,21 +135,21 @@ public class RoadShapeGeneratorTest  {
                 roadMap.apply(sector);   // fill the cache
             }
         }
-        
+
         logger.info("Generating road shapes for {} sectors", sectors * sectors);
 
         Function<Sector, Shape> roadShapeFunc = new RoadShapeGenerator(roadMap);
-  
+
         Stopwatch pRoadShapes = Stopwatch.createStarted();
 
         for (int x = 0; x < sectors; x++) {
             for (int z = 0; z < sectors; z++) {
                 Sector sector = Sectors.getSector(x, z);
-                
+
                 roadShapeFunc.apply(sector);
             }
         }
-        
+
         logger.info("Created road shapes in {}ms.", pRoadShapes.elapsed(TimeUnit.MILLISECONDS));
     }
 }
