@@ -91,22 +91,22 @@ public class HeightMapTerrainGenerator implements ChunkGenerationPass {
 
     /**
      * The generated terrain looks like this
-     * <pre>
-     * ---------------------------
+     * <pre>{@code
+     * ------------------------------------------
      *  AIR
-     * ---------------------------
+     * ------------------------------------------
      *  GRASS       surfaceHeight && < snowLine
      *  SNOW        surfaceHeight && >= snowLine
      *  SAND        surfaceHeight && seaLevel + 1
-     * ---------------------------
+     * ------------------------------------------
      *  DIRT        < surfaceHeight && < snowLine
      *  STONE       < surfaceHeight && >= snowLine
-     * ---------------------------
+     * ------------------------------------------
      *  WATER       <= seaLevel
-     * ---------------------------
+     * ------------------------------------------
      *  MANTLE      0
-     * ---------------------------
-     * </pre>
+     * ------------------------------------------
+     * }</pre>
      */
     @Override
     public void generateChunk(CoreChunk chunk) {

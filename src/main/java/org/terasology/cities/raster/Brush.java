@@ -44,7 +44,7 @@ public abstract class Brush {
         // optimize, if necessary
        fillShape(shape, hmBottom, HeightMaps.offset(hmBottom, height), type);
     }
-    
+
     /**
      * @param shape the shape to fill
      * @param hmBottom the bottom height map (inclusive)
@@ -56,22 +56,22 @@ public abstract class Brush {
         if (!shape.intersects(getAffectedArea())) {
             return;
         }
-        
+
         Rectangle rc = getIntersectionArea(shape.getBounds());
 
         for (int z = rc.y; z < rc.y + rc.height; z++) {
             for (int x = rc.x; x < rc.x + rc.width; x++) {
-            
+
                 if (shape.contains(x, z)) {
                     int y1 = hmBottom.apply(x, z);
                     int y2 = hmTop.apply(x, z);
-                    
+
                     for (int y = y1; y < y2; y++) {
                         setBlock(x, y, z, type);
                     }
                 }
             }
-        }        
+        }
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class Brush {
      * @param type the block type
      */
     public void fillRect(Rectangle shape, HeightMap heightMap, BlockTypes type) {
-        fillRect(shape, heightMap, HeightMaps.offset(heightMap, 1), type);        
+        fillRect(shape, heightMap, HeightMaps.offset(heightMap, 1), type);
     }
 
     /**
@@ -140,14 +140,14 @@ public abstract class Brush {
     /**
      * @param rect the shape to fill
      * @param baseHeight the bottom height (inclusive)
-     * @param hmTop the top height map (exclusive) 
+     * @param hmTop the top height map (exclusive)
      * @param type the block type
      */
     public void fillRect(Rectangle rect, int baseHeight, HeightMap hmTop, BlockTypes type) {
         // optimize, if necessary
         fillRect(rect, HeightMaps.constant(baseHeight), hmTop, type);
     }
-    
+
     /**
      * @param rect the area to fill
      * @param hmBottom the height map at the bottom (inclusive)
@@ -188,7 +188,7 @@ public abstract class Brush {
      * @param type the block type
      */
     public abstract void setBlock(int x, int y, int z, BlockTypes type);
-    
+
     /**
      * @param x x in world coords
      * @param y y in world coords
@@ -228,7 +228,7 @@ public abstract class Brush {
      * @param type the block type
      */
     public void frame(Rectangle rc, int baseHeight, int topHeight, BlockTypes type) {
-        
+
         // walls along z-axis
         createWallZ(rc.y, rc.y + rc.height, rc.x, baseHeight, topHeight, type);
         createWallZ(rc.y, rc.y + rc.height, rc.x + rc.width - 1, baseHeight, topHeight, type);
@@ -236,11 +236,11 @@ public abstract class Brush {
         // walls along x-axis
         createWallX(rc.x, rc.x + rc.width, rc.y, baseHeight, topHeight, type);
         createWallX(rc.x, rc.x + rc.width, rc.y + rc.height - 1, baseHeight, topHeight, type);
-        
+
     }
-    
+
     /**
-     * Draws a line.<br/>
+     * Draws a line.<br>
      * See Wikipedia: Bresenham's line algorithm, chapter Simplification
      * @param x1 x start in world coords
      * @param z1 z start in world coords
@@ -251,11 +251,11 @@ public abstract class Brush {
      * @param type the block type
      */
     public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, BlockTypes type) {
-        
+
         Rectangle outerBox = getAffectedArea();
         double shrink = 0.01;
         Rectangle2D area = new Rectangle2D.Double(outerBox.x, outerBox.y, outerBox.width - shrink, outerBox.height - shrink);
-        
+
         Line2D line = new Line2D.Double(x1, z1, x2, z2);
         if (LineUtilities.clipLine(line, area)) {
             int cx1 = TeraMath.floorToInt(line.getX1());
@@ -265,8 +265,8 @@ public abstract class Brush {
             drawClippedLine(hmBottom, hmTop, cx1, cy1, cx2, cy2, type);
         }
     }
-    
-    
+
+
     private void drawClippedLine(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, BlockTypes type) {
 
         int dx = Math.abs(x2 - x1);
@@ -279,7 +279,7 @@ public abstract class Brush {
 
         int x = x1;
         int z = z1;
-        
+
         while (true) {
             for (int y = hmBottom.apply(x, z); y < hmTop.apply(x, z); y++) {
                 setBlock(x, y, z, type);
@@ -303,7 +303,7 @@ public abstract class Brush {
             }
         }
     }
-    
+
     /**
      * Horn's algorithm B. K. P. Horn: Circle Generators for Display Devices.
      * Computer Graphics and Image Processing 5, 2 (June 1976)
@@ -336,7 +336,7 @@ public abstract class Brush {
             }
         }
     }
-    
+
     /**
      * @param cx the center x
      * @param cy the center y
@@ -353,7 +353,7 @@ public abstract class Brush {
             }
         }
     }
-    
+
     /**
      * @param cx the center x
      * @param cy the center y

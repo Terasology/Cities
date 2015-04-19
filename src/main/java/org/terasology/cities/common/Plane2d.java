@@ -52,7 +52,7 @@ public class Plane2d {
     private double dy;
     private double dz;
 
-    
+
     /**
      * @param p0 the first point
      * @param p1 the second point
@@ -65,9 +65,9 @@ public class Plane2d {
         dy = p1.y - p0.y;
         dz = p1.z - p0.z;
     }
-    
+
     /**
-     * Finds the lambda value <b>along<b> the line. p0 has a lambda of 0, p1 has a lambda of 1
+     * Finds the lambda value <b>along</b> the line. p0 has a lambda of 0, p1 has a lambda of 1
      * @param ex point x
      * @param ey point y
      * @return the lambda value
@@ -77,14 +77,14 @@ public class Plane2d {
     }
 
     /**
-     * Finds the norm. lambda value <b>along<b> the line. p0 has a norm. lambda of 0, p1 has a lambda of dist(p0, p1).
+     * Finds the norm. lambda value <b>along</b> the line. p0 has a norm. lambda of 0, p1 has a lambda of dist(p0, p1).
      * @param ex point x
      * @param ey point y
      * @return the normalized lambda value
      */
     public double getLambdaNorm(double ex, double ey) {
         return getLambda(ex, ey) * Math.sqrt(dx * dx + dy * dy);
-    }    
+    }
 
     /**
      * @param ex point x
@@ -113,5 +113,5 @@ public class Plane2d {
      */
     public double getKappaNorm(double ex, double ey) {
         return getKappa(ex, ey) * Math.sqrt(dx * dx + dy * dy);
-    }    
+    }
 }

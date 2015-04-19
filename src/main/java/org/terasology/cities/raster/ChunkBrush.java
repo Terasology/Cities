@@ -41,7 +41,7 @@ public class ChunkBrush extends Brush {
 
     /**
      * @param chunk     the chunk to work on
-     * @param blockType a mapping String type -> block
+     * @param blockType a mapping String type to block
      */
     public ChunkBrush(CoreChunk chunk, BlockTheme blockType) {
         this.blockType = blockType;
