@@ -16,8 +16,8 @@
 
 package org.terasology.cities;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Maps;
+import java.util.Map;
+
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.commonworld.heightmap.NoiseHeightMap;
@@ -27,20 +27,27 @@ import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
 import org.terasology.core.world.generator.facetProviders.World2dPreviewProvider;
 import org.terasology.engine.SimpleUri;
 import org.terasology.entitySystem.Component;
+import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.logic.spawner.FixedSpawner;
+import org.terasology.logic.spawner.Spawner;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.world.generation.World;
 import org.terasology.world.generation.WorldBuilder;
 import org.terasology.world.generator.RegisterWorldGenerator;
 import org.terasology.world.generator.WorldConfigurator;
 
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 @RegisterWorldGenerator(id = "city", displayName = "City World")
 public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
     World world;
+
+    private final Spawner spawner = new FixedSpawner(0, 0);
+
     private NoiseHeightMap noiseMap;
     private HeightMap heightMap;
-    
+
     /**
      * @param uri the uri
      */
@@ -53,7 +60,7 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
         noiseMap = new NoiseHeightMap();
         heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
-        
+
         register(new HeightMapTerrainGenerator(heightMap));
 //        register(new BoundaryGenerator(heightMap));
         register(new CityTerrainGenerator(heightMap));
@@ -61,31 +68,31 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
         world.initialize();
     }
-    
+
     @Override
     public void setWorldSeed(String seed) {
         if (seed == null) {
             return;
         }
-        
+
         if (heightMap == null) {
             noiseMap = new NoiseHeightMap();
             heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
         }
-        
+
         noiseMap.setSeed(seed);
 
-        world = new WorldBuilder(0)
+        world = new WorldBuilder()
                 .addProvider(new HeightMapCompatibilityFacetProvider(heightMap))
                 .addProvider(new SeaLevelProvider(2))
                 .addProvider(new World2dPreviewProvider())
                 .build();
-        
+
         super.setWorldSeed(seed);
     }
 
     @Override
-    public Optional<WorldConfigurator> getConfigurator() {
+    public WorldConfigurator getConfigurator() {
 
         WorldConfigurator wc = new WorldConfigurator() {
 
@@ -97,13 +104,24 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
                 return map;
             }
 
+            @Override
+            public void setProperty(String key, Component comp) {
+                // TODO Auto-generated method stub
+            }
+
         };
 
-        return Optional.of(wc);
+        return wc;
     }
 
     @Override
     public World getWorld() {
         return world;
     }
+
+    @Override
+    public Vector3f getSpawnPosition(EntityRef entity) {
+        return spawner.getSpawnPosition(getWorld(), entity);
+    }
+
 }
