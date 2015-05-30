@@ -16,9 +16,7 @@
 
 package org.terasology.cities;
 
-import java.util.Collections;
-import java.util.Map;
-
+import com.google.common.base.Function;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Vector2i;
 import org.terasology.registry.CoreRegistry;
@@ -29,7 +27,8 @@ import org.terasology.world.generator.ChunkGenerationPass;
 import org.terasology.world.liquid.LiquidData;
 import org.terasology.world.liquid.LiquidType;
 
-import com.google.common.base.Function;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Generates terrain based on a height map function
@@ -40,7 +39,7 @@ public class HeightMapTerrainGenerator implements ChunkGenerationPass {
 
     private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
 
-    private final Block air = BlockManager.getAir();
+    private final Block air = blockManager.getBlock(BlockManager.AIR_ID);
     private final Block mantle = blockManager.getBlock("core:MantleStone");
     private final Block stone = blockManager.getBlock("core:Stone");
     private final Block sand = blockManager.getBlock("core:Sand");

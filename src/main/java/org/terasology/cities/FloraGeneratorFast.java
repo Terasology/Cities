@@ -16,11 +16,7 @@
 
 package org.terasology.cities;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import com.google.common.collect.Lists;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.core.world.CoreBiome;
 import org.terasology.registry.CoreRegistry;
@@ -31,7 +27,10 @@ import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generator.ChunkGenerationPass;
 
-import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Generates flowers and high grass. It's fast, because it
@@ -46,6 +45,7 @@ public class FloraGeneratorFast implements ChunkGenerationPass {
             "core:DeadBush", "core:Dandelion", "core:Tulip",
             "core:Cotton1", "core:Cotton2", "core:Cotton3", "core:Cotton4", "core:Cotton5", "core:Cotton6"};
 
+    private BlockManager blockManager = CoreRegistry.get(BlockManager.class);
     private Block grassBlock;
     private Block tallGrass1;
     private Block tallGrass2;
@@ -62,7 +62,6 @@ public class FloraGeneratorFast implements ChunkGenerationPass {
      * @param heightMap the height map to use
      */
     public FloraGeneratorFast(HeightMap heightMap) {
-        BlockManager blockManager = CoreRegistry.get(BlockManager.class);
         grassBlock = blockManager.getBlock("core:Grass");
         tallGrass1 = blockManager.getBlock("core:TallGrass1");
         tallGrass2 = blockManager.getBlock("core:TallGrass2");
@@ -92,7 +91,7 @@ public class FloraGeneratorFast implements ChunkGenerationPass {
                 if (targetBlock.equals(grassBlock)) {
                     Block blockOnTop = chunk.getBlock(x, y + 1, z);
 
-                    if (blockOnTop.equals(BlockManager.getAir())) {
+                    if (blockOnTop.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
                         generateGrassAndFlowers(chunk, x, y, z, random);
                     }
                 }

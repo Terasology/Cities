@@ -16,9 +16,8 @@
 
 package org.terasology.cities;
 
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.math.Side;
@@ -29,8 +28,8 @@ import org.terasology.world.block.BlockManager;
 import org.terasology.world.block.BlockUri;
 import org.terasology.world.block.family.BlockFamily;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A mapping from block types (as defined in {@link BlockTypes}) to actual blocks
@@ -49,7 +48,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
      * Setup the mapping with defaults 
      */
     public BlockTheme() {
-        map.put(BlockTypes.AIR, BlockManager.getAir());
+        map.put(BlockTypes.AIR, blockManager.getBlock(BlockManager.AIR_ID));
         defaultBlock = blockManager.getBlock("Cities:pink");
         defaultFamily = blockManager.getBlockFamily("Cities:pink");
     }
@@ -61,7 +60,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
     public void register(BlockTypes blockType, String blockUri) {
         Block block = blockManager.getBlock(blockUri);
         
-        if (block == null || block.equals(BlockManager.getAir())) {
+        if (block == null || block.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
             logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
             block = defaultBlock;
         } 
@@ -122,7 +121,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         BlockUri familyUri = family.getURI().getFamilyUri();
         String identifier = family.getURI().getIdentifier().toString();
         byte flags = SideBitFlag.getSides(side);
-        BlockUri blockUri = new BlockUri(familyUri, identifier + flags);
+        BlockUri blockUri = new BlockUri(familyUri + ":" + identifier + flags);
         Block block = family.getBlockFor(blockUri);
         
         if (block == null) {

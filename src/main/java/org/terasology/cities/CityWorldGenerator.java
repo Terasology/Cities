@@ -16,8 +16,7 @@
 
 package org.terasology.cities;
 
-import java.util.Map;
-
+import com.google.common.collect.Maps;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.commonworld.heightmap.NoiseHeightMap;
@@ -31,12 +30,14 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.spawner.FixedSpawner;
 import org.terasology.logic.spawner.Spawner;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.world.generation.World;
 import org.terasology.world.generation.WorldBuilder;
 import org.terasology.world.generator.RegisterWorldGenerator;
 import org.terasology.world.generator.WorldConfigurator;
+import org.terasology.world.generator.plugin.WorldGeneratorPluginLibrary;
 
-import com.google.common.collect.Maps;
+import java.util.Map;
 
 @RegisterWorldGenerator(id = "city", displayName = "City World")
 public class CityWorldGenerator extends AbstractBaseWorldGenerator {
@@ -82,7 +83,7 @@ public class CityWorldGenerator extends AbstractBaseWorldGenerator {
 
         noiseMap.setSeed(seed);
 
-        world = new WorldBuilder()
+        world = new WorldBuilder(CoreRegistry.get(WorldGeneratorPluginLibrary.class))
                 .addProvider(new HeightMapCompatibilityFacetProvider(heightMap))
                 .addProvider(new SeaLevelProvider(2))
                 .addProvider(new World2dPreviewProvider())
