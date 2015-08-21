@@ -16,23 +16,34 @@
 package org.terasology.cities;
 
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMaps;
+import org.terasology.commonworld.heightmap.NoiseHeightMap;
+import org.terasology.commonworld.symmetry.Symmetries;
+import org.terasology.commonworld.symmetry.Symmetry;
+import org.terasology.entitySystem.Component;
 import org.terasology.math.Vector2i;
 import org.terasology.world.generation.Border3D;
-import org.terasology.world.generation.FacetProvider;
+import org.terasology.world.generation.ConfigurableFacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.facets.SurfaceHeightFacet;
+import org.terasology.rendering.nui.properties.OneOf.Enum;
 
 @Produces(SurfaceHeightFacet.class)
-public class HeightMapCompatibilityFacetProvider implements FacetProvider {
-    HeightMap heightMap;
+public class HeightMapCompatibilityFacetProvider implements ConfigurableFacetProvider {
 
-    public HeightMapCompatibilityFacetProvider(HeightMap heightMap) {
-        this.heightMap = heightMap;
+    private HeightMap heightMap;
+    private NoiseHeightMap noiseMap;
+    private Configuration configuration = new Configuration();
+
+    public HeightMapCompatibilityFacetProvider() {
+        noiseMap = new NoiseHeightMap();
+        setConfiguration(new Configuration());
     }
 
     @Override
     public void setSeed(long seed) {
+        noiseMap.setSeed(String.valueOf(seed));  // TODO: fix this in CommonWorld
     }
 
     @Override
@@ -47,5 +58,56 @@ public class HeightMapCompatibilityFacetProvider implements FacetProvider {
         }
 
         region.setRegionFacet(SurfaceHeightFacet.class, facet);
+    }
+
+    @Override
+    public String getConfigurationName() {
+        return "Height Map";
+    }
+
+    @Override
+    public Component getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public void setConfiguration(Component configuration) {
+        this.configuration = (Configuration) configuration;
+        Symmetry sym = this.configuration.symmetry.getInstance();
+        if (sym != null) {
+            heightMap = HeightMaps.symmetric(noiseMap, sym);
+        } else {
+            heightMap = noiseMap;
+        }
+    }
+
+    private static enum SymmetryType {
+        NONE("None", null),
+        X_AXIS("X-Axis", Symmetries.alongX()),
+        Z_AXIS("Z-Axis", Symmetries.alongZ()),
+        POS_DIAGONAL("Positive Diagonal", Symmetries.alongPositiveDiagonal()),
+        NEG_DIAGONAL("Negative Diagonal", Symmetries.alongNegativeDiagonal());
+
+        private final String name;
+        private final Symmetry instance;
+
+        SymmetryType(String name, Symmetry instance) {
+            this.name = name;
+            this.instance = instance;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public Symmetry getInstance() {
+            return instance;
+        }
+    }
+
+    private static class Configuration implements Component {
+        @Enum(label = "Symmetric World", description = "Check to create an axis-symmetric world")
+        private SymmetryType symmetry = SymmetryType.NONE;
     }
 }

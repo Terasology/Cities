@@ -23,16 +23,18 @@ import org.terasology.registry.CoreRegistry;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
+import org.terasology.world.generation.Produces;
+import org.terasology.world.generation.facets.SurfaceHeightFacet;
 import org.terasology.world.generator.ChunkGenerationPass;
 import org.terasology.world.liquid.LiquidData;
 import org.terasology.world.liquid.LiquidType;
 
 import java.util.Collections;
 import java.util.Map;
-
 /**
  * Generates terrain based on a height map function
  */
+@Produces(SurfaceHeightFacet.class)
 public class HeightMapTerrainGenerator implements ChunkGenerationPass {
 
     private Function<Vector2i, Integer> heightMap;

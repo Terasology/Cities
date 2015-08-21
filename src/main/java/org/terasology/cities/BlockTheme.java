@@ -45,47 +45,47 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
     private final BlockFamily defaultFamily;
 
     /**
-     * Setup the mapping with defaults 
+     * Setup the mapping with defaults
      */
     public BlockTheme() {
         map.put(BlockTypes.AIR, blockManager.getBlock(BlockManager.AIR_ID));
-        defaultBlock = blockManager.getBlock("Cities:pink");
-        defaultFamily = blockManager.getBlockFamily("Cities:pink");
+        defaultBlock = blockManager.getBlock(BlockManager.UNLOADED_ID);
+        defaultFamily = blockManager.getBlockFamily(BlockManager.UNLOADED_ID);
     }
 
     /**
-     * @param blockType the block type (as defined in BlockTypes} 
+     * @param blockType the block type (as defined in BlockTypes}
      * @param blockUri the block uri
      */
     public void register(BlockTypes blockType, String blockUri) {
         Block block = blockManager.getBlock(blockUri);
-        
+
         if (block == null || block.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
             logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
             block = defaultBlock;
-        } 
+        }
 
         map.put(blockType, block);
     }
 
     /**
-     * @param blockType the block type (as defined in BlockTypes} 
+     * @param blockType the block type (as defined in BlockTypes}
      * @param blockUri the block uri
      */
     public void registerFamily(BlockTypes blockType, String blockUri) {
         BlockFamily block = blockManager.getBlockFamily(blockUri);
-        
+
         if (block == null) {
             logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
             block = defaultFamily;
-        } 
+        }
 
         familyMap.put(blockType, block);
     }
-    
+
     /**
      * Remove blockType from the mapping
-     * @param blockType the block type (as defined in BlockTypes} 
+     * @param blockType the block type (as defined in BlockTypes}
      */
     public void unregister(String blockType) {
         map.remove(blockType);
@@ -123,11 +123,11 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         byte flags = SideBitFlag.getSides(side);
         BlockUri blockUri = new BlockUri(familyUri + ":" + identifier + flags);
         Block block = family.getBlockFor(blockUri);
-        
+
         if (block == null) {
             block = family.getArchetypeBlock();
         }
-        
+
         return block;
     }
 }
