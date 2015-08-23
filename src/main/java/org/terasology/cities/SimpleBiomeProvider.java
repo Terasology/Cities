@@ -58,11 +58,11 @@ public class SimpleBiomeProvider implements FacetProvider {
             } else if (height <= seaLevel + 2) {
                 biomeFacet.set(pos, CoreBiome.BEACH);
             } else if (height <= seaLevel + 30) {
-                biomeFacet.set(pos, CoreBiome.MOUNTAINS);
-            } else if (height <= seaLevel + 40) {
-                biomeFacet.set(pos, CoreBiome.SNOW);
-            } else {
                 biomeFacet.set(pos, CoreBiome.PLAINS);
+            } else if (height <= seaLevel + 40) {
+                biomeFacet.set(pos, CoreBiome.MOUNTAINS);
+            } else {
+                biomeFacet.set(pos, CoreBiome.SNOW);
             }
         }
         region.setRegionFacet(BiomeFacet.class, biomeFacet);

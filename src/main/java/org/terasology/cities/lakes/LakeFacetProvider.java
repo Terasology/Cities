@@ -62,11 +62,10 @@ public class LakeFacetProvider implements FacetProvider {
     public void process(GeneratingRegion region) {
         SurfaceHeightFacet surfaceHeightFacet = region.getRegionFacet(SurfaceHeightFacet.class);
         SeaLevelFacet seaLevelFacet = region.getRegionFacet(SeaLevelFacet.class);
-        Region3i world = region.getRegion();
-        LakeFacet lakeFacet = new LakeFacet(world, region.getBorderForFacet(LakeFacet.class));
-        Rect2i worldRect = Rect2i.createFromMinAndMax(world.minX(), world.minZ(), world.maxX(), world.maxZ());
+        LakeFacet lakeFacet = new LakeFacet(region.getRegion(), region.getBorderForFacet(LakeFacet.class));
+        Rect2i worldRect = lakeFacet.getWorldRegion();
 
-        int ngseed = Objects.hashCode(seed, worldRect, SEED_SALT);
+        int ngseed = Objects.hashCode(seed, region.getRegion(), SEED_SALT);
         WaterNameProvider ng = new WaterNameProvider(ngseed, new DebugWaterTheme());
 
         int minSize = 1;

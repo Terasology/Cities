@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.lakes;
+package org.terasology.cities.sites;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import org.terasology.cities.model.Lake;
+import org.terasology.math.TeraMath;
+import org.terasology.math.geom.Vector2i;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
 import org.terasology.world.viewer.layers.Renders;
 import org.terasology.world.viewer.layers.ZOrder;
@@ -30,20 +30,20 @@ import org.terasology.world.viewer.layers.ZOrder;
 /**
  * Draws the generated graph on a AWT graphics instance
  */
-@Renders(value = LakeFacet.class, order = ZOrder.BIOME + 1)
-public class LakeFacetLayer extends AbstractFacetLayer {
+@Renders(value = SettlementFacet.class, order = ZOrder.BIOME + 1)
+public class SettlementFacetLayer extends AbstractFacetLayer {
 
-    public LakeFacetLayer() {
+    public SettlementFacetLayer() {
         setVisible(false);
         // use default settings
     }
 
     @Override
     public void render(BufferedImage img, org.terasology.world.generation.Region region) {
-        LakeFacet graphFacet = region.getFacet(LakeFacet.class);
+        SettlementFacet settlementFacet = region.getFacet(SettlementFacet.class);
 
-        Color fillColor = new Color(64, 64, 255, 128);
-        Color frameColor = new Color(64, 64, 255, 224);
+        Color fillColor = new Color(255, 64, 64, 128);
+        Color frameColor = new Color(255, 64, 64, 224);
 
         Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -51,12 +51,13 @@ public class LakeFacetLayer extends AbstractFacetLayer {
         int dy = region.getRegion().minZ();
         g.translate(-dx, -dy);
 
-        for (Lake lake : graphFacet.getLakes()) {
-            Polygon poly = lake.getContour().getPolygon();
+        for (Settlement settlement : settlementFacet.getSettlements()) {
+            Vector2i center = settlement.getPos();
+            int radius = TeraMath.floorToInt(settlement.getRadius());
             g.setColor(fillColor);
-            g.fill(poly);
+            g.fillOval(center.getX() - radius, center.getY() - radius, radius * 2, radius * 2);
             g.setColor(frameColor);
-            g.draw(poly);
+            g.drawOval(center.getX() - radius, center.getY() - radius, radius * 2, radius * 2);
         }
 
         g.dispose();
@@ -64,11 +65,12 @@ public class LakeFacetLayer extends AbstractFacetLayer {
 
     @Override
     public String getWorldText(org.terasology.world.generation.Region region, int wx, int wy) {
-        LakeFacet lakeFacet = region.getFacet(LakeFacet.class);
+        SettlementFacet facet = region.getFacet(SettlementFacet.class);
 
-        for (Lake lake : lakeFacet.getLakes()) {
-            if (lake.getContour().getPolygon().contains(wx, wy)) {
-                return lake.getName();
+        Vector2i cursor = new Vector2i(wx, wy);
+        for (Settlement settlement : facet.getSettlements()) {
+            if (settlement.getPos().distance(cursor) < settlement.getRadius()) {
+                return settlement.toString();
             }
         }
         return null;
