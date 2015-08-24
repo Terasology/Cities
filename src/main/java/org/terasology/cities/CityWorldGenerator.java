@@ -18,6 +18,8 @@ package org.terasology.cities;
 
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.sites.SettlementFacetProvider;
+import org.terasology.cities.surface.SurfaceHeightFacetProvider;
+import org.terasology.cities.surface.InfiniteSurfaceHeightFacetProvider;
 import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
 import org.terasology.core.world.generator.facetProviders.EnsureSpawnableChunkZeroProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
@@ -72,7 +74,8 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
         WorldBuilder worldBuilder = new WorldBuilder(CoreRegistry.get(WorldGeneratorPluginLibrary.class))
                 .setSeaLevel(seaLevel)
                 .addProvider(new SeaLevelProvider(seaLevel))
-                .addProvider(new HeightMapCompatibilityFacetProvider())
+                .addProvider(new InfiniteSurfaceHeightFacetProvider())
+                .addProvider(new SurfaceHeightFacetProvider())
                 .addProvider(new LakeFacetProvider())
                 .addProvider(new SimpleBiomeProvider())
                 .addProvider(new SettlementFacetProvider())

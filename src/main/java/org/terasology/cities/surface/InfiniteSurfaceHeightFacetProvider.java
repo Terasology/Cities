@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.cities;
+package org.terasology.cities.surface;
 
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
@@ -21,22 +21,19 @@ import org.terasology.commonworld.heightmap.NoiseHeightMap;
 import org.terasology.commonworld.symmetry.Symmetries;
 import org.terasology.commonworld.symmetry.Symmetry;
 import org.terasology.entitySystem.Component;
-import org.terasology.math.Vector2i;
-import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.ConfigurableFacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
-import org.terasology.world.generation.facets.SurfaceHeightFacet;
 import org.terasology.rendering.nui.properties.OneOf.Enum;
 
-@Produces(SurfaceHeightFacet.class)
-public class HeightMapCompatibilityFacetProvider implements ConfigurableFacetProvider {
+@Produces(InfiniteSurfaceHeightFacet.class)
+public class InfiniteSurfaceHeightFacetProvider implements ConfigurableFacetProvider {
 
     private HeightMap heightMap;
     private NoiseHeightMap noiseMap;
     private Configuration configuration = new Configuration();
 
-    public HeightMapCompatibilityFacetProvider() {
+    public InfiniteSurfaceHeightFacetProvider() {
         noiseMap = new NoiseHeightMap();
         setConfiguration(new Configuration());
     }
@@ -48,16 +45,16 @@ public class HeightMapCompatibilityFacetProvider implements ConfigurableFacetPro
 
     @Override
     public void process(GeneratingRegion region) {
-        Border3D border = region.getBorderForFacet(SurfaceHeightFacet.class);
-        SurfaceHeightFacet facet = new SurfaceHeightFacet(region.getRegion(), border);
+        InfiniteSurfaceHeightFacet facet = new InfiniteSurfaceHeightFacet() {
 
-        for (Vector2i pos : facet.getWorldRegion()) {
-            int x = pos.getX();
-            int y = pos.getY();
-            facet.setWorld(pos, heightMap.apply(x, y));
-        }
+            @Override
+            public float getWorld(int worldX, int worldY) {
+                return heightMap.apply(worldX, worldY);
+            }
 
-        region.setRegionFacet(SurfaceHeightFacet.class, facet);
+        };
+
+        region.setRegionFacet(InfiniteSurfaceHeightFacet.class, facet);
     }
 
     @Override
