@@ -14,41 +14,33 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.sites;
+package org.terasology.cities.roads;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.terasology.math.Region3i;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.facets.base.BaseFacet2D;
 
 /**
  *
  */
-public class SettlementFacet extends BaseFacet2D {
+public class RoadFacet extends BaseFacet2D {
 
-    private Set<Settlement> settlements = new HashSet<>();
-    private int uncertainBorder;
+    private Set<Road> roads = new HashSet<>();
 
-    public SettlementFacet(Region3i targetRegion, Border3D border, int uncertainBorder) {
+    public RoadFacet(Region3i targetRegion, Border3D border) {
         super(targetRegion, border);
-        this.uncertainBorder = uncertainBorder;
     }
 
-    public Rect2i getCertainWorldRegion() {
-        return getWorldRegion().expand(new Vector2i(-uncertainBorder, -uncertainBorder));
+    public void addRoad(Road road) {
+        roads.add(road);
     }
 
-    public void addSettlement(Settlement settlement) {
-        settlements.add(settlement);
-    }
-
-    public Set<Settlement> getSettlements() {
-        return Collections.unmodifiableSet(settlements);
+    public Set<Road> getRoads() {
+        return Collections.unmodifiableSet(roads);
     }
 
 }

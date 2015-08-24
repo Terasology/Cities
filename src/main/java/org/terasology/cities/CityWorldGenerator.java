@@ -17,6 +17,7 @@
 package org.terasology.cities;
 
 import org.terasology.cities.lakes.LakeFacetProvider;
+import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.sites.SettlementFacetProvider;
 import org.terasology.cities.surface.SurfaceHeightFacetProvider;
 import org.terasology.cities.terrain.BuildableTerrainFacetProvider;
@@ -81,6 +82,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new LakeFacetProvider())
                 .addProvider(new SimpleBiomeProvider())
                 .addProvider(new SettlementFacetProvider())
+                .addProvider(new RoadFacetProvider())
                 .addProvider(new DefaultFloraProvider())
                 .addProvider(new EnsureSpawnableChunkZeroProvider())
                 .addRasterizer(new SolidRasterizer())

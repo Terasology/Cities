@@ -19,6 +19,7 @@ package org.terasology.cities.sites;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.entitySystem.Component;
@@ -43,7 +44,7 @@ import org.terasology.world.generation.Requires;
  *
  */
 @Produces(SettlementFacet.class)
-@Requires(@Facet(value = BuildableTerrainFacet.class))
+@Requires(@Facet(BuildableTerrainFacet.class))
 public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
     private Configuration config = new Configuration();
@@ -73,7 +74,8 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
         Border3D border = region.getBorderForFacet(SettlementFacet.class);
         border = border.extendBy(0, 0, TeraMath.ceilToInt(config.maxRadius * 3 + config.minDistance));
         Region3i coreReg = region.getRegion();
-        SettlementFacet settlementFacet = new SettlementFacet(coreReg, border);
+        int uncertainBorder = 2 * config.maxRadius + config.minDistance;
+        SettlementFacet settlementFacet = new SettlementFacet(coreReg, border, uncertainBorder);
         Rect2i worldRect = settlementFacet.getWorldRegion();
         Rect2i worldRectScaled = Rect2i.createFromMinAndMax(worldRect.min().div(scale), worldRect.max().div(scale));
 
@@ -97,8 +99,14 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
         ensureMinDistance(sites, config.minDistance);
 
+        // remove all settlements that might not actually exist
+        // this can happen if other settlements further away with higher priority intersect
         for (Settlement site : sites) {
-            settlementFacet.addSettlement(site);
+            float borderDist = config.maxRadius + config.minDistance + site.getRadius();
+            Rect2i certainRect = worldRect.expand(new Vector2i(-borderDist, -borderDist));
+            if (certainRect.contains(site.getPos())) {
+                settlementFacet.addSettlement(site);
+            }
         }
 
         region.setRegionFacet(SettlementFacet.class, settlementFacet);
@@ -126,23 +134,20 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
                 priorityNoiseGen.noise(s2.getPos().getX(), s2.getPos().getY())
                 ));
 
-        Iterator<Settlement> it = sites.iterator();
+        ListIterator<Settlement> it = sites.listIterator();
         while (it.hasNext()) {
             Settlement site = it.next();
-
             Vector2i thisPos = site.getPos();
-            float thisPrio = priorityNoiseGen.noise(thisPos.getX(), thisPos.getY());
 
-            for (Settlement other : sites) {
+            Iterator<Settlement> otherIt = sites.listIterator(it.nextIndex());
+            while (otherIt.hasNext()) {
+                Settlement other = otherIt.next();
                 Vector2i otherPos = other.getPos();
                 double distSq = thisPos.distanceSquared(otherPos);
                 double thres = minDist + site.getRadius() + other.getRadius();
                 if (distSq < thres * thres) {
-                    float otherPrio = priorityNoiseGen.noise(otherPos.getX(), otherPos.getY());
-                    if (thisPrio < otherPrio) {
-                        it.remove();
-                        break;
-                    }
+                    it.remove();
+                    break;
                 }
             }
         }
@@ -153,12 +158,12 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
     private static class Configuration implements Component {
 
         @Range(label = "Minimal town size", description = "Minimal town size in blocks", min = 1, max = 150, increment = 10, precision = 1)
-        private float minRadius = 50;
+        private int minRadius = 50;
 
         @Range(label = "Maximum town size", description = "Maximum town size in blocks", min = 10, max = 350, increment = 10, precision = 1)
-        private float maxRadius = 250;
+        private int maxRadius = 256;
 
         @Range(label = "Minimum distance between towns", min = 10, max = 1000, increment = 10, precision = 1)
-        private float minDistance = 100;
+        private int minDistance = 128;
     }
 }
