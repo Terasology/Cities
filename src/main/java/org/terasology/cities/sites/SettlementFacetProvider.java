@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.terasology.cities.lakes.LakeFacet;
-import org.terasology.cities.model.Lake;
-import org.terasology.core.world.generator.facets.BiomeFacet;
+import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.entitySystem.Component;
 import org.terasology.math.Region3i;
 import org.terasology.math.TeraMath;
@@ -37,7 +35,6 @@ import org.terasology.utilities.procedural.WhiteNoise;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.ConfigurableFacetProvider;
 import org.terasology.world.generation.Facet;
-import org.terasology.world.generation.FacetBorder;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
@@ -46,8 +43,7 @@ import org.terasology.world.generation.Requires;
  *
  */
 @Produces(SettlementFacet.class)
-@Requires({
-    @Facet(value = LakeFacet.class, border = @FacetBorder(sides = 25 * 3 + 10))})
+@Requires(@Facet(value = BuildableTerrainFacet.class))
 public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
     private Configuration config = new Configuration();
@@ -69,31 +65,31 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
     @Override
     public void process(GeneratingRegion region) {
 
-        LakeFacet lakeFacet = region.getRegionFacet(LakeFacet.class);
+        BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
 
-        Border3D border = region.getBorderForFacet(BiomeFacet.class);
+        // iterate in large steps over the world regions searching for suitable sites
+        int scale = 10;
+
+        Border3D border = region.getBorderForFacet(SettlementFacet.class);
         border = border.extendBy(0, 0, TeraMath.ceilToInt(config.maxRadius * 3 + config.minDistance));
         Region3i coreReg = region.getRegion();
         SettlementFacet settlementFacet = new SettlementFacet(coreReg, border);
         Rect2i worldRect = settlementFacet.getWorldRegion();
-
-        if (coreReg.minX() == 384 && coreReg.minZ() == 256) {
-            System.out.println("Sas");
-        }
+        Rect2i worldRectScaled = Rect2i.createFromMinAndMax(worldRect.min().div(scale), worldRect.max().div(scale));
 
         List<Settlement> sites = new ArrayList<>();
 
-        for (BaseVector2i pos : worldRect.contents()) {
-            // about 0.99^10 =~ 0.90 --> about 10% hit chance
-            if (seedNoiseGen.noise(pos.getX(), pos.getY()) > 0.9999) {
+        for (BaseVector2i posScaled : worldRectScaled.contents()) {
+            Vector2i pos = new Vector2i(posScaled.getX() * scale, posScaled.getY() * scale);
+            if (seedNoiseGen.noise(pos.getX(), pos.getY()) > 0.99) {
                 float size = sizeNoiseGen.noise(pos.getX(), pos.getY());
                 size = config.minRadius + (size + 1) * 0.5f * (config.maxRadius - config.minRadius);
 
-                long nameSeed = seed ^ pos.hashCode();
-                // TODO: adapt NameProvider to provide name for a given seed
-                TownNameProvider ng = new TownNameProvider(nameSeed, new DebugTownTheme());
-                Settlement settlement = new Settlement(ng.generateName(), pos.getX(), pos.getY(), size);
-                if (terrainOk(settlement, lakeFacet)) {
+                if (terrainFacet.isBuildable(pos)) {
+                    long nameSeed = seed ^ pos.hashCode();
+                    // TODO: adapt NameProvider to provide name for a given seed
+                    TownNameProvider ng = new TownNameProvider(nameSeed, new DebugTownTheme());
+                    Settlement settlement = new Settlement(ng.generateName(), pos.getX(), pos.getY(), size);
                     sites.add(settlement);
                 }
             }
@@ -106,18 +102,6 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
         }
 
         region.setRegionFacet(SettlementFacet.class, settlementFacet);
-    }
-
-    private boolean terrainOk(Settlement settlement, LakeFacet lakeFacet) {
-        Vector2i center = settlement.getPos();
-        int wx = center.getX();
-        int wy = center.getY();
-        for (Lake lake : lakeFacet.getLakes()) {
-            if (lake.getContour().getPolygon().contains(wx, wy)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override
@@ -137,7 +121,7 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
     private boolean ensureMinDistance(List<Settlement> sites, double minDist) {
 
-        sites.sort((s1, s2) -> -Float.compare(
+        sites.sort((s1, s2) -> Float.compare(
                 priorityNoiseGen.noise(s1.getPos().getX(), s1.getPos().getY()),
                 priorityNoiseGen.noise(s2.getPos().getX(), s2.getPos().getY())
                 ));
@@ -169,12 +153,12 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
     private static class Configuration implements Component {
 
         @Range(label = "Minimal town size", description = "Minimal town size in blocks", min = 1, max = 150, increment = 10, precision = 1)
-        private float minRadius = 5;
+        private float minRadius = 50;
 
         @Range(label = "Maximum town size", description = "Maximum town size in blocks", min = 10, max = 350, increment = 10, precision = 1)
-        private float maxRadius = 25;
+        private float maxRadius = 250;
 
-        @Range(label = "Minimum distance between towns", min = 1, max = 1000, increment = 10, precision = 1)
-        private float minDistance = 10;
+        @Range(label = "Minimum distance between towns", min = 10, max = 1000, increment = 10, precision = 1)
+        private float minDistance = 100;
     }
 }

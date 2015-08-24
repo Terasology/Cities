@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector2i;
+import org.terasology.utilities.procedural.WhiteNoise;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
 import org.terasology.world.viewer.layers.Renders;
 import org.terasology.world.viewer.layers.ZOrder;
