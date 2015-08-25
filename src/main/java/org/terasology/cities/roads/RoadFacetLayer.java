@@ -20,6 +20,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 
 import org.terasology.math.geom.BaseVector2i;
@@ -55,7 +56,12 @@ public class RoadFacetLayer extends AbstractFacetLayer {
 
         for (Road road : roadFacet.getRoads()) {
             BaseVector2i p0 = road.getEnd0();
-            BaseVector2i p1 = road.getEnd1();
+            Path2D path = new Path2D.Float();
+            path.moveTo(p0.getX(), p0.getY());
+            for (int i = 1; i < road.getPoints().size(); i++) {
+                BaseVector2i p1 = road.getPoints().get(i);
+                path.lineTo(p1.getX(), p1.getY());
+            }
 
             float width = road.getWidth();
             BasicStroke strokeOuter = new BasicStroke(width);
@@ -63,10 +69,16 @@ public class RoadFacetLayer extends AbstractFacetLayer {
 
             g.setColor(frameColor);
             g.setStroke(strokeOuter);
-            g.drawLine(p0.getX(), p0.getY(), p1.getX(), p1.getY());
+            g.draw(path);
             g.setColor(fillColor);
             g.setStroke(strokeInner);
-            g.drawLine(p0.getX(), p0.getY(), p1.getX(), p1.getY());
+            g.draw(path);
+
+            g.setColor(Color.BLUE);
+            for (int i = 0; i < road.getPoints().size(); i++) {
+                BaseVector2i p1 = road.getPoints().get(i);
+                g.drawLine(p1.getX(), p1.getY(), p1.getX(), p1.getY());
+            }
         }
 
         g.dispose();

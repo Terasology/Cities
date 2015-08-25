@@ -16,6 +16,7 @@
 
 package org.terasology.cities.roads;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,8 +40,13 @@ public class Road {
      * @param width the width of the road
      */
     public Road(BaseVector2i end0, BaseVector2i end1, float width) {
-        segmentPoints.add(ImmutableVector2i.createOrUse(end0));
-        segmentPoints.add(ImmutableVector2i.createOrUse(end1));
+        this(Arrays.asList(end0, end1), width);
+    }
+
+    public Road(List<? extends BaseVector2i> segPoints, float width) {
+        for (BaseVector2i segPoint : segPoints) {
+            segmentPoints.add(ImmutableVector2i.createOrUse(segPoint));
+        }
         this.width = width;
     }
 

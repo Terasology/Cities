@@ -52,6 +52,17 @@ public class BuildableTerrainFacetProvider implements FacetProvider {
                 return true;
             }
 
+            @Override
+            public boolean isPassable(int worldX, int worldY) {
+                float height = surfaceHeightFacet.getWorld(worldX, worldY);
+                // at least above sea level
+                if (height <= seaLevelFacet.getSeaLevel()) {
+                    return false;
+                }
+
+                return true;
+            }
+
         };
 
         region.setRegionFacet(BuildableTerrainFacet.class, facet);

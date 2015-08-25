@@ -29,4 +29,10 @@ public interface BuildableTerrainFacet extends WorldFacet {
     }
 
     boolean isBuildable(int worldX, int worldY);
+
+    default boolean isPassable(BaseVector2i worldPos) {
+        return isPassable(worldPos.getX(), worldPos.getY());
+    }
+
+    boolean isPassable(int worldX, int worldY);
 }
