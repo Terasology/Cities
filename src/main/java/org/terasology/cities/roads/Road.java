@@ -23,6 +23,7 @@ import java.util.List;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 /**
@@ -31,7 +32,8 @@ import com.google.common.collect.Lists;
 public class Road {
 
     private final List<ImmutableVector2i> segmentPoints = Lists.newArrayList();
-    private float width = 1.0f;
+    private final float width;
+    private final float length;
 
     /**
      * The point list goes from start to end, but does not contain them
@@ -44,9 +46,16 @@ public class Road {
     }
 
     public Road(List<? extends BaseVector2i> segPoints, float width) {
+        Preconditions.checkArgument(segPoints.size() >= 2, "must contain at least two points");
+
+        float tmpLength = 0;
+        BaseVector2i prev = segPoints.get(0);
         for (BaseVector2i segPoint : segPoints) {
+            tmpLength += segPoint.distance(prev);
+            prev = segPoint;
             segmentPoints.add(ImmutableVector2i.createOrUse(segPoint));
         }
+        this.length = tmpLength;
         this.width = width;
     }
 
@@ -69,6 +78,13 @@ public class Road {
      */
     public List<ImmutableVector2i> getPoints() {
         return Collections.unmodifiableList(segmentPoints);
+    }
+
+    /**
+     * @return the length of the road in blocks
+     */
+    public float getLength() {
+        return length;
     }
 
     /**

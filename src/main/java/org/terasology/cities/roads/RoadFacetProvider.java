@@ -18,7 +18,11 @@ package org.terasology.cities.roads;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.terasology.cities.sites.Settlement;
@@ -26,9 +30,13 @@ import org.terasology.cities.sites.SettlementFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.core.world.generator.facets.BiomeFacet;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.BaseVector2f;
 import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.Vector2i;
+import org.terasology.pathfinding.GeneralPathFinder;
+import org.terasology.pathfinding.GeneralPathFinder.DefaultEdge;
+import org.terasology.pathfinding.GeneralPathFinder.Edge;
+import org.terasology.pathfinding.GeneralPathFinder.Path;
 import org.terasology.utilities.procedural.PerlinNoise;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.Facet;
@@ -37,8 +45,6 @@ import org.terasology.world.generation.FacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
-
-import com.google.common.math.DoubleMath;
 
 /**
  *
@@ -89,8 +95,22 @@ public class RoadFacetProvider implements FacetProvider {
             }
         }
 
+        candidates.sort((a, b) -> { return Float.compare(a.getLength(), b.getLength()); });
+
+        Map<ImmutableVector2i, Collection<Edge<ImmutableVector2i>>> sourceMap = new HashMap<>();
+        GeneralPathFinder<ImmutableVector2i> pathFinder = new GeneralPathFinder<>(e -> sourceMap.getOrDefault(e, Collections.emptySet()));
+
         for (Road road : candidates) {
-            roadFacet.addRoad(road);
+
+            Optional<Path<ImmutableVector2i>> optPath = pathFinder.computePath(road.getEnd0(), road.getEnd1());
+
+            // existing connections must be at least 25% longer than the direct connection to be added
+            if (!optPath.isPresent() || optPath.get().getLength() > 1.25 * road.getLength()) {
+                Edge<ImmutableVector2i> e = new DefaultEdge<ImmutableVector2i>(road.getEnd0(), road.getEnd1(), road.getLength());
+                sourceMap.computeIfAbsent(road.getEnd0(), a -> new ArrayList<>()).add(e);
+                sourceMap.computeIfAbsent(road.getEnd1(), a -> new ArrayList<>()).add(e);
+                roadFacet.addRoad(road);
+            }
         }
 
         region.setRegionFacet(RoadFacet.class, roadFacet);
@@ -107,7 +127,7 @@ public class RoadFacetProvider implements FacetProvider {
         segPoints.add(posA);
         float smoothness = 0.005f;
         for (int i = 1; i < segCount; i++) {
-            Vector2i pos = lerp(posA, posB, (float)i / segCount, RoundingMode.HALF_UP);
+            Vector2i pos = BaseVector2i.lerp(posA, posB, (float) i / segCount, RoundingMode.HALF_UP);
 
             // first and last point receive only half the noise distortion to smoothen the end points
             float applyFactor = (i == 1 || i == segCount - 1) ? 0.5f : 1f;
@@ -124,11 +144,5 @@ public class RoadFacetProvider implements FacetProvider {
         segPoints.add(posB);
 
         return Optional.of(new Road(segPoints, width));
-    }
-
-    private static Vector2i lerp(BaseVector2i a, BaseVector2i b, double t, RoundingMode mode) {
-        double x = (1 - t) * a.getX() + t * b.getX();
-        double y = (1 - t) * a.getY() + t * b.getY();
-        return new Vector2i(DoubleMath.roundToInt(x, mode), DoubleMath.roundToInt(y, mode));
     }
 }

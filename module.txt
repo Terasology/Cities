@@ -14,6 +14,10 @@
             "minVersion" : "0.4.0"
         },
         {
+            "id" : "PathFinding",
+            "minVersion" : "0.1.1"
+        },
+        {
             "id" : "Fences",
             "minVersion" : "0.1.0"
         },
