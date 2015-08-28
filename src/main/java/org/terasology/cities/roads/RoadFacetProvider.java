@@ -102,6 +102,8 @@ public class RoadFacetProvider implements FacetProvider {
 
         for (Road road : candidates) {
 
+            // TODO: compute if road is even relevant for this world region first
+
             Optional<Path<ImmutableVector2i>> optPath = pathFinder.computePath(road.getEnd0(), road.getEnd1());
 
             // existing connections must be at least 25% longer than the direct connection to be added

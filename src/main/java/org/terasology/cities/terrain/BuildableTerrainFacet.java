@@ -17,6 +17,7 @@
 package org.terasology.cities.terrain;
 
 import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Rect2i;
 import org.terasology.world.generation.WorldFacet;
 
 /**
@@ -29,6 +30,15 @@ public interface BuildableTerrainFacet extends WorldFacet {
     }
 
     boolean isBuildable(int worldX, int worldY);
+
+    default boolean isBuildable(Rect2i rect) {
+        // approximate by checking corners only
+        // TODO: find a better solution
+        return isBuildable(rect.minX(), rect.minY())
+            && isBuildable(rect.minX(), rect.maxY())
+            && isBuildable(rect.maxX(), rect.minY())
+            && isBuildable(rect.maxX(), rect.maxY());
+    }
 
     default boolean isPassable(BaseVector2i worldPos) {
         return isPassable(worldPos.getX(), worldPos.getY());

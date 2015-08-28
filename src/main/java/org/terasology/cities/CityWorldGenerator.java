@@ -25,6 +25,7 @@ import org.terasology.cities.surface.InfiniteSurfaceHeightFacetProvider;
 import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
 import org.terasology.core.world.generator.facetProviders.EnsureSpawnableChunkZeroProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
+import org.terasology.core.world.generator.facetProviders.SurfaceToDensityProvider;
 import org.terasology.core.world.generator.rasterizers.FloraRasterizer;
 import org.terasology.core.world.generator.rasterizers.SolidRasterizer;
 import org.terasology.engine.SimpleUri;
@@ -55,6 +56,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
 
     @Override
     public void initialize() {
+        super.initialize();
 
 //        noiseMap = new NoiseHeightMap();
 //        heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
@@ -78,6 +80,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new SeaLevelProvider(seaLevel))
                 .addProvider(new InfiniteSurfaceHeightFacetProvider())
                 .addProvider(new SurfaceHeightFacetProvider())
+                .addProvider(new SurfaceToDensityProvider())
                 .addProvider(new BuildableTerrainFacetProvider())
                 .addProvider(new LakeFacetProvider())
                 .addProvider(new SimpleBiomeProvider())

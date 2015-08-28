@@ -16,6 +16,7 @@
 
 package org.terasology.cities.roads;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,14 +25,14 @@ import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 /**
  * A road contains two end points and a list of points between them.
  */
 public class Road {
 
-    private final List<ImmutableVector2i> segmentPoints = Lists.newArrayList();
+    private final List<ImmutableVector2i> segmentPoints;
+    private final List<RoadSegment> segments;
     private final float width;
     private final float length;
 
@@ -48,6 +49,8 @@ public class Road {
     public Road(List<? extends BaseVector2i> segPoints, float width) {
         Preconditions.checkArgument(segPoints.size() >= 2, "must contain at least two points");
 
+        segmentPoints = new ArrayList<>(segPoints.size());
+
         float tmpLength = 0;
         BaseVector2i prev = segPoints.get(0);
         for (BaseVector2i segPoint : segPoints) {
@@ -55,6 +58,14 @@ public class Road {
             prev = segPoint;
             segmentPoints.add(ImmutableVector2i.createOrUse(segPoint));
         }
+
+        segments = new ArrayList<>(segPoints.size() - 1);
+        for (int i = 1; i < segPoints.size(); i++) {
+            ImmutableVector2i p = segmentPoints.get(i - 1);
+            ImmutableVector2i c = segmentPoints.get(i);
+            segments.add(new RoadSegment(p, c, width));
+        }
+
         this.length = tmpLength;
         this.width = width;
     }
@@ -74,10 +85,17 @@ public class Road {
     }
 
     /**
-     * @return an unmodifiable view on the segment points (can be empty, but never <code>null</code>)
+     * @return an unmodifiable view on the segment points (at least two points)
      */
     public List<ImmutableVector2i> getPoints() {
         return Collections.unmodifiableList(segmentPoints);
+    }
+
+    /**
+     * @return an unmodifiable view on the segment points (at least one segment)
+     */
+    public List<RoadSegment> getSegments() {
+        return Collections.unmodifiableList(segments);
     }
 
     /**

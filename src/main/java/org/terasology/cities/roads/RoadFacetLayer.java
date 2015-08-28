@@ -36,7 +36,6 @@ import org.terasology.world.viewer.layers.ZOrder;
 public class RoadFacetLayer extends AbstractFacetLayer {
 
     public RoadFacetLayer() {
-        setVisible(false);
         // use default settings
     }
 
