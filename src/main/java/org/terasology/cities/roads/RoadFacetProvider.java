@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.sites.Settlement;
 import org.terasology.cities.sites.SettlementFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
@@ -45,11 +46,13 @@ import org.terasology.world.generation.FacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
+import org.terasology.world.generation.Updates;
 
 /**
- *
+ * Provides {@link Road} instances through {@link RoadFacet}.
  */
 @Produces(RoadFacet.class)
+@Updates(@Facet(BlockedAreaFacet.class))
 @Requires({
     @Facet(value = SettlementFacet.class, border = @FacetBorder(sides = 500)),
     @Facet(BuildableTerrainFacet.class)})
@@ -68,6 +71,7 @@ public class RoadFacetProvider implements FacetProvider {
     public void process(GeneratingRegion region) {
         BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
         SettlementFacet siteFacet = region.getRegionFacet(SettlementFacet.class);
+        BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
 
         Border3D border = region.getBorderForFacet(BiomeFacet.class);
         RoadFacet roadFacet = new RoadFacet(region.getRegion(), border);
@@ -112,9 +116,12 @@ public class RoadFacetProvider implements FacetProvider {
                 sourceMap.computeIfAbsent(road.getEnd0(), a -> new ArrayList<>()).add(e);
                 sourceMap.computeIfAbsent(road.getEnd1(), a -> new ArrayList<>()).add(e);
                 roadFacet.addRoad(road);
+
+                for (RoadSegment seg : road.getSegments()) {
+                    blockedAreaFacet.addLine(seg.getStart(), seg.getEnd(), road.getWidth());
+                }
             }
         }
-
         region.setRegionFacet(RoadFacet.class, roadFacet);
     }
 

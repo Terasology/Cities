@@ -27,6 +27,7 @@ import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.sites.Settlement;
 import org.terasology.cities.sites.SettlementFacet;
@@ -43,6 +44,7 @@ import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
+import org.terasology.world.generation.Updates;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
