@@ -24,7 +24,7 @@ import org.terasology.world.generation.WorldFacet;
  */
 public interface InfiniteSurfaceHeightFacet extends WorldFacet {
 
-    default float get(BaseVector2i worldPos) {
+    default float getWorld(BaseVector2i worldPos) {
         return getWorld(worldPos.getX(), worldPos.getY());
     }
 
