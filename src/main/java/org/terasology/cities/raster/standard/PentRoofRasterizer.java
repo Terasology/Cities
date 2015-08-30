@@ -28,7 +28,7 @@ import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.BaseVector2i;
 
 /**
  * Converts a {@link PentRoof} into blocks
@@ -42,7 +42,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
         if (!brush.affects(area)) {
             return;
         }
-        
+
         final HeightMap bottomHm = new HeightMapAdapter() {
 
             @Override
@@ -50,19 +50,19 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
                 int rx = x - area.x;
                 int rz = z - area.y;
 
-                Vector2i dir = roof.getOrientation().getDir();
-                
-                if (dir.x < 0) {
+                BaseVector2i dir = roof.getOrientation().getDir();
+
+                if (dir.getX() < 0) {
                     rx -= area.width;
                 }
 
-                if (dir.y < 0) {
+                if (dir.getY() < 0) {
                     rz -= area.height;
                 }
 
-                int hx = rx * dir.x;
-                int hz = rz * dir.y;
-                
+                int hx = rx * dir.getX();
+                int hz = rz * dir.getY();
+
                 int h = TeraMath.floorToInt(Math.max(hx, hz) * roof.getPitch());
 
                 return roof.getBaseHeight() + h;
@@ -71,9 +71,9 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
 
         int thickness = TeraMath.ceilToInt(roof.getPitch());
         brush.fillRect(area, bottomHm, HeightMaps.offset(bottomHm, thickness), BlockTypes.ROOF_HIP);
-        
+
         final Rectangle wallRect = Rectangles.expandRect(roof.getArea(), -1);
-        
+
         HeightMap gableBottomHm = new HeightMapAdapter() {
 
             @Override
@@ -82,7 +82,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
 
                 boolean onZ = (x == wallRect.x || x == wallRect.x + wallRect.width - 1);
                 boolean zOk = (z >= wallRect.y && z <= wallRect.y + wallRect.height - 1);
-                
+
                 if (onZ && zOk) {
                     return h0;
                 }
@@ -97,7 +97,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
                 return bottomHm.apply(x, z); // return top-height to get a no-op
             }
         };
-        
+
         brush.fillRect(area, gableBottomHm, bottomHm, BlockTypes.ROOF_GABLE);
     }
 }

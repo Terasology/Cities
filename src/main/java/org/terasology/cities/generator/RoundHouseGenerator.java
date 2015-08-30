@@ -19,8 +19,7 @@ package org.terasology.cities.generator;
 import java.awt.Rectangle;
 import java.math.RoundingMode;
 
-import org.terasology.math.Vector2i;
-
+import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.bldg.RoundHouse;
 import org.terasology.cities.model.bldg.SimpleDoor;
@@ -49,32 +48,32 @@ public class RoundHouseGenerator {
      * @return a generated {@link RoundHouse} model
      */
     public RoundHouse generate(SimpleLot lot) {
-        
-        // make build-able area 1 block smaller, so make the roof stay inside 
+
+        // make build-able area 1 block smaller, so make the roof stay inside
         Rectangle lotRc = Rectangles.expandRect(lot.getShape(), -1);
-        
+
         int centerX = lotRc.x + IntMath.divide(lotRc.width, 2, RoundingMode.HALF_UP);
         int centerY = lotRc.y + IntMath.divide(lotRc.height, 2, RoundingMode.HALF_UP);
 
         int towerSize = Math.min(lotRc.width, lotRc.height);
         int towerRad = towerSize / 2;
-        
+
         int entranceWidth = 1;
         int entranceHeight = 2;
         Rectangle doorRc = new Rectangle(centerX + towerRad, centerY, 1, entranceWidth);
-        Orientation doorOrientation = Orientation.EAST;        
+        Orientation doorOrientation = Orientation.EAST;
 
-        Vector2i doorDir = doorOrientation.getDir();
-        Rectangle probeRc = new Rectangle(doorRc.x + doorDir.x, doorRc.y + doorDir.y, doorRc.width, doorRc.height);
-        
+        ImmutableVector2i doorDir = doorOrientation.getDir();
+        Rectangle probeRc = new Rectangle(doorRc.x + doorDir.getX(), doorRc.y + doorDir.getY(), doorRc.width, doorRc.height);
+
         int baseHeight = heightMap.apply(probeRc.x , probeRc.y);
         int sideHeight = 4;
 
-        RoundHouse house = new RoundHouse(new Vector2i(centerX, centerY), towerRad, baseHeight, sideHeight);
+        RoundHouse house = new RoundHouse(new ImmutableVector2i(centerX, centerY), towerRad, baseHeight, sideHeight);
 
         SimpleDoor entrance = new SimpleDoor(doorOrientation, doorRc, baseHeight, baseHeight + entranceHeight);
         house.setDoor(entrance);
-        
+
         int windowWidth = 1;
         Rectangle wndRc1 = new Rectangle(centerX - towerRad, centerY, 1, windowWidth);
         Rectangle wndRc2 = new Rectangle(centerX, centerY - towerRad, 1, windowWidth);
@@ -86,7 +85,7 @@ public class RoundHouseGenerator {
         house.addWindow(wnd1);
         house.addWindow(wnd2);
         house.addWindow(wnd3);
-        
+
         return house;
     }
 }

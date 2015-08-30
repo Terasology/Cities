@@ -24,7 +24,7 @@ import java.awt.geom.Path2D;
 import org.terasology.cities.model.bldg.Tower;
 import org.terasology.cities.model.bldg.TownWall;
 import org.terasology.cities.model.bldg.WallSegment;
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.BaseVector2i;
 
 /**
  * Computes the blocked area of a given {@link TownWall}
@@ -36,26 +36,26 @@ public class TownWallShapeGenerator {
      * @return the shape the town wall blocks
      */
     public Shape computeShape(TownWall tw) {
-        
+
         Path2D shape = new Path2D.Double();
-        
+
         for (Tower tower : tw.getTowers()) {
             shape.append(tower.getLayout(), false);
         }
 
         for (WallSegment ws : tw.getWalls()) {
-            Vector2i start = ws.getStart();
-            Vector2i end = ws.getEnd();
-            
-            Shape line = new Line2D.Double(start.x, start.y, end.x, end.y);
-            
+            BaseVector2i start = ws.getStart();
+            BaseVector2i end = ws.getEnd();
+
+            Shape line = new Line2D.Double(start.getX(), start.getY(), end.getX(), end.getY());
+
             BasicStroke thick = new BasicStroke(ws.getWallThickness());
 
             line = thick.createStrokedShape(line);
 
             shape.append(line, false);
         }
-        
+
         return shape;
     }
 }

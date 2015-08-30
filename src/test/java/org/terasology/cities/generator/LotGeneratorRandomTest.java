@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.terasology.math.Vector2i;
-
+import org.terasology.math.geom.BaseVector2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,9 +98,9 @@ public class LotGeneratorRandomTest  {
                 Set<Site> sites = cpr.apply(Sectors.getSector(x, z));
 
                 for (Site site : sites) {
-                    Vector2i pos = site.getPos();
+                    BaseVector2i pos = site.getPos();
                     int rad = site.getRadius();
-                    Ellipse2D cityBbox = new Ellipse2D.Double(pos.x - rad, pos.y - rad, rad * 2, rad * 2);
+                    Ellipse2D cityBbox = new Ellipse2D.Double(pos.getX() - rad, pos.getY() - rad, rad * 2, rad * 2);
 
                     City city = new MedievalTown("name", site.getPos(), rad);
                     Set<SimpleLot> lots = lg.generate(city, sectorInfos.apply(Sectors.getSector(x, z)));

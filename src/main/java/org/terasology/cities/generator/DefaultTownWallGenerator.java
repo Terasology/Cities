@@ -27,7 +27,8 @@ import org.terasology.cities.model.bldg.SimpleTower;
 import org.terasology.cities.model.bldg.SolidWallSegment;
 import org.terasology.cities.model.bldg.TownWall;
 import org.terasology.cities.model.bldg.WallSegment;
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.Vector2i;
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
@@ -41,13 +42,13 @@ import com.google.common.collect.Lists;
 public class DefaultTownWallGenerator {
 
     private String seed;
-    private Function<Vector2i, Integer> heightMap;
+    private Function<BaseVector2i, Integer> heightMap;
 
     /**
      * @param seed the random seed
      * @param heightMap the terrain height function
      */
-    public DefaultTownWallGenerator(String seed, Function<Vector2i, Integer> heightMap) {
+    public DefaultTownWallGenerator(String seed, Function<BaseVector2i, Integer> heightMap) {
         this.seed = seed;
         this.heightMap = heightMap;
     }
@@ -59,17 +60,17 @@ public class DefaultTownWallGenerator {
      */
     public TownWall generate(City city, AreaInfo sectorInfo) {
         Random rand = new MersenneRandom(Objects.hash(seed, city.hashCode()));
-        
-        int cx = city.getPos().x;
-        int cz = city.getPos().y;
-        
+
+        int cx = city.getPos().getX();
+        int cz = city.getPos().getY();
+
         Vector2i center = new Vector2i(cx, cz);
-        
+
         int maxWallThick = 4;
         double maxRad = (city.getDiameter() - maxWallThick) * 0.5;
 
         TownWall tw = new TownWall();
-        
+
         double step = Math.toRadians(5);
 
         // generate towers first
@@ -77,18 +78,18 @@ public class DefaultTownWallGenerator {
         List<Boolean> blocked = getBlockedPos(tp, sectorInfo);
         int lastHit = Short.MIN_VALUE;
         int firstHit = Short.MIN_VALUE;
-        
+
         for (int i = 0; i < tp.size(); i++) {
 
             boolean thisOk = blocked.get(i);
             boolean nextOk = blocked.get((i + 1) % tp.size());
             boolean prevOk = blocked.get((i + tp.size() - 1) % tp.size());
 
-            if (thisOk) { 
+            if (thisOk) {
 
                 if (!prevOk) {                          // the previous location was blocked -> this is the second part of a gate
                     tw.addTower(createGateTower(tp.get(i)));
-                    
+
                     if (firstHit < 0) {
                         firstHit = i;
                     }
@@ -96,15 +97,15 @@ public class DefaultTownWallGenerator {
                     if (lastHit >= 0) {
                         Vector2i start = tp.get(lastHit);
                         Vector2i end = tp.get(i);
-                        
+
                         tw.addWall(createGateWall(start, end));
                     }
                     lastHit = i;
                 } else
-                
+
                 if (!nextOk) {                          // the next location is blocked -> this is the first part of a gate
                     tw.addTower(createGateTower(tp.get(i)));
-                    
+
                     if (firstHit < 0) {
                         firstHit = i;
                     }
@@ -116,10 +117,10 @@ public class DefaultTownWallGenerator {
                     }
                     lastHit = i;
                 } else
-                    
+
                 if (i - lastHit > 5 && tp.size() + i - firstHit > 5) {          // the last/next tower is n segments away -> place another one
                     tw.addTower(createTower(tp.get(i)));
-                    
+
                     if (firstHit < 0) {
                         firstHit = i;
                     }
@@ -134,18 +135,18 @@ public class DefaultTownWallGenerator {
             }
         }
 
-        // connect first and last tower to close the circle 
-        // --> this could be a gate segment 
+        // connect first and last tower to close the circle
+        // --> this could be a gate segment
         // --> TODO: find out
         if (firstHit >= 0 && lastHit >= 0) {
             Vector2i start = tp.get(lastHit);
             Vector2i end = tp.get(firstHit);
             tw.addWall(createSolidWall(start, end));
         }
-        
+
         return tw;
     }
-    
+
     private WallSegment createSolidWall(Vector2i start, Vector2i end) {
         int wallThick = 4;
         int wallHeight = 8;
@@ -153,8 +154,8 @@ public class DefaultTownWallGenerator {
         WallSegment wall = new SolidWallSegment(start, end, wallThick, wallHeight);
         return wall;
     }
-    
-    private WallSegment createGateWall(Vector2i start, Vector2i end) {
+
+    private WallSegment createGateWall(BaseVector2i start, BaseVector2i end) {
         int wallHeight = 8;
         int wallThick = 4;
 
@@ -164,20 +165,20 @@ public class DefaultTownWallGenerator {
 
     private List<Boolean> getBlockedPos(List<Vector2i> tp, AreaInfo sectorInfo) {
         List<Boolean> list = Lists.newArrayList();
-        
+
         for (Vector2i pos : tp) {
             Rectangle layout = getTowerRect(pos);
             boolean ok = !sectorInfo.isBlocked(layout);
             list.add(Boolean.valueOf(ok));
         }
-        
+
         return list;
     }
 
     private SimpleTower createGateTower(Vector2i towerPos) {
         int towerHeight = 10;
         int baseHeight = heightMap.apply(towerPos);
-        
+
         Rectangle layout = getTowerRect(towerPos);
         SimpleTower tower = new SimpleTower(layout, baseHeight, towerHeight);
         return tower;
@@ -186,20 +187,20 @@ public class DefaultTownWallGenerator {
     private SimpleTower createTower(Vector2i towerPos) {
         int towerHeight = 9;
         int baseHeight = heightMap.apply(towerPos);
-        
+
         Rectangle layout = getTowerRect(towerPos);
         SimpleTower tower = new SimpleTower(layout, baseHeight, towerHeight);
         return tower;
     }
-    
+
     private List<Vector2i> getTowerPosList(Random rand, Vector2i center, double maxRad, double step) {
 
         double maxRadiusDiv = maxRad * 0.1;
-  
+
         double maxAngularDiv = step * 0.1;
 
         List<Vector2i> list = Lists.newArrayList();
-           
+
         double ang = rand.nextDouble(0, Math.PI);   // actually, the range doesn't matter
         double endAng = ang + Math.PI * 2.0 - step; // subtract one step to avoid duplicate first/last position
 
@@ -208,16 +209,16 @@ public class DefaultTownWallGenerator {
 
             int tx = center.x + (int) (rad * Math.cos(ang));
             int ty = center.y + (int) (rad * Math.sin(ang));
-            
+
             list.add(new Vector2i(tx, ty));
 
             double angDiv = (rand.nextDouble() - 0.5) * maxAngularDiv;
             ang += step + angDiv;
        }
-        
+
         return list;
     }
-    
+
     private Rectangle getTowerRect(Vector2i tp) {
         int towerRad = 3;
 

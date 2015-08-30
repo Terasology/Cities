@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.vecmath.Vector2d;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.WorldFacade;
@@ -35,6 +33,7 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.geom.Vector2d;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;

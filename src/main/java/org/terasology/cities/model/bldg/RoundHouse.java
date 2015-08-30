@@ -18,8 +18,7 @@ package org.terasology.cities.model.bldg;
 
 import java.awt.geom.Ellipse2D;
 
-import org.terasology.math.Vector2i;
-
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.cities.model.roof.ConicRoof;
 
 /**
@@ -35,15 +34,15 @@ public class RoundHouse extends AbstractBuilding {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public RoundHouse(Vector2i center, int radius, int baseHeight, int wallHeight) {
+    public RoundHouse(BaseVector2i center, int radius, int baseHeight, int wallHeight) {
         super(
-            new Ellipse2D.Double(center.x - radius, center.y - radius, 2 * radius, 2 * radius),
+            new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius),
             new ConicRoof(center, radius + 1, baseHeight + wallHeight, 1),
             baseHeight,
             wallHeight);
     }
 
-    
+
     /**
      * @return the door
      */

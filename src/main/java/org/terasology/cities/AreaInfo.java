@@ -20,8 +20,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 
-import org.terasology.math.Vector2i;
-
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
@@ -29,10 +28,10 @@ import org.terasology.commonworld.heightmap.HeightMap;
  */
 public class AreaInfo {
 
-    private final HeightMap heightMap;  
+    private final HeightMap heightMap;
     private final Path2D blockedArea = new Path2D.Double();
     private final CityTerrainComponent config;
-    
+
     /**
      * @param config the world config (sea level, etc)
      * @param hm the height map to use
@@ -44,11 +43,11 @@ public class AreaInfo {
     }
 
     /**
-     * Marks an area as blocked 
+     * Marks an area as blocked
      * @param shape the area shape to add
      */
     public void addBlockedArea(Shape shape) {
-        
+
         blockedArea.append(shape, false);
     }
 
@@ -57,7 +56,7 @@ public class AreaInfo {
      * @return true if the rect intersects blocked area or terrain obstacles
      */
     public boolean isBlocked(Rectangle rc) {
-        // TODO: check corners first 
+        // TODO: check corners first
         for (int z = rc.y; z < rc.y + rc.height; z++) {
             for (int x = rc.x; x < rc.x + rc.width; x++) {
                 if (getTerrainType(x, z) != TerrainType.LAND) {
@@ -65,10 +64,10 @@ public class AreaInfo {
                 }
             }
         }
-        
+
         return blockedArea.intersects(rc);
     }
-    
+
     /**
      * @param x the x coordinate
      * @param z the z coordinate
@@ -78,7 +77,7 @@ public class AreaInfo {
         if (getTerrainType(x, z) != TerrainType.LAND) {
             return true;
         }
-        
+
         return blockedArea.contains(x, z);
     }
 
@@ -86,28 +85,28 @@ public class AreaInfo {
      * @param pos the coordinate
      * @return true if blocked, false otherwise
      */
-    public boolean isBlocked(Vector2i pos) {
-        return isBlocked(pos.x, pos.y);
+    public boolean isBlocked(BaseVector2i pos) {
+        return isBlocked(pos.getX(), pos.getY());
     }
-    
+
     private TerrainType getTerrainType(int x, int z) {
         int y = heightMap.apply(x, z);
-        
+
         if (y <= config.getSeaLevel()) {
             return TerrainType.WATER;
         }
-        
+
         if (y >= config.getSnowLine()) {
             return TerrainType.SNOW;
         }
-        
+
         return TerrainType.LAND;
     }
-    
+
     private static enum TerrainType {
         LAND,
         WATER,
         SNOW
     }
-        
+
 }

@@ -19,7 +19,7 @@ package org.terasology.cities.model;
 import java.util.Collections;
 import java.util.List;
 
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.Vector2i;
 
 import com.google.common.collect.Lists;
 
@@ -42,7 +42,7 @@ public class Road {
     public Road(Junction start, Junction end) {
         this.start = start;
         this.end = end;
-        
+
         start.addRoad(this);
         end.addRoad(this);
     }
@@ -53,14 +53,14 @@ public class Road {
     public void setWidth(double width) {
         this.width = width;
     }
-    
+
     /**
      * @param pt a point on the road
      */
     public void add(Vector2i pt) {
         points.add(pt);
     }
-    
+
     /**
      * @return the end
      */
@@ -81,14 +81,14 @@ public class Road {
     public List<Vector2i> getPoints() {
         return Collections.unmodifiableList(points);
     }
-    
+
     /**
      * @return the width of the road in blocks
      */
     public double getWidth() {
         return width;
     }
-    
+
     @Override
     public String toString() {
         return "Road [" + start + " -> " + end + ", " + (points.size() + 1) + " segments]";

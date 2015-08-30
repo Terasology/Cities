@@ -18,17 +18,16 @@ package org.terasology.cities.model;
 
 import java.util.Objects;
 
-import org.terasology.math.Vector2i;
-
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
+import org.terasology.math.geom.ImmutableVector2i;
 
 /**
  * Provides information on a city
   */
 public class Site {
 
-    private final Vector2i coords;
+    private final ImmutableVector2i coords;
     private int radius;
 
     /**
@@ -38,13 +37,13 @@ public class Site {
      */
     public Site(int bx, int bz, int radius) {
         this.radius = radius;
-        this.coords = new Vector2i(bx, bz);
+        this.coords = new ImmutableVector2i(bx, bz);
     }
 
     /**
      * @return the city center in block world coordinates
      */
-    public Vector2i getPos() {
+    public ImmutableVector2i getPos() {
         return coords;
     }
 
@@ -54,12 +53,12 @@ public class Site {
     public int getRadius() {
         return radius;
     }
-    
+
     /**
      * @return the city center in sectors
      */
     public Sector getSector() {
-        return Sectors.getSectorForBlock(coords.x, coords.y);
+        return Sectors.getSectorForBlock(coords.getX(), coords.getY());
     }
 
     @Override

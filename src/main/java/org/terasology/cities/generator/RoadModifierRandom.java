@@ -18,13 +18,12 @@ package org.terasology.cities.generator;
 
 import java.util.Objects;
 
-import org.terasology.math.Vector2i;
-
 import org.terasology.cities.model.Road;
 import org.terasology.cities.noise.Wave;
 import org.terasology.commonworld.geom.Point2cd;
 import org.terasology.commonworld.geom.Point2d;
 import org.terasology.commonworld.geom.Point2md;
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 
@@ -55,12 +54,12 @@ public class RoadModifierRandom  {
      * @param road the road to modify
      */
     public void apply(Road road) {
-        Vector2i startPos = road.getStart().getCoords();
-        Vector2i endPos = road.getEnd().getCoords();
+        BaseVector2i startPos = road.getStart().getCoords();
+        BaseVector2i endPos = road.getEnd().getCoords();
         Random r = new FastRandom(Objects.hash(startPos, endPos));
 
-        Point2d start = new Point2cd(startPos.x, startPos.y);
-        Point2d end = new Point2cd(endPos.x, endPos.y);
+        Point2d start = new Point2cd(startPos.getX(), startPos.getY());
+        Point2d end = new Point2cd(endPos.getX(), endPos.getY());
         double length = start.dist(end);
         double factor = length * randomness;
 
@@ -80,9 +79,9 @@ public class RoadModifierRandom  {
             int x = (int) (seg.getX() + 0.5);
             int y = (int) (seg.getY() + 0.5);
 
-            Vector2i pt = road.getPoints().get(i); 
-            pt.x = x;
-            pt.y = y;
+//            Vector2i pt = road.getPoints().get(i);
+//            pt.x = x;
+//            pt.y = y;
         }
     }
 }

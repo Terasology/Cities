@@ -25,12 +25,12 @@ import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.Set;
 
-import org.terasology.math.Vector2i;
-
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.geom.PathUtils;
+import org.terasology.math.geom.Vector2i;
+import org.terasology.math.geom.ImmutableVector2i;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -42,7 +42,7 @@ import com.google.common.collect.Sets;
 public class RoadShapeGenerator implements Function<Sector, Shape> {
 
     private final Function<Sector, Set<Road>> roadFunc;
-    
+
     /**
      * @param roadFunc the road function
      */
@@ -52,22 +52,22 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
 
     /**
      * @param sector the rendered sector
-     * @return the area that contains all roads 
+     * @return the area that contains all roads
      */
     @Override
     public Shape apply(Sector sector) {
 
         Path2D allPaths = new Path2D.Double();
-        
+
         Set<Road> roads = roadFunc.apply(sector);
 
         Set<Junction> junctions = Sets.newHashSet();
-        
+
         for (Road road : roads) {
 
             junctions.add(road.getStart());
             junctions.add(road.getEnd());
-            
+
             Shape shape = getRoadShape(road);
 
             if (!hitClip(sector, shape)) {
@@ -81,10 +81,10 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
             Shape plaza = createPlaza(junction.getCoords(), 10.0);
             allPaths.append(plaza, false);
         }
-        
+
         return allPaths;
     }
-    
+
     private Shape getRoadShape(Road road) {
         List<Vector2i> pts = Lists.newArrayList(road.getPoints());
 
@@ -94,7 +94,7 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
         Path2D path = PathUtils.createSegmentPath(pts);
 
         float strokeWidth = (float) road.getWidth() * 3f;
-            
+
         int cap = BasicStroke.CAP_ROUND;    // end of path
         int join = BasicStroke.JOIN_ROUND;  // connected path segments
         BasicStroke thick = new BasicStroke(strokeWidth, cap, join);
@@ -103,15 +103,15 @@ public class RoadShapeGenerator implements Function<Sector, Shape> {
 
         return shape;
     }
-    
+
     private boolean hitClip(Sector sector, Shape shape) {
         Rectangle shapeBounds = shape.getBounds();
 
-        Vector2i coords = sector.getCoords();
-        int bx = coords.x * Sector.SIZE;
-        int bz = coords.y * Sector.SIZE;
+        ImmutableVector2i coords = sector.getCoords();
+        int bx = coords.getX() * Sector.SIZE;
+        int bz = coords.getY() * Sector.SIZE;
         Rectangle secRect = new Rectangle(bx, bz, Sector.SIZE, Sector.SIZE);
-        
+
         return shapeBounds.intersects(secRect);
     }
 

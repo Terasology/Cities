@@ -34,12 +34,12 @@ public class SolidWallSegmentRasterizer implements Rasterizer<SolidWallSegment> 
 
         HeightMap bottomHm = ti.getHeightMap();
         HeightMap topHm = HeightMaps.offset(bottomHm, element.getWallHeight());
-        
-        int x1 = element.getStart().x;
-        int z1 = element.getStart().y;
-        int x2 = element.getEnd().x;
-        int z2 = element.getEnd().y;
-        
+
+        int x1 = element.getStart().getX();
+        int z1 = element.getStart().getY();
+        int x2 = element.getEnd().getX();
+        int z2 = element.getEnd().getY();
+
         brush.draw(bottomHm, topHm, x1, z1, x2, z2, BlockTypes.TOWER_WALL);
     }
 

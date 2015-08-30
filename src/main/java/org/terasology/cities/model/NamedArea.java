@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model;
 
-import javax.vecmath.Vector2d;
+import org.terasology.math.geom.BaseVector2d;
 
 /**
  * A named area
@@ -32,5 +32,5 @@ public interface NamedArea {
      * @param pos the position
      * @return true if inside the area
      */
-    boolean contains(Vector2d pos);
+    boolean contains(BaseVector2d pos);
 }

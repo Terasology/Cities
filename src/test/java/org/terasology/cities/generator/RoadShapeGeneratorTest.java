@@ -20,8 +20,7 @@ import java.awt.Shape;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.terasology.math.Vector2i;
-
+import org.terasology.math.geom.BaseVector2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,10 +62,10 @@ public class RoadShapeGeneratorTest  {
         int minSize = 10;
         int maxSize = 100;
 
-        final Function<Vector2i, Junction> junctions = CachingFunction.wrap(new Function<Vector2i, Junction>() {
+        final Function<BaseVector2i, Junction> junctions = CachingFunction.wrap(new Function<BaseVector2i, Junction>() {
 
             @Override
-            public Junction apply(Vector2i input) {
+            public Junction apply(BaseVector2i input) {
                 return new Junction(input);
             }
 

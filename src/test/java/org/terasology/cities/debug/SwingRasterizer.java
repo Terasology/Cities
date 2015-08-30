@@ -105,9 +105,9 @@ public class SwingRasterizer {
         NoiseHeightMap noiseMap = new NoiseHeightMap();
         noiseMap.setSeed(seed);
         heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
-        
+
         facade = new WorldFacade(seed, heightMap);
-        
+
         themeMap.put(BlockTypes.AIR, new Color(0, 0, 0, 0));
         themeMap.put(BlockTypes.ROAD_SURFACE, new Color(160, 40, 40));
         themeMap.put(BlockTypes.LOT_EMPTY, new Color(224, 224, 64));
@@ -120,7 +120,7 @@ public class SwingRasterizer {
         themeMap.put(BlockTypes.ROOF_DOME, new Color(160, 190, 190));
         themeMap.put(BlockTypes.ROOF_GABLE, new Color(180, 120, 100));
 
-        themeMap.put(BlockTypes.TOWER_WALL, new Color(200, 100, 200));        
+        themeMap.put(BlockTypes.TOWER_WALL, new Color(200, 100, 200));
     }
 
     /**
@@ -131,15 +131,15 @@ public class SwingRasterizer {
 
         Stopwatch sw = debugMap.getUnchecked(sector.toString());
         sw.start();
-        
+
         drawCityNames(g, sector);
         drawLakes(g, sector);
         drawFrame(g, sector);
         drawSectorText(g, sector);
-        
+
         sw.stop();
     }
-    
+
     public void drawDebug(Graphics2D go) {
         Graphics2D g = (Graphics2D) go.create();
         g.setTransform(new AffineTransform());
@@ -150,10 +150,10 @@ public class SwingRasterizer {
         int x = 10;
         int y = 10 + fm.getAscent();
         int dy = fm.getHeight();
-        
+
         List<String> keys = new ArrayList<>(debugMap.asMap().keySet());
         Collections.sort(keys);
-        
+
         for (String entry : keys) {
             long time = debugMap.getUnchecked(entry).elapsed(TimeUnit.MILLISECONDS);
             String str = String.format("%s: %dms.", entry, time);
@@ -162,18 +162,18 @@ public class SwingRasterizer {
         }
 
         debugMap.invalidateAll();
-        
+
         g.dispose();
     }
 
     private void drawLakes(Graphics2D g, Sector sector) {
-        
+
         Set<Lake> lakes = facade.getLakes(sector);
 
         g.setStroke(new BasicStroke(2.0f));
-        
+
         for (Lake l : lakes) {
-            
+
             Contour cont = l.getContour();
             for (Point p : cont.getSimplifiedCurve()) {
                 int r = 3;
@@ -182,21 +182,21 @@ public class SwingRasterizer {
 
             Polygon poly = cont.getPolygon();
             g.draw(poly);
-            
+
             int cx = (int) poly.getBounds().getCenterX();
             int cy = (int) poly.getBounds().getCenterY();
-            
+
             FontMetrics fm = g.getFontMetrics();
             int lw = fm.stringWidth(l.getName());
             int lh = fm.getHeight();
             g.drawString(l.getName(), cx - lw / 2, cy - lh / 2);
         }
-        
+
         g.setStroke(new BasicStroke());
     }
-    
+
     private void drawCityNames(Graphics2D g, Sector sector) {
-        
+
         for (City city : facade.getCities(sector)) {
             drawCityName(g, city);
         }
@@ -211,13 +211,13 @@ public class SwingRasterizer {
         int wz = coord.getY() * chunkSizeZ;
 
         Sector sector = Sectors.getSectorForBlock(wx, wz);
-        
+
         if (g.hitClip(wx, wz, chunkSizeX, chunkSizeZ)) {
 
             Stopwatch swBK = debugMap.getUnchecked("RASTER Background");
             Stopwatch swCt = debugMap.getUnchecked("RASTER Cities");
             Stopwatch swRd = debugMap.getUnchecked("RASTER Roads");
-            
+
             BufferedImage image = new BufferedImage(chunkSizeX, chunkSizeZ, BufferedImage.TYPE_INT_RGB);
             Brush brush = new SwingBrush(wx, wz, image, colorFunc);
 
@@ -227,11 +227,11 @@ public class SwingRasterizer {
             swBK.start();
             drawBackground(image, wx, wz, ti);
             swBK.stop();
-            
+
             swCt.start();
             drawCities(sector, ti, brush);
             swCt.stop();
-            
+
             swRd.start();
             drawRoads(sector, ti, brush);
             swRd.stop();
@@ -247,32 +247,32 @@ public class SwingRasterizer {
 
     private void drawRoads(Sector sector, TerrainInfo ti, Brush brush) {
         Set<Road> roads = facade.getRoads(sector);
-    
+
         RoadRasterizer rr = new RoadRasterizer();
         for (Road road : roads) {
             rr.raster(brush, ti, road);
         }
     }
-    
+
     private void drawCities(Sector sector, TerrainInfo ti, Brush brush) {
         Set<City> cities = Sets.newHashSet(facade.getCities(sector));
-    
+
         for (Orientation dir : Orientation.values()) {
             cities.addAll(facade.getCities(sector.getNeighbor(dir)));
         }
-    
+
         RasterRegistry registry = StandardRegistry.getInstance();
 
         for (City city : cities) {
             registry.rasterize(brush, ti, city);
         }
     }
-    
+
     private void drawCityName(Graphics2D g, City ci) {
         String text = ci.toString();
 
-        int cx = ci.getPos().x;
-        int cz = ci.getPos().y;
+        int cx = ci.getPos().getX();
+        int cz = ci.getPos().getY();
 
         Font font = g.getFont();
         FontMetrics fm = g.getFontMetrics(font);
@@ -298,20 +298,20 @@ public class SwingRasterizer {
 
                 Color c;
                 if (y <= terrainConfig.getSeaLevel()) {
-                    c = Color.BLUE; 
+                    c = Color.BLUE;
                 } else {
                     c = new Color(b, b, b);
                 }
-                
+
                 image.setRGB(x, z, c.getRGB());
             }
         }
     }
 
-    
+
    private void drawSectorText(Graphics2D g, Sector sector) {
-       int offX = Sector.SIZE * sector.getCoords().x;
-       int offZ = Sector.SIZE * sector.getCoords().y;
+       int offX = Sector.SIZE * sector.getCoords().getX();
+       int offZ = Sector.SIZE * sector.getCoords().getY();
 
        g.setColor(Color.BLUE);
        Font oldFont = g.getFont();
@@ -319,10 +319,10 @@ public class SwingRasterizer {
        g.drawString(sector.toString(), offX + 5, offZ + g.getFontMetrics().getAscent());
        g.setFont(oldFont);
    }
-   
+
     private void drawFrame(Graphics2D g, Sector sector) {
-        int offX = Sector.SIZE * sector.getCoords().x;
-        int offZ = Sector.SIZE * sector.getCoords().y;
+        int offX = Sector.SIZE * sector.getCoords().getX();
+        int offZ = Sector.SIZE * sector.getCoords().getY();
 
         g.setColor(Color.BLUE);
         g.setStroke(new BasicStroke(0.0f));

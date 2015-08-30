@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import javax.vecmath.Point2d;
-import org.terasology.math.Vector2i;
 import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
@@ -30,26 +29,27 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.SimpleLot;
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 
 import com.google.common.collect.Sets;
 
 /**
- * A very simple lot generator. It places square-shaped lots 
- * randomly in a circular area and checks whether it intersects or not.  
+ * A very simple lot generator. It places square-shaped lots
+ * randomly in a circular area and checks whether it intersects or not.
  */
 public class LotGeneratorRandom {
 
     private static final Logger logger = LoggerFactory.getLogger(LotGeneratorRandom.class);
-    
+
     private final String seed;
 
-    private final double minSize; 
+    private final double minSize;
     private final double maxSize;
     private final int maxTries;
     private final int maxLots;
-    
+
     /**
      * @param seed the random seed
      * @param minSize minimum lot size
@@ -64,7 +64,7 @@ public class LotGeneratorRandom {
         this.maxLots = maxLots;
         this.maxTries = maxTries;
     }
-    
+
     /**
      * @param seed the random seed
      */
@@ -83,78 +83,78 @@ public class LotGeneratorRandom {
      */
     public Set<SimpleLot> generate(City city, AreaInfo si) {
         Random rand = new FastRandom(Objects.hash(seed, city));
-        
-        Vector2i center = city.getPos();
-        
+
+        BaseVector2i center = city.getPos();
+
         Set<SimpleLot> lots = Sets.newLinkedHashSet();  // the order is important for deterministic generation
         double maxLotDiam = maxSize * Math.sqrt(2);
         double minRad = 5 + maxSize * 0.5;
         double maxRad = (city.getDiameter() - maxLotDiam) * 0.5;
-        
+
         if (minRad >= maxRad) {
             return lots;        // which is empty
         }
-        
+
         for (int i = 0; i < maxTries && lots.size() < maxLots;  i++) {
             double ang = rand.nextDouble(0, Math.PI * 2.0);
             double rad = rand.nextDouble(minRad, maxRad);
             double desSizeX = rand.nextDouble(minSize, maxSize);
             double desSizeZ = rand.nextDouble(minSize, maxSize);
-            
-            double x = center.x + rad * Math.cos(ang);
-            double z = center.y + rad * Math.sin(ang);
-            
+
+            double x = center.getX() + rad * Math.cos(ang);
+            double z = center.getY() + rad * Math.sin(ang);
+
             Point2d pos = new Point2d(x, z);
             Vector2d maxSpace = getMaxSpace(pos, lots);
 
             int sizeX = (int) Math.min(desSizeX, maxSpace.x);
             int sizeZ = (int) Math.min(desSizeZ, maxSpace.y);
-            
+
             // check if enough space is available
             if (sizeX < minSize || sizeZ < minSize) {
                 continue;
             }
-            
+
             Rectangle shape = new Rectangle((int) (pos.x - sizeX * 0.5), (int) (pos.y - sizeZ * 0.5), sizeX, sizeZ);
 
             // check if lot intersects with blocked area
             if (si.isBlocked(shape)) {
                 continue;
             }
-            
+
             si.addBlockedArea(shape);
 
             // all tests passed -> create and add
             SimpleLot lot = new SimpleLot(shape);
             lots.add(lot);
         }
-        
+
         logger.debug("Generated {} lots for city {}", lots.size(), city);
-        
+
         return lots;
     }
 
     private Vector2d getMaxSpace(Point2d pos, Set<SimpleLot> lots) {
         double maxX = Double.MAX_VALUE;
         double maxZ = Double.MAX_VALUE;
-        
+
         //      xxxxxxxxxxxxxxxxxxx
         //      x                 x             (p)
         //      x        o------- x--------------|
         //      x                 x
         //      xxxxxxxxxxxxxxxxxxx       dx
         //                         <------------->
-        
+
         for (SimpleLot lot : lots) {
             Rectangle2D bounds = lot.getShape();
             double dx = Math.abs(pos.x - bounds.getCenterX()) - bounds.getWidth() * 0.5;
             double dz = Math.abs(pos.y - bounds.getCenterY()) - bounds.getHeight() * 0.5;
-            
+
             // the point is inside -> abort
             if (dx <= 0 && dz <= 0) {
                 return new Vector2d(0, 0);
             }
-            
+
             // the point is diagonally outside -> restrict one of the two only
             if (dx > 0 && dz > 0) {
                 // make the larger of the two smaller --> larger shape area
@@ -164,18 +164,18 @@ public class LotGeneratorRandom {
                     maxZ = Math.min(maxZ, dz);
                 }
             }
-            
+
             // the z-axis is overlapping -> restrict x
             if (dx > 0 && dz <= 0) {
                 maxX = Math.min(maxX, dx);
             }
-            
+
             // the x-axis is overlapping -> restrict z
             if (dx <= 0 && dz > 0) {
                 maxZ = Math.min(maxZ, dz);
             }
         }
-        
+
         return new Vector2d(2 * maxX, 2 * maxZ);
     }
 }

@@ -19,11 +19,11 @@ package org.terasology.cities.model;
 import java.util.Objects;
 import java.util.Set;
 
-import org.terasology.math.Vector2i;
-import javax.vecmath.Vector2d;
-
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
+import org.terasology.math.geom.BaseVector2d;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
 
 import com.google.common.collect.Sets;
 
@@ -32,7 +32,7 @@ import com.google.common.collect.Sets;
  */
 public class City implements NamedArea {
 
-    private final Vector2i coords;
+    private final ImmutableVector2i coords;
     private final Set<Lot> lots = Sets.newHashSet();
     private String name;
     private int radius;
@@ -42,24 +42,24 @@ public class City implements NamedArea {
      * @param radius the city radius in blocks
      * @param coords the world coordinate in blocks
      */
-    public City(String name, Vector2i coords, int radius) {
+    public City(String name, BaseVector2i coords, int radius) {
         this.radius = radius;
         this.name = name;
-        this.coords = new Vector2i(coords);
+        this.coords = ImmutableVector2i.createOrUse(coords);
     }
 
     /**
      * @return the city center in block world coordinates
      */
-    public Vector2i getPos() {
+    public ImmutableVector2i getPos() {
         return coords;
     }
-    
+
     /**
      * @return the city center in sectors
      */
     public Sector getSector() {
-        return Sectors.getSectorForBlock(coords.x, coords.y);
+        return Sectors.getSectorForBlock(coords.getX(), coords.getY());
     }
 
     /**
@@ -75,7 +75,7 @@ public class City implements NamedArea {
     public double getRadius() {
         return this.radius;
     }
-    
+
     /**
      * @return all lots that are part of the city
      */
@@ -112,12 +112,12 @@ public class City implements NamedArea {
     public String getName() {
         return name;
     }
-    
+
     @Override
-    public boolean contains(Vector2d pos) {
-        double cx = coords.x - pos.x;
-        double cz = coords.y - pos.y;
-        
+    public boolean contains(BaseVector2d pos) {
+        double cx = coords.getX() - pos.getX();
+        double cz = coords.getY() - pos.getY();
+
         return cx * cx + cz * cz < radius * radius;
     }
 }

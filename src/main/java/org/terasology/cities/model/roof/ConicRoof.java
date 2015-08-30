@@ -18,7 +18,7 @@ package org.terasology.cities.model.roof;
 
 import java.awt.geom.Ellipse2D;
 
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.BaseVector2i;
 
 /**
  * A conic (circular base area) roof
@@ -30,11 +30,11 @@ public class ConicRoof extends AbstractRoof {
     /**
      * @param center
      * @param radius
-     * @param baseHeight 
+     * @param baseHeight
      * @param pitch
      */
-    public ConicRoof(Vector2i center, int radius, int baseHeight, int pitch) {
-        super(new Ellipse2D.Double(center.x - radius, center.y - radius, 2 * radius, 2 * radius), baseHeight);
+    public ConicRoof(BaseVector2i center, int radius, int baseHeight, int pitch) {
+        super(new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius), baseHeight);
         this.pitch = pitch;
     }
 
@@ -49,5 +49,5 @@ public class ConicRoof extends AbstractRoof {
     public int getPitch() {
         return pitch;
     }
-    
+
 }

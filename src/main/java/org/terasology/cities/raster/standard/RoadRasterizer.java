@@ -22,7 +22,7 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.util.List;
 
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.Vector2i;
 import javax.vecmath.Point3d;
 
 import org.terasology.cities.BlockTypes;
@@ -50,8 +50,8 @@ public class RoadRasterizer implements Rasterizer<Road> {
 
         pts.add(0, road.getStart().getCoords());
         pts.add(road.getEnd().getCoords());
-        
-        // if not affected, exit now 
+
+        // if not affected, exit now
         Rectangle rc = BoundingBox.getBoundingRect(pts).get();
         if (!brush.affects(rc)) {
             return;
@@ -71,16 +71,16 @@ public class RoadRasterizer implements Rasterizer<Road> {
 
             Point3d start = new Point3d(p0.x, p0.y, ti.getHeightMap().apply(p0.x, p0.y));
             Point3d end = new Point3d(p1.x, p1.y, ti.getHeightMap().apply(p1.x, p1.y));
-            
+
             final Plane2d plane = new Plane2d(start, end);
             HeightMap hm = new HeightMapAdapter() {
-                
+
                 @Override
                 public int apply(int x, int z) {
                     return TeraMath.ceilToInt(plane.getZ(x, z));
                 }
             };
-            
+
             // clear area above floor level
             brush.fillShape(shape, hm, HeightMaps.offset(ti.getHeightMap(), 1), BlockTypes.AIR);
             brush.fillShape(shape, hm, 1, BlockTypes.ROAD_SURFACE);

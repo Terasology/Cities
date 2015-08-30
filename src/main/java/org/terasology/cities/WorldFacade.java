@@ -24,9 +24,9 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.terasology.math.Vector2i;
-import javax.vecmath.Vector2d;
-
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.Vector2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.generator.DefaultTownWallGenerator;
@@ -90,7 +90,7 @@ public class WorldFacade {
 
     private Function<Sector, Set<UnorderedPair<Site>>> sectorConnections;
 
-    private Function<Vector2i, Junction> junctions;
+    private Function<BaseVector2i, Junction> junctions;
 
     private Function<Sector, Set<Road>> roadMap;
 
@@ -107,10 +107,10 @@ public class WorldFacade {
         final CityTerrainComponent terrainConfig = WorldFacade.getWorldEntity().getComponent(CityTerrainComponent.class);
         final CitySpawnComponent spawnConfig = WorldFacade.getWorldEntity().getComponent(CitySpawnComponent.class);
 
-        junctions = new Function<Vector2i, Junction>() {
+        junctions = new Function<BaseVector2i, Junction>() {
 
             @Override
-            public Junction apply(Vector2i input) {
+            public Junction apply(BaseVector2i input) {
                 return new Junction(input);
             }
 
@@ -131,9 +131,9 @@ public class WorldFacade {
                 int scale = 8;
                 int size = Sector.SIZE / scale;
                 HeightMap orgHm = HeightMaps.scalingArea(heightMap, scale);
-                Vector2i coords = sector.getCoords();
+                ImmutableVector2i coords = sector.getCoords();
 
-                Rectangle sectorRect = new Rectangle(coords.x * size, coords.y * size, size, size);
+                Rectangle sectorRect = new Rectangle(coords.getX() * size, coords.getY() * size, size, size);
                 ContourTracer ct = new ContourTracer(orgHm, sectorRect, terrainConfig.getSeaLevel());
 
                 Set<Lake> lakes = Sets.newHashSet();
@@ -236,8 +236,8 @@ public class WorldFacade {
             }
 
             public boolean isBlocked(Road road, Set<? extends NamedArea> blockedAreas) {
-                for (Vector2i pt : road.getPoints()) {
-                    Vector2d v = new Vector2d(pt.x, pt.y);
+                for (BaseVector2i pt : road.getPoints()) {
+                    Vector2d v = new Vector2d(pt.getX(), pt.getY());
                     for (NamedArea area : blockedAreas) {
                         if (area.contains(v)) {
                             return true;
@@ -306,8 +306,8 @@ public class WorldFacade {
                         pSite = Stopwatch.createStarted();
                     }
 
-                    int minX = site.getPos().x - site.getRadius();
-                    int minZ = site.getPos().y - site.getRadius();
+                    int minX = site.getPos().getX() - site.getRadius();
+                    int minZ = site.getPos().getY() - site.getRadius();
 
                     Rectangle cityArea = new Rectangle(minX, minZ, site.getRadius() * 2, site.getRadius() * 2);
                     HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);

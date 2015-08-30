@@ -16,9 +16,8 @@
 
 package org.terasology.cities.model;
 
-import org.terasology.math.Vector2i;
-
 import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.math.geom.BaseVector2i;
 
 import com.google.common.base.Optional;
 
@@ -34,7 +33,7 @@ public class MedievalTown extends City {
      * @param radius the city radius in blocks
      * @param coords the world coordinate in blocks
      */
-    public MedievalTown(String name, Vector2i coords, int radius) {
+    public MedievalTown(String name, BaseVector2i coords, int radius) {
         super(name, coords, radius);
     }
 
@@ -44,7 +43,7 @@ public class MedievalTown extends City {
     public Optional<TownWall> getTownWall() {
         return Optional.fromNullable(townWall);
     }
-    
+
     /**
      * @param tw the town wall or <code>null</code> to clear
      */

@@ -19,10 +19,8 @@ package org.terasology.cities.model;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.vecmath.Vector2d;
-
 import org.terasology.commonworld.contour.Contour;
-
+import org.terasology.math.geom.BaseVector2d;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
@@ -34,14 +32,14 @@ public class Lake implements NamedArea {
     private final Contour contour;
     private final Set<Contour> islands = Sets.newHashSet();
     private final String name;
-    
+
     /**
      * @param contour the contour of the lake (never <code>null</code>)
      * @param name the name of the lake
      */
     public Lake(Contour contour, String name) {
         Preconditions.checkArgument(contour != null, "Contour must not be null");
-        
+
         this.contour = contour;
         this.name = name;
     }
@@ -55,10 +53,10 @@ public class Lake implements NamedArea {
      * Islands are considered part of the lake
      */
     @Override
-    public boolean contains(Vector2d pos) {
-        return contour.isInside(pos.x, pos.y);
+    public boolean contains(BaseVector2d pos) {
+        return contour.isInside(pos.getX(), pos.getY());
     }
-    
+
     /**
      * @return the contour
      */
@@ -72,14 +70,14 @@ public class Lake implements NamedArea {
     public void addIsland(Contour cont) {
         islands.add(cont);
     }
-    
+
     /**
      * @return the set of island contours
      */
     public Set<Contour> getIslandContours() {
         return Collections.unmodifiableSet(islands);
     }
-    
+
     @Override
     public String toString() {
         return "Lake " + name + " [" + islands.size() + " islands]";

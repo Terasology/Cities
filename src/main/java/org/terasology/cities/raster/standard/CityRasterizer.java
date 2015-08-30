@@ -33,22 +33,22 @@ public class CityRasterizer implements Rasterizer<MedievalTown> {
     @Override
     public void raster(Brush brush, TerrainInfo ti, MedievalTown city) {
 
-        int cx = city.getPos().x;
-        int cz = city.getPos().y;
+        int cx = city.getPos().getX();
+        int cz = city.getPos().getY();
 
         double rad = city.getDiameter() * 0.5;
         Ellipse2D circle = new Ellipse2D.Double(cx - rad, cz - rad, rad * 2, rad * 2);
-        
+
         if (!brush.affects(circle)) {
             return;
         }
 
         RasterRegistry registry = StandardRegistry.getInstance();
-        
+
         for (Lot lot : city.getLots()) {
             registry.rasterize(brush, ti, lot);
         }
-        
+
         if (city.getTownWall().isPresent()) {
             new SimpleTownWallRasterizer().raster(brush, ti, city.getTownWall().get());
         }

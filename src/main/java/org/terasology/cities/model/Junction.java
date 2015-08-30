@@ -19,7 +19,8 @@ package org.terasology.cities.model;
 import java.util.Collections;
 import java.util.Set;
 
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Vector2i;
 
 import com.google.common.collect.Sets;
 
@@ -28,16 +29,16 @@ import com.google.common.collect.Sets;
  */
 public class Junction {
     private final Set<Road> roads = Sets.newHashSet();
-    
+
     private final Vector2i coords;
-    
+
     /**
      * @param coords the position coordinates in sectors
      */
-    public Junction(Vector2i coords) {
+    public Junction(BaseVector2i coords) {
         this.coords = new Vector2i(coords);
     }
-    
+
     /**
      * @return the position coordinates in sectors
      */
@@ -51,14 +52,14 @@ public class Junction {
     public void addRoad(Road road) {
         roads.add(road);
     }
-    
+
     /**
      * @return an unmodifiable view on the connected roads (can be empty, but never <code>null</code>)
      */
      public Set<Road> getRoads() {
         return Collections.unmodifiableSet(roads);
     }
-    
+
     @Override
     public String toString() {
         return "Junction [" + coords + ", " + roads.size() + " roads]";

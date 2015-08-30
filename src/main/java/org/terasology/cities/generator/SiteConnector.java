@@ -18,13 +18,10 @@ package org.terasology.cities.generator;
 
 import java.util.Set;
 
-import org.terasology.math.Vector2i;
-
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
-import org.terasology.commonworld.geom.Vector2iUtils;
-
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
@@ -35,7 +32,7 @@ import com.google.common.collect.Sets;
  * is connected.
  */
 public class SiteConnector implements Function<Site, Set<Site>> {
-  
+
     private final Function<Sector, Set<Site>> siteMap;
     private final double maxDist;
 
@@ -47,36 +44,36 @@ public class SiteConnector implements Function<Site, Set<Site>> {
         this.siteMap = siteMap;
         this.maxDist = maxDist;
     }
-    
+
     /**
      * @param site the site of interest
      * @return a set of connected sites (including those in neighbor sectors)
      */
     @Override
     public Set<Site> apply(Site site) {
-        
+
         Sector sector = site.getSector();
-        
+
         Set<Site> directNeighs = siteMap.apply(sector);
-        Set<Site> sites = Sets.newHashSet(directNeighs); 
+        Set<Site> sites = Sets.newHashSet(directNeighs);
 
         for (Orientation dir : Orientation.values()) {
             Sector neighbor = sector.getNeighbor(dir);
             Set<Site> neighCities = siteMap.apply(neighbor);
             sites.addAll(neighCities);
         }
-        
+
         sites.remove(site);
-        
+
         Set<Site> result = sitesInRange(site, sites);
-        
+
         if (result.isEmpty()) {
             Optional<Site> closest = getClosest(site, sites);
             if (closest.isPresent()) {
                 result.add(closest.get());
             }
         }
-        
+
         return result;
     }
 
@@ -86,13 +83,13 @@ public class SiteConnector implements Function<Site, Set<Site>> {
      * @return the closest site from the set
      */
     private Optional<Site> getClosest(Site site, Set<Site> sites) {
-        
+
         double minDist = Double.MAX_VALUE;
         Optional<Site> best = Optional.absent();
-        Vector2i pos = site.getPos();
+        BaseVector2i pos = site.getPos();
 
         for (Site other : sites) {
-            double distSq = Vector2iUtils.distanceSquared(pos, other.getPos());
+            double distSq = pos.distanceSquared(other.getPos());
             if (distSq < minDist) {
                 minDist = distSq;
                 best = Optional.of(other);
@@ -108,19 +105,19 @@ public class SiteConnector implements Function<Site, Set<Site>> {
      * @return all sites within maxDist
      */
     private Set<Site> sitesInRange(Site site, Set<Site> neighbors) {
-        Set<Site> closeCities = Sets.newHashSet(); 
+        Set<Site> closeCities = Sets.newHashSet();
 
-        Vector2i pos1 = site.getPos();
+        BaseVector2i pos1 = site.getPos();
 
         for (Site other : neighbors) {
-            Vector2i pos2 = other.getPos();
-            double distSq = Vector2iUtils.distanceSquared(pos1, pos2);
+            BaseVector2i pos2 = other.getPos();
+            double distSq = pos1.distanceSquared(pos2);
 
             if (distSq < maxDist * maxDist) {
                 closeCities.add(other);
             }
         }
-        
+
         return closeCities;
     }
 

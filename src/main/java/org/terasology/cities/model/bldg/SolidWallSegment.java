@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model.bldg;
 
-import org.terasology.math.Vector2i;
+import org.terasology.math.geom.BaseVector2i;
 
 /**
  * A straight, solid wall segment
@@ -24,14 +24,14 @@ import org.terasology.math.Vector2i;
 public class SolidWallSegment extends WallSegment {
 
     private int wallHeight;
-    
+
     /**
      * @param start one end of the wall
      * @param end the other end of the wall
      * @param wallThickness the wall thickness in block
      * @param wallHeight the wall height in blocks above terrain
      */
-    public SolidWallSegment(Vector2i start, Vector2i end, int wallThickness, int wallHeight) {
+    public SolidWallSegment(BaseVector2i start, BaseVector2i end, int wallThickness, int wallHeight) {
         super(start, end, wallThickness);
         this.wallHeight = wallHeight;
     }
