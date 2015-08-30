@@ -81,8 +81,9 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
         List<Settlement> sites = new ArrayList<>();
 
+        Vector2i pos = new Vector2i();
         for (BaseVector2i posScaled : worldRectScaled.contents()) {
-            Vector2i pos = new Vector2i(posScaled.getX() * scale, posScaled.getY() * scale);
+            pos.set(posScaled.getX() * scale, posScaled.getY() * scale);
             if (seedNoiseGen.noise(pos.getX(), pos.getY()) > 0.99) {
                 float size = sizeNoiseGen.noise(pos.getX(), pos.getY());
                 size = config.minRadius + (size + 1) * 0.5f * (config.maxRadius - config.minRadius);
