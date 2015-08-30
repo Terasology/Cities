@@ -24,6 +24,10 @@
         {
             "id" : "CommonWorld",
             "minVersion" : "0.1.2"
+        },
+        {
+            "id" : "ItemRendering",
+            "minVersion" : "0.1.0"
         }
     ],
     "isServerSideOnly" : false,

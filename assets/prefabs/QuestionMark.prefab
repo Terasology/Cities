@@ -1,0 +1,12 @@
+{
+  "mesh" : {
+    "mesh" : "QuestionMark",
+    "material" : "QuestionMark",
+    "color" : [255, 255, 20, 255]
+  },
+  "location" : {},
+  "AnimateRotation": {
+    "yawSpeed": 0.5,
+    "isSynchronized": false
+  }
+}

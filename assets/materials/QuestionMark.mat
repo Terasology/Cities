@@ -1,0 +1,8 @@
+{
+    "shader" : "engine:genericMeshMaterial",
+    "params" : {
+        "diffuse": "QuestionMark",
+        "colorOffset" : [1.0, 1.0, 0.2],
+        "textured" : false
+    }
+}
