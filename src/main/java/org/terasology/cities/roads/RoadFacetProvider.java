@@ -24,11 +24,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.sites.Settlement;
 import org.terasology.cities.sites.SettlementFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
+import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.UnorderedPair;
 import org.terasology.core.world.generator.facets.BiomeFacet;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
@@ -48,6 +54,9 @@ import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
 import org.terasology.world.generation.Updates;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 /**
  * Provides {@link Road} instances through {@link RoadFacet}.
  */
@@ -58,8 +67,28 @@ import org.terasology.world.generation.Updates;
     @Facet(BuildableTerrainFacet.class)})
 public class RoadFacetProvider implements FacetProvider {
 
+    private static final Logger logger = LoggerFactory.getLogger(RoadFacetProvider.class);
+
+    private final Cache<UnorderedPair<Settlement>, Optional<Road>> roadCache = CacheBuilder.newBuilder().build();
+
     private PerlinNoise noiseX;
     private PerlinNoise noiseY;
+
+    /**
+     * The amplitude of the noise
+     */
+    private final int noiseAmp = 48;
+
+    /**
+     * segments should be about N blocks long
+     */
+    private final int segLength = 48;
+
+    /**
+     * The smoothness of the noise. Lower values mean smoother curvature.
+     */
+    private final float smooth = 0.005f;
+
 
     @Override
     public void setSeed(long seed) {
@@ -90,10 +119,16 @@ public class RoadFacetProvider implements FacetProvider {
 
                 int distX = Math.abs(posB.getX() - posA.getX());
                 int distY = Math.abs(posB.getY() - posA.getY());
+
                 if (distX < thres && distY < thres) {
-                    Optional<Road> opt = tryBuild(posA, posB, 6f, terrainFacet);
-                    if (opt.isPresent()) {
-                        candidates.add(opt.get());
+                    try {
+                        Optional<Road> opt = roadCache.get(new UnorderedPair<Settlement>(siteA, siteB),
+                                () -> tryBuild(posA, posB, 6f, terrainFacet));
+                        if (opt.isPresent()) {
+                            candidates.add(opt.get());
+                        }
+                    } catch (ExecutionException e) {
+                        logger.warn("Could not compute road between '{}' and '{}'", siteA, siteB);
                     }
                 }
             }
@@ -126,25 +161,38 @@ public class RoadFacetProvider implements FacetProvider {
     }
 
     private Optional<Road> tryBuild(Vector2i posA, Vector2i posB, float width, BuildableTerrainFacet terrainFacet) {
+
+        Optional<Road> opt;
+        opt = tryDirect(posA, posB, width, terrainFacet);
+        if (opt.isPresent()) {
+            return opt;
+        }
+        opt = tryPathfinder(posA, posB, width, terrainFacet);
+        if (opt.isPresent()) {
+            return opt;
+        }
+
+        // TODO: consider creating a bridge instead if (water-passable)
+
+        return opt;
+    }
+
+    private Optional<Road> tryDirect(Vector2i posA, Vector2i posB, float width, BuildableTerrainFacet terrainFacet) {
         double length = posA.distance(posB);
-        // segments should be about N blocks long
-        int segLength = 48;
         int segCount = TeraMath.ceilToInt(length / segLength);  // ceil avoids division by zero for short distances
 
         List<Vector2i> segPoints = new ArrayList<>();
 
         segPoints.add(posA);
-        float smoothness = 0.005f;
         for (int i = 1; i < segCount; i++) {
             Vector2i pos = BaseVector2i.lerp(posA, posB, (float) i / segCount, RoundingMode.HALF_UP);
 
             // first and last point receive only half the noise distortion to smoothen the end points
             float applyFactor = (i == 1 || i == segCount - 1) ? 0.5f : 1f;
-            pos.x += noiseX.noise(pos.x * smoothness, 0, pos.y * smoothness) * segLength * applyFactor;
-            pos.y += noiseY.noise(pos.x * smoothness, 0, pos.y * smoothness) * segLength * applyFactor;
+            pos.x += noiseX.noise(pos.x * smooth, 0, pos.y * smooth) * noiseAmp * applyFactor;
+            pos.y += noiseY.noise(pos.x * smooth, 0, pos.y * smooth) * noiseAmp * applyFactor;
 
             if (!terrainFacet.isPassable(pos)) {
-                // TODO: consider creating a bridge segment instead if (water-passable)
                 return Optional.empty();
             }
 
@@ -154,4 +202,45 @@ public class RoadFacetProvider implements FacetProvider {
 
         return Optional.of(new Road(segPoints, width));
     }
+
+    private Optional<Road> tryPathfinder(Vector2i posA, Vector2i posB, float width, BuildableTerrainFacet terrainFacet) {
+
+        Function<Vector2i, Collection<Edge<Vector2i>>> edgeFunc = new Function<Vector2i, Collection<Edge<Vector2i>>>() {
+
+            @Override
+            public Collection<Edge<Vector2i>> apply(Vector2i v) {
+                if (v.distanceSquared(posB) < segLength * segLength) {
+                    return Collections.singletonList(new DefaultEdge<>(v, posB, v.distance(posB)));
+                }
+                Collection<Edge<Vector2i>> neighs = new ArrayList<>();
+                for (Orientation or : Orientation.values()) {
+                    Vector2i pos = new Vector2i(or.getDir()).mul(segLength).add(v);
+                    Vector2i noisePos = new Vector2i(pos);
+                    noisePos.x += noiseX.noise(pos.x * smooth, 0, pos.y * smooth) * noiseAmp;
+                    noisePos.y += noiseY.noise(pos.x * smooth, 0, pos.y * smooth) * noiseAmp;
+                    if (terrainFacet.isPassable(noisePos)) {
+                        neighs.add(new DefaultEdge<Vector2i>(v, pos, v.distance(noisePos)));
+                    }
+                }
+
+                return neighs;
+            }
+        };
+
+        GeneralPathFinder<Vector2i> pathFinder = new GeneralPathFinder<>(edgeFunc);
+
+        Optional<Path<Vector2i>> optPath = pathFinder.computePath(posA, posB);
+        if (optPath.isPresent()) {
+            List<Vector2i> sequence = optPath.get().getSequence();
+            for (int i = 1; i < sequence.size() - 1; i++) {
+                Vector2i v = sequence.get(i);
+                v.x += noiseX.noise(v.x * smooth, 0, v.y * smooth) * noiseAmp;
+                v.y += noiseY.noise(v.x * smooth, 0, v.y * smooth) * noiseAmp;
+            }
+            return Optional.of(new Road(sequence, width));
+        }
+
+        return Optional.empty();
+    }
+
 }
