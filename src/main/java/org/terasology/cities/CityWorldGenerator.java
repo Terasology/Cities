@@ -48,7 +48,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
 
     World world;
 
-    private final Spawner spawner = new FixedSpawner(0, 0);
+    private final Spawner spawner = new CitySpawner();
 
     /**
      * @param uri the uri
