@@ -85,8 +85,8 @@ public class RoadRasterizer implements WorldRasterizer {
             int heightA = TeraMath.floorToInt(heightFacet.getWorld(s.getStart()));
             int heightB = TeraMath.floorToInt(heightFacet.getWorld(s.getEnd()));
             return new Ramp(
-                    s.getStart().getX(), s.getStart().getY(), heightA,
-                    s.getEnd().getX(), s.getEnd().getY(), heightB);
+                    s.getStart().getX(), heightA, s.getStart().getY(),
+                    s.getEnd().getX(), heightB, s.getEnd().getY());
         };
 
         for (int z = rc.minY(); z <= rc.maxY(); z++) {
@@ -101,7 +101,7 @@ public class RoadRasterizer implements WorldRasterizer {
 
                         Ramp ramp = ramps.computeIfAbsent(seg, createRamp);
 
-                        int y = TeraMath.floorToInt(ramp.getZ(x, z));
+                        int y = TeraMath.floorToInt(ramp.getY(x, z));
                         if (y >= reg.minY() && y <= reg.maxY()) {
                             int cx = x - chunk.getChunkWorldOffsetX();
                             int cy = y - chunk.getChunkWorldOffsetY();
