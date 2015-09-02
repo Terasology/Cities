@@ -31,11 +31,11 @@ public class InfiniteSurfaceHeightFacetProvider implements ConfigurableFacetProv
 
     private HeightMap heightMap;
     private NoiseHeightMap noiseMap;
-    private Configuration configuration = new Configuration();
+    private InfiniteSurfaceConfiguration configuration = new InfiniteSurfaceConfiguration();
 
     public InfiniteSurfaceHeightFacetProvider() {
         noiseMap = new NoiseHeightMap();
-        setConfiguration(new Configuration());
+        setConfiguration(new InfiniteSurfaceConfiguration());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class InfiniteSurfaceHeightFacetProvider implements ConfigurableFacetProv
 
     @Override
     public void setConfiguration(Component configuration) {
-        this.configuration = (Configuration) configuration;
+        this.configuration = (InfiniteSurfaceConfiguration) configuration;
         Symmetry sym = this.configuration.symmetry.getInstance();
         if (sym != null) {
             heightMap = HeightMaps.symmetric(noiseMap, sym);
@@ -103,7 +103,7 @@ public class InfiniteSurfaceHeightFacetProvider implements ConfigurableFacetProv
         }
     }
 
-    private static class Configuration implements Component {
+    private static class InfiniteSurfaceConfiguration implements Component {
         @Enum(label = "Symmetric World", description = "Check to create an axis-symmetric world")
         private SymmetryType symmetry = SymmetryType.NONE;
     }

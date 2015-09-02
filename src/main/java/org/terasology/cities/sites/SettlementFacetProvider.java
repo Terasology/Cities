@@ -47,7 +47,7 @@ import org.terasology.world.generation.Requires;
 @Requires(@Facet(BuildableTerrainFacet.class))
 public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
-    private Configuration config = new Configuration();
+    private SiteConfiguration config = new SiteConfiguration();
 
     private long seed;
 
@@ -125,7 +125,7 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
     @Override
     public void setConfiguration(Component configuration) {
-        this.config = (Configuration) configuration;
+        this.config = (SiteConfiguration) configuration;
     }
 
     private boolean ensureMinDistance(List<Settlement> sites, double minDist) {
@@ -156,7 +156,7 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
         return true;
     }
 
-    private static class Configuration implements Component {
+    private static class SiteConfiguration implements Component {
 
         @Range(label = "Minimal town size", description = "Minimal town size in blocks", min = 1, max = 150, increment = 10, precision = 1)
         private int minRadius = 50;

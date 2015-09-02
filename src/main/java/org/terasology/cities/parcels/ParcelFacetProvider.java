@@ -62,7 +62,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
     private long seed;
 
-    private Configuration config = new Configuration();
+    private ParcelConfiguration config = new ParcelConfiguration();
 
     private Cache<Settlement, Set<RectParcel>> cache = CacheBuilder.newBuilder().build();
 
@@ -211,14 +211,14 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
     public void setConfiguration(Component configuration) {
         try {
             lock.writeLock().lock();
-            this.config = (Configuration) configuration;
+            this.config = (ParcelConfiguration) configuration;
             cache.invalidateAll();
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    private static final class Configuration implements Component {
+    private static class ParcelConfiguration implements Component {
 
         @Range(min = 5f, max = 50f, increment = 1f, precision = 0, description = "The min. parcel length")
         private float minSize = 10;
