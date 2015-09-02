@@ -42,12 +42,16 @@ import org.terasology.world.generation.WorldRasterizer;
  */
 public class RoadRasterizer implements WorldRasterizer {
 
-    private Block block;
+    private Block gravel;
+    private Block dirt;
+    private Block air;
 
     @Override
     public void initialize() {
         BlockManager blockManager = CoreRegistry.get(BlockManager.class);
-        block = blockManager.getBlock("core:Gravel");
+        gravel = blockManager.getBlock("core:Gravel");
+        dirt = blockManager.getBlock("core:dirt");
+        air = blockManager.getBlock(BlockManager.AIR_ID);
     }
 
     @Override
@@ -57,8 +61,6 @@ public class RoadRasterizer implements WorldRasterizer {
 
         Region3i reg = chunkRegion.getRegion();
         Rect2i rc = Rect2i.createFromMinAndMax(reg.minX(), reg.minZ(), reg.maxX(), reg.maxZ());
-
-        Block air = CoreRegistry.get(BlockManager.class).getBlock(BlockManager.AIR_ID);
 
         // first compute the collection of road segments that could be relevant
         // TODO: use Line/Rectangle for each segment instead (include road width!)
@@ -89,32 +91,53 @@ public class RoadRasterizer implements WorldRasterizer {
                     s.getEnd().getX(), heightB, s.getEnd().getY());
         };
 
+        Vector2i pos = new Vector2i();
         for (int z = rc.minY(); z <= rc.maxY(); z++) {
             for (int x = rc.minX(); x <= rc.maxX(); x++) {
                 int heightP = TeraMath.floorToInt(heightFacet.getWorld(x, z));
+                pos.set(x, z);
 
                 for (RoadSegment seg : segs) {
                     BaseVector2i pointA = seg.getStart();
                     BaseVector2i pointB = seg.getEnd();
-                    if (LineSegment.distanceToPoint(pointA.getX(), pointA.getY(),
-                            pointB.getX(), pointB.getY(), x, z) < seg.getWidth()) {
+                    float width = seg.getWidth();
+                    int y = Integer.MIN_VALUE;
+
+                    // first check if close to start/end point
+                    // if so, create a flat circle around it
+                    // this ensures that junctions of multiple roads result in a nice common area
+                    if (pointA.distanceSquared(pos) < width * width) {
+                        y = TeraMath.floorToInt(heightFacet.getWorld(pointA));
+                    } else if (pointB.distanceSquared(pos) < width * width) {
+                        y = TeraMath.floorToInt(heightFacet.getWorld(pointB));
+                    } else if (LineSegment.distanceToPoint(pointA.getX(), pointA.getY(),
+                            pointB.getX(), pointB.getY(), x, z) < width) {
 
                         Ramp ramp = ramps.computeIfAbsent(seg, createRamp);
+                        y = TeraMath.floorToInt(ramp.getClampedY(x, z));
+                    }
 
-                        int y = TeraMath.floorToInt(ramp.getY(x, z));
-                        if (y >= reg.minY() && y <= reg.maxY()) {
-                            int cx = x - chunk.getChunkWorldOffsetX();
-                            int cy = y - chunk.getChunkWorldOffsetY();
-                            int cz = z - chunk.getChunkWorldOffsetZ();
-                            chunk.setBlock(cx, cy, cz, block);
-                        }
+                    // a simple trick to check if pos is on a road
+                    if (y > Integer.MIN_VALUE) {
+                        int cx = x - chunk.getChunkWorldOffsetX();
+                        int cz = z - chunk.getChunkWorldOffsetZ();
 
                         // fill up with air until default surface height is reached
                         for (int i = Math.max(reg.minY(), y + 1); i <= Math.min(reg.maxY(), heightP); i++) {
-                            int cx = x - chunk.getChunkWorldOffsetX();
                             int cy = i - chunk.getChunkWorldOffsetY();
-                            int cz = z - chunk.getChunkWorldOffsetZ();
                             chunk.setBlock(cx, cy, cz, air);
+                        }
+
+                        // fill up with dirt (top soil layer inclusive) until road height is reached
+                        for (int i = Math.max(reg.minY(), heightP); i <= Math.min(reg.maxY(), y - 1); i++) {
+                            int cy = i - chunk.getChunkWorldOffsetY();
+                            chunk.setBlock(cx, cy, cz, dirt);
+                        }
+
+                        // put actual road layer
+                        if (y >= reg.minY() && y <= reg.maxY()) {
+                            int cy = y - chunk.getChunkWorldOffsetY();
+                            chunk.setBlock(cx, cy, cz, gravel);
                         }
                     }
                 }
