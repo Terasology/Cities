@@ -29,11 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.generator.LotGeneratorRandom;
-import org.terasology.cities.sites.Settlement;
-import org.terasology.cities.sites.SettlementFacet;
+import org.terasology.cities.sites.Site;
+import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.entitySystem.Component;
 import org.terasology.math.Region3i;
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
 import org.terasology.rendering.nui.properties.Range;
@@ -53,7 +54,7 @@ import com.google.common.cache.CacheBuilder;
 @Updates(@Facet(BlockedAreaFacet.class))
 @Requires({
     @Facet(BuildableTerrainFacet.class),
-    @Facet(SettlementFacet.class)
+    @Facet(SiteFacet.class)
 })
 public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
@@ -65,7 +66,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
     private ParcelConfiguration config = new ParcelConfiguration();
 
-    private Cache<Settlement, Set<RectParcel>> cache = CacheBuilder.newBuilder().build();
+    private Cache<Site, Set<RectParcel>> cache = CacheBuilder.newBuilder().build();
 
     @Override
     public void setSeed(long seed) {
@@ -75,14 +76,14 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
     @Override
     public void process(GeneratingRegion region) {
         ParcelFacet facet = new ParcelFacet();
-        SettlementFacet settlementFacet = region.getRegionFacet(SettlementFacet.class);
+        SiteFacet settlementFacet = region.getRegionFacet(SiteFacet.class);
         BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
 
         Region3i world = region.getRegion();
         Rect2i worldRect = Rect2i.createFromMinAndSize(world.minX(), world.minZ(), world.sizeX(), world.sizeZ());
 
-        for (Settlement settlement : settlementFacet.getSettlements()) {
+        for (Site settlement : settlementFacet.getSettlements()) {
             try {
                 lock.readLock().lock();
                 Set<RectParcel> parcels = cache.get(settlement, () -> generateParcels(settlement, terrainFacet));
@@ -102,10 +103,10 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         region.setRegionFacet(ParcelFacet.class, facet);
     }
 
-    private Set<RectParcel> generateParcels(Settlement city, BuildableTerrainFacet terrainFacet) {
+    private Set<RectParcel> generateParcels(Site city, BuildableTerrainFacet terrainFacet) {
         Random rand = new FastRandom(Objects.hash(seed, city));
 
-        Vector2i center = city.getPos();
+        BaseVector2i center = city.getPos();
 
         Set<RectParcel> lots = new LinkedHashSet<>();  // the order is important for deterministic generation
         float maxLotRad = config.maxSize * (float) Math.sqrt(2) * 0.5f;
@@ -122,8 +123,8 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
             double desSizeX = rand.nextDouble(config.minSize, config.maxSize);
             double desSizeZ = rand.nextDouble(config.minSize, config.maxSize);
 
-            double x = center.x + rad * Math.cos(ang);
-            double z = center.y + rad * Math.sin(ang);
+            double x = center.getX() + rad * Math.cos(ang);
+            double z = center.getY() + rad * Math.sin(ang);
 
             Point2d pos = new Point2d(x, z);
             Vector2d maxSpace = getMaxSpace(pos, lots);

@@ -29,12 +29,12 @@ import org.terasology.world.generation.facets.base.BaseFacet2D;
 /**
  *
  */
-public class SettlementFacet extends BaseFacet2D {
+public class SiteFacet extends BaseFacet2D {
 
-    private Set<Settlement> settlements = new HashSet<>();
+    private Set<Site> settlements = new HashSet<>();
     private int uncertainBorder;
 
-    public SettlementFacet(Region3i targetRegion, Border3D border, int uncertainBorder) {
+    public SiteFacet(Region3i targetRegion, Border3D border, int uncertainBorder) {
         super(targetRegion, border);
         this.uncertainBorder = uncertainBorder;
     }
@@ -43,11 +43,11 @@ public class SettlementFacet extends BaseFacet2D {
         return getWorldRegion().expand(new Vector2i(-uncertainBorder, -uncertainBorder));
     }
 
-    public void addSettlement(Settlement settlement) {
+    public void addSettlement(Site settlement) {
         settlements.add(settlement);
     }
 
-    public Set<Settlement> getSettlements() {
+    public Set<Site> getSettlements() {
         return Collections.unmodifiableSet(settlements);
     }
 

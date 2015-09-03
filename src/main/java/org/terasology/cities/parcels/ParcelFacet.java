@@ -19,7 +19,7 @@ package org.terasology.cities.parcels;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.terasology.cities.sites.Settlement;
+import org.terasology.cities.sites.Site;
 import org.terasology.world.generation.WorldFacet;
 
 import com.google.common.collect.LinkedHashMultimap;
@@ -30,9 +30,9 @@ import com.google.common.collect.SetMultimap;
  */
 public class ParcelFacet implements WorldFacet {
 
-    private SetMultimap<Settlement, Parcel> parcels = LinkedHashMultimap.create();
+    private SetMultimap<Site, Parcel> parcels = LinkedHashMultimap.create();
 
-    public void addParcel(Settlement settlement, Parcel parcel) {
+    public void addParcel(Site settlement, Parcel parcel) {
         parcels.put(settlement, parcel);
     }
 
@@ -40,7 +40,7 @@ public class ParcelFacet implements WorldFacet {
         return Collections.unmodifiableCollection(parcels.values());
     }
 
-    public Collection<Parcel> getParcels(Settlement settlement) {
+    public Collection<Parcel> getParcels(Site settlement) {
         return Collections.unmodifiableCollection(parcels.get(settlement));
     }
 }

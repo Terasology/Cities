@@ -28,8 +28,6 @@ import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
-import org.terasology.namegenerator.town.DebugTownTheme;
-import org.terasology.namegenerator.town.TownNameProvider;
 import org.terasology.rendering.nui.properties.Range;
 import org.terasology.utilities.procedural.Noise;
 import org.terasology.utilities.procedural.WhiteNoise;
@@ -43,13 +41,11 @@ import org.terasology.world.generation.Requires;
 /**
  *
  */
-@Produces(SettlementFacet.class)
+@Produces(SiteFacet.class)
 @Requires(@Facet(BuildableTerrainFacet.class))
-public class SettlementFacetProvider implements ConfigurableFacetProvider {
+public class SiteFacetProvider implements ConfigurableFacetProvider {
 
     private SiteConfiguration config = new SiteConfiguration();
-
-    private long seed;
 
     private Noise seedNoiseGen;
     private Noise sizeNoiseGen;
@@ -60,7 +56,6 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
         this.seedNoiseGen = new WhiteNoise(seed);
         this.sizeNoiseGen = new WhiteNoise(seed ^ 0x2347928);
         this.priorityNoiseGen = new WhiteNoise(seed ^ 0x9B87F3D4);
-        this.seed = seed;
     }
 
     @Override
@@ -71,15 +66,15 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
         // iterate in large steps over the world regions searching for suitable sites
         int scale = 10;
 
-        Border3D border = region.getBorderForFacet(SettlementFacet.class);
+        Border3D border = region.getBorderForFacet(SiteFacet.class);
         border = border.extendBy(0, 0, TeraMath.ceilToInt(config.maxRadius * 3 + config.minDistance));
         Region3i coreReg = region.getRegion();
         int uncertainBorder = 2 * config.maxRadius + config.minDistance;
-        SettlementFacet settlementFacet = new SettlementFacet(coreReg, border, uncertainBorder);
+        SiteFacet settlementFacet = new SiteFacet(coreReg, border, uncertainBorder);
         Rect2i worldRect = settlementFacet.getWorldRegion();
         Rect2i worldRectScaled = Rect2i.createFromMinAndMax(worldRect.min().div(scale), worldRect.max().div(scale));
 
-        List<Settlement> sites = new ArrayList<>();
+        List<Site> sites = new ArrayList<>();
 
         Vector2i pos = new Vector2i();
         for (BaseVector2i posScaled : worldRectScaled.contents()) {
@@ -89,10 +84,7 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
                 size = config.minRadius + (size + 1) * 0.5f * (config.maxRadius - config.minRadius);
 
                 if (terrainFacet.isBuildable(pos)) {
-                    long nameSeed = seed ^ pos.hashCode();
-                    // TODO: adapt NameProvider to provide name for a given seed
-                    TownNameProvider ng = new TownNameProvider(nameSeed, new DebugTownTheme());
-                    Settlement settlement = new Settlement(ng.generateName(), pos.getX(), pos.getY(), size);
+                    Site settlement = new Site(pos.getX(), pos.getY(), size);
                     sites.add(settlement);
                 }
             }
@@ -102,7 +94,7 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
 
         // remove all settlements that might not actually exist
         // this can happen if other settlements further away with higher priority intersect
-        for (Settlement site : sites) {
+        for (Site site : sites) {
             float borderDist = config.maxRadius + config.minDistance + site.getRadius();
             Rect2i certainRect = worldRect.expand(new Vector2i(-borderDist, -borderDist));
             if (certainRect.contains(site.getPos())) {
@@ -110,7 +102,7 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
             }
         }
 
-        region.setRegionFacet(SettlementFacet.class, settlementFacet);
+        region.setRegionFacet(SiteFacet.class, settlementFacet);
     }
 
     @Override
@@ -128,22 +120,22 @@ public class SettlementFacetProvider implements ConfigurableFacetProvider {
         this.config = (SiteConfiguration) configuration;
     }
 
-    private boolean ensureMinDistance(List<Settlement> sites, double minDist) {
+    private boolean ensureMinDistance(List<Site> sites, double minDist) {
 
         sites.sort((s1, s2) -> Float.compare(
                 priorityNoiseGen.noise(s1.getPos().getX(), s1.getPos().getY()),
                 priorityNoiseGen.noise(s2.getPos().getX(), s2.getPos().getY())
                 ));
 
-        ListIterator<Settlement> it = sites.listIterator();
+        ListIterator<Site> it = sites.listIterator();
         while (it.hasNext()) {
-            Settlement site = it.next();
-            Vector2i thisPos = site.getPos();
+            Site site = it.next();
+            BaseVector2i thisPos = site.getPos();
 
-            Iterator<Settlement> otherIt = sites.listIterator(it.nextIndex());
+            Iterator<Site> otherIt = sites.listIterator(it.nextIndex());
             while (otherIt.hasNext()) {
-                Settlement other = otherIt.next();
-                Vector2i otherPos = other.getPos();
+                Site other = otherIt.next();
+                BaseVector2i otherPos = other.getPos();
                 double distSq = thisPos.distanceSquared(otherPos);
                 double thres = minDist + site.getRadius() + other.getRadius();
                 if (distSq < thres * thres) {

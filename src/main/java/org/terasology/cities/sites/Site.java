@@ -18,33 +18,30 @@ package org.terasology.cities.sites;
 
 import java.util.Objects;
 
-import org.terasology.math.geom.Vector2i;
+import org.terasology.math.geom.ImmutableVector2i;
 
 /**
- * Provides information on a settlement.
+ * Provides information on a settlement site.
   */
-public class Settlement {
+public class Site {
 
-    private final Vector2i coords;
+    private final ImmutableVector2i coords;
     private float radius;
-    private String name;
 
     /**
-     * @param name the name of the settlement
      * @param radius the city radius in blocks
      * @param bx the x world coord (in blocks)
      * @param bz the z world coord (in blocks)
      */
-    public Settlement(String name, int bx, int bz, float radius) {
+    public Site(int bx, int bz, float radius) {
         this.radius = radius;
-        this.coords = new Vector2i(bx, bz);
-        this.name = name;
+        this.coords = new ImmutableVector2i(bx, bz);
     }
 
     /**
      * @return the city center in block world coordinates
      */
-    public Vector2i getPos() {
+    public ImmutableVector2i getPos() {
         return coords;
     }
 
@@ -55,24 +52,16 @@ public class Settlement {
         return radius;
     }
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(name, coords, radius);
+        return Objects.hash(coords, radius);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (Settlement.class == obj.getClass()) {
-            Settlement other = (Settlement) obj;
-            return Objects.equals(name, other.name)
-                && Objects.equals(coords, other.coords)
+        if (Site.class == obj.getClass()) {
+            Site other = (Site) obj;
+            return Objects.equals(coords, other.coords)
                 && Objects.equals(radius, other.radius);
         }
         return false;
@@ -80,6 +69,6 @@ public class Settlement {
 
     @Override
     public String toString() {
-        return name + " " + coords + " (" + radius + ")";
+        return "Site [" + coords + " (" + radius + ")]";
     }
 }

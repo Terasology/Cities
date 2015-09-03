@@ -30,8 +30,8 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.blocked.BlockedAreaFacet;
-import org.terasology.cities.sites.Settlement;
-import org.terasology.cities.sites.SettlementFacet;
+import org.terasology.cities.sites.Site;
+import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.UnorderedPair;
@@ -63,13 +63,13 @@ import com.google.common.cache.CacheBuilder;
 @Produces(RoadFacet.class)
 @Updates(@Facet(BlockedAreaFacet.class))
 @Requires({
-    @Facet(value = SettlementFacet.class, border = @FacetBorder(sides = 500)),
+    @Facet(value = SiteFacet.class, border = @FacetBorder(sides = 500)),
     @Facet(BuildableTerrainFacet.class)})
 public class RoadFacetProvider implements FacetProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(RoadFacetProvider.class);
 
-    private final Cache<UnorderedPair<Settlement>, Optional<Road>> roadCache = CacheBuilder.newBuilder().build();
+    private final Cache<UnorderedPair<Site>, Optional<Road>> roadCache = CacheBuilder.newBuilder().build();
 
     private PerlinNoise noiseX;
     private PerlinNoise noiseY;
@@ -99,7 +99,7 @@ public class RoadFacetProvider implements FacetProvider {
     @Override
     public void process(GeneratingRegion region) {
         BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
-        SettlementFacet siteFacet = region.getRegionFacet(SettlementFacet.class);
+        SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
 
         Border3D border = region.getBorderForFacet(BiomeFacet.class);
@@ -109,20 +109,20 @@ public class RoadFacetProvider implements FacetProvider {
 
         List<Road> candidates = new ArrayList<>();
 
-        List<Settlement> siteList = new ArrayList<>(siteFacet.getSettlements());
+        List<Site> siteList = new ArrayList<>(siteFacet.getSettlements());
         for (int i = 0; i < siteList.size(); i++) {
-            Settlement siteA = siteList.get(i);
-            Vector2i posA = siteA.getPos();
+            Site siteA = siteList.get(i);
+            ImmutableVector2i posA = siteA.getPos();
             for (int j = i + 1; j < siteList.size(); j++) {
-                Settlement siteB = siteList.get(j);
-                Vector2i posB = siteB.getPos();
+                Site siteB = siteList.get(j);
+                ImmutableVector2i posB = siteB.getPos();
 
                 int distX = Math.abs(posB.getX() - posA.getX());
                 int distY = Math.abs(posB.getY() - posA.getY());
 
                 if (distX < thres && distY < thres) {
                     try {
-                        Optional<Road> opt = roadCache.get(new UnorderedPair<Settlement>(siteA, siteB),
+                        Optional<Road> opt = roadCache.get(new UnorderedPair<Site>(siteA, siteB),
                                 () -> tryBuild(posA, posB, 6f, terrainFacet));
                         if (opt.isPresent()) {
                             candidates.add(opt.get());
@@ -160,7 +160,7 @@ public class RoadFacetProvider implements FacetProvider {
         region.setRegionFacet(RoadFacet.class, roadFacet);
     }
 
-    private Optional<Road> tryBuild(Vector2i posA, Vector2i posB, float width, BuildableTerrainFacet terrainFacet) {
+    private Optional<Road> tryBuild(BaseVector2i posA, BaseVector2i posB, float width, BuildableTerrainFacet terrainFacet) {
 
         Optional<Road> opt;
         opt = tryDirect(posA, posB, width, terrainFacet);
@@ -177,13 +177,13 @@ public class RoadFacetProvider implements FacetProvider {
         return opt;
     }
 
-    private Optional<Road> tryDirect(Vector2i posA, Vector2i posB, float width, BuildableTerrainFacet terrainFacet) {
+    private Optional<Road> tryDirect(BaseVector2i posA, BaseVector2i posB, float width, BuildableTerrainFacet terrainFacet) {
         double length = posA.distance(posB);
         int segCount = TeraMath.ceilToInt(length / segLength);  // ceil avoids division by zero for short distances
 
         List<Vector2i> segPoints = new ArrayList<>();
 
-        segPoints.add(posA);
+        segPoints.add(new Vector2i(posA));
         for (int i = 1; i < segCount; i++) {
             Vector2i pos = BaseVector2i.lerp(posA, posB, (float) i / segCount, RoundingMode.HALF_UP);
 
@@ -198,19 +198,19 @@ public class RoadFacetProvider implements FacetProvider {
 
             segPoints.add(pos);
         }
-        segPoints.add(posB);
+        segPoints.add(new Vector2i(posB));
 
         return Optional.of(new Road(segPoints, width));
     }
 
-    private Optional<Road> tryPathfinder(Vector2i posA, Vector2i posB, float width, BuildableTerrainFacet terrainFacet) {
+    private Optional<Road> tryPathfinder(BaseVector2i posA, BaseVector2i posB, float width, BuildableTerrainFacet terrainFacet) {
 
         Function<Vector2i, Collection<Edge<Vector2i>>> edgeFunc = new Function<Vector2i, Collection<Edge<Vector2i>>>() {
 
             @Override
             public Collection<Edge<Vector2i>> apply(Vector2i v) {
                 if (v.distanceSquared(posB) < segLength * segLength) {
-                    return Collections.singletonList(new DefaultEdge<>(v, posB, v.distance(posB)));
+                    return Collections.singletonList(new DefaultEdge<>(v, new Vector2i(posB), v.distance(posB)));
                 }
                 Collection<Edge<Vector2i>> neighs = new ArrayList<>();
                 for (Orientation or : Orientation.values()) {
@@ -229,7 +229,7 @@ public class RoadFacetProvider implements FacetProvider {
 
         GeneralPathFinder<Vector2i> pathFinder = new GeneralPathFinder<>(edgeFunc);
 
-        Optional<Path<Vector2i>> optPath = pathFinder.computePath(posA, posB);
+        Optional<Path<Vector2i>> optPath = pathFinder.computePath(new Vector2i(posA), new Vector2i(posB));
         if (optPath.isPresent()) {
             List<Vector2i> sequence = optPath.get().getSequence();
             for (int i = 1; i < sequence.size() - 1; i++) {
