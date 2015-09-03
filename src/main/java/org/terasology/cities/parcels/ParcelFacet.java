@@ -16,28 +16,31 @@
 
 package org.terasology.cities.parcels;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
+import org.terasology.cities.sites.Settlement;
 import org.terasology.world.generation.WorldFacet;
+
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.SetMultimap;
 
 /**
  *
  */
 public class ParcelFacet implements WorldFacet {
 
-    private Set<Parcel> parcels = new LinkedHashSet<>();
+    private SetMultimap<Settlement, Parcel> parcels = LinkedHashMultimap.create();
 
-    public void addParcel(Parcel parcel) {
-        parcels.add(parcel);
+    public void addParcel(Settlement settlement, Parcel parcel) {
+        parcels.put(settlement, parcel);
     }
 
-    /**
-     * @return
-     */
-    public Set<Parcel> getParcels() {
-        return Collections.unmodifiableSet(parcels);
+    public Collection<Parcel> getParcels() {
+        return Collections.unmodifiableCollection(parcels.values());
     }
 
+    public Collection<Parcel> getParcels(Settlement settlement) {
+        return Collections.unmodifiableCollection(parcels.get(settlement));
+    }
 }

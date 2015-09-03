@@ -50,6 +50,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 @Produces(ParcelFacet.class)
+@Updates(@Facet(BlockedAreaFacet.class))
 @Requires({
     @Facet(BuildableTerrainFacet.class),
     @Facet(SettlementFacet.class)
@@ -76,6 +77,8 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         ParcelFacet facet = new ParcelFacet();
         SettlementFacet settlementFacet = region.getRegionFacet(SettlementFacet.class);
         BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
+        BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
+
         Region3i world = region.getRegion();
         Rect2i worldRect = Rect2i.createFromMinAndSize(world.minX(), world.minZ(), world.sizeX(), world.sizeZ());
 
@@ -85,7 +88,8 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
                 Set<RectParcel> parcels = cache.get(settlement, () -> generateParcels(settlement, terrainFacet));
                 for (RectParcel parcel : parcels) {
                     if (parcel.getShape().overlaps(worldRect)) {
-                        facet.addParcel(parcel);
+                        facet.addParcel(settlement, parcel);
+                        blockedAreaFacet.addRect(parcel.getShape());
                     }
                 }
             } catch (ExecutionException e) {
@@ -136,10 +140,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
             int minY = (int) (pos.y - sizeZ * 0.5);
             Rect2i shape = Rect2i.createFromMinAndSize(minX, minY, sizeX, sizeZ);
 
-            // check if lot intersects with blocked area
             if (terrainFacet.isBuildable(shape)) {
-//                si.addBlockedArea(shape);
-
                 RectParcel lot = new RectParcel(shape);
                 lots.add(lot);
             }
