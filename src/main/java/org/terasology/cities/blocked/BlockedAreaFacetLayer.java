@@ -16,9 +16,11 @@
 
 package org.terasology.cities.blocked;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.terasology.math.geom.Rect2i;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
 import org.terasology.world.viewer.layers.Renders;
 import org.terasology.world.viewer.layers.ZOrder;
@@ -39,10 +41,15 @@ public class BlockedAreaFacetLayer extends AbstractFacetLayer {
         BlockedAreaFacet facet = region.getFacet(BlockedAreaFacet.class);
 
         Graphics2D g = img.createGraphics();
-        int dx = facet.getRelativeRegion().minX();
-        int dy = facet.getRelativeRegion().minY();
+        g.setColor(Color.GRAY);
+        for (BlockedArea area : facet.getAreas()) {
+            Rect2i areaRc = area.getWorldRegion();
+            int dx = areaRc.minX() - facet.getWorldRegion().minX();
+            int dy = areaRc.minY() - facet.getWorldRegion().minY();
 
-        g.drawImage(facet.getImage(), -dx, -dy, null);
+            g.drawRect(dx, dy, areaRc.width(), areaRc.height());
+            g.drawImage(area.getImage(), dx, dy, null);
+        }
         g.dispose();
     }
 
@@ -50,7 +57,7 @@ public class BlockedAreaFacetLayer extends AbstractFacetLayer {
     public String getWorldText(org.terasology.world.generation.Region region, int wx, int wy) {
         BlockedAreaFacet facet = region.getFacet(BlockedAreaFacet.class);
 
-        if (facet.isBlockedWorld(wx, wy)) {
+        if (facet.isBlocked(wx, wy)) {
             return "Blocked";
         } else {
             return "Open";

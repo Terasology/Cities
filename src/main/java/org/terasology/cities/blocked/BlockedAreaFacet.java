@@ -16,73 +16,72 @@
 
 package org.terasology.cities.blocked;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.awt.image.DirectColorModel;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.terasology.math.Region3i;
-import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.facets.base.BaseFacet2D;
-import org.terasology.world.viewer.color.ColorModels;
 
 /**
  * An image-based registry for blocked areas.
  */
 public class BlockedAreaFacet extends BaseFacet2D {
 
-    private final BufferedImage image;
-    private final int offX;
-    private final int offY;
-    private final DataBufferInt imageBuffer;
+    private final Collection<BlockedArea> areas = new ArrayList<>();
 
     public BlockedAreaFacet(Region3i targetRegion, Border3D border) {
         super(targetRegion, border);
-
-        offX = getWorldRegion().minX() - getRelativeRegion().minX();
-        offY = getWorldRegion().minY() - getRelativeRegion().minY();
-
-        int height = getRelativeRegion().width(); // includes border
-        int width = getRelativeRegion().height();
-
-        DirectColorModel colorModel = ColorModels.ARGB; // TODO: could be RGB
-        int[] masks = colorModel.getMasks();
-        imageBuffer = new DataBufferInt(width * height);
-        WritableRaster raster = Raster.createPackedRaster(imageBuffer, width, height, width, masks, null);
-        image = new BufferedImage(colorModel, raster, false, null);
     }
 
-    public void addRect(Rect2i area) {
-        Graphics2D g = image.createGraphics();
-        g.setColor(Color.MAGENTA);
-        g.fillRect(area.minX(), area.minY(), area.width(), area.height());
-        g.dispose();
+    public void add(BlockedArea area) {
+        areas.add(area);
     }
 
-    public void addLine(BaseVector2i start, BaseVector2i end, float width) {
-        Graphics2D g = image.createGraphics();
-        g.setColor(Color.MAGENTA);
-        g.drawLine(0, 0, 2, 2);
-        g.setStroke(new BasicStroke(width));
-        g.translate(-offX, -offY);
-        g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
-        g.dispose();
+    Collection<BlockedArea> getAreas() {
+        return Collections.unmodifiableCollection(areas);
     }
 
-    public boolean isBlockedWorld(int worldX, int worldY) {
-        int imgX = worldX - offX;
-        int imgY = worldY - offY;
-        int stride = image.getWidth();
-        return imageBuffer.getElem(imgY * stride + imgX) > 0;
+    /**
+     * @param wx the world x coordinate
+     * @param wy the world y coordinate
+     * @return true if blocked, false is not or unknown
+     */
+    public boolean isBlocked(int wx, int wy) {
+        for (BlockedArea area : areas) {
+            if (area.getWorldRegion().contains(wx, wy)) {
+                return area.isBlocked(wx, wy);
+            }
+        }
+        return false;
     }
 
-    BufferedImage getImage() {
-        return image;
+
+    public boolean isBlocked(Rect2i shape) {
+        for (BlockedArea area : areas) {
+            if (area.getWorldRegion().overlaps(shape)) {
+                if (area.isBlocked(shape)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
+
+    public void addLine(ImmutableVector2i start, ImmutableVector2i end, float width) {
+        // TODO: maybe check for line/rect intersection with this FACET first
+        for (BlockedArea area : areas) {
+            area.addLine(start, end, width);
+        }
+    }
+
+    public void addRect(Rect2i rc) {
+        for (BlockedArea area : areas) {
+            area.addRect(rc);
+        }
+    }
+
 }

@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.sites.Site;
+import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.entitySystem.Component;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.rendering.nui.properties.Range;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
@@ -45,14 +45,14 @@ import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
-import org.terasology.world.generation.Updates;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 @Produces(ParcelFacet.class)
-@Updates(@Facet(BlockedAreaFacet.class))
 @Requires({
+    @Facet(BlockedAreaFacet.class),
+    @Facet(RoadFacet.class),                  // not really required, but roads update the blocked area facet
     @Facet(BuildableTerrainFacet.class),
     @Facet(SiteFacet.class)
 })
@@ -86,11 +86,11 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         for (Site settlement : settlementFacet.getSettlements()) {
             try {
                 lock.readLock().lock();
-                Set<RectParcel> parcels = cache.get(settlement, () -> generateParcels(settlement, terrainFacet));
+                Set<RectParcel> parcels = cache.get(settlement,
+                        () -> generateParcels(settlement, blockedAreaFacet, terrainFacet));
                 for (RectParcel parcel : parcels) {
                     if (parcel.getShape().overlaps(worldRect)) {
                         facet.addParcel(settlement, parcel);
-                        blockedAreaFacet.addRect(parcel.getShape());
                     }
                 }
             } catch (ExecutionException e) {
@@ -103,7 +103,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         region.setRegionFacet(ParcelFacet.class, facet);
     }
 
-    private Set<RectParcel> generateParcels(Site city, BuildableTerrainFacet terrainFacet) {
+    private Set<RectParcel> generateParcels(Site city, BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
         Random rand = new FastRandom(Objects.hash(seed, city));
 
         BaseVector2i center = city.getPos();
@@ -141,8 +141,9 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
             int minY = (int) (pos.y - sizeZ * 0.5);
             Rect2i shape = Rect2i.createFromMinAndSize(minX, minY, sizeX, sizeZ);
 
-            if (terrainFacet.isBuildable(shape)) {
+            if (terrainFacet.isBuildable(shape) && !blockedAreaFacet.isBlocked(shape)) {
                 RectParcel lot = new RectParcel(shape);
+                blockedAreaFacet.addRect(shape);
                 lots.add(lot);
             }
         }

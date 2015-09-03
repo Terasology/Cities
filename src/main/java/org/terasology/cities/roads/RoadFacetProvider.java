@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.blocked.BlockedArea;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
@@ -61,10 +62,10 @@ import com.google.common.cache.CacheBuilder;
  * Provides {@link Road} instances through {@link RoadFacet}.
  */
 @Produces(RoadFacet.class)
-@Updates(@Facet(BlockedAreaFacet.class))
 @Requires({
     @Facet(value = SiteFacet.class, border = @FacetBorder(sides = 500)),
-    @Facet(BuildableTerrainFacet.class)})
+    @Facet(BuildableTerrainFacet.class),
+    @Facet(BlockedAreaFacet.class)})
 public class RoadFacetProvider implements FacetProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(RoadFacetProvider.class);
