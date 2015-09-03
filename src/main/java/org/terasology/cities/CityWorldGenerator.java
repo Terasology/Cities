@@ -21,6 +21,7 @@ import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
+import org.terasology.cities.settlements.SettlementFacetProvider;
 import org.terasology.cities.sites.SiteFacetProvider;
 import org.terasology.cities.surface.SurfaceHeightFacetProvider;
 import org.terasology.cities.terrain.BuildableTerrainFacetProvider;
@@ -91,6 +92,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new SiteFacetProvider())
                 .addProvider(new RoadFacetProvider())
                 .addProvider(new ParcelFacetProvider())
+                .addProvider(new SettlementFacetProvider())
                 .addProvider(new DefaultFloraProvider())
                 .addProvider(new EnsureSpawnableChunkZeroProvider())
                 .addRasterizer(new SolidRasterizer())

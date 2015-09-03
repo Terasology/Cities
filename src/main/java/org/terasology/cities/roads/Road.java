@@ -99,6 +99,29 @@ public class Road {
     }
 
     /**
+     * @param pos the coordinate to test
+     * @return true, if the road ends at the given coordinate
+     */
+    public boolean endsAt(BaseVector2i pos) {
+        return getEnd0().equals(pos) || getEnd1().equals(pos);
+    }
+
+    /**
+     * @param pos one end of the road
+     * @return the other end
+     * @throws IllegalArgumentException if not an end point of the road
+     */
+    public ImmutableVector2i getOtherEnd(BaseVector2i pos) {
+        if (getEnd0().equals(pos)) {
+            return getEnd1();
+        }
+        if (getEnd1().equals(pos)) {
+            return getEnd0();
+        }
+        throw new IllegalArgumentException("not an end point of the road");
+    }
+
+    /**
      * @return the length of the road in blocks
      */
     public float getLength() {
