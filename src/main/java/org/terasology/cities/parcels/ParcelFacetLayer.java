@@ -54,7 +54,7 @@ public class ParcelFacetLayer extends AbstractFacetLayer {
         for (Parcel parcel : facet.getParcels()) {
             g.setColor(fillColor);
             Rect2i shape = parcel.getShape();
-            Rectangle rc = new Rectangle(shape.minX(), shape.minY(), shape.width(), shape.height());
+            Rectangle rc = new Rectangle(shape.minX(), shape.minY(), shape.width() - 1, shape.height() - 1);
             g.fill(rc);
             g.setColor(frameColor);
             g.draw(rc);

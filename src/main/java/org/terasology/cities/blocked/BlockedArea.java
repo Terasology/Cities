@@ -74,7 +74,7 @@ public class BlockedArea {
         // TODO: check for intersection (with border offset=width) first
         Graphics2D g = image.createGraphics();
         g.setColor(MARKER);
-        g.setStroke(new BasicStroke(width));
+        g.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.translate(-worldRect.minX(), -worldRect.minY());
         g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
         g.dispose();
@@ -89,7 +89,7 @@ public class BlockedArea {
         if (imgY < 0 || imgY >= worldRect.height()) {
             throw new IllegalArgumentException("worldY " + worldY + " is illegal");
         }
-        return imageBuffer.getElem(imgY * stride + imgX) > 0;
+        return imageBuffer.getElem(imgY * stride + imgX) != 0;
     }
 
     public boolean isBlocked(Rect2i rect) {
@@ -106,7 +106,7 @@ public class BlockedArea {
 
         for (int y = minY; y <= maxY; y++) {
             for (int x = minX; x <= maxX; x++) {
-                if (imageBuffer.getElem(y * stride + x) > 0) {
+                if (imageBuffer.getElem(y * stride + x) != 0) {
                     return true;
                 }
             }
