@@ -34,8 +34,8 @@ import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.entitySystem.Component;
-import org.terasology.math.Region3i;
 import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Circle;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.rendering.nui.properties.Range;
 import org.terasology.utilities.random.FastRandom;
@@ -76,28 +76,28 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
     @Override
     public void process(GeneratingRegion region) {
         ParcelFacet facet = new ParcelFacet();
-        SiteFacet settlementFacet = region.getRegionFacet(SiteFacet.class);
+        SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
         BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
 
-        Region3i world = region.getRegion();
-        Rect2i worldRect = Rect2i.createFromMinAndSize(world.minX(), world.minZ(), world.sizeX(), world.sizeZ());
+        Rect2i worldRect = blockedAreaFacet.getWorldRegion();
 
-        for (Site settlement : settlementFacet.getSettlements()) {
-            try {
-                lock.readLock().lock();
-                Set<RectParcel> parcels = cache.get(settlement,
-                        () -> generateParcels(settlement, blockedAreaFacet, terrainFacet));
-                for (RectParcel parcel : parcels) {
-                    if (parcel.getShape().overlaps(worldRect)) {
-                        facet.addParcel(settlement, parcel);
+        try {
+            lock.readLock().lock();
+            for (Site site : siteFacet.getSettlements()) {
+                if (Circle.intersects(site.getPos(), site.getRadius(), worldRect)) {
+                    Set<RectParcel> parcels = cache.get(site, () -> generateParcels(site, blockedAreaFacet, terrainFacet));
+                    for (RectParcel parcel : parcels) {
+                        if (parcel.getShape().overlaps(worldRect)) {
+                            facet.addParcel(site, parcel);
+                        }
                     }
                 }
-            } catch (ExecutionException e) {
-                logger.warn("Could not compute parcels for '{}'", settlement, e.getCause());
-            } finally {
-                lock.readLock().unlock();
             }
+        } catch (ExecutionException e) {
+            logger.warn("Could not compute parcels for '{}'", region.getRegion(), e.getCause());
+        } finally {
+            lock.readLock().unlock();
         }
 
         region.setRegionFacet(ParcelFacet.class, facet);
