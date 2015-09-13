@@ -33,7 +33,10 @@ import org.terasology.cities.sites.Site;
 import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
+import org.terasology.commonworld.Orientation;
 import org.terasology.entitySystem.Component;
+import org.terasology.math.Region3i;
+import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Circle;
 import org.terasology.math.geom.Rect2i;
@@ -142,7 +145,8 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
             Rect2i shape = Rect2i.createFromMinAndSize(minX, minY, sizeX, sizeZ);
 
             if (terrainFacet.isBuildable(shape) && !blockedAreaFacet.isBlocked(shape)) {
-                RectParcel lot = new RectParcel(shape);
+                Orientation orientation = Orientation.NORTH.getRotated(90 * rand.nextInt(4));
+                RectParcel lot = new RectParcel(shape, orientation);
                 blockedAreaFacet.addRect(shape);
                 lots.add(lot);
             }

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.terasology.cities.model.bldg.Building;
+import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
 
 import com.google.common.collect.Sets;
@@ -32,11 +33,15 @@ public class Parcel {
 
     private final Set<Building> buildings = Sets.newHashSet();
 
+    private final Orientation orientation;
+
     /**
      * @param shape the shape of the lot
+     * @param orientation the orientation of the parcel (e.g. towards the closest street)
      */
-    protected Parcel(Rect2i shape) {
+    protected Parcel(Rect2i shape, Orientation orientation) {
         this.shape = shape;
+        this.orientation = orientation;
     }
 
     /**
@@ -44,6 +49,13 @@ public class Parcel {
      */
     public Rect2i getShape() {
         return this.shape;
+    }
+
+    /**
+     * @return the orientation of the parcel
+     */
+    public Orientation getOrientation() {
+        return orientation;
     }
 
     /**

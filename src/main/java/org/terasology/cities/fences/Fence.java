@@ -14,26 +14,11 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.parcels;
-
-import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
+package org.terasology.cities.fences;
 
 /**
- * A rectangular {@link Parcel}
+ *
  */
-public class RectParcel extends Parcel {
+public interface Fence {
 
-    /**
-     * @param shape the shape of the lot
-     * @param orientation the orientation of the parcel (e.g. towards the closest street)
-     */
-    public RectParcel(Rect2i shape, Orientation orientation) {
-        super(shape, orientation);
-    }
-
-    @Override
-    public Rect2i getShape() {
-        return super.getShape();
-    }
 }
