@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.terasology.cities.BlockTheme;
+import org.terasology.cities.BlockTypes;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.geom.BoundingBox;
 import org.terasology.commonworld.geom.Ramp;
@@ -42,16 +44,17 @@ import org.terasology.world.generation.WorldRasterizer;
  */
 public class RoadRasterizer implements WorldRasterizer {
 
-    private Block gravel;
-    private Block dirt;
-    private Block air;
+    private BlockTheme blockTheme;
+
+    /**
+     * @param blockTheme the block these to use
+     */
+    public RoadRasterizer(BlockTheme blockTheme) {
+        this.blockTheme = blockTheme;
+    }
 
     @Override
     public void initialize() {
-        BlockManager blockManager = CoreRegistry.get(BlockManager.class);
-        gravel = blockManager.getBlock("core:Gravel");
-        dirt = blockManager.getBlock("core:dirt");
-        air = blockManager.getBlock(BlockManager.AIR_ID);
     }
 
     @Override
@@ -125,19 +128,19 @@ public class RoadRasterizer implements WorldRasterizer {
                         // fill up with air until default surface height is reached
                         for (int i = Math.max(reg.minY(), y + 1); i <= Math.min(reg.maxY(), heightP); i++) {
                             int cy = i - chunk.getChunkWorldOffsetY();
-                            chunk.setBlock(cx, cy, cz, air);
+                            chunk.setBlock(cx, cy, cz, blockTheme.apply(BlockTypes.AIR));
                         }
 
                         // fill up with dirt (top soil layer inclusive) until road height is reached
                         for (int i = Math.max(reg.minY(), heightP); i <= Math.min(reg.maxY(), y - 1); i++) {
                             int cy = i - chunk.getChunkWorldOffsetY();
-                            chunk.setBlock(cx, cy, cz, dirt);
+                            chunk.setBlock(cx, cy, cz, blockTheme.apply(BlockTypes.ROAD_FILL));
                         }
 
                         // put actual road layer
                         if (y >= reg.minY() && y <= reg.maxY()) {
                             int cy = y - chunk.getChunkWorldOffsetY();
-                            chunk.setBlock(cx, cy, cz, gravel);
+                            chunk.setBlock(cx, cy, cz, blockTheme.apply(BlockTypes.ROAD_SURFACE));
                         }
                     }
                 }

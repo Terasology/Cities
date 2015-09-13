@@ -16,20 +16,19 @@
 
 package org.terasology.cities;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.math.Side;
 import org.terasology.math.SideBitFlag;
-import org.terasology.registry.CoreRegistry;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.block.BlockUri;
 import org.terasology.world.block.family.BlockFamily;
-
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A mapping from block types (as defined in {@link BlockTypes}) to actual blocks
@@ -38,63 +37,27 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockTheme.class);
 
-    private final Map<BlockTypes, Block> map = Maps.newConcurrentMap();
-    private final Map<BlockTypes, BlockFamily> familyMap = Maps.newConcurrentMap();
-    private final BlockManager blockManager = CoreRegistry.get(BlockManager.class);
-    private final Block defaultBlock;
+    private final Map<BlockTypes, Block> blockMap;
+    private final Map<BlockTypes, BlockFamily> familyMap;
+
     private final BlockFamily defaultFamily;
+    private final Block defaultBlock;
 
-    /**
-     * Setup the mapping with defaults
-     */
-    public BlockTheme() {
-        map.put(BlockTypes.AIR, blockManager.getBlock(BlockManager.AIR_ID));
-        defaultBlock = blockManager.getBlock(BlockManager.UNLOADED_ID);
-        defaultFamily = blockManager.getBlockFamily(BlockManager.UNLOADED_ID);
+    private BlockTheme(Map<BlockTypes, Block> blocks, Block defBlock, Map<BlockTypes, BlockFamily> families, BlockFamily defFamily) {
+        this.blockMap = new EnumMap<>(blocks);
+        this.defaultBlock = defBlock;
+        this.familyMap = new EnumMap<>(families);
+        this.defaultFamily = defFamily;
     }
 
-    /**
-     * @param blockType the block type (as defined in BlockTypes}
-     * @param blockUri the block uri
-     */
-    public void register(BlockTypes blockType, String blockUri) {
-        Block block = blockManager.getBlock(blockUri);
-
-        if (block == null || block.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
-            logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
-            block = defaultBlock;
-        }
-
-        map.put(blockType, block);
-    }
-
-    /**
-     * @param blockType the block type (as defined in BlockTypes}
-     * @param blockUri the block uri
-     */
-    public void registerFamily(BlockTypes blockType, String blockUri) {
-        BlockFamily block = blockManager.getBlockFamily(blockUri);
-
-        if (block == null) {
-            logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
-            block = defaultFamily;
-        }
-
-        familyMap.put(blockType, block);
-    }
-
-    /**
-     * Remove blockType from the mapping
-     * @param blockType the block type (as defined in BlockTypes}
-     */
-    public void unregister(String blockType) {
-        map.remove(blockType);
+    public static Builder builder(BlockManager blockManager) {
+        return new Builder(blockManager);
     }
 
     @Override
     public Block apply(BlockTypes input) {
 
-        Block block = map.get(input);
+        Block block = blockMap.get(input);
 
         if (block == null) {
             block = defaultBlock;
@@ -129,5 +92,80 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         }
 
         return block;
+    }
+
+    public static final class Builder {
+        private final BlockManager blockManager;
+
+        private final Block defaultBlock;
+        private final BlockFamily defaultFamily;
+
+        private final Map<BlockTypes, Block> blockMap = new EnumMap<>(BlockTypes.class);
+        private final Map<BlockTypes, BlockFamily> familyMap = new EnumMap<>(BlockTypes.class);
+
+        private Builder(BlockManager blockManager) {
+            this.blockManager = blockManager;
+            blockMap.put(BlockTypes.AIR, blockManager.getBlock(BlockManager.AIR_ID));
+            defaultBlock = blockManager.getBlock(BlockManager.UNLOADED_ID);
+            defaultFamily = blockManager.getBlockFamily(BlockManager.UNLOADED_ID);
+        }
+
+        public BlockTheme build() {
+            return new BlockTheme(blockMap, defaultBlock, familyMap, defaultFamily);
+        }
+
+        /**
+         * @param blockType the block type (as defined in BlockTypes}
+         * @param blockUri the qualified block uri (modulename:id)
+         * @return this
+         */
+        public Builder register(BlockTypes blockType, String blockUri) {
+            register(blockType, new BlockUri(blockUri));
+            return this;
+        }
+
+        /**
+         * @param blockType the block type (as defined in BlockTypes}
+         * @param blockUri the block uri
+         * @return this
+         */
+        public Builder register(BlockTypes blockType, BlockUri blockUri) {
+            Block block = blockManager.getBlock(blockUri);
+
+            if (block == null || block.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
+                logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
+                block = defaultBlock;
+            }
+
+            blockMap.put(blockType, block);
+            return this;
+        }
+
+        /**
+         * @param blockType the block type (as defined in BlockTypes}
+         * @param blockUri the qualified block family uri (modulename:id)
+         * @return this
+         */
+        public Builder registerFamily(BlockTypes blockType, String blockUri) {
+            registerFamily(blockType, new BlockUri(blockUri));
+            return this;
+        }
+
+        /**
+         * @param blockType the block type (as defined in BlockTypes}
+         * @param blockUri the block family uri
+         * @return this
+         */
+        public Builder registerFamily(BlockTypes blockType, BlockUri blockUri) {
+            BlockFamily family = blockManager.getBlockFamily(blockUri);
+
+            if (family == null) {
+                logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
+                family = defaultFamily;
+            }
+
+            familyMap.put(blockType, family);
+            return this;
+        }
     }
 }

@@ -84,7 +84,8 @@ public class FenceFacetProvider implements FacetProvider {
 
     private Optional<SimpleFence> generateFence(Parcel parcel) {
 
-        Rect2i fenceRc = new Rect2i(parcel.getShape());
+        Rect2i fenceRc = Rect2i.createFromMinAndMax(parcel.getShape().min(), parcel.getShape().max());
+//        Rect2i fenceRc = new Rect2i(parcel.getShape());                // TODO: add copy constructor
         Orientation gateOrient = parcel.getOrientation();
         LineSegment seg = Edges.getEdge(fenceRc, parcel.getOrientation());
         Vector2i gatePos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);

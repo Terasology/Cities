@@ -33,6 +33,8 @@ import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
+import org.terasology.registry.CoreRegistry;
+import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generator.ChunkGenerationPass;
 
@@ -45,7 +47,7 @@ public class CityTerrainGenerator implements ChunkGenerationPass {
 
     private final HeightMap heightMap;
 
-    private final BlockTheme theme = new BlockTheme();
+    private final BlockTheme theme = BlockTheme.builder(CoreRegistry.get(BlockManager.class)).build();
     private WorldFacade facade;
 
     // private WorldBiomeProvider worldBiomeProvider;
@@ -56,23 +58,24 @@ public class CityTerrainGenerator implements ChunkGenerationPass {
     public CityTerrainGenerator(HeightMap heightMap) {
         this.heightMap = heightMap;
 
-        theme.register(BlockTypes.ROAD_SURFACE, "core:Gravel");
-        theme.register(BlockTypes.LOT_EMPTY, "core:dirt");
-        theme.register(BlockTypes.BUILDING_WALL, "Cities:stonawall1");
-        theme.register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark");
-        theme.register(BlockTypes.BUILDING_FOUNDATION, "core:gravel");
-        theme.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles2");
-        theme.register(BlockTypes.ROOF_HIP, "Cities:wood3");
-        theme.register(BlockTypes.ROOF_SADDLE, "Cities:wood3");
-        theme.register(BlockTypes.ROOF_DOME, "core:plank");
-        theme.register(BlockTypes.ROOF_GABLE, "core:plank");
-
-        theme.register(BlockTypes.TOWER_WALL, "Cities:stonawall1");
-
-        // -- require Fences modules
-        theme.registerFamily(BlockTypes.FENCE, "Fences:Fence");
-        // there is no fence gate :-(
-        theme.registerFamily(BlockTypes.FENCE_GATE, "Engine:Air");
+//        theme.register(BlockTypes.ROAD_FILL, "core:dirt");
+//        theme.register(BlockTypes.ROAD_SURFACE, "core:Gravel");
+//        theme.register(BlockTypes.LOT_EMPTY, "core:dirt");
+//        theme.register(BlockTypes.BUILDING_WALL, "Cities:stonawall1");
+//        theme.register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark");
+//        theme.register(BlockTypes.BUILDING_FOUNDATION, "core:gravel");
+//        theme.register(BlockTypes.ROOF_FLAT, "Cities:rooftiles2");
+//        theme.register(BlockTypes.ROOF_HIP, "Cities:wood3");
+//        theme.register(BlockTypes.ROOF_SADDLE, "Cities:wood3");
+//        theme.register(BlockTypes.ROOF_DOME, "core:plank");
+//        theme.register(BlockTypes.ROOF_GABLE, "core:plank");
+//
+//        theme.register(BlockTypes.TOWER_WALL, "Cities:stonawall1");
+//
+//        // -- require Fences modules
+//        theme.registerFamily(BlockTypes.FENCE, "Fences:Fence");
+//        // there is no fence gate :-(
+//        theme.registerFamily(BlockTypes.FENCE_GATE, "Engine:Air");
     }
 
     @Override

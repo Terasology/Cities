@@ -27,10 +27,15 @@ public enum BlockTypes {
     AIR,
 
     /**
+     * Fill material under the surface of a road
+     */
+    ROAD_FILL,
+
+    /**
      * Surface of a road (asphalt)
      */
     ROAD_SURFACE,
-    
+
     /**
      * Empty space in a lot
      */
