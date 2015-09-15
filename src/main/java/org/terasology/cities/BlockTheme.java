@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.Uri;
 import org.terasology.math.Side;
 import org.terasology.math.SideBitFlag;
 import org.terasology.world.block.Block;
@@ -82,9 +83,8 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         }
 
         BlockUri familyUri = family.getURI().getFamilyUri();
-        String identifier = family.getURI().getIdentifier().toString();
         byte flags = SideBitFlag.getSides(side);
-        BlockUri blockUri = new BlockUri(familyUri + ":" + identifier + flags);
+        BlockUri blockUri = new BlockUri(familyUri + BlockUri.IDENTIFIER_SEPARATOR + flags);
         Block block = family.getBlockFor(blockUri);
 
         if (block == null) {
