@@ -66,7 +66,7 @@ public class TownWallFacetLayer extends AbstractFacetLayer {
             g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
 
             g.setColor(WALL_FILL_COLOR);
-            g.setStroke(new BasicStroke(ws.getWallThickness()-2, BasicStroke.CAP_ROUND, BasicStroke.CAP_BUTT));
+            g.setStroke(new BasicStroke(ws.getWallThickness() - 2, BasicStroke.CAP_ROUND, BasicStroke.CAP_BUTT));
             g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
         }
 

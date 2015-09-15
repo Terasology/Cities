@@ -18,7 +18,6 @@ package org.terasology.cities.common;
 
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.ImmutableVector2f;
-import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;

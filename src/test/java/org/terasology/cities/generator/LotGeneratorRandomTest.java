@@ -26,23 +26,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.terasology.math.geom.BaseVector2i;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityTerrainComponent;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.Site;
 import org.terasology.cities.model.bldg.Building;
 import org.terasology.cities.model.bldg.SimpleBuilding;
-import org.terasology.cities.common.CachingFunction;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
+import org.terasology.math.geom.BaseVector2i;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;

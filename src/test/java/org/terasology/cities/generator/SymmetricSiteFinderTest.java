@@ -22,14 +22,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Set;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.Vector2i;
 import org.junit.Before;
 import org.junit.Test;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.CityTerrainComponent;
-import org.terasology.cities.model.Site;
 import org.terasology.cities.common.CachingFunction;
+import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -37,6 +35,8 @@ import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.commonworld.heightmap.NoiseHeightMap;
 import org.terasology.commonworld.symmetry.Symmetries;
 import org.terasology.commonworld.symmetry.Symmetry;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Vector2i;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;

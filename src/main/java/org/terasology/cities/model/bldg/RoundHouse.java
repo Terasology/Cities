@@ -18,8 +18,8 @@ package org.terasology.cities.model.bldg;
 
 import java.awt.geom.Ellipse2D;
 
-import org.terasology.math.geom.BaseVector2i;
 import org.terasology.cities.model.roof.ConicRoof;
+import org.terasology.math.geom.BaseVector2i;
 
 /**
  * A round house with a conic roof

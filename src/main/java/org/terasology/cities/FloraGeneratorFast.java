@@ -16,7 +16,11 @@
 
 package org.terasology.cities;
 
-import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.core.world.CoreBiome;
 import org.terasology.registry.CoreRegistry;
@@ -27,10 +31,7 @@ import org.terasology.world.block.BlockManager;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generator.ChunkGenerationPass;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.google.common.collect.Lists;
 
 /**
  * Generates flowers and high grass. It's fast, because it

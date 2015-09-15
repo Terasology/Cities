@@ -32,7 +32,6 @@ import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.raster.RasterRegistry;
-import org.terasology.cities.walls.GateWallSegmentRasterizer;
 import org.terasology.cities.walls.SolidWallSegment;
 import org.terasology.cities.walls.SolidWallSegmentRasterizer;
 

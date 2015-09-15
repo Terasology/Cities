@@ -29,8 +29,8 @@ import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.geom.PathUtils;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.Vector2i;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.terasology.commonworld.contour.Contour;
 import org.terasology.math.geom.BaseVector2d;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 

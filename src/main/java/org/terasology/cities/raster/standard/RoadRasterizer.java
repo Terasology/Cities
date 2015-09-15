@@ -22,7 +22,6 @@ import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.util.List;
 
-import org.terasology.math.geom.Vector2i;
 import javax.vecmath.Point3d;
 
 import org.terasology.cities.BlockTypes;
@@ -36,6 +35,7 @@ import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
+import org.terasology.math.geom.Vector2i;
 
 import com.google.common.collect.Lists;
 

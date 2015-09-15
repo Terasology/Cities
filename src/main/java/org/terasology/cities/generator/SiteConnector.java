@@ -18,10 +18,11 @@ package org.terasology.cities.generator;
 
 import java.util.Set;
 
-import org.terasology.math.geom.BaseVector2i;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
+import org.terasology.math.geom.BaseVector2i;
+
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;

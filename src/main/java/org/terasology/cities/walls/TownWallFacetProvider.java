@@ -16,34 +16,23 @@
 
 package org.terasology.cities.walls;
 
-import java.awt.Rectangle;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.AreaInfo;
-import org.terasology.cities.bldg.Building;
 import org.terasology.cities.blocked.BlockedAreaFacet;
-import org.terasology.cities.fences.FenceFacet;
-import org.terasology.cities.model.City;
 import org.terasology.cities.model.bldg.SimpleTower;
-import org.terasology.cities.parcels.Parcel;
-import org.terasology.cities.parcels.ParcelFacet;
-import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
-import org.terasology.cities.terrain.BuildableTerrainFacetProvider;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Circle;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.generation.Facet;
@@ -52,7 +41,6 @@ import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
 
-import com.google.common.base.Function;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
@@ -75,10 +63,12 @@ public class TownWallFacetProvider implements FacetProvider {
 
     private long seed;
 
+    @Override
     public void setSeed(long seed) {
         this.seed = seed;
     }
 
+    @Override
     public void process(GeneratingRegion region) {
         InfiniteSurfaceHeightFacet heightFacet = region.getRegionFacet(InfiniteSurfaceHeightFacet.class);
         TownWallFacet wallFacet = new TownWallFacet(region.getRegion(), region.getBorderForFacet(TownWallFacet.class));

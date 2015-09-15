@@ -20,8 +20,8 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 
-import org.terasology.math.geom.BaseVector2i;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.geom.BaseVector2i;
 
 /**
  * Contains information on whether an area is blocked or not

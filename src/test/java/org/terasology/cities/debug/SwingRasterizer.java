@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.terasology.math.Vector2i;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
@@ -56,6 +54,7 @@ import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.commonworld.heightmap.NoiseHeightMap;
 import org.terasology.commonworld.symmetry.Symmetries;
 import org.terasology.math.TeraMath;
+import org.terasology.math.Vector2i;
 import org.terasology.world.chunks.ChunkConstants;
 
 import com.google.common.base.Function;

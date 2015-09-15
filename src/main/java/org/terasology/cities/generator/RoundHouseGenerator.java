@@ -19,7 +19,6 @@ package org.terasology.cities.generator;
 import java.awt.Rectangle;
 import java.math.RoundingMode;
 
-import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.bldg.RoundHouse;
 import org.terasology.cities.model.bldg.SimpleDoor;
@@ -27,6 +26,7 @@ import org.terasology.cities.model.bldg.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.geom.Rectangles;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.geom.ImmutableVector2i;
 
 import com.google.common.math.IntMath;
 

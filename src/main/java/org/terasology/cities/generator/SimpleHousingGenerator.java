@@ -32,9 +32,9 @@ import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.geom.Rectangles;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 

@@ -18,7 +18,6 @@ package org.terasology.cities.common;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.terasology.cities.common.Edges;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;

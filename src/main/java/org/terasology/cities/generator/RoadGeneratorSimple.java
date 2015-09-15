@@ -18,12 +18,13 @@ package org.terasology.cities.generator;
 
 import java.math.RoundingMode;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.UnorderedPair;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Vector2i;
+
 import com.google.common.base.Function;
 
 /**

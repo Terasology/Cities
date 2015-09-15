@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Sector;
-import org.terasology.commonworld.geom.Vector2iUtils;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;

@@ -19,15 +19,15 @@ package org.terasology.cities.generator;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.Vector2i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.model.Site;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.commonworld.symmetry.Symmetry;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.Vector2i;
 
 import com.google.common.base.Function;
 
