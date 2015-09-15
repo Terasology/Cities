@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.walls;
 
-import org.terasology.cities.model.bldg.Tower;
-import org.terasology.cities.model.bldg.TownWall;
-import org.terasology.cities.model.bldg.WallSegment;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.raster.standard.StandardRegistry;
 
 /**
  * TODO Type description

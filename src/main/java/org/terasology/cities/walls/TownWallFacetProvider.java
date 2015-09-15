@@ -14,52 +14,101 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.generator;
+package org.terasology.cities.walls;
 
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.cities.AreaInfo;
+import org.terasology.cities.bldg.Building;
+import org.terasology.cities.blocked.BlockedAreaFacet;
+import org.terasology.cities.fences.FenceFacet;
 import org.terasology.cities.model.City;
-import org.terasology.cities.model.bldg.GateWallSegment;
 import org.terasology.cities.model.bldg.SimpleTower;
-import org.terasology.cities.model.bldg.SolidWallSegment;
-import org.terasology.cities.model.bldg.TownWall;
-import org.terasology.cities.model.bldg.WallSegment;
+import org.terasology.cities.parcels.Parcel;
+import org.terasology.cities.parcels.ParcelFacet;
+import org.terasology.cities.roads.RoadFacet;
+import org.terasology.cities.sites.Site;
+import org.terasology.cities.sites.SiteFacet;
+import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
+import org.terasology.cities.terrain.BuildableTerrainFacet;
+import org.terasology.cities.terrain.BuildableTerrainFacetProvider;
 import org.terasology.math.geom.Vector2i;
+import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
-import org.terasology.utilities.random.MersenneRandom;
+import org.terasology.math.geom.Circle;
+import org.terasology.math.geom.Rect2i;
+import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
+import org.terasology.world.generation.Facet;
+import org.terasology.world.generation.FacetProvider;
+import org.terasology.world.generation.GeneratingRegion;
+import org.terasology.world.generation.Produces;
+import org.terasology.world.generation.Requires;
 
 import com.google.common.base.Function;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 
 /**
  * Generates a {@link TownWall} around a given settlement
  * while respecting blocked areas
  */
-public class DefaultTownWallGenerator {
+@Produces(TownWallFacet.class)
+@Requires({
+    @Facet(SiteFacet.class),
+    @Facet(BlockedAreaFacet.class),
+    @Facet(BuildableTerrainFacet.class),
+    @Facet(InfiniteSurfaceHeightFacet.class)})
+public class TownWallFacetProvider implements FacetProvider {
 
-    private String seed;
-    private Function<BaseVector2i, Integer> heightMap;
+    private static final Logger logger = LoggerFactory.getLogger(TownWallFacetProvider.class);
 
-    /**
-     * @param seed the random seed
-     * @param heightMap the terrain height function
-     */
-    public DefaultTownWallGenerator(String seed, Function<BaseVector2i, Integer> heightMap) {
+    private final Cache<Site, Optional<TownWall>> cache = CacheBuilder.newBuilder().build();
+
+    private long seed;
+
+    public void setSeed(long seed) {
         this.seed = seed;
-        this.heightMap = heightMap;
     }
 
-    /**
-     * @param city the city
-     * @param sectorInfo the blocked area
-     * @return a town wall
-     */
-    public TownWall generate(City city, AreaInfo sectorInfo) {
-        Random rand = new MersenneRandom(Objects.hash(seed, city.hashCode()));
+    public void process(GeneratingRegion region) {
+        InfiniteSurfaceHeightFacet heightFacet = region.getRegionFacet(InfiniteSurfaceHeightFacet.class);
+        TownWallFacet wallFacet = new TownWallFacet(region.getRegion(), region.getBorderForFacet(TownWallFacet.class));
+        SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
+        BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
+        BuildableTerrainFacet buildableAreaFacet = region.getRegionFacet(BuildableTerrainFacet.class);
+
+        for (Site site : siteFacet.getSettlements()) {
+            if (Circle.intersects(site.getPos(), site.getRadius(), wallFacet.getWorldRegion())) {
+                try {
+                    Optional<TownWall> opt = cache.get(site, () -> generate(site, heightFacet, buildableAreaFacet, blockedAreaFacet));
+                    if (opt.isPresent()) {
+                        wallFacet.addTownWall(opt.get());
+                    }
+                } catch (ExecutionException e) {
+                    logger.error("Could not compute buildings for {}", region.getRegion(), e);
+                }
+            }
+        }
+
+        region.setRegionFacet(TownWallFacet.class, wallFacet);
+    }
+
+    private Optional<TownWall> generate(Site city, InfiniteSurfaceHeightFacet heightFacet, BuildableTerrainFacet buildableAreaFacet, BlockedAreaFacet blockedAreaFacet) {
+        int minRadForTownWall = 150;
+        if (city.getRadius() < minRadForTownWall) {
+            return Optional.empty();
+        }
+
+        Random rand = new FastRandom(seed ^ city.getPos().hashCode());
 
         int cx = city.getPos().getX();
         int cz = city.getPos().getY();
@@ -67,7 +116,8 @@ public class DefaultTownWallGenerator {
         Vector2i center = new Vector2i(cx, cz);
 
         int maxWallThick = 4;
-        double maxRad = (city.getDiameter() - maxWallThick) * 0.5;
+        float maxRad = city.getRadius() - maxWallThick * 0.5f;
+
 
         TownWall tw = new TownWall();
 
@@ -75,7 +125,7 @@ public class DefaultTownWallGenerator {
 
         // generate towers first
         List<Vector2i> tp = getTowerPosList(rand, center, maxRad, step);
-        List<Boolean> blocked = getBlockedPos(tp, sectorInfo);
+        List<Boolean> blocked = getBlockedPos(tp, buildableAreaFacet, blockedAreaFacet);
         int lastHit = Short.MIN_VALUE;
         int firstHit = Short.MIN_VALUE;
 
@@ -88,7 +138,7 @@ public class DefaultTownWallGenerator {
             if (thisOk) {
 
                 if (!prevOk) {                          // the previous location was blocked -> this is the second part of a gate
-                    tw.addTower(createGateTower(tp.get(i)));
+                    tw.addTower(createGateTower(heightFacet, tp.get(i)));
 
                     if (firstHit < 0) {
                         firstHit = i;
@@ -104,7 +154,7 @@ public class DefaultTownWallGenerator {
                 } else
 
                 if (!nextOk) {                          // the next location is blocked -> this is the first part of a gate
-                    tw.addTower(createGateTower(tp.get(i)));
+                    tw.addTower(createGateTower(heightFacet, tp.get(i)));
 
                     if (firstHit < 0) {
                         firstHit = i;
@@ -119,7 +169,7 @@ public class DefaultTownWallGenerator {
                 } else
 
                 if (i - lastHit > 5 && tp.size() + i - firstHit > 5) {          // the last/next tower is n segments away -> place another one
-                    tw.addTower(createTower(tp.get(i)));
+                    tw.addTower(createTower(heightFacet, tp.get(i)));
 
                     if (firstHit < 0) {
                         firstHit = i;
@@ -144,7 +194,7 @@ public class DefaultTownWallGenerator {
             tw.addWall(createSolidWall(start, end));
         }
 
-        return tw;
+        return Optional.of(tw);
     }
 
     private WallSegment createSolidWall(Vector2i start, Vector2i end) {
@@ -163,32 +213,32 @@ public class DefaultTownWallGenerator {
         return wall;
     }
 
-    private List<Boolean> getBlockedPos(List<Vector2i> tp, AreaInfo sectorInfo) {
+    private List<Boolean> getBlockedPos(List<Vector2i> tp, BuildableTerrainFacet buildable, BlockedAreaFacet blocked) {
         List<Boolean> list = Lists.newArrayList();
 
         for (Vector2i pos : tp) {
-            Rectangle layout = getTowerRect(pos);
-            boolean ok = !sectorInfo.isBlocked(layout);
+            Rect2i layout = getTowerRect(pos);
+            boolean ok = buildable.isBuildable(layout) && !blocked.isBlocked(layout);
             list.add(Boolean.valueOf(ok));
         }
 
         return list;
     }
 
-    private SimpleTower createGateTower(Vector2i towerPos) {
+    private SimpleTower createGateTower(InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
         int towerHeight = 10;
-        int baseHeight = heightMap.apply(towerPos);
+        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos));
 
-        Rectangle layout = getTowerRect(towerPos);
+        Rect2i layout = getTowerRect(towerPos);
         SimpleTower tower = new SimpleTower(layout, baseHeight, towerHeight);
         return tower;
     }
 
-    private SimpleTower createTower(Vector2i towerPos) {
+    private SimpleTower createTower(InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
         int towerHeight = 9;
-        int baseHeight = heightMap.apply(towerPos);
+        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos));
 
-        Rectangle layout = getTowerRect(towerPos);
+        Rect2i layout = getTowerRect(towerPos);
         SimpleTower tower = new SimpleTower(layout, baseHeight, towerHeight);
         return tower;
     }
@@ -219,11 +269,11 @@ public class DefaultTownWallGenerator {
         return list;
     }
 
-    private Rectangle getTowerRect(Vector2i tp) {
+    private Rect2i getTowerRect(Vector2i tp) {
         int towerRad = 3;
 
         // make sure the width/height are odd to make the BattlementRoof look pretty
-        return new Rectangle(tp.x - towerRad, tp.y - towerRad, towerRad * 2 - 1, towerRad * 2 - 1);
+        return Rect2i.createFromMinAndSize(tp.x - towerRad, tp.y - towerRad, towerRad * 2 - 1, towerRad * 2 - 1);
 
     }
 }

@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model;
 
-import org.terasology.cities.model.bldg.TownWall;
+import org.terasology.cities.walls.TownWall;
 import org.terasology.math.geom.BaseVector2i;
 
 import com.google.common.base.Optional;

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.walls;
+
+import org.terasology.cities.model.bldg.Building;
 
 /**
  * An empty definition of a tower

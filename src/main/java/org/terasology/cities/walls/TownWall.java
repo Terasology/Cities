@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.walls;
 
 import java.util.Collections;
 import java.util.List;

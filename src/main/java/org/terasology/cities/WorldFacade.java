@@ -24,12 +24,9 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.Vector2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.generator.DefaultTownWallGenerator;
+import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
@@ -39,7 +36,6 @@ import org.terasology.cities.generator.SimpleFenceGenerator;
 import org.terasology.cities.generator.SimpleHousingGenerator;
 import org.terasology.cities.generator.SiteConnector;
 import org.terasology.cities.generator.SiteFinderRandom;
-import org.terasology.cities.generator.TownWallShapeGenerator;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Lake;
@@ -51,8 +47,7 @@ import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.Site;
 import org.terasology.cities.model.bldg.SimpleBuilding;
 import org.terasology.cities.model.bldg.SimpleChurch;
-import org.terasology.cities.model.bldg.TownWall;
-import org.terasology.cities.common.CachingFunction;
+import org.terasology.cities.walls.TownWallFacetProvider;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.UnorderedPair;
@@ -62,6 +57,9 @@ import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.Vector2d;
 import org.terasology.namegenerator.town.DebugTownTheme;
 import org.terasology.namegenerator.town.TownAffinityVector;
 import org.terasology.namegenerator.town.TownNameProvider;
@@ -255,7 +253,7 @@ public class WorldFacade {
         roadShapeFunc = new RoadShapeGenerator(roadMap);
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
 
-        final DefaultTownWallGenerator twg = new DefaultTownWallGenerator(seed, heightMap);
+        final TownWallFacetProvider twg = new TownWallFacetProvider();
         final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
         final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 25d, 40d, 1, 100);
         final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
@@ -322,12 +320,12 @@ public class WorldFacade {
                     int minRadForTownWall = (spawnConfig.getMinCityRadius() * 3 + spawnConfig.getMaxCityRadius()) / 4;
 
                     if (town.getRadius() > minRadForTownWall) {
-                        TownWall tw = twg.generate(town, si);
-                        town.setTownWall(tw);
+//                        TownWall tw = twg.generate(town, si);
+//                        town.setTownWall(tw);
 
-                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
-                        Shape townWallShape = twsg.computeShape(tw);
-                        si.addBlockedArea(townWallShape);
+//                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
+//                        Shape townWallShape = twsg.computeShape(tw);
+//                        si.addBlockedArea(townWallShape);
                     }
 
                     Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);

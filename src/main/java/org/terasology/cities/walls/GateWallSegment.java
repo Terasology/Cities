@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.walls;
 
 import org.terasology.math.geom.BaseVector2i;
 
 /**
  * A straight, solid wall segment
-  */
-public class SolidWallSegment extends WallSegment {
+ */
+public class GateWallSegment extends WallSegment {
 
     private int wallHeight;
 
@@ -31,7 +31,7 @@ public class SolidWallSegment extends WallSegment {
      * @param wallThickness the wall thickness in block
      * @param wallHeight the wall height in blocks above terrain
      */
-    public SolidWallSegment(BaseVector2i start, BaseVector2i end, int wallThickness, int wallHeight) {
+    public GateWallSegment(BaseVector2i start, BaseVector2i end, int wallThickness, int wallHeight) {
         super(start, end, wallThickness);
         this.wallHeight = wallHeight;
     }

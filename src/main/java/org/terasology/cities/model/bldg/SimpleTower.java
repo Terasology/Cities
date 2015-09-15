@@ -19,6 +19,8 @@ package org.terasology.cities.model.bldg;
 import java.awt.Rectangle;
 
 import org.terasology.cities.model.roof.BattlementRoof;
+import org.terasology.cities.walls.Tower;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * A simple tower
@@ -30,9 +32,13 @@ public class SimpleTower extends SimpleBuilding implements Tower {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public SimpleTower(Rectangle layout, int baseHeight, int wallHeight) {
-        super(layout, new BattlementRoof(new Rectangle(layout.x - 1, layout.y - 1, layout.width + 2, layout.height + 2), baseHeight + wallHeight, 1), baseHeight, wallHeight);
+    public SimpleTower(Rect2i layout, int baseHeight, int wallHeight) {
+        super(new Rectangle(
+                layout.minX(), layout.minY(), layout.width(), layout.height()),
+                new BattlementRoof(
+                new Rectangle(layout.minX() - 1, layout.minY() - 1, layout.width() + 2, layout.height() + 2),
+                baseHeight + wallHeight, 1), baseHeight, wallHeight);
     }
 
-    
+
 }

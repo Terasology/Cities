@@ -24,6 +24,7 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.walls.SimpleTownWallRasterizer;
 
 /**
  * Converts a {@link MedievalTown} into blocks
