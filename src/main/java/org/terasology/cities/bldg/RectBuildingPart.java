@@ -16,6 +16,9 @@
 
 package org.terasology.cities.bldg;
 
+import java.util.Set;
+
+import org.terasology.cities.model.bldg.Door;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Shape;
@@ -28,5 +31,4 @@ public class RectBuildingPart extends AbstractBuildingPart {
     public RectBuildingPart(Rect2i layout, Roof roof, int baseHeight, int wallHeight) {
         super(layout, roof, baseHeight, wallHeight);
     }
-
 }

@@ -19,6 +19,7 @@ package org.terasology.cities.bldg;
 import java.util.Collections;
 import java.util.Set;
 
+import org.terasology.cities.model.bldg.Door;
 import org.terasology.cities.model.bldg.Window;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.math.geom.Shape;
@@ -41,4 +42,5 @@ public interface BuildingPart {
     public int getBaseHeight();
 
     public Set<Window> getWindows();
+    public Set<Door> getDoors();
 }

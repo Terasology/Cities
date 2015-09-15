@@ -16,16 +16,20 @@
 
 package org.terasology.cities.bldg;
 
+import java.awt.Rectangle;
 import java.math.RoundingMode;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.model.roof.HipRoof;
+import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
-import org.terasology.cities.sites.Site;
-import org.terasology.commonworld.Orientation;
+import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2f;
 import org.terasology.math.geom.LineSegment;
@@ -39,9 +43,8 @@ import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
 import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 /**
  * Produces a {@link BuildingFacet}.
@@ -50,14 +53,9 @@ import com.google.common.cache.LoadingCache;
 @Requires({@Facet(ParcelFacet.class), @Facet(SurfaceHeightFacet.class)})
 public class BuildingFacetProvider implements FacetProvider {
 
-    private final LoadingCache<Parcel, Set<Building>> cache = CacheBuilder.newBuilder().build(
-            new CacheLoader<Parcel, Set<Building>>() {
+    private static final Logger logger = LoggerFactory.getLogger(BuildingFacetProvider.class);
 
-        @Override
-        public Set<Building> load(Parcel parcel) {
-            return generateBuildings(parcel);
-        }
-    });
+    private final Cache<Parcel, Set<Building>> cache = CacheBuilder.newBuilder().build();
 
     @Override
     public void process(GeneratingRegion region) {
@@ -66,29 +64,45 @@ public class BuildingFacetProvider implements FacetProvider {
         BuildingFacet facet = new BuildingFacet(region.getRegion(), border);
 
         ParcelFacet parcelFacet = region.getRegionFacet(ParcelFacet.class);
+        InfiniteSurfaceHeightFacet heightFacet = region.getRegionFacet(InfiniteSurfaceHeightFacet.class);
 
         for (Parcel parcel : parcelFacet.getParcels()) {
-            Set<Building> bldgs = cache.getUnchecked(parcel);
-            for (Building bldg : bldgs) {
-                facet.addBuilding(bldg);
+            Set<Building> bldgs;
+            try {
+                bldgs = cache.get(parcel, () -> generateBuildings(parcel, heightFacet));
+                for (Building bldg : bldgs) {
+                    facet.addBuilding(bldg);
+                }
+            } catch (ExecutionException e) {
+                logger.error("Could not compute buildings for {}", region.getRegion(), e);
             }
         }
 
         region.setRegionFacet(BuildingFacet.class, facet);
     }
 
-    private Set<Building> generateBuildings(Parcel parcel) {
+    private Set<Building> generateBuildings(Parcel parcel, InfiniteSurfaceHeightFacet heightFacet) {
 
         DefaultBuilding b = new DefaultBuilding(parcel.getOrientation());
         Rect2i layout = new Rect2i(parcel.getShape());
         layout.expand(new Vector2i(-2, -2));
 
-        b.addPart(new RectBuildingPart(layout));
-
         Rect2i fenceRc = new Rect2i(parcel.getShape());
-        Orientation gateOrient = parcel.getOrientation();
         LineSegment seg = Edges.getEdge(fenceRc, parcel.getOrientation());
         Vector2i gatePos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);
+
+        int floorHeight = TeraMath.floorToInt(heightFacet.getWorld(gatePos.x(), gatePos.y()));
+        int wallHeight = 3;
+
+        int roofPitch = 1;
+        int roofBaseHeight = floorHeight + wallHeight;
+        Rect2i roofArea = new Rect2i(layout);
+        roofArea.expand(new Vector2i(1, 1));
+        Rectangle awtRc = new Rectangle(roofArea.minX(), roofArea.minY(), roofArea.width(), roofArea.height());
+        Roof roof = new HipRoof(awtRc, roofBaseHeight, roofPitch, roofBaseHeight + 1);
+
+        RectBuildingPart part = new RectBuildingPart(layout, roof, floorHeight, wallHeight);
+        b.addPart(part);
 
         return Collections.singleton(b);
     }

@@ -19,6 +19,7 @@ package org.terasology.cities.bldg;
 import java.util.Collections;
 import java.util.Set;
 
+import org.terasology.cities.model.bldg.Door;
 import org.terasology.cities.model.bldg.Window;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.math.geom.Shape;
@@ -31,6 +32,7 @@ import com.google.common.collect.Sets;
 public abstract class AbstractBuildingPart implements BuildingPart {
 
     private final Set<Window> windows = Sets.newHashSet();
+    private final Set<Door> doors = Sets.newHashSet();
     private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
@@ -49,31 +51,22 @@ public abstract class AbstractBuildingPart implements BuildingPart {
         this.wallHeight = wallHeight;
     }
 
-    /**
-     * @return the building layout
-     */
     @Override
     public Shape getLayout() {
         return this.layout;
     }
 
-    /**
-     * @return the roof the roof definition
-     */
+    @Override
     public Roof getRoof() {
         return this.roof;
     }
 
-    /**
-     * @return the building height
-     */
+    @Override
     public int getWallHeight() {
         return this.wallHeight;
     }
 
-    /**
-     * @return the base height
-     */
+    @Override
     public int getBaseHeight() {
         return baseHeight;
     }
@@ -86,9 +79,19 @@ public abstract class AbstractBuildingPart implements BuildingPart {
     }
 
     /**
-     * @return the window areas
+     * @param door the door to add
      */
+    void addDoor(Door door) {
+        doors.add(door);
+    }
+
+    @Override
     public Set<Window> getWindows() {
         return Collections.unmodifiableSet(windows);
+    }
+
+    @Override
+    public Set<Door> getDoors() {
+        return Collections.unmodifiableSet(doors);
     }
 }
