@@ -16,7 +16,6 @@
 
 package org.terasology.cities.raster;
 
-import java.awt.Rectangle;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.math.Side;
+import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.Block;
 import org.terasology.world.chunks.CoreChunk;
 
@@ -38,7 +38,7 @@ public class ChunkBrush extends Brush {
 
     private final CoreChunk chunk;
     private final BlockTheme blockType;
-    private final Rectangle affectedArea;
+    private final Rect2i affectedArea;
 
     /**
      * @param chunk     the chunk to work on
@@ -48,13 +48,13 @@ public class ChunkBrush extends Brush {
         this.blockType = blockType;
         this.chunk = chunk;
 
-        int wx = chunk.chunkToWorldPositionX(0);
-        int wz = chunk.chunkToWorldPositionZ(0);
-        this.affectedArea = new Rectangle(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
+        int wx = chunk.getChunkWorldOffsetX();
+        int wz = chunk.getChunkWorldOffsetZ();
+        this.affectedArea = Rect2i.createFromMinAndSize(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
     }
 
     @Override
-    public Rectangle getAffectedArea() {
+    public Rect2i getAffectedArea() {
         return affectedArea;
     }
 

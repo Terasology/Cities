@@ -16,8 +16,6 @@
 
 package org.terasology.cities.raster;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Set;
@@ -28,51 +26,45 @@ import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
+import org.terasology.math.geom.ImmutableVector2f;
+import org.terasology.math.geom.LineSegment;
+import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Shape;
+import org.terasology.math.geom.Vector2f;
 
 /**
  * Converts model elements into blocks
  */
 public abstract class Brush {
 
-    /**
-     * @param shape the shape to fill
-     * @param hmBottom the bottom height map (inclusive)
-     * @param height the height of the shape
-     * @param type the block type
-     */
-    public void fillShape(Shape shape, HeightMap hmBottom, int height, BlockTypes type) {
-        // optimize, if necessary
-       fillShape(shape, hmBottom, HeightMaps.offset(hmBottom, height), type);
-    }
-
-    /**
-     * @param shape the shape to fill
-     * @param hmBottom the bottom height map (inclusive)
-     * @param hmTop top height map (exclusive)
-     * @param type the block type
-     */
-    public void fillShape(Shape shape, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
-
-        if (!shape.intersects(getAffectedArea())) {
-            return;
-        }
-
-        Rectangle rc = getIntersectionArea(shape.getBounds());
-
-        for (int z = rc.y; z < rc.y + rc.height; z++) {
-            for (int x = rc.x; x < rc.x + rc.width; x++) {
-
-                if (shape.contains(x, z)) {
-                    int y1 = hmBottom.apply(x, z);
-                    int y2 = hmTop.apply(x, z);
-
-                    for (int y = y1; y < y2; y++) {
-                        setBlock(x, y, z, type);
-                    }
-                }
-            }
-        }
-    }
+//    /**
+//     * @param shape the shape to fill
+//     * @param hmBottom the bottom height map (inclusive)
+//     * @param hmTop top height map (exclusive)
+//     * @param type the block type
+//     */
+//    public void fillShape(Shape shape, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
+//
+//        if (!getAffectedArea().overlaps(shape.getBounds()) {
+//            return;
+//        }
+//
+//        Rect2i rc = getIntersectionArea(shape.getBounds());
+//
+//        for (int z = rc.minY(); z <= rc.maxY(); z++) {
+//            for (int x = rc.minX(); x <= rc.maxX(); x++) {
+//
+//                if (shape.contains(x, z)) {
+//                    int y1 = hmBottom.apply(x, z);
+//                    int y2 = hmTop.apply(x, z);
+//
+//                    for (int y = y1; y < y2; y++) {
+//                        setBlock(x, y, z, type);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * @param x1 left x coord
@@ -83,7 +75,7 @@ public abstract class Brush {
      * @param type the block type
      */
     public void createWallX(int x1, int x2, int z, int bottom, int top, BlockTypes type) {
-        Rectangle rect = new Rectangle(x1, z, x2 - x1, 1);
+        Rect2i rect = Rect2i.createFromMinAndSize(x1, z, x2 - x1, 1);
         HeightMap hmBottom = HeightMaps.constant(bottom);
         HeightMap hmTop = HeightMaps.constant(top);
         fillRect(rect, hmBottom, hmTop, type);
@@ -98,7 +90,7 @@ public abstract class Brush {
      * @param type the block type
      */
     public void createWallZ(int z1, int z2, int x, int bottom, int top, BlockTypes type) {
-        Rectangle rect = new Rectangle(x, z1, 1, z2 - z1);
+        Rect2i rect = Rect2i.createFromMinAndSize(x, z1, 1, z2 - z1);
         HeightMap hmBottom = HeightMaps.constant(bottom);
         HeightMap hmTop = HeightMaps.constant(top);
         fillRect(rect, hmBottom, hmTop, type);
@@ -110,7 +102,7 @@ public abstract class Brush {
      * @param heightMap the height map
      * @param type the block type
      */
-    public void fillRect(Rectangle shape, HeightMap heightMap, BlockTypes type) {
+    public void fillRect(Rect2i shape, HeightMap heightMap, BlockTypes type) {
         fillRect(shape, heightMap, HeightMaps.offset(heightMap, 1), type);
     }
 
@@ -120,7 +112,7 @@ public abstract class Brush {
      * @param top the top height of the shape (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, int bottom, int top, BlockTypes type) {
+    public void fillRect(Rect2i rect, int bottom, int top, BlockTypes type) {
         HeightMap hmBottom = HeightMaps.constant(bottom);
         HeightMap hmTop = HeightMaps.constant(top);
         fillRect(rect, hmBottom, hmTop, type);
@@ -132,7 +124,7 @@ public abstract class Brush {
      * @param height the top height of the shape (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, HeightMap hmBottom, int height, BlockTypes type) {
+    public void fillRect(Rect2i rect, HeightMap hmBottom, int height, BlockTypes type) {
         // optimize, if necessary
         fillRect(rect, hmBottom, HeightMaps.constant(height), type);
     }
@@ -143,7 +135,7 @@ public abstract class Brush {
      * @param hmTop the top height map (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, int baseHeight, HeightMap hmTop, BlockTypes type) {
+    public void fillRect(Rect2i rect, int baseHeight, HeightMap hmTop, BlockTypes type) {
         // optimize, if necessary
         fillRect(rect, HeightMaps.constant(baseHeight), hmTop, type);
     }
@@ -154,15 +146,15 @@ public abstract class Brush {
      * @param hmTop the height map for the top (exclusive)
      * @param type the block type
      */
-    public void fillRect(Rectangle rect, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
-        Rectangle rc = getIntersectionArea(rect);
+    public void fillRect(Rect2i rect, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
+        Rect2i rc = getIntersectionArea(rect);
 
         if (rc.isEmpty()) {
             return;
         }
 
-        for (int z = rc.y; z < rc.y + rc.height; z++) {
-            for (int x = rc.x; x < rc.x + rc.width; x++) {
+        for (int z = rc.minY(); z <= rc.maxY(); z++) {
+            for (int x = rc.minX(); x <= rc.maxX(); x++) {
 
                 int y1 = hmBottom.apply(x, z);
                 int y2 = hmTop.apply(x, z);
@@ -172,13 +164,6 @@ public abstract class Brush {
                 }
             }
         }
-    }
-    /**
-     * @param shape the shape to test
-     * @return true if the shape can be affected by this brush
-     */
-    public boolean affects(Shape shape) {
-        return shape.intersects(getAffectedArea());
     }
 
     /**
@@ -211,14 +196,14 @@ public abstract class Brush {
     /**
      * @return the area that is drawn by this brush
      */
-    public abstract Rectangle getAffectedArea();
+    public abstract Rect2i getAffectedArea();
 
     /**
      * @param rect the rectangle that should be drawn
      * @return the intersection between the brush area and the rectangle
      */
-    public Rectangle getIntersectionArea(Rectangle rect) {
-        return getAffectedArea().intersection(rect);
+    public Rect2i getIntersectionArea(Rect2i rect) {
+        return getAffectedArea().intersect(rect);
     }
 
     /**
@@ -227,15 +212,15 @@ public abstract class Brush {
      * @param topHeight the top height
      * @param type the block type
      */
-    public void frame(Rectangle rc, int baseHeight, int topHeight, BlockTypes type) {
+    public void frame(Rect2i rc, int baseHeight, int topHeight, BlockTypes type) {
 
         // walls along z-axis
-        createWallZ(rc.y, rc.y + rc.height, rc.x, baseHeight, topHeight, type);
-        createWallZ(rc.y, rc.y + rc.height, rc.x + rc.width - 1, baseHeight, topHeight, type);
+        createWallZ(rc.minY(), rc.minY() + rc.height(), rc.minX(), baseHeight, topHeight, type);
+        createWallZ(rc.minY(), rc.minY() + rc.height(), rc.minX() + rc.width() - 1, baseHeight, topHeight, type);
 
         // walls along x-axis
-        createWallX(rc.x, rc.x + rc.width, rc.y, baseHeight, topHeight, type);
-        createWallX(rc.x, rc.x + rc.width, rc.y + rc.height - 1, baseHeight, topHeight, type);
+        createWallX(rc.minX(), rc.minX() + rc.width(), rc.minY(), baseHeight, topHeight, type);
+        createWallX(rc.minX(), rc.minX() + rc.width(), rc.minY() + rc.height() - 1, baseHeight, topHeight, type);
 
     }
 
@@ -252,16 +237,16 @@ public abstract class Brush {
      */
     public void draw(HeightMap hmBottom, HeightMap hmTop, int x1, int z1, int x2, int z2, BlockTypes type) {
 
-        Rectangle outerBox = getAffectedArea();
-        double shrink = 0.01;
-        Rectangle2D area = new Rectangle2D.Double(outerBox.x, outerBox.y, outerBox.width - shrink, outerBox.height - shrink);
+        Rect2i outerBox = getAffectedArea();
 
-        Line2D line = new Line2D.Double(x1, z1, x2, z2);
-        if (LineUtilities.clipLine(line, area)) {
-            int cx1 = TeraMath.floorToInt(line.getX1());
-            int cy1 = TeraMath.floorToInt(line.getY1());
-            int cx2 = TeraMath.floorToInt(line.getX2());
-            int cy2 = TeraMath.floorToInt(line.getY2());
+        LineSegment line = new LineSegment(x1, z1, x2, z2);
+        Vector2f p0 = new Vector2f();
+        Vector2f p1 = new Vector2f();
+        if (line.getClipped(outerBox, p0, p1)) {
+            int cx1 = TeraMath.floorToInt(p0.getX());
+            int cy1 = TeraMath.floorToInt(p0.getY());
+            int cx2 = TeraMath.floorToInt(p1.getX());
+            int cy2 = TeraMath.floorToInt(p1.getY());
             drawClippedLine(hmBottom, hmTop, cx1, cy1, cx2, cy2, type);
         }
     }

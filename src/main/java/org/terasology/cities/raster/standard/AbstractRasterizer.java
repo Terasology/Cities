@@ -30,23 +30,4 @@ import org.terasology.commonworld.heightmap.HeightMaps;
  */
 public abstract class AbstractRasterizer<T> implements Rasterizer<T> {
 
-    /**
-     * @param brush the brush to use
-     * @param rc the rectangle to prepare
-     * @param terrain the terrain height map
-     * @param baseHeight the floor level
-     * @param floor the floor block type
-     */
-    protected void prepareFloor(Brush brush, Rectangle rc, HeightMap terrain, int baseHeight, BlockTypes floor) {
-        
-        // clear area above floor level
-        brush.fillRect(rc, baseHeight, HeightMaps.offset(terrain, 1), BlockTypes.AIR);
-
-        // lay floor level
-        brush.fillRect(rc, baseHeight - 1, baseHeight, floor);
-
-        // put foundation concrete below 
-        brush.fillRect(rc, terrain, baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
-        
-    }
 }

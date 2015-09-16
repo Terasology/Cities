@@ -70,8 +70,7 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
     private Building generateRectHouse(Parcel parcel, InfiniteSurfaceHeightFacet heightFacet) {
 
         DefaultBuilding b = new DefaultBuilding(parcel.getOrientation());
-        Rect2i layout = new Rect2i(parcel.getShape());
-        layout.expand(new Vector2i(-2, -2));
+        Rect2i layout = parcel.getShape().expand(new Vector2i(-2, -2));
 
         LineSegment seg = Edges.getEdge(layout, parcel.getOrientation());
         Vector2i doorPos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);

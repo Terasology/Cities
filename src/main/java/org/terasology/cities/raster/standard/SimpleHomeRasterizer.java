@@ -16,50 +16,38 @@
 
 package org.terasology.cities.raster.standard;
 
-import java.awt.Rectangle;
-
+import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.SimpleDoor;
-import org.terasology.cities.bldg.Window;
-import org.terasology.cities.model.bldg.SimpleHome;
+import org.terasology.cities.bldg.BuildingPartRasterizer;
+import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.raster.Brush;
-import org.terasology.cities.raster.RasterRegistry;
-import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * Converts a {@link SimpleHome} into blocks
  */
-public class SimpleHomeRasterizer extends AbstractRasterizer<SimpleHome> {
+public class SimpleHomeRasterizer extends BuildingPartRasterizer<RectBuildingPart> {
 
-    @Override
-    public void raster(Brush brush, TerrainInfo ti, SimpleHome blg) {
-        Rectangle rc = blg.getLayout();
-        
-        RasterRegistry registry = StandardRegistry.getInstance();
-
-        if (brush.affects(rc)) {
-        
-            int baseHeight = blg.getBaseHeight();
-            int wallHeight = blg.getWallHeight();
-    
-            prepareFloor(brush, rc, ti.getHeightMap(), baseHeight, BlockTypes.BUILDING_FLOOR);
-            
-            // create walls
-            brush.frame(rc, baseHeight, blg.getBaseHeight() + wallHeight, BlockTypes.BUILDING_WALL);
-    
-            // door
-            SimpleDoor door = blg.getDoor();
-            brush.fillRect(door.getRect(), door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
-
-            // windows
-            for (Window wnd : blg.getWindows()) {
-                registry.rasterize(brush, ti, wnd);
-            }
-        }
-        
-        // the roof can be larger than the building -- not sure if this is a good idea ...
-        
-        registry.rasterize(brush, ti, blg.getRoof());
+    public SimpleHomeRasterizer(BlockTheme theme) {
+        super(theme, RectBuildingPart.class);
     }
 
+    @Override
+    protected void raster(Brush brush, RectBuildingPart part, HeightMap heightMap) {
+        Rect2i rc = part.getShape();
+//        int topHeight = part.getBaseHeight() + part.getWallHeight() + part.getRoof().getHeight;
+//        Region3i bbox = Region3i(rc.minX(), part.getBaseHeight(), rc.minY(), rc.maxX(), topHeight, rc.maxY());
+
+//        if (chunk.getRegion().overlaps(bbox)) {
+
+        int baseHeight = part.getBaseHeight();
+        int wallHeight = part.getWallHeight();
+
+        prepareFloor(brush, rc, heightMap, baseHeight, BlockTypes.BUILDING_FLOOR);
+
+        // create walls
+        brush.frame(rc, baseHeight, part.getBaseHeight() + wallHeight, BlockTypes.BUILDING_WALL);
+    }
 }
+

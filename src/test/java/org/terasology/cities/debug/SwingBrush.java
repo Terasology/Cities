@@ -17,7 +17,6 @@
 package org.terasology.cities.debug;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Set;
 
@@ -27,6 +26,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.Brush;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
+import org.terasology.math.geom.Rect2i;
 
 import com.google.common.base.Function;
 
@@ -34,18 +34,19 @@ import com.google.common.base.Function;
  * Converts model elements into blocks of of a chunk
  */
 public class SwingBrush extends Brush {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(SwingBrush.class);
-    
+
     private final Function<BlockTypes, Color> blockColor;
-    private final Rectangle affectedArea;
+    private final Rect2i affectedArea;
 
     private final BufferedImage image;
-    private final short[][] heightMap;      // [x][z] 
+    private final short[][] heightMap;      // [x][z]
+    private final BlockTypes[][] typeMap;      // [x][z]
 
     private final int wz;
     private final int wx;
-    
+
     /**
      * @param wx the world block x of the top-left corner
      * @param wz the world block z of the top-left corner
@@ -60,52 +61,53 @@ public class SwingBrush extends Brush {
 
         int width = image.getWidth();
         int height = image.getHeight();
-        
+
         this.heightMap = new short[width][height];
-        
-        this.affectedArea = new Rectangle(wx, wz, width, height);
+        this.typeMap = new BlockTypes[width][height];
+
+        this.affectedArea = Rect2i.createFromMinAndSize(wx, wz, width, height);
     }
 
     @Override
-    public Rectangle getAffectedArea() {
+    public Rect2i getAffectedArea() {
         return affectedArea;
     }
 
     @Override
     public int getMaxHeight() {
-        return 64;
+        return Short.MAX_VALUE;
     }
-    
+
     @Override
     public int getMinHeight() {
-        return 0;
-    } 
-    
+        return Short.MIN_VALUE;
+    }
+
     /**
      * @param x x in world coords
      * @param y y in world coords
      * @param z z in world coords
-     * @param type the block type 
+     * @param type the block type
      */
     @Override
     public void setBlock(int x, int y, int z, BlockTypes type) {
-        setBlock(x, y, z, blockColor.apply(type));
+        renderBlock(x, y, z, type);
     }
 
     @Override
     public void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side) {
-        setBlock(x, y, z, blockColor.apply(type));
+        renderBlock(x, y, z, type);
     }
 
-    
+
     /**
      * @param x x in world coords
      * @param y y in world coords
      * @param z z in world coords
      * @param color the actual block color
      */
-    protected void setBlock(int x, int y, int z, Color color) {
-        
+    protected void renderBlock(int x, int y, int z, BlockTypes type) {
+
         int lx = x - wx;
         int lz = z - wz;
 
@@ -114,43 +116,61 @@ public class SwingBrush extends Brush {
         final boolean warnOnly = true;
         if (debugging) {
             boolean xOk = lx >= 0 && lx < image.getWidth();
-            boolean yOk = lx >= getMinHeight() && lx < getMaxHeight();
+            boolean yOk = y >= getMinHeight() && y < getMaxHeight();
             boolean zOk = lz >= 0 && lz < image.getHeight();
-            
+
             if (warnOnly) {
                 if (!xOk) {
                     logger.warn("X value of {} not in range [{}..{}]", x, wx, wx + image.getWidth() - 1);
                     return;
                 }
-                
+
                 if (!yOk) {
                     logger.warn("Y value of {} not in range [{}..{}]", y, getMinHeight(), getMaxHeight() - 1);
                     return;
                 }
-                
+
                 if (!zOk) {
                     logger.warn("Z value of {} not in range [{}..{}]", z, wz, wz + image.getHeight() - 1);
                     return;
                 }
-            } 
+            }
         }
-        
-        // this is a bit of a hack - alpha is 0 only for Block.AIR
+
+        Color color = blockColor.apply(type);
+
         // if air is drawn at or below terrain level, then reduce height accordingly
         // The color remains unchanged which is wrong, but this information is not available in 2D
-        if (color.getAlpha() == 0) {
+        if (type == BlockTypes.AIR) {
             if (heightMap[lx][lz] >= y) {
                 heightMap[lx][lz] = (short) (y - 1);
+//                typeMap[lx][lz] = UNKNOWN;
+//                image.setRGB(lx, y, rgb);
             }
             return;
         }
-            
+
         if (heightMap[lx][lz] <= y) {
             heightMap[lx][lz] = (short) y;
+            typeMap[lx][lz] = type;
             float[] hsb = new float[3];
             Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);
-            hsb[2] = hsb[2] * (0.5f + 0.5f * (float) TeraMath.clamp(y / 16f));
+            hsb[2] = hsb[2] * (0.5f + 0.5f * TeraMath.clamp(y / 16f));
             image.setRGB(lx, lz, Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
         }
     }
+
+    public int getHeight(int x, int z) {
+        int lx = x - wx;
+        int lz = z - wz;
+        return heightMap[lx][lz];
+    }
+
+    public BlockTypes getBlockType(int x, int z) {
+        int lx = x - wx;
+        int lz = z - wz;
+        BlockTypes type = typeMap[lx][lz];
+        return type;
+    }
+
 }
