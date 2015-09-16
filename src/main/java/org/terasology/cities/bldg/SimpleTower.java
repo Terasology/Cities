@@ -16,8 +16,6 @@
 
 package org.terasology.cities.bldg;
 
-import java.awt.Rectangle;
-
 import org.terasology.cities.model.roof.BattlementRoof;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;

@@ -16,7 +16,6 @@
 
 package org.terasology.cities.bldg;
 
-import java.awt.Rectangle;
 import java.math.RoundingMode;
 
 import org.terasology.cities.common.Edges;

@@ -16,31 +16,29 @@
 
 package org.terasology.cities.raster.standard;
 
-import java.awt.Rectangle;
-
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.FlatRoof;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * Converts a {@link FlatRoof} into blocks
  */
 public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
-    
+
     @Override
     public void raster(Brush brush, TerrainInfo ti, final FlatRoof roof) {
-        final Rectangle area = roof.getArea();
+        Rect2i area = roof.getArea();
 
         if (!brush.affects(area)) {
             return;
         }
-        
-        HeightMap topHm = new HeightMapAdapter() {
+
+        HeightMap topHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
@@ -54,17 +52,17 @@ public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
                 int borderDistZ = Math.min(rz, area.height - 1 - rz);
 
                 int dist = Math.min(borderDistX, borderDistZ);
-                
+
                 if (dist == 0) {
                     y += roof.getBorderHeight(rx, rz);
                 }
-                
+
                 return y;
             }
         };
 
         HeightMap bottomHm = HeightMaps.constant(roof.getBaseHeight());
-        
+
         brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
     }
 

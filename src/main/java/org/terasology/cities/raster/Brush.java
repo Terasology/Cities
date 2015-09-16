@@ -16,20 +16,15 @@
 
 package org.terasology.cities.raster;
 
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
 import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.commonworld.geom.LineUtilities;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.ImmutableVector2f;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Shape;
 import org.terasology.math.geom.Vector2f;
 
 /**

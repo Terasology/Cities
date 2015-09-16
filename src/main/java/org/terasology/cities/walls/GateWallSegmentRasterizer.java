@@ -21,7 +21,6 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 
 /**
@@ -41,7 +40,7 @@ public class GateWallSegmentRasterizer implements Rasterizer<GateWallSegment> {
         final double width = Math.sqrt((x2 - x1) * (x2 - x1) + (z2 - z1) * (z2 - z1));
         final int height = element.getWallHeight();
 
-        HeightMap bottomHm = new HeightMapAdapter() {
+        HeightMap bottomHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {

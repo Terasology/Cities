@@ -24,7 +24,6 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 
@@ -32,7 +31,7 @@ import org.terasology.math.TeraMath;
  * Converts a {@link HipRoof} into blocks
  */
 public class HipRoofRasterizer implements Rasterizer<HipRoof> {
-    
+
     @Override
     public void raster(Brush brush, TerrainInfo ti, final HipRoof roof) {
         final Rectangle area = roof.getArea();
@@ -40,11 +39,11 @@ public class HipRoofRasterizer implements Rasterizer<HipRoof> {
         if (!brush.affects(area)) {
             return;
         }
-        
+
         // this is the ground truth
         // maxHeight = baseHeight + Math.min(cur.width, cur.height) * pitch / 2;
-        
-        HeightMap hm = new HeightMapAdapter() {
+
+        HeightMap hm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {

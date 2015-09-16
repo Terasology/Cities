@@ -16,13 +16,7 @@
 
 package org.terasology.cities.raster.standard;
 
-import java.awt.Rectangle;
-
-import org.terasology.cities.BlockTypes;
-import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
-import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMaps;
 
 /**
  * Provides several often-used methods

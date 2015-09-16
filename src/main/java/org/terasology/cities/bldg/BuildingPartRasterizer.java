@@ -20,8 +20,8 @@ import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.ChunkBrush;
+import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
@@ -60,8 +60,8 @@ public abstract class BuildingPartRasterizer<T> implements WorldRasterizer {
 
     public void raster(Brush brush, Region chunkRegion) {
         BuildingFacet buildingFacet = chunkRegion.getFacet(BuildingFacet.class);
-        SurfaceHeightFacet heightFacet = chunkRegion.getFacet(SurfaceHeightFacet.class);
-        HeightMap hm = new HeightMapAdapter() {
+        InfiniteSurfaceHeightFacet heightFacet = chunkRegion.getFacet(InfiniteSurfaceHeightFacet.class);
+        HeightMap hm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {

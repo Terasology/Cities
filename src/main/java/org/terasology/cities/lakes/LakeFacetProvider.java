@@ -25,7 +25,6 @@ import org.terasology.cities.model.Lake;
 import org.terasology.commonworld.contour.Contour;
 import org.terasology.commonworld.contour.ContourTracer;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.namegenerator.waters.DebugWaterTheme;
@@ -72,7 +71,7 @@ public class LakeFacetProvider implements FacetProvider {
 
         int scale = 1;
 //        int size = Sector.SIZE / scale;
-        HeightMap orgHm = new HeightMapAdapter() {
+        HeightMap orgHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {

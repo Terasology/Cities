@@ -22,7 +22,8 @@ import org.terasology.cities.fences.FenceFacetProvider;
 import org.terasology.cities.fences.SimpleFenceRasterizer;
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
-import org.terasology.cities.raster.standard.SimpleHomeRasterizer;
+import org.terasology.cities.raster.standard.RectPartRasterizer;
+import org.terasology.cities.raster.standard.RoundPartRasterizer;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
 import org.terasology.cities.settlements.SettlementFacetProvider;
@@ -135,7 +136,8 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addEntities(new SettlementEntityProvider())
                 .addRasterizer(new RoadRasterizer(theme))
                 .addRasterizer(new SimpleFenceRasterizer(theme))
-                .addRasterizer(new SimpleHomeRasterizer(theme))
+                .addRasterizer(new RectPartRasterizer(theme))
+                .addRasterizer(new RoundPartRasterizer(theme))
                 .addRasterizer(new FloraRasterizer());
         return worldBuilder;
     }

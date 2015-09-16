@@ -17,37 +17,25 @@
 package org.terasology.cities.bldg;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
-import org.terasology.cities.AwtConverter;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.debug.SwingBrush;
-import org.terasology.cities.raster.standard.SimpleHomeRasterizer;
-import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
-import org.terasology.math.TeraMath;
-import org.terasology.math.geom.Circle;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.persistence.typeHandling.extensionTypes.BlockTypeHandler;
+import org.terasology.cities.raster.standard.RectPartRasterizer;
+import org.terasology.cities.raster.standard.RoundPartRasterizer;
 import org.terasology.rendering.nui.properties.Checkbox;
 import org.terasology.world.generation.Region;
-import org.terasology.world.generation.facets.SurfaceHeightFacet;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
 import org.terasology.world.viewer.layers.FacetLayerConfig;
 import org.terasology.world.viewer.layers.Renders;
 import org.terasology.world.viewer.layers.ZOrder;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
 /**
@@ -89,7 +77,8 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         setVisible(true);
 
         BlockTheme theme = null;
-        rasterizers.put(RasterizerType.BASE, new SimpleHomeRasterizer(theme));
+        rasterizers.put(RasterizerType.BASE, new RectPartRasterizer(theme));
+        rasterizers.put(RasterizerType.BASE, new RoundPartRasterizer(theme));
     }
 
     /**

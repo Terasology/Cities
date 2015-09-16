@@ -17,15 +17,12 @@
 package org.terasology.cities.model;
 
 import java.util.Objects;
-import java.util.Set;
 
 import org.terasology.commonworld.Sector;
 import org.terasology.commonworld.Sectors;
 import org.terasology.math.geom.BaseVector2d;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
-
-import com.google.common.collect.Sets;
 
 /**
  * Provides information on a city

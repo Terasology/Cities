@@ -34,13 +34,13 @@ public class InfiniteSurfaceHeightFacetProvider implements ConfigurableFacetProv
     private InfiniteSurfaceConfiguration configuration = new InfiniteSurfaceConfiguration();
 
     public InfiniteSurfaceHeightFacetProvider() {
-        noiseMap = new NoiseHeightMap();
+        noiseMap = new NoiseHeightMap(0);
         setConfiguration(new InfiniteSurfaceConfiguration());
     }
 
     @Override
     public void setSeed(long seed) {
-        noiseMap.setSeed(String.valueOf(seed));  // TODO: fix this in CommonWorld
+        noiseMap.setSeed(seed);
     }
 
     @Override

@@ -16,7 +16,6 @@
 
 package org.terasology.cities.bldg.gen;
 
-import java.awt.Rectangle;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Set;
@@ -80,8 +79,7 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
 
         int roofPitch = 1;
         int roofBaseHeight = floorHeight + wallHeight;
-        Rect2i roofArea = new Rect2i(layout);
-        roofArea.expand(new Vector2i(1, 1));
+        Rect2i roofArea = layout.expand(new Vector2i(1, 1));
         Roof roof = new HipRoof(roofArea, roofBaseHeight, roofPitch, roofBaseHeight + 1);
 
         RectBuildingPart part = new RectBuildingPart(layout, roof, floorHeight, wallHeight);

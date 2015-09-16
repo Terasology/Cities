@@ -32,7 +32,6 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.geom.BoundingBox;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector2i;
@@ -73,7 +72,7 @@ public class RoadRasterizer implements Rasterizer<Road> {
             Point3d end = new Point3d(p1.x, p1.y, ti.getHeightMap().apply(p1.x, p1.y));
 
             final Plane2d plane = new Plane2d(start, end);
-            HeightMap hm = new HeightMapAdapter() {
+            HeightMap hm = new HeightMap() {
 
                 @Override
                 public int apply(int x, int z) {

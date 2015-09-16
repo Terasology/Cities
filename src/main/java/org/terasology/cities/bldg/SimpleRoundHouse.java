@@ -27,7 +27,7 @@ import org.terasology.math.geom.Circle;
 public class SimpleRoundHouse extends DefaultBuilding {
 
     private Circle layout;
-    private DefaultBuildingPart room;
+    private RoundBuildingPart room;
 
     /**
      * @param orient the orientation of the building
@@ -40,7 +40,7 @@ public class SimpleRoundHouse extends DefaultBuilding {
         super(orient);
 
         layout = new Circle(center.x(), center.y(), radius);
-        room = new DefaultBuildingPart(
+        room = new RoundBuildingPart(
                 layout,
                 new ConicRoof(center, radius + 1, baseHeight + wallHeight, 1),
                 baseHeight,
@@ -52,7 +52,7 @@ public class SimpleRoundHouse extends DefaultBuilding {
         return layout;
     }
 
-    public DefaultBuildingPart getRoom() {
+    public RoundBuildingPart getRoom() {
         return room;
     }
 }

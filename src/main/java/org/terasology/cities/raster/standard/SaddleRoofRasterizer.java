@@ -27,14 +27,13 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 
 /**
  * Converts a {@link SaddleRoof} into blocks
  */
 public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
-    
+
     @Override
     public void raster(Brush brush, TerrainInfo ti, final SaddleRoof roof) {
         final Rectangle area = roof.getArea();
@@ -42,10 +41,10 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
         if (!brush.affects(area)) {
             return;
         }
-        
+
         final boolean alongX = roof.getOrientation() == EAST || roof.getOrientation() == WEST;
-        
-        final HeightMap topHm = new HeightMapAdapter() {
+
+        final HeightMap topHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
@@ -63,16 +62,16 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
                 } else {
                     y += borderDistX / roof.getPitch();
                 }
-                
+
                 return y;
             }
         };
 
         final HeightMap bottomHm = HeightMaps.offset(topHm, -1);
-        
+
         brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_SADDLE);
-        
-        HeightMap gableBottomHm = new HeightMapAdapter() {
+
+        HeightMap gableBottomHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
@@ -80,7 +79,7 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
                 if (alongX) {
                     int left = area.x + 1;                     // building border is +1
                     int right = area.x + area.width - 1 - 1;   // building border is -1
-                    
+
                     if (x == left || x == right) {
                         return h0;
                     }
@@ -91,11 +90,11 @@ public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
                         return h0;
                     }
                 }
-                
+
                 return bottomHm.apply(x, z);        // return top-height to get a no-op
             }
         };
-        
+
         brush.fillRect(area, gableBottomHm, bottomHm, BlockTypes.ROOF_GABLE);
     }
 }

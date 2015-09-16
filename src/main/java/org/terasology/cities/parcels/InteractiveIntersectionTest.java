@@ -24,12 +24,10 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-import org.terasology.commonworld.symmetry.Symmetry;
 import org.terasology.math.Vector2i;
 import org.terasology.math.geom.Circle;
 import org.terasology.math.geom.Rect2i;

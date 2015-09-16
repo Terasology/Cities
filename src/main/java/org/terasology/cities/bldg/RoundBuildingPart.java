@@ -17,20 +17,20 @@
 package org.terasology.cities.bldg;
 
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Circle;
 
 /**
  *
  */
-public class RectBuildingPart extends AbstractBuildingPart {
+public class RoundBuildingPart extends AbstractBuildingPart {
 
-    public RectBuildingPart(Rect2i layout, Roof roof, int baseHeight, int wallHeight) {
+    public RoundBuildingPart(Circle layout, Roof roof, int baseHeight, int wallHeight) {
         super(layout, roof, baseHeight, wallHeight);
     }
 
     @Override
-    public Rect2i getShape() {
-        return (Rect2i) super.getShape();
+    public Circle getShape() {
+        return (Circle) super.getShape();
     }
 
 

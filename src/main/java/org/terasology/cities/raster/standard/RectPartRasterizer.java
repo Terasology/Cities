@@ -25,11 +25,11 @@ import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.geom.Rect2i;
 
 /**
- * Converts a {@link SimpleHome} into blocks
+ * Converts a {@link RectBuildingPart} into blocks
  */
-public class SimpleHomeRasterizer extends BuildingPartRasterizer<RectBuildingPart> {
+public class RectPartRasterizer extends BuildingPartRasterizer<RectBuildingPart> {
 
-    public SimpleHomeRasterizer(BlockTheme theme) {
+    public RectPartRasterizer(BlockTheme theme) {
         super(theme, RectBuildingPart.class);
     }
 

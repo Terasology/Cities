@@ -16,9 +16,6 @@
 
 package org.terasology.cities.bldg;
 
-import java.awt.Rectangle;
-import java.math.RoundingMode;
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -26,20 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.bldg.gen.BuildingGenerator;
 import org.terasology.cities.bldg.gen.DefaultBuildingGenerator;
-import org.terasology.cities.common.Edges;
-import org.terasology.cities.model.roof.HipRoof;
-import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
-import org.terasology.commonworld.Orientation;
-import org.terasology.commonworld.geom.Rectangles;
-import org.terasology.math.TeraMath;
-import org.terasology.math.geom.BaseVector2f;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.LineSegment;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
@@ -50,7 +36,6 @@ import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.math.IntMath;
 
 /**
  * Produces a {@link BuildingFacet}.

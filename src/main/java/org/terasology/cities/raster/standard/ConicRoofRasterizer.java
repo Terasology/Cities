@@ -24,14 +24,13 @@ import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.math.TeraMath;
 
 /**
  * Converts a {@link ConicRoof} into blocks
  */
 public class ConicRoofRasterizer implements Rasterizer<ConicRoof> {
-    
+
     @Override
     public void raster(Brush brush, TerrainInfo ti, final ConicRoof roof) {
         final Ellipse2D area = roof.getArea();
@@ -39,12 +38,12 @@ public class ConicRoofRasterizer implements Rasterizer<ConicRoof> {
         if (!brush.affects(area)) {
             return;
         }
-        
+
         final int centerX = (int) (area.getCenterX() + 0.5);
         final int centerY = (int) (area.getCenterY() + 0.5);
         final int rad = (int) (area.getWidth() * 0.5);
-        
-        HeightMap hm = new HeightMapAdapter() {
+
+        HeightMap hm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {

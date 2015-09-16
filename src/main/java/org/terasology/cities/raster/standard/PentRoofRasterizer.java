@@ -25,7 +25,6 @@ import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.geom.Rectangles;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMapAdapter;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
@@ -43,7 +42,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
             return;
         }
 
-        final HeightMap bottomHm = new HeightMapAdapter() {
+        final HeightMap bottomHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
@@ -74,7 +73,7 @@ public class PentRoofRasterizer implements Rasterizer<PentRoof> {
 
         final Rectangle wallRect = Rectangles.expandRect(roof.getArea(), -1);
 
-        HeightMap gableBottomHm = new HeightMapAdapter() {
+        HeightMap gableBottomHm = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
