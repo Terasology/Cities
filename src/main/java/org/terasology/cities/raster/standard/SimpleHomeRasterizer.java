@@ -19,9 +19,9 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.bldg.SimpleDoor;
+import org.terasology.cities.bldg.SimpleDoor;
+import org.terasology.cities.bldg.Window;
 import org.terasology.cities.model.bldg.SimpleHome;
-import org.terasology.cities.model.bldg.Window;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;

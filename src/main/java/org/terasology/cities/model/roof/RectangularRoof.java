@@ -16,18 +16,18 @@
 
 package org.terasology.cities.model.roof;
 
-import java.awt.Rectangle;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * A roof with rectangular shape
  */
 public class RectangularRoof extends AbstractRoof {
-    
+
     /**
      * @param rc the roof area
      * @param baseHeight the base height of the roof
      */
-    public RectangularRoof(Rectangle rc, int baseHeight) {
+    public RectangularRoof(Rect2i rc, int baseHeight) {
         super(rc, baseHeight);
     }
 
@@ -35,7 +35,7 @@ public class RectangularRoof extends AbstractRoof {
      * @return the roof area
      */
     @Override
-    public Rectangle getArea() {
-        return (Rectangle) super.getArea();
+    public Rect2i getArea() {
+        return (Rect2i) super.getArea();
     }
 }

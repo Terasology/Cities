@@ -21,6 +21,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.terasology.cities.AwtConverter;
+import org.terasology.cities.bldg.BuildingPart;
+import org.terasology.cities.bldg.Tower;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.world.generation.Region;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
@@ -72,12 +75,13 @@ public class TownWallFacetLayer extends AbstractFacetLayer {
 
 
         for (Tower tower : tw.getTowers()) {
-//            java.awt.Shape shape = AwtConverter.toAwt(tower.getLayout());
-            java.awt.Shape shape = tower.getLayout();
-            g.setColor(TOWER_FILL_COLOR);
-            g.fill(shape);
-            g.setColor(TOWER_COLOR);
-            g.draw(shape);
+            for (BuildingPart part : tower.getParts()) {
+                java.awt.Shape shape = AwtConverter.toAwt(part.getShape());
+                g.setColor(TOWER_FILL_COLOR);
+                g.fill(shape);
+                g.setColor(TOWER_COLOR);
+                g.draw(shape);
+            }
         }
     }
 }

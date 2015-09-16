@@ -16,6 +16,7 @@
 
 package org.terasology.cities.walls;
 
+import org.terasology.cities.bldg.Tower;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;

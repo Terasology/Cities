@@ -18,8 +18,6 @@ package org.terasology.cities.bldg;
 
 import java.util.Set;
 
-import org.terasology.cities.model.bldg.Door;
-import org.terasology.cities.model.bldg.Window;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.math.geom.Shape;
 
@@ -32,7 +30,7 @@ public interface BuildingPart {
     /**
      * @return the building layout
      */
-    Shape getLayout();
+    Shape getShape();
 
     Roof getRoof();
 

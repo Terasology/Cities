@@ -14,35 +14,38 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.bldg;
+
+import org.terasology.commonworld.Orientation;
 
 /**
- * A simple aisle-less church consisting of nave and bell tower 
+ * A simple aisle-less church consisting of nave and bell tower
  */
-public class SimpleChurch extends MultipartBuilding {
+public class SimpleChurch extends DefaultBuilding {
 
     private final SimpleDoor door;
-    private SimpleBuildingPart tower;
-    private SimpleBuildingPart nave;
+    private BuildingPart tower;
+    private BuildingPart nave;
 
     /**
      * @param bellTower the bell tower
      * @param nave the nave
      * @param entrance the entrance door
      */
-    public SimpleChurch(SimpleBuildingPart nave, SimpleBuildingPart bellTower, SimpleDoor entrance) {
+    public SimpleChurch(Orientation orient, BuildingPart nave, BuildingPart bellTower, SimpleDoor entrance) {
+        super(orient);
         this.tower = bellTower;
         this.nave = nave;
-        this.door = entrance; 
+        this.door = entrance;
 
-        addPart(tower);
+        addPart(bellTower);
         addPart(nave);
     }
 
     /**
      * @return the tower
      */
-    public SimpleBuildingPart getTower() {
+    public BuildingPart getTower() {
         return this.tower;
     }
 
@@ -50,7 +53,7 @@ public class SimpleChurch extends MultipartBuilding {
     /**
      * @return the nave
      */
-    public SimpleBuildingPart getNave() {
+    public BuildingPart getNave() {
         return this.nave;
     }
 

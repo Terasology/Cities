@@ -14,53 +14,45 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
-
-import java.awt.geom.Ellipse2D;
+package org.terasology.cities.bldg;
 
 import org.terasology.cities.model.roof.ConicRoof;
+import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Circle;
 
 /**
  * A round house with a conic roof
  */
-public class RoundHouse extends AbstractBuilding {
+public class SimpleRoundHouse extends DefaultBuilding {
 
-    private SimpleDoor door;
+    private Circle layout;
+    private DefaultBuildingPart room;
 
     /**
+     * @param orient the orientation of the building
      * @param center the center of the tower
      * @param radius the radius
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public RoundHouse(BaseVector2i center, int radius, int baseHeight, int wallHeight) {
-        super(
-            new Ellipse2D.Double(center.getX() - radius, center.getY() - radius, 2 * radius, 2 * radius),
-            new ConicRoof(center, radius + 1, baseHeight + wallHeight, 1),
-            baseHeight,
-            wallHeight);
+    public SimpleRoundHouse(Orientation orient, BaseVector2i center, int radius, int baseHeight, int wallHeight) {
+        super(orient);
+
+        layout = new Circle(center.x(), center.y(), radius);
+        room = new DefaultBuildingPart(
+                layout,
+                new ConicRoof(center, radius + 1, baseHeight + wallHeight, 1),
+                baseHeight,
+                wallHeight);
+        addPart(room);
     }
 
-
-    /**
-     * @return the door
-     */
-    public SimpleDoor getDoor() {
-        return door;
+    public Circle getShape() {
+        return layout;
     }
 
-    /**
-     * @param door the door
-     */
-    public void setDoor(SimpleDoor door) {
-        this.door = door;
+    public DefaultBuildingPart getRoom() {
+        return room;
     }
-
-
-    @Override
-    public Ellipse2D getLayout() {
-        return (Ellipse2D) super.getLayout();
-    }
-
 }

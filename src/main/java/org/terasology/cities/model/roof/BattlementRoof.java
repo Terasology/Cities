@@ -16,20 +16,23 @@
 
 package org.terasology.cities.model.roof;
 
-import java.awt.Rectangle;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * A flat battlement roof with merlons
  */
-public class BattlementRoof extends FlatRoof {
+public class BattlementRoof extends RectangularRoof {
+
+    private final int merlonHeight;
 
     /**
      * @param rc the roof shape
      * @param baseHeight the base height of the roof
      * @param merlonHeight the height of the border
      */
-    public BattlementRoof(Rectangle rc, int baseHeight, int merlonHeight) {
-        super(rc, baseHeight, merlonHeight);
+    public BattlementRoof(Rect2i rc, int baseHeight, int merlonHeight) {
+        super(rc, baseHeight);
+        this.merlonHeight = merlonHeight;
     }
 
     /**
@@ -37,16 +40,15 @@ public class BattlementRoof extends FlatRoof {
      * @param lz z in local (roof area) coordinates
      * @return the borderHeight
      */
-    @Override
     public int getBorderHeight(int lx, int lz) {
         if (lx % 2 == 1) {
             return 0;
         }
-        
+
         if (lz % 2 == 1) {
             return 0;
         }
-        
-        return super.getBorderHeight(lx, lz);
+
+        return merlonHeight;
     }
 }

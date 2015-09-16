@@ -19,9 +19,9 @@ package org.terasology.cities.raster.standard;
 import java.awt.geom.Ellipse2D;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.bldg.RoundHouse;
-import org.terasology.cities.model.bldg.SimpleDoor;
-import org.terasology.cities.model.bldg.Window;
+import org.terasology.cities.bldg.SimpleDoor;
+import org.terasology.cities.bldg.SimpleRoundHouse;
+import org.terasology.cities.bldg.Window;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.RasterRegistry;
@@ -31,12 +31,12 @@ import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 
 /**
- * Converts a {@link RoundHouse} into blocks
+ * Converts a {@link SimpleRoundHouse} into blocks
  */
-public class RoundHouseRasterizer implements Rasterizer<RoundHouse> {
+public class RoundHouseRasterizer implements Rasterizer<SimpleRoundHouse> {
     
     @Override
-    public void raster(final Brush brush, TerrainInfo ti, final RoundHouse house) {
+    public void raster(final Brush brush, TerrainInfo ti, final SimpleRoundHouse house) {
 
         // TODO: find out why ellipse doesn't work properly -- rounding errors?
         final Ellipse2D area = house.getLayout();

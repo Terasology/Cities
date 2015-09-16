@@ -19,8 +19,6 @@ package org.terasology.cities.bldg;
 import java.util.Collections;
 import java.util.Set;
 
-import org.terasology.cities.model.bldg.Door;
-import org.terasology.cities.model.bldg.Window;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.math.geom.Shape;
 
@@ -52,7 +50,7 @@ public abstract class AbstractBuildingPart implements BuildingPart {
     }
 
     @Override
-    public Shape getLayout() {
+    public Shape getShape() {
         return this.layout;
     }
 
@@ -74,14 +72,14 @@ public abstract class AbstractBuildingPart implements BuildingPart {
     /**
      * @param window the window to add
      */
-    void addWindow(Window window) {
+    public void addWindow(Window window) {
         windows.add(window);
     }
 
     /**
      * @param door the door to add
      */
-    void addDoor(Door door) {
+    public void addDoor(Door door) {
         doors.add(door);
     }
 

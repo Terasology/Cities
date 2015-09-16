@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
-
-import java.awt.Shape;
+package org.terasology.cities.bldg;
 
 /**
- * Defines a building
+ * A door
  */
-public interface Building {
-
-    /**
-     * @return the building layout
-     */
-    Shape getLayout();
-
+public interface Door {
+    // empty marker interface
 }

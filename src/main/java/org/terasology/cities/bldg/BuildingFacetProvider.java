@@ -24,14 +24,19 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.bldg.gen.BuildingGenerator;
+import org.terasology.cities.bldg.gen.DefaultBuildingGenerator;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
+import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.geom.Rectangles;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2f;
+import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
@@ -45,6 +50,7 @@ import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.math.IntMath;
 
 /**
  * Produces a {@link BuildingFacet}.
@@ -56,6 +62,13 @@ public class BuildingFacetProvider implements FacetProvider {
     private static final Logger logger = LoggerFactory.getLogger(BuildingFacetProvider.class);
 
     private final Cache<Parcel, Set<Building>> cache = CacheBuilder.newBuilder().build();
+
+    private BuildingGenerator bldgGenerator;
+
+    @Override
+    public void setSeed(long seed) {
+        bldgGenerator = new DefaultBuildingGenerator(seed);
+    }
 
     @Override
     public void process(GeneratingRegion region) {
@@ -69,7 +82,7 @@ public class BuildingFacetProvider implements FacetProvider {
         for (Parcel parcel : parcelFacet.getParcels()) {
             Set<Building> bldgs;
             try {
-                bldgs = cache.get(parcel, () -> generateBuildings(parcel, heightFacet));
+                bldgs = cache.get(parcel, () -> bldgGenerator.generate(parcel, heightFacet));
                 for (Building bldg : bldgs) {
                     facet.addBuilding(bldg);
                 }
@@ -80,31 +93,4 @@ public class BuildingFacetProvider implements FacetProvider {
 
         region.setRegionFacet(BuildingFacet.class, facet);
     }
-
-    private Set<Building> generateBuildings(Parcel parcel, InfiniteSurfaceHeightFacet heightFacet) {
-
-        DefaultBuilding b = new DefaultBuilding(parcel.getOrientation());
-        Rect2i layout = new Rect2i(parcel.getShape());
-        layout.expand(new Vector2i(-2, -2));
-
-        Rect2i fenceRc = new Rect2i(parcel.getShape());
-        LineSegment seg = Edges.getEdge(fenceRc, parcel.getOrientation());
-        Vector2i gatePos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);
-
-        int floorHeight = TeraMath.floorToInt(heightFacet.getWorld(gatePos.x(), gatePos.y()));
-        int wallHeight = 3;
-
-        int roofPitch = 1;
-        int roofBaseHeight = floorHeight + wallHeight;
-        Rect2i roofArea = new Rect2i(layout);
-        roofArea.expand(new Vector2i(1, 1));
-        Rectangle awtRc = new Rectangle(roofArea.minX(), roofArea.minY(), roofArea.width(), roofArea.height());
-        Roof roof = new HipRoof(awtRc, roofBaseHeight, roofPitch, roofBaseHeight + 1);
-
-        RectBuildingPart part = new RectBuildingPart(layout, roof, floorHeight, wallHeight);
-        b.addPart(part);
-
-        return Collections.singleton(b);
-    }
-
 }

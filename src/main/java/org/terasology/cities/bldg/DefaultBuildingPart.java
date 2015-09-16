@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
-
-import java.awt.Rectangle;
+package org.terasology.cities.bldg;
 
 import org.terasology.cities.model.roof.Roof;
+import org.terasology.math.geom.Shape;
 
 /**
- * Defines a rectangular shaped building in the most common sense
+ * The default implementation of {@link BuildingPart}.
  */
-public class SimpleBuilding extends AbstractBuilding {
+public class DefaultBuildingPart extends AbstractBuildingPart {
 
     /**
      * @param layout the building layout
@@ -31,13 +30,8 @@ public class SimpleBuilding extends AbstractBuilding {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public SimpleBuilding(Rectangle layout, Roof roof, int baseHeight, int wallHeight) {
+    public DefaultBuildingPart(Shape layout, Roof roof, int baseHeight, int wallHeight) {
         super(layout, roof, baseHeight, wallHeight);
     }
-    
-    @Override
-    public Rectangle getLayout() {
-        return (Rectangle) super.getLayout();
-    }
-
 }
+

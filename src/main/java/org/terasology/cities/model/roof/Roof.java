@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model.roof;
 
-import java.awt.Shape;
+import org.terasology.math.geom.Shape;
 
 /**
  * A basic interface for different roof types

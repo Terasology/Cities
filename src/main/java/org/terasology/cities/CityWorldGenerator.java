@@ -16,6 +16,7 @@
 
 package org.terasology.cities;
 
+import org.terasology.cities.bldg.BuildingFacetProvider;
 import org.terasology.cities.blocked.BlockedAreaFacetProvider;
 import org.terasology.cities.fences.FenceFacetProvider;
 import org.terasology.cities.fences.SimpleFenceRasterizer;
@@ -124,6 +125,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new RoadFacetProvider())
                 .addProvider(new ParcelFacetProvider())
                 .addProvider(new FenceFacetProvider())
+                .addProvider(new BuildingFacetProvider())
                 .addProvider(new SettlementFacetProvider())
                 .addProvider(new DefaultFloraProvider())
                 .addProvider(new EnsureSpawnableChunkZeroProvider())

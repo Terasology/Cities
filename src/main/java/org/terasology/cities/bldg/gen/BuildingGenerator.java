@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.bldg.gen;
+
+import java.util.Set;
+
+import org.terasology.cities.bldg.Building;
+import org.terasology.cities.parcels.Parcel;
+import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 
 /**
- * A door
+ *
  */
-public interface Door {
-    // empty marker interface
+public interface BuildingGenerator {
+
+    Set<Building> generate(Parcel parcel, InfiniteSurfaceHeightFacet heightFacet);
+
 }

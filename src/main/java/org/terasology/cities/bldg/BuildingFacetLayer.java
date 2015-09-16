@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.terasology.cities.AwtConverter;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Circle;
 import org.terasology.math.geom.Rect2i;
@@ -49,25 +50,11 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         g.translate(-facet.getWorldRegion().minX(),  -facet.getWorldRegion().minY());
         for (Building bldg : facet.getBuildings()) {
             for (BuildingPart part : bldg.getParts()) {
-                if (part.getLayout() instanceof Rect2i) {
-                    Rect2i rc = (Rect2i) part.getLayout();
-                    g.setColor(FILL_COLOR);
-                    g.fillRect(rc.minX(), rc.minY(), rc.width(), rc.height());
-                    g.setColor(WALL_COLOR);
-                    g.drawRect(rc.minX(), rc.minY(), rc.width() - 1, rc.height() - 1);
-                }
-
-                if (part.getLayout() instanceof Circle) {
-                    Circle circle = (Circle) part.getLayout();
-                    g.setColor(WALL_COLOR);
-                    int minX = TeraMath.floorToInt(circle.getCenter().getX() - circle.getRadius());
-                    int minY = TeraMath.floorToInt(circle.getCenter().getY() - circle.getRadius());
-                    int dia = TeraMath.floorToInt(circle.getRadius() * 2);
-                    g.setColor(FILL_COLOR);
-                    g.fillOval(minX, minY, dia, dia);
-                    g.setColor(WALL_COLOR);
-                    g.drawOval(minX, minY, dia, dia);
-                }
+                java.awt.Shape shape = AwtConverter.toAwt(part.getShape());
+                g.setColor(FILL_COLOR);
+                g.fill(shape);
+                g.setColor(WALL_COLOR);
+                g.draw(shape);
             }
         }
         g.dispose();

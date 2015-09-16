@@ -44,7 +44,7 @@ public class DefaultBuilding implements Building {
         return this.orient;
     }
 
-    void addPart(BuildingPart part) {
+    public void addPart(BuildingPart part) {
         parts.add(part);
     }
 

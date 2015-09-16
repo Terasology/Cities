@@ -19,7 +19,7 @@ package org.terasology.cities.raster.standard;
 import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.model.bldg.SimpleTower;
+import org.terasology.cities.bldg.SimpleTower;
 import org.terasology.cities.raster.Brush;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;

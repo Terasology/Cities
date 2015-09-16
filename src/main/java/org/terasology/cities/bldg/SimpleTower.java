@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.bldg;
 
 import java.awt.Rectangle;
 
 import org.terasology.cities.model.roof.BattlementRoof;
-import org.terasology.cities.walls.Tower;
+import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Vector2i;
 
 /**
  * A simple tower
  */
-public class SimpleTower extends SimpleBuilding implements Tower {
+public class SimpleTower extends SimpleRectHouse implements Tower {
 
     /**
+     * @param orient the orientation of the building
      * @param layout the building layout
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public SimpleTower(Rect2i layout, int baseHeight, int wallHeight) {
-        super(new Rectangle(
-                layout.minX(), layout.minY(), layout.width(), layout.height()),
-                new BattlementRoof(
-                new Rectangle(layout.minX() - 1, layout.minY() - 1, layout.width() + 2, layout.height() + 2),
+    public SimpleTower(Orientation orient, Rect2i layout, int baseHeight, int wallHeight) {
+        super(orient, layout, new BattlementRoof(layout.expand(new Vector2i(2, 2)),
                 baseHeight + wallHeight, 1), baseHeight, wallHeight);
     }
 

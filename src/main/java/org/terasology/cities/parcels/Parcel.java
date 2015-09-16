@@ -19,7 +19,7 @@ package org.terasology.cities.parcels;
 import java.util.Collections;
 import java.util.Set;
 
-import org.terasology.cities.model.bldg.Building;
+import org.terasology.cities.bldg.Building;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
 

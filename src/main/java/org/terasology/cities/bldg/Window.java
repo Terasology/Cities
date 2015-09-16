@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.walls;
-
-import org.terasology.cities.model.bldg.Building;
+package org.terasology.cities.bldg;
 
 /**
- * An empty definition of a tower
+ * A window
  */
-public interface Tower extends Building {
-    // marker
+public interface Window {
+    // empty 
 }

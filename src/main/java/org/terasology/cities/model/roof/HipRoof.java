@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model.roof;
 
-import java.awt.Rectangle;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * A hip roof
@@ -25,16 +25,16 @@ public class HipRoof extends RectangularRoof {
 
     private final int maxHeight;
     private final double pitch;
-    
+
     /**
      * @param rc the roof area
      * @param baseHeight the base height of the roof
      * @param maxHeight the maximum height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rectangle rc, int baseHeight, double pitch, int maxHeight) {
+    public HipRoof(Rect2i rc, int baseHeight, double pitch, int maxHeight) {
         super(rc, baseHeight);
-        
+
         this.maxHeight = maxHeight;
         this.pitch = pitch;
     }
@@ -44,7 +44,7 @@ public class HipRoof extends RectangularRoof {
      * @param baseHeight the base height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rectangle rc, int baseHeight, double pitch) {
+    public HipRoof(Rect2i rc, int baseHeight, double pitch) {
         this(rc, baseHeight, pitch, Integer.MAX_VALUE);
     }
 

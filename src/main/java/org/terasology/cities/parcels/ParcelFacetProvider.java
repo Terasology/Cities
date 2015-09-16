@@ -28,7 +28,6 @@ import javax.vecmath.Vector2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.blocked.BlockedAreaFacet;
-import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
@@ -59,7 +58,7 @@ import com.google.common.cache.CacheBuilder;
 })
 public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(LotGeneratorRandom.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParcelFacetProvider.class);
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(false);
 

@@ -33,7 +33,6 @@ import com.google.common.collect.Sets;
 public class City implements NamedArea {
 
     private final ImmutableVector2i coords;
-    private final Set<Lot> lots = Sets.newHashSet();
     private String name;
     private int radius;
 
@@ -74,20 +73,6 @@ public class City implements NamedArea {
      */
     public double getRadius() {
         return this.radius;
-    }
-
-    /**
-     * @return all lots that are part of the city
-     */
-    public Set<Lot> getLots() {
-        return lots;
-    }
-
-    /**
-     * @param lot the lot to add
-     */
-    public void add(Lot lot) {
-        this.lots.add(lot);
     }
 
     @Override

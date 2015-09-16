@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model.roof;
 
-import java.awt.Rectangle;
+import org.terasology.math.geom.Rect2i;
 
 /**
  * A dome roof
@@ -24,15 +24,15 @@ import java.awt.Rectangle;
 public class DomeRoof extends RectangularRoof {
 
     private final int height;
-    
+
     /**
      * @param rc the roof shape
      * @param baseHeight the base height of the roof
      * @param maxHeight the maximum height of the roof
      */
-    public DomeRoof(Rectangle rc, int baseHeight, int maxHeight) {
+    public DomeRoof(Rect2i rc, int baseHeight, int maxHeight) {
         super(rc, baseHeight);
-        
+
         this.height = maxHeight;
     }
 
@@ -42,6 +42,4 @@ public class DomeRoof extends RectangularRoof {
     public int getHeight() {
         return this.height;
     }
-
-    
 }

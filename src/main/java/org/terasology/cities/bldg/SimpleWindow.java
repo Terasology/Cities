@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
-
-import java.awt.Rectangle;
+package org.terasology.cities.bldg;
 
 import org.terasology.commonworld.Orientation;
+import org.terasology.math.geom.Rect2i;
 
 /**
- * A simple, rectangular door with fixed height and orientation
+ * A rectangular window in a wall
  */
-public class SimpleDoor implements Door {
-    
-    private Orientation orientation;
-    private Rectangle rect;
-    private int baseHeight;
-    private int topHeight;
-    
+public class SimpleWindow implements Window {
+
+    private final Orientation orientation;
+    private final Rect2i rect;
+    private final int baseHeight;
+    private final int topHeight;
+
     /**
      * @param orientation the orientation
      * @param rect the layout shape rect
      * @param baseHeight the height at the bottom
      * @param topHeight the height at the top
      */
-    public SimpleDoor(Orientation orientation, Rectangle rect, int baseHeight, int topHeight) {
+    public SimpleWindow(Orientation orientation, Rect2i rect, int baseHeight, int topHeight) {
         this.orientation = orientation;
         this.rect = rect;
         this.baseHeight = baseHeight;
@@ -53,7 +52,7 @@ public class SimpleDoor implements Door {
     /**
      * @return the rect
      */
-    public Rectangle getRect() {
+    public Rect2i getRect() {
         return this.rect;
     }
 

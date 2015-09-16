@@ -16,8 +16,7 @@
 
 package org.terasology.cities.model.roof;
 
-import java.awt.Shape;
-
+import org.terasology.math.geom.Shape;
 
 /**
  * An abstract base class for different roof types
@@ -35,7 +34,7 @@ public abstract class AbstractRoof implements Roof {
         this.shape = shape;
         this.baseHeight = baseHeight;
     }
-    
+
     /**
      * @return the base height of the roof
      */

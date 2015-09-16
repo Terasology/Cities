@@ -26,14 +26,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.bldg.gen.SimpleChurchGenerator;
 import org.terasology.cities.common.CachingFunction;
-import org.terasology.cities.generator.LotGeneratorRandom;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
-import org.terasology.cities.generator.SimpleChurchGenerator;
 import org.terasology.cities.generator.SimpleFenceGenerator;
-import org.terasology.cities.generator.SimpleHousingGenerator;
 import org.terasology.cities.generator.SiteConnector;
 import org.terasology.cities.generator.SiteFinderRandom;
 import org.terasology.cities.model.City;
@@ -42,11 +40,7 @@ import org.terasology.cities.model.Lake;
 import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.NamedArea;
 import org.terasology.cities.model.Road;
-import org.terasology.cities.model.SimpleFence;
-import org.terasology.cities.model.SimpleLot;
 import org.terasology.cities.model.Site;
-import org.terasology.cities.model.bldg.SimpleBuilding;
-import org.terasology.cities.model.bldg.SimpleChurch;
 import org.terasology.cities.walls.TownWallFacetProvider;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.Sector;
@@ -254,9 +248,9 @@ public class WorldFacade {
         roadShapeFunc = CachingFunction.wrap(roadShapeFunc);
 
         final TownWallFacetProvider twg = new TownWallFacetProvider();
-        final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
-        final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 25d, 40d, 1, 100);
-        final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
+//        final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
+//        final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 25d, 40d, 1, 100);
+//        final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
         final SimpleFenceGenerator sfg = new SimpleFenceGenerator(seed);
         final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);
 
@@ -328,25 +322,25 @@ public class WorldFacade {
 //                        si.addBlockedArea(townWallShape);
                     }
 
-                    Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
-                    if (!churchLots.isEmpty()) {
-                        SimpleLot lot = churchLots.iterator().next();
-                        SimpleChurch church = sacg.generate(lot);
-                        lot.addBuilding(church);
-                        town.add(lot);
-                    }
-
-                    Set<SimpleLot> housingLots = housingLotGenerator.generate(town, si);
-
-                    for (SimpleLot lot : housingLots) {
-                        town.add(lot);
-
-                        for (SimpleBuilding bldg : blgGenerator.apply(lot)) {
-                            lot.addBuilding(bldg);
-                            SimpleFence fence = sfg.createFence(town, lot.getShape());
-                            lot.setFence(fence);
-                        }
-                    }
+//                    Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
+//                    if (!churchLots.isEmpty()) {
+//                        SimpleLot lot = churchLots.iterator().next();
+//                        SimpleChurch church = sacg.generate(lot);
+//                        lot.addBuilding(church);
+//                        town.add(lot);
+//                    }
+//
+//                    Set<SimpleLot> housingLots = housingLotGenerator.generate(town, si);
+//
+//                    for (SimpleLot lot : housingLots) {
+//                        town.add(lot);
+//
+//                        for (SimpleRectHouse bldg : blgGenerator.apply(lot)) {
+//                            lot.addBuilding(bldg);
+//                            SimpleFence fence = sfg.createFence(town, lot.getShape());
+//                            lot.setFence(fence);
+//                        }
+//                    }
 
                     if (logger.isInfoEnabled()) {
                         logger.info("Generated city '{}' in {} in {}ms.", town, input, pSite.elapsed(TimeUnit.MILLISECONDS));

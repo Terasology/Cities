@@ -14,61 +14,59 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model.bldg;
+package org.terasology.cities.bldg;
 
-import java.awt.Rectangle;
-
-import org.terasology.cities.model.roof.Roof;
+import org.terasology.commonworld.Orientation;
+import org.terasology.math.geom.Rect2i;
 
 /**
- * Defines a rectangular building part
+ * A simple, rectangular door with fixed height and orientation
  */
-public class SimpleBuildingPart implements BuildingPart {
+public class SimpleDoor implements Door {
 
-    private final Rectangle layout;
+    private final Orientation orientation;
+    private final Rect2i rect;
     private final int baseHeight;
     private final int topHeight;
-    private final Roof roof;
-    
+
     /**
-     * @param layout the floor layout
-     * @param baseHeight the base height
-     * @param topHeight the top height (==roof base height)
-     * @param roof the roof type
+     * @param orientation the orientation
+     * @param rect the layout shape rect
+     * @param baseHeight the height at the bottom
+     * @param topHeight the height at the top
      */
-    public SimpleBuildingPart(Rectangle layout, int baseHeight, int topHeight, Roof roof) {
-        this.layout = layout;
+    public SimpleDoor(Orientation orientation, Rect2i rect, int baseHeight, int topHeight) {
+        this.orientation = orientation;
+        this.rect = rect;
         this.baseHeight = baseHeight;
         this.topHeight = topHeight;
-        this.roof = roof;
     }
 
     /**
-     * @return the layout
+     * @return the orientation
      */
-    @Override
-    public Rectangle getLayout() {
-        return this.layout;
+    public Orientation getOrientation() {
+        return this.orientation;
     }
-    
+
+    /**
+     * @return the rect
+     */
+    public Rect2i getRect() {
+        return this.rect;
+    }
+
     /**
      * @return the baseHeight
      */
     public int getBaseHeight() {
         return this.baseHeight;
     }
-    
+
     /**
      * @return the topHeight
      */
     public int getTopHeight() {
         return this.topHeight;
-    }
-    
-    /**
-     * @return the roof
-     */
-    public Roof getRoof() {
-        return this.roof;
     }
 }
