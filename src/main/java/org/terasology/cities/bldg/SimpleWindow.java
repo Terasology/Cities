@@ -17,7 +17,8 @@
 package org.terasology.cities.bldg;
 
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.ImmutableVector2i;
 
 /**
  * A rectangular window in a wall
@@ -25,21 +26,18 @@ import org.terasology.math.geom.Rect2i;
 public class SimpleWindow implements Window {
 
     private final Orientation orientation;
-    private final Rect2i rect;
-    private final int baseHeight;
-    private final int topHeight;
+    private final ImmutableVector2i pos;
+    private final int height;
 
     /**
      * @param orientation the orientation
-     * @param rect the layout shape rect
-     * @param baseHeight the height at the bottom
-     * @param topHeight the height at the top
+     * @param pos the window position
+     * @param height the height at the bottom
      */
-    public SimpleWindow(Orientation orientation, Rect2i rect, int baseHeight, int topHeight) {
+    public SimpleWindow(Orientation orientation, BaseVector2i pos, int height) {
         this.orientation = orientation;
-        this.rect = rect;
-        this.baseHeight = baseHeight;
-        this.topHeight = topHeight;
+        this.pos = ImmutableVector2i.createOrUse(pos);
+        this.height = height;
     }
 
     /**
@@ -50,23 +48,16 @@ public class SimpleWindow implements Window {
     }
 
     /**
-     * @return the rect
+     * @return the window position
      */
-    public Rect2i getRect() {
-        return this.rect;
+    public ImmutableVector2i getPos() {
+        return this.pos;
     }
 
     /**
      * @return the baseHeight
      */
-    public int getBaseHeight() {
-        return this.baseHeight;
-    }
-
-    /**
-     * @return the topHeight
-     */
-    public int getTopHeight() {
-        return this.topHeight;
+    public int getHeight() {
+        return this.height;
     }
 }

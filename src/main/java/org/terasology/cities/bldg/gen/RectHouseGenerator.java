@@ -16,10 +16,13 @@
 
 package org.terasology.cities.bldg.gen;
 
+import java.math.RoundingMode;
 import java.util.Set;
 
+import org.terasology.cities.bldg.Building;
+import org.terasology.cities.bldg.DefaultBuilding;
+import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.bldg.SimpleDoor;
-import org.terasology.cities.bldg.SimpleRectHouse;
 import org.terasology.cities.bldg.SimpleWindow;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.model.roof.DomeRoof;
@@ -30,6 +33,7 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.TeraMath;
+import org.terasology.math.geom.BaseVector2f;
 import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
@@ -44,78 +48,54 @@ import com.google.common.collect.Sets;
  */
 public class RectHouseGenerator {
 
-    public SimpleRectHouse apply(Parcel lot, InfiniteSurfaceHeightFacet hm) {
-        // leave 1 block border for the building
-        Rect2i lotRc = lot.getShape();
+    public Building apply(Parcel parcel, InfiniteSurfaceHeightFacet hm) {
 
         // use the rectangle, not the lot itself, because its hashcode is the identity hashcode
-        Random r = new MersenneRandom(lotRc.hashCode());
+        Random rng = new MersenneRandom(parcel.getShape().hashCode());
 
+        DefaultBuilding bldg = new DefaultBuilding(parcel.getOrientation());
         int inset = 2;
-        Rect2i rc = Rect2i.createFromMinAndSize(lotRc.minX() + inset, lotRc.minY() + inset, lotRc.width() - 2 * inset, lotRc.height() - 2 * inset);
+        Rect2i layout = parcel.getShape().expand(new Vector2i(-inset, -inset));
 
-        int wallHeight = 3;
-        int doorWidth = 1;
-        int doorHeight = 2;
-
-        Orientation orientation;
-        Rect2i doorRc;
-        if (r.nextBoolean()) {                               // on the x-axis
-            int cx = rc.minX() + (rc.width() - doorWidth) / 2;
-            if (r.nextBoolean()) {                           // on the top wall
-                int y = rc.minY();
-                doorRc = Rect2i.createFromMinAndSize(cx, y, doorWidth, 1);
-                orientation = Orientation.NORTH;
-            } else {
-                int y = rc.minY() + rc.height() - 1;                // on the bottom wall
-                doorRc = Rect2i.createFromMinAndSize(cx, y, doorWidth, 1);
-                orientation = Orientation.SOUTH;
-            }
-        } else {
-            int cz = rc.minY() + (rc.height() - doorWidth) / 2;
-            if (r.nextBoolean()) {                           // on the left wall
-                int x = rc.minX();
-                doorRc = Rect2i.createFromMinAndSize(x, cz, 1, doorWidth);
-                orientation = Orientation.WEST;
-            } else {                                         // on the right wall
-                int x = rc.minX() + rc.width() - 1;
-                doorRc = Rect2i.createFromMinAndSize(x, cz, 1, doorWidth);
-                orientation = Orientation.EAST;
-            }
-        }
+        LineSegment seg = Edges.getEdge(layout, parcel.getOrientation());
+        Vector2i doorPos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);
 
         // use door as base height -
         // this is a bit dodgy, because only the first block is considered
         // maybe sample along width of the door and use the average?
-        ImmutableVector2i doorDir = orientation.getDir();
-        Vector2i probePos = new Vector2i(doorRc.minX() + doorDir.getX(), doorRc.minY() + doorDir.getY());
+        ImmutableVector2i doorDir = parcel.getOrientation().getDir();
+        Vector2i probePos = new Vector2i(doorPos.getX() + doorDir.getX(), doorPos.getY() + doorDir.getY());
 
         // we add +1, because the building starts at 1 block above the terrain
-        int baseHeight = TeraMath.floorToInt(hm.getWorld(probePos)) + 1;
+        int floorHeight = TeraMath.floorToInt(hm.getWorld(probePos)) + 1;
+        int wallHeight = 3;
 
-        SimpleDoor door = new SimpleDoor(orientation, doorRc, baseHeight, baseHeight + doorHeight);
+        int roofBaseHeight = floorHeight + wallHeight;
 
         // the roof area is 1 block larger all around
-        Rect2i roofArea = rc.expand(new Vector2i(1, 1));
+        Rect2i roofArea = layout.expand(new Vector2i(1, 1));
+        Roof roof = createRoof(rng, roofArea, roofBaseHeight);
 
-        int roofBaseHeight = baseHeight + wallHeight;
-        Roof roof = createRoof(r, roofArea, roofBaseHeight);
+        RectBuildingPart part = new RectBuildingPart(layout, roof, floorHeight, wallHeight);
+        bldg.addPart(part);
 
-        SimpleRectHouse bldg = new SimpleRectHouse(orientation, rc, roof, baseHeight, wallHeight);
-        bldg.getRoom().addDoor(door);
+        int doorHeight = 2;
+
+        SimpleDoor door = new SimpleDoor(parcel.getOrientation(), doorPos, floorHeight, floorHeight + doorHeight);
+        part.addDoor(door);
 
         for (int i = 0; i < 3; i++) {
             // use the other three cardinal directions to place windows
             Orientation orient = door.getOrientation().getRotated(90 * (i + 1));
-            Set<SimpleWindow> wnds = createWindows(rc, baseHeight, orient);
+            Set<SimpleWindow> wnds = createWindows(layout, floorHeight, orient);
 
             for (SimpleWindow wnd : wnds) {
                 // test if terrain outside window is lower than window base height
                 ImmutableVector2i wndDir = wnd.getOrientation().getDir();
-                Rect2i wndRect = wnd.getRect();
-                Vector2i probePosWnd = new Vector2i(wndRect.minX() + wndDir.getX(), wndRect.minY() + wndDir.getY());
-                if (wnd.getBaseHeight() > hm.getWorld(probePosWnd)) {
-                    bldg.getRoom().addWindow(wnd);
+                ImmutableVector2i wndPos = wnd.getPos();
+                Vector2i probePosWnd = new Vector2i(wndPos.getX() + wndDir.getX(), wndPos.getY() + wndDir.getY());
+                if (wnd.getHeight() > hm.getWorld(probePosWnd)) {
+                    part.addWindow(wnd);
                 }
             }
         }
@@ -126,7 +106,6 @@ public class RectHouseGenerator {
     private Set<SimpleWindow> createWindows(Rect2i rc, int baseHeight, Orientation o) {
 
         final int wndBase = baseHeight + 1;
-        final int wndTop = wndBase + 1;
         final int endDist = 2;
         final int interDist = 2;
         final int wndSize = 1;
@@ -141,8 +120,8 @@ public class RectHouseGenerator {
         int lastX = border.minX() + border.width() - endDist * 2;
 
         for (int x = firstX; x <= lastX; x += step) {
-            Rect2i rect = Rect2i.createFromMinAndSize(x, border.minY(), wndSize, 1);
-            SimpleWindow w = new SimpleWindow(o, rect, wndBase, wndTop);
+            Vector2i pos = new Vector2i(x, border.minY());
+            SimpleWindow w = new SimpleWindow(o, pos, wndBase);
             result.add(w);
         }
 
@@ -150,8 +129,8 @@ public class RectHouseGenerator {
         int lastY = border.minY() + border.height() - endDist * 2;
 
         for (int y = firstY; y <= lastY; y += step) {
-            Rect2i rect = Rect2i.createFromMinAndSize(border.minX(), y, 1, wndSize);
-            SimpleWindow w = new SimpleWindow(o, rect, wndBase, wndTop);
+            Vector2i pos = new Vector2i(border.minX(), y);
+            SimpleWindow w = new SimpleWindow(o, pos, wndBase);
             result.add(w);
         }
 

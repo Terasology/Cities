@@ -22,22 +22,18 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Collection;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.bldg.gen.SimpleChurchGenerator;
 import org.terasology.cities.common.CachingFunction;
 import org.terasology.cities.generator.RoadGeneratorSimple;
 import org.terasology.cities.generator.RoadModifierRandom;
 import org.terasology.cities.generator.RoadShapeGenerator;
-import org.terasology.cities.generator.SimpleFenceGenerator;
 import org.terasology.cities.generator.SiteConnector;
 import org.terasology.cities.generator.SiteFinderRandom;
 import org.terasology.cities.model.City;
 import org.terasology.cities.model.Junction;
 import org.terasology.cities.model.Lake;
-import org.terasology.cities.model.MedievalTown;
 import org.terasology.cities.model.NamedArea;
 import org.terasology.cities.model.Road;
 import org.terasology.cities.model.Site;
@@ -54,9 +50,6 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.Vector2d;
-import org.terasology.namegenerator.town.DebugTownTheme;
-import org.terasology.namegenerator.town.TownAffinityVector;
-import org.terasology.namegenerator.town.TownNameProvider;
 import org.terasology.namegenerator.waters.DebugWaterTheme;
 import org.terasology.namegenerator.waters.WaterNameProvider;
 import org.terasology.registry.CoreRegistry;
@@ -65,7 +58,6 @@ import org.terasology.world.WorldComponent;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Objects;
-import com.google.common.base.Stopwatch;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Sets;
 
@@ -251,111 +243,111 @@ public class WorldFacade {
 //        final LotGeneratorRandom housingLotGenerator = new LotGeneratorRandom(seed);
 //        final LotGeneratorRandom churchLotGenerator = new LotGeneratorRandom(seed, 25d, 40d, 1, 100);
 //        final SimpleHousingGenerator blgGenerator = new SimpleHousingGenerator(seed, heightMap);
-        final SimpleFenceGenerator sfg = new SimpleFenceGenerator(seed);
-        final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);
-
-        decoratedCities = CachingFunction.wrap(new Function<Sector, Set<City>>() {
-
-            @Override
-            public Set<City> apply(Sector input) {
-
-                int sectorSeed = Objects.hashCode(seed, input);
-                TownNameProvider nameGen = new TownNameProvider(sectorSeed, new DebugTownTheme());
-                Stopwatch pAll = null;
-                Stopwatch pSites = null;
-                Stopwatch pRoads = null;
-
-                if (logger.isInfoEnabled()) {
-                    pAll = Stopwatch.createStarted();
-                }
-
-                if (logger.isInfoEnabled()) {
-                    pSites = Stopwatch.createStarted();
-                }
-
-                Set<Site> sites = siteMap.apply(input);
-
-                if (logger.isInfoEnabled()) {
-                    logger.info("Generated settlement sites for {} in {}ms.", input, pSites.elapsed(TimeUnit.MILLISECONDS));
-                }
-
-                if (logger.isInfoEnabled()) {
-                    pRoads = Stopwatch.createStarted();
-                }
-
-                Shape roadShape = roadShapeFunc.apply(input);
-
-                if (logger.isInfoEnabled()) {
-                    logger.info("Generated roads for {} in {}ms.", input, pRoads.elapsed(TimeUnit.MILLISECONDS));
-                }
-
-                Set<City> cities = Sets.newHashSet();
-
-                for (Site site : sites) {
-
-                    Stopwatch pSite = null;
-                    if (logger.isInfoEnabled()) {
-                        pSite = Stopwatch.createStarted();
-                    }
-
-                    int minX = site.getPos().getX() - site.getRadius();
-                    int minZ = site.getPos().getY() - site.getRadius();
-
-                    Rectangle cityArea = new Rectangle(minX, minZ, site.getRadius() * 2, site.getRadius() * 2);
-                    HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
-
-                    AreaInfo si = new AreaInfo(terrainConfig, cityAreaHeightMap);
-                    si.addBlockedArea(roadShape);
-
-                    String name = nameGen.generateName(TownAffinityVector.create().prefix(0.2).postfix(0.2));
-                    MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
-
-                    // add a town wall if radius is larger than 1/4
-                    int minRadForTownWall = (spawnConfig.getMinCityRadius() * 3 + spawnConfig.getMaxCityRadius()) / 4;
-
-                    if (town.getRadius() > minRadForTownWall) {
-//                        TownWall tw = twg.generate(town, si);
-//                        town.setTownWall(tw);
-
-//                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
-//                        Shape townWallShape = twsg.computeShape(tw);
-//                        si.addBlockedArea(townWallShape);
-                    }
-
-//                    Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
-//                    if (!churchLots.isEmpty()) {
-//                        SimpleLot lot = churchLots.iterator().next();
-//                        SimpleChurch church = sacg.generate(lot);
-//                        lot.addBuilding(church);
-//                        town.add(lot);
+//        final SimpleFenceGenerator sfg = new SimpleFenceGenerator(seed);
+//        final SimpleChurchGenerator sacg = new SimpleChurchGenerator(seed, heightMap);
+//
+//        decoratedCities = CachingFunction.wrap(new Function<Sector, Set<City>>() {
+//
+//            @Override
+//            public Set<City> apply(Sector input) {
+//
+//                int sectorSeed = Objects.hashCode(seed, input);
+//                TownNameProvider nameGen = new TownNameProvider(sectorSeed, new DebugTownTheme());
+//                Stopwatch pAll = null;
+//                Stopwatch pSites = null;
+//                Stopwatch pRoads = null;
+//
+//                if (logger.isInfoEnabled()) {
+//                    pAll = Stopwatch.createStarted();
+//                }
+//
+//                if (logger.isInfoEnabled()) {
+//                    pSites = Stopwatch.createStarted();
+//                }
+//
+//                Set<Site> sites = siteMap.apply(input);
+//
+//                if (logger.isInfoEnabled()) {
+//                    logger.info("Generated settlement sites for {} in {}ms.", input, pSites.elapsed(TimeUnit.MILLISECONDS));
+//                }
+//
+//                if (logger.isInfoEnabled()) {
+//                    pRoads = Stopwatch.createStarted();
+//                }
+//
+//                Shape roadShape = roadShapeFunc.apply(input);
+//
+//                if (logger.isInfoEnabled()) {
+//                    logger.info("Generated roads for {} in {}ms.", input, pRoads.elapsed(TimeUnit.MILLISECONDS));
+//                }
+//
+//                Set<City> cities = Sets.newHashSet();
+//
+//                for (Site site : sites) {
+//
+//                    Stopwatch pSite = null;
+//                    if (logger.isInfoEnabled()) {
+//                        pSite = Stopwatch.createStarted();
 //                    }
 //
-//                    Set<SimpleLot> housingLots = housingLotGenerator.generate(town, si);
+//                    int minX = site.getPos().getX() - site.getRadius();
+//                    int minZ = site.getPos().getY() - site.getRadius();
 //
-//                    for (SimpleLot lot : housingLots) {
-//                        town.add(lot);
+//                    Rectangle cityArea = new Rectangle(minX, minZ, site.getRadius() * 2, site.getRadius() * 2);
+//                    HeightMap cityAreaHeightMap = HeightMaps.caching(heightMap, cityArea, 4);
 //
-//                        for (SimpleRectHouse bldg : blgGenerator.apply(lot)) {
-//                            lot.addBuilding(bldg);
-//                            SimpleFence fence = sfg.createFence(town, lot.getShape());
-//                            lot.setFence(fence);
-//                        }
+//                    AreaInfo si = new AreaInfo(terrainConfig, cityAreaHeightMap);
+//                    si.addBlockedArea(roadShape);
+//
+//                    String name = nameGen.generateName(TownAffinityVector.create().prefix(0.2).postfix(0.2));
+//                    MedievalTown town = new MedievalTown(name, site.getPos(), site.getRadius());
+//
+//                    // add a town wall if radius is larger than 1/4
+//                    int minRadForTownWall = (spawnConfig.getMinCityRadius() * 3 + spawnConfig.getMaxCityRadius()) / 4;
+//
+//                    if (town.getRadius() > minRadForTownWall) {
+////                        TownWall tw = twg.generate(town, si);
+////                        town.setTownWall(tw);
+//
+////                        TownWallShapeGenerator twsg = new TownWallShapeGenerator();
+////                        Shape townWallShape = twsg.computeShape(tw);
+////                        si.addBlockedArea(townWallShape);
 //                    }
-
-                    if (logger.isInfoEnabled()) {
-                        logger.info("Generated city '{}' in {} in {}ms.", town, input, pSite.elapsed(TimeUnit.MILLISECONDS));
-                    }
-
-                    cities.add(town);
-                }
-
-                if (logger.isInfoEnabled()) {
-                    logger.info("Generated {} .. in {}ms.", input, pAll.elapsed(TimeUnit.MILLISECONDS));
-                }
-
-                return cities;
-            }
-        });
+//
+////                    Set<SimpleLot> churchLots = churchLotGenerator.generate(town, si);
+////                    if (!churchLots.isEmpty()) {
+////                        SimpleLot lot = churchLots.iterator().next();
+////                        SimpleChurch church = sacg.generate(lot);
+////                        lot.addBuilding(church);
+////                        town.add(lot);
+////                    }
+////
+////                    Set<SimpleLot> housingLots = housingLotGenerator.generate(town, si);
+////
+////                    for (SimpleLot lot : housingLots) {
+////                        town.add(lot);
+////
+////                        for (SimpleRectHouse bldg : blgGenerator.apply(lot)) {
+////                            lot.addBuilding(bldg);
+////                            SimpleFence fence = sfg.createFence(town, lot.getShape());
+////                            lot.setFence(fence);
+////                        }
+////                    }
+//
+//                    if (logger.isInfoEnabled()) {
+//                        logger.info("Generated city '{}' in {} in {}ms.", town, input, pSite.elapsed(TimeUnit.MILLISECONDS));
+//                    }
+//
+//                    cities.add(town);
+//                }
+//
+//                if (logger.isInfoEnabled()) {
+//                    logger.info("Generated {} .. in {}ms.", input, pAll.elapsed(TimeUnit.MILLISECONDS));
+//                }
+//
+//                return cities;
+//            }
+//        });
 
         // this required by WorldEventReceiver
         CoreRegistry.put(WorldFacade.class, this);

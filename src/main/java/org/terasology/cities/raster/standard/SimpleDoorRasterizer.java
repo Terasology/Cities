@@ -18,27 +18,30 @@ package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.SimpleWindow;
-import org.terasology.cities.bldg.WindowRasterizer;
+import org.terasology.cities.bldg.DoorRasterizer;
+import org.terasology.cities.bldg.SimpleDoor;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
- * Converts {@link SimpleWindow} into blocks (or air actually)
+ * Converts {@link SimpleDoor} into blocks (or air actually)
  */
-public class SimpleWindowRasterizer extends WindowRasterizer<SimpleWindow> {
+public class SimpleDoorRasterizer extends DoorRasterizer<SimpleDoor> {
 
     /**
      * @param theme the block theme to use
      */
-    public SimpleWindowRasterizer(BlockTheme theme) {
-        super(theme, SimpleWindow.class);
+    public SimpleDoorRasterizer(BlockTheme theme) {
+        super(theme, SimpleDoor.class);
     }
 
     @Override
-    public void raster(RasterTarget target, SimpleWindow wnd, HeightMap hm) {
-        // TODO: check target region
-        target.setBlock(wnd.getPos().x(), wnd.getHeight(), wnd.getPos().y(), BlockTypes.AIR);
+    public void raster(RasterTarget target, SimpleDoor door, HeightMap hm) {
+        // TODO: check brush region
+        Pen pen = Pens.fill(target, door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
+        pen.draw(door.getPos());
     }
 
 }

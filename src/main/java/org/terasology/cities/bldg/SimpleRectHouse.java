@@ -45,8 +45,7 @@ public class SimpleRectHouse extends DefaultBuilding {
         this.shape = layout;
         room = new DefaultBuildingPart(layout, roof, baseHeight, wallHeight);
         Vector2i doorPos = new Vector2i(Edges.getEdge(layout, orient).lerp(0.5f), RoundingMode.HALF_UP);
-        Rect2i doorRc = Rect2i.createFromMinAndSize(doorPos.x(), doorPos.y(), 1, 1);
-        room.addDoor(new SimpleDoor(orient, doorRc, baseHeight, baseHeight + 2));
+        room.addDoor(new SimpleDoor(orient, doorPos, baseHeight, baseHeight + 2));
         addPart(room);
     }
 

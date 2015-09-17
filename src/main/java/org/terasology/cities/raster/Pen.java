@@ -16,6 +16,7 @@
 
 package org.terasology.cities.raster;
 
+import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Rect2i;
 
 /**
@@ -28,6 +29,10 @@ public interface Pen {
      * @param z the z coordinate
      */
     void draw(int x, int z);
+
+    default void draw(BaseVector2i p) {
+        draw(p.getX(), p.getY());
+    }
 
     /**
      * @return the valid target area
