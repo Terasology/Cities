@@ -37,15 +37,15 @@ public class ChunkRasterTarget implements RasterTarget {
     private static final Logger logger = LoggerFactory.getLogger(ChunkRasterTarget.class);
 
     private final CoreChunk chunk;
-    private final BlockTheme blockType;
+    private final BlockTheme blockTheme;
     private final Rect2i affectedArea;
 
     /**
      * @param chunk     the chunk to work on
-     * @param blockType a mapping String type to block
+     * @param blockTheme a mapping String type to block
      */
-    public ChunkRasterTarget(CoreChunk chunk, BlockTheme blockType) {
-        this.blockType = blockType;
+    public ChunkRasterTarget(CoreChunk chunk, BlockTheme blockTheme) {
+        this.blockTheme = blockTheme;
         this.chunk = chunk;
 
         int wx = chunk.getChunkWorldOffsetX();
@@ -76,7 +76,7 @@ public class ChunkRasterTarget implements RasterTarget {
      */
     @Override
     public void setBlock(int x, int y, int z, BlockTypes type) {
-        setBlock(x, y, z, blockType.apply(type));
+        setBlock(x, y, z, blockTheme.apply(type));
     }
 
     /**
@@ -87,7 +87,7 @@ public class ChunkRasterTarget implements RasterTarget {
      */
     @Override
     public void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side) {
-        setBlock(x, y, z, blockType.apply(type, side));
+        setBlock(x, y, z, blockTheme.apply(type, side));
     }
 
     /**
