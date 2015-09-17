@@ -27,6 +27,7 @@ import org.terasology.cities.bldg.SimpleDoor;
 import org.terasology.cities.bldg.SimpleRoundHouse;
 import org.terasology.cities.bldg.SimpleWindow;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.model.roof.FlatRoof;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.parcels.Parcel;
@@ -92,11 +93,11 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
         // make build-able area 1 block smaller, so make the roof stay inside
         Rect2i lotRc = parcel.getShape().expand(new Vector2i(-1, -1));
 
-        int centerX = lotRc.minX() + IntMath.divide(lotRc.width(), 2, RoundingMode.HALF_UP);
-        int centerY = lotRc.minY() + IntMath.divide(lotRc.height(), 2, RoundingMode.HALF_UP);
+        int centerX = lotRc.minX() + IntMath.divide(lotRc.width(), 2, RoundingMode.HALF_DOWN); // width() is 1 too much
+        int centerY = lotRc.minY() + IntMath.divide(lotRc.height(), 2, RoundingMode.HALF_DOWN);
 
         int towerSize = Math.min(lotRc.width(), lotRc.height());
-        int towerRad = towerSize / 2;
+        int towerRad = towerSize / 2 - 1;
 
         int entranceWidth = 1;
         int entranceHeight = 2;

@@ -16,11 +16,14 @@
 
 package org.terasology.cities.raster.standard;
 
+import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.bldg.RoofRasterizer;
 import org.terasology.cities.model.roof.FlatRoof;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
-import org.terasology.cities.raster.Rasterizer;
-import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.geom.Rect2i;
@@ -28,28 +31,35 @@ import org.terasology.math.geom.Rect2i;
 /**
  * Converts a {@link FlatRoof} into blocks
  */
-public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
+public class FlatRoofRasterizer extends RoofRasterizer<FlatRoof> {
+
+    /**
+     * @param theme the block theme to use
+     */
+    public FlatRoofRasterizer(BlockTheme theme) {
+        super(theme, FlatRoof.class);
+    }
 
     @Override
-    public void raster(RasterTarget brush, TerrainInfo ti, final FlatRoof roof) {
+    public void raster(RasterTarget target, FlatRoof roof, HeightMap hm) {
         Rect2i area = roof.getArea();
 
-        if (!brush.affects(area)) {
+        if (!area.overlaps(target.getAffectedArea())) {
             return;
         }
 
-        HeightMap topHm = new HeightMap() {
+        HeightMap hmTop = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
-                int rx = x - area.x;
-                int rz = z - area.y;
+                int rx = x - area.minX();
+                int rz = z - area.minY();
 
                 int y = roof.getBaseHeight() + 1;       // at least one block thick
 
                 // distance to border of the roof
-                int borderDistX = Math.min(rx, area.width - 1 - rx);
-                int borderDistZ = Math.min(rz, area.height - 1 - rz);
+                int borderDistX = Math.min(rx, area.width() - 1 - rx);
+                int borderDistZ = Math.min(rz, area.height() - 1 - rz);
 
                 int dist = Math.min(borderDistX, borderDistZ);
 
@@ -60,10 +70,9 @@ public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
                 return y;
             }
         };
+        HeightMap hmBottom = HeightMaps.constant(roof.getBaseHeight());
 
-        HeightMap bottomHm = HeightMaps.constant(roof.getBaseHeight());
-
-        brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_FLAT);
+        RasterUtil.fillRect(pen, area);
     }
-
 }

@@ -42,8 +42,8 @@ import com.google.common.collect.Sets;
 /**
  *
  */
-public class RectHouseGenerator
-{
+public class RectHouseGenerator {
+
     public SimpleRectHouse apply(Parcel lot, InfiniteSurfaceHeightFacet hm) {
         // leave 1 block border for the building
         Rect2i lotRc = lot.getShape();

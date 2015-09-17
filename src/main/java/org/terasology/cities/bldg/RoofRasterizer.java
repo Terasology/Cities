@@ -17,27 +17,29 @@
 package org.terasology.cities.bldg;
 
 import org.terasology.cities.BlockTheme;
+import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
  * @param <T> the target class
  */
-public abstract class BuildingPartRasterizer<T extends BuildingPart> extends AbstractBuildingRasterizer<T> {
+public abstract class RoofRasterizer<T extends Roof> extends AbstractBuildingRasterizer<T> {
 
     /**
      * @param theme the block theme that is used to map type to blocks
      * @param targetClass the target class that is rasterized
      */
-    protected BuildingPartRasterizer(BlockTheme theme, Class<T> targetClass) {
+    protected RoofRasterizer(BlockTheme theme, Class<T> targetClass) {
         super(theme, targetClass);
     }
 
     @Override
     public void raster(RasterTarget brush, Building bldg, HeightMap hm) {
         for (BuildingPart part : bldg.getParts()) {
-            if (targetClass.isInstance(part)) {
-                raster(brush, targetClass.cast(part), hm);
+            Roof roof = part.getRoof();
+            if (targetClass.isInstance(roof)) {
+                raster(brush, targetClass.cast(roof), hm);
             }
         }
     }

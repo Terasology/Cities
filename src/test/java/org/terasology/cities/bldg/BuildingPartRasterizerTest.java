@@ -21,6 +21,8 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.raster.BuildingPens;
+import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -41,7 +43,8 @@ public class BuildingPartRasterizerTest {
         HeightMap terrainHeightMap = HeightMaps.constant(3);
         int baseHeight = 5;
         fillColumn(target, 0, baseHeight, FENCE);
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 FENCE, FENCE, FENCE,
@@ -57,7 +60,8 @@ public class BuildingPartRasterizerTest {
         HeightMap terrainHeightMap = HeightMaps.constant(3);
         int baseHeight = 5;
         fillColumn(target, -2, 2, FENCE);
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 FENCE, FENCE, FENCE, FENCE, FENCE),
@@ -69,7 +73,8 @@ public class BuildingPartRasterizerTest {
         DebugRasterTarget target = new DebugRasterTarget(6, 8);
         HeightMap terrainHeightMap = HeightMaps.constant(3);
         int baseHeight = 5;
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 AIR, AIR, AIR),
@@ -81,7 +86,8 @@ public class BuildingPartRasterizerTest {
         DebugRasterTarget target = new DebugRasterTarget(4, 6);
         HeightMap terrainHeightMap = HeightMaps.constant(3);
         int baseHeight = 5;
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 BUILDING_FOUNDATION, BUILDING_FLOOR, AIR),
@@ -94,7 +100,8 @@ public class BuildingPartRasterizerTest {
         HeightMap terrainHeightMap = HeightMaps.constant(3);
         int baseHeight = 5;
         fillColumn(target, 2, 4, FENCE);
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 FENCE, BUILDING_FOUNDATION, BUILDING_FOUNDATION),
@@ -107,7 +114,8 @@ public class BuildingPartRasterizerTest {
         HeightMap terrainHeightMap = HeightMaps.constant(5);
         int baseHeight = 3;
         fillColumn(target, 1, baseHeight, FENCE);
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 FENCE, FENCE, BUILDING_FLOOR, AIR, AIR, AIR),
@@ -120,7 +128,8 @@ public class BuildingPartRasterizerTest {
         HeightMap terrainHeightMap = HeightMaps.constant(5);
         int baseHeight = 3;
         fillColumn(target, -2, 2, FENCE);
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 FENCE, FENCE, FENCE, FENCE, FENCE),
@@ -132,7 +141,8 @@ public class BuildingPartRasterizerTest {
         DebugRasterTarget target = new DebugRasterTarget(6, 10);
         HeightMap terrainHeightMap = HeightMaps.constant(5);
         int baseHeight = 3;
-        BuildingPartRasterizer.prepareFloor(target, rc, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
+        RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 AIR, AIR, AIR, AIR, AIR),

@@ -21,9 +21,7 @@ import org.terasology.math.geom.Rect2i;
 /**
  * A flat battlement roof with merlons
  */
-public class BattlementRoof extends RectangularRoof {
-
-    private final int merlonHeight;
+public class BattlementRoof extends FlatRoof {
 
     /**
      * @param rc the roof shape
@@ -31,8 +29,7 @@ public class BattlementRoof extends RectangularRoof {
      * @param merlonHeight the height of the border
      */
     public BattlementRoof(Rect2i rc, int baseHeight, int merlonHeight) {
-        super(rc, baseHeight);
-        this.merlonHeight = merlonHeight;
+        super(rc, baseHeight, merlonHeight);
     }
 
     /**
@@ -40,6 +37,7 @@ public class BattlementRoof extends RectangularRoof {
      * @param lz z in local (roof area) coordinates
      * @return the borderHeight
      */
+    @Override
     public int getBorderHeight(int lx, int lz) {
         if (lx % 2 == 1) {
             return 0;
@@ -49,6 +47,6 @@ public class BattlementRoof extends RectangularRoof {
             return 0;
         }
 
-        return merlonHeight;
+        return super.getBorderHeight(lx, lz);
     }
 }

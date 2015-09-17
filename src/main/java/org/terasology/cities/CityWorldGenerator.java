@@ -22,8 +22,14 @@ import org.terasology.cities.fences.FenceFacetProvider;
 import org.terasology.cities.fences.SimpleFenceRasterizer;
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
+import org.terasology.cities.raster.standard.ConicRoofRasterizer;
+import org.terasology.cities.raster.standard.DomeRoofRasterizer;
+import org.terasology.cities.raster.standard.FlatRoofRasterizer;
+import org.terasology.cities.raster.standard.HipRoofRasterizer;
+import org.terasology.cities.raster.standard.PentRoofRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
+import org.terasology.cities.raster.standard.SaddleRoofRasterizer;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
 import org.terasology.cities.settlements.SettlementFacetProvider;
@@ -138,6 +144,12 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new SimpleFenceRasterizer(theme))
                 .addRasterizer(new RectPartRasterizer(theme))
                 .addRasterizer(new RoundPartRasterizer(theme))
+                .addRasterizer(new FlatRoofRasterizer(theme))
+                .addRasterizer(new SaddleRoofRasterizer(theme))
+                .addRasterizer(new PentRoofRasterizer(theme))
+                .addRasterizer(new HipRoofRasterizer(theme))
+                .addRasterizer(new ConicRoofRasterizer(theme))
+                .addRasterizer(new DomeRoofRasterizer(theme))
                 .addRasterizer(new FloraRasterizer());
         return worldBuilder;
     }

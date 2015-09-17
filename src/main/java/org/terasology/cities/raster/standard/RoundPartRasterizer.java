@@ -23,7 +23,12 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.RoundBuildingPart;
 import org.terasology.cities.raster.RasterTarget;
+import org.terasology.cities.raster.RasterUtil;
+import org.terasology.cities.raster.AbstractPen;
+import org.terasology.cities.raster.BuildingPens;
+import org.terasology.cities.raster.CheckedPen;
 import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
@@ -52,37 +57,16 @@ public class RoundPartRasterizer extends BuildingPartRasterizer<RoundBuildingPar
         }
 
         Vector2i center = new Vector2i(area.getCenter(), RoundingMode.HALF_UP);
-
-        final int baseHeight = element.getBaseHeight();
-
-        // clear area above and below floor level
-        Pen pen = new Pen() {
-
-            @Override
-            public void draw(int x, int z) {
-                int terrain = heightMap.apply(x, z);
-
-                // put foundation concrete below (including the top soil layer)
-                for (int y = terrain; y < baseHeight; y++) {
-                    brush.setBlock(x, y, z, BlockTypes.BUILDING_FOUNDATION);
-                }
-
-                // lay floor level
-                brush.setBlock(x, baseHeight, z, BlockTypes.BUILDING_FLOOR);
-
-                // clear area above floor level
-                for (int y = baseHeight + 1; y <= terrain; y++) {
-                    brush.setBlock(x, y, z, BlockTypes.AIR);
-                }
-            }
-        };
-
         int radius = TeraMath.floorToInt(area.getRadius());
-        brush.fillCircle(center.getX(), center.getY(), radius, pen);
 
-        for (int y = 0; y < element.getWallHeight(); y++) {
-            HeightMap hm = HeightMaps.constant(baseHeight + y + 1);
-            brush.drawCircle(center.getX(), center.getY(), radius, hm, BlockTypes.BUILDING_WALL);
-        }
+        int baseHeight = element.getBaseHeight();
+        int wallHeight = element.getWallHeight();
+
+        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, BlockTypes.BUILDING_FLOOR);
+        RasterUtil.fillCircle(new CheckedPen(floorPen), center.x(), center.y(), radius);
+
+        // create walls
+        Pen wallPen = Pens.fill(brush, baseHeight, baseHeight + wallHeight, BlockTypes.BUILDING_WALL);
+        RasterUtil.drawCircle(new CheckedPen(wallPen), center.x(), center.y(), radius);
     }
 }

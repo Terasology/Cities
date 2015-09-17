@@ -16,49 +16,63 @@
 
 package org.terasology.cities.raster.standard;
 
-import java.awt.geom.Ellipse2D;
+import java.math.RoundingMode;
 
+import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.bldg.RoofRasterizer;
 import org.terasology.cities.model.roof.ConicRoof;
+import org.terasology.cities.raster.CheckedPen;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
-import org.terasology.cities.raster.Rasterizer;
-import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
+import org.terasology.math.geom.Circle;
+import org.terasology.math.geom.Vector2i;
 
 /**
  * Converts a {@link ConicRoof} into blocks
  */
-public class ConicRoofRasterizer implements Rasterizer<ConicRoof> {
+public class ConicRoofRasterizer extends RoofRasterizer<ConicRoof> {
+
+    /**
+     * @param theme the block theme to use
+     */
+    public ConicRoofRasterizer(BlockTheme theme) {
+        super(theme, ConicRoof.class);
+    }
 
     @Override
-    public void raster(RasterTarget brush, TerrainInfo ti, final ConicRoof roof) {
-        final Ellipse2D area = roof.getArea();
+    public void raster(RasterTarget target, ConicRoof roof, HeightMap hm) {
+        final Circle area = roof.getArea();
 
-        if (!brush.affects(area)) {
+        if (!area.intersects(target.getAffectedArea())) {
             return;
         }
 
-        final int centerX = (int) (area.getCenterX() + 0.5);
-        final int centerY = (int) (area.getCenterY() + 0.5);
-        final int rad = (int) (area.getWidth() * 0.5);
+        Vector2i center = new Vector2i(area.getCenter(), RoundingMode.HALF_UP);
+        int radius = TeraMath.floorToInt(area.getRadius());
 
-        HeightMap hm = new HeightMap() {
+        HeightMap hmBottom = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
-                int rx = x - centerX;
-                int rz = z - centerY;
+                int rx = x - center.getX();
+                int rz = z - center.getY();
 
                 // relative distance to border of the roof
-                double dist = rad - Math.sqrt(rx * rx + rz * rz);
+                double dist = radius - Math.sqrt(rx * rx + rz * rz);
 
                 int y = TeraMath.floorToInt(roof.getBaseHeight() + dist * roof.getPitch());
                 return y;
             }
         };
 
-        brush.fillCircle(centerX, centerY, rad, hm, BlockTypes.ROOF_HIP);
+        Pen pen = Pens.fill(target, hmBottom, HeightMaps.offset(hmBottom, 1), BlockTypes.ROOF_HIP);
+        RasterUtil.fillCircle(new CheckedPen(pen), center.getX(), center.getY(), radius);
     }
 
 }

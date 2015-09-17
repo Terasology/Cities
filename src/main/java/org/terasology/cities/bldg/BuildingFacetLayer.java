@@ -25,10 +25,19 @@ import java.util.Map;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.ImageRasterTarget;
+import org.terasology.cities.raster.standard.ConicRoofRasterizer;
+import org.terasology.cities.raster.standard.DomeRoofRasterizer;
+import org.terasology.cities.raster.standard.FlatRoofRasterizer;
+import org.terasology.cities.raster.standard.HipRoofRasterizer;
+import org.terasology.cities.raster.standard.PentRoofRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
+import org.terasology.cities.raster.standard.SaddleRoofRasterizer;
+import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.TeraMath;
 import org.terasology.rendering.nui.properties.Checkbox;
 import org.terasology.world.generation.Region;
+import org.terasology.world.generation.facets.SurfaceHeightFacet;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
 import org.terasology.world.viewer.layers.FacetLayerConfig;
 import org.terasology.world.viewer.layers.Renders;
@@ -68,7 +77,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         ROOF
     }
 
-    private final ListMultimap<RasterizerType, BuildingPartRasterizer<?>> rasterizers = Multimaps.newListMultimap(
+    private final ListMultimap<RasterizerType, AbstractBuildingRasterizer<?>> rasterizers = Multimaps.newListMultimap(
             new EnumMap<>(RasterizerType.class), ArrayList::new);
 
     private Config config = new Config();
@@ -79,6 +88,12 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         BlockTheme theme = null;
         rasterizers.put(RasterizerType.BASE, new RectPartRasterizer(theme));
         rasterizers.put(RasterizerType.BASE, new RoundPartRasterizer(theme));
+        rasterizers.put(RasterizerType.ROOF, new FlatRoofRasterizer(theme));
+        rasterizers.put(RasterizerType.ROOF, new SaddleRoofRasterizer(theme));
+        rasterizers.put(RasterizerType.ROOF, new PentRoofRasterizer(theme));
+        rasterizers.put(RasterizerType.ROOF, new HipRoofRasterizer(theme));
+        rasterizers.put(RasterizerType.ROOF, new ConicRoofRasterizer(theme));
+        rasterizers.put(RasterizerType.ROOF, new DomeRoofRasterizer(theme));
     }
 
     /**
@@ -99,10 +114,27 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         render(brush, region);
     }
 
-    private void render(ImageRasterTarget brush, Region region) {
-        if (config.showBase) {
-            for (BuildingPartRasterizer<?> rasterizer : rasterizers.get(RasterizerType.BASE)) {
-                rasterizer.raster(brush, region);
+    private void render(ImageRasterTarget brush, Region chunkRegion) {
+        SurfaceHeightFacet heightFacet = chunkRegion.getFacet(SurfaceHeightFacet.class);
+        HeightMap hm = new HeightMap() {
+
+            @Override
+            public int apply(int x, int z) {
+                return TeraMath.floorToInt(heightFacet.getWorld(x, z));
+            }
+        };
+
+        BuildingFacet buildingFacet = chunkRegion.getFacet(BuildingFacet.class);
+        for (Building bldg : buildingFacet.getBuildings()) {
+            if (config.showBase) {
+                for (AbstractBuildingRasterizer<?> rasterizer : rasterizers.get(RasterizerType.BASE)) {
+                    rasterizer.raster(brush, bldg, hm);
+                }
+            }
+            if (config.showRoofs) {
+                for (AbstractBuildingRasterizer<?> rasterizer : rasterizers.get(RasterizerType.ROOF)) {
+                    rasterizer.raster(brush, bldg, hm);
+                }
             }
         }
     }
@@ -112,11 +144,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         int dx = bufferImage.getWidth() / 2;
         int dy = bufferImage.getHeight() / 2;
         ImageRasterTarget brush = new ImageRasterTarget(wx - dx, wy - dy, bufferImage, blockColors::get);
-        for (RasterizerType type : rasterizers.keys()) {
-            for (BuildingPartRasterizer<?> rasterizer : rasterizers.get(type)) {
-                rasterizer.raster(brush, region);
-            }
-        }
+        render(brush, region);
 
         int height = brush.getHeight(wx, wy);
         BlockTypes type = brush.getBlockType(wx, wy);

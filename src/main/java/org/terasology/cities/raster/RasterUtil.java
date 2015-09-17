@@ -87,7 +87,7 @@ public abstract class RasterUtil {
         if (x >= rc.minX() && x <= rc.maxX()) {
             int minZ = Math.max(z1, rc.minY());
             int maxZ = Math.min(z2, rc.maxY());
-            for (int z = minZ; x <= maxZ; z++) {
+            for (int z = minZ; z <= maxZ; z++) {
                 pen.draw(x, z);
             }
         }

@@ -16,26 +16,34 @@
 
 package org.terasology.cities.raster.standard;
 
-import java.awt.Rectangle;
-
+import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.bldg.RoofRasterizer;
 import org.terasology.cities.model.roof.DomeRoof;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
-import org.terasology.cities.raster.Rasterizer;
-import org.terasology.cities.raster.TerrainInfo;
+import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.geom.Rect2i;
 
 /**
  * Converts a {@link DomeRoof} into blocks
  */
-public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
+public class DomeRoofRasterizer extends RoofRasterizer<DomeRoof> {
+
+    /**
+     * @param theme the block theme to use
+     */
+    public DomeRoofRasterizer(BlockTheme theme) {
+        super(theme, DomeRoof.class);
+    }
 
     @Override
-    public void raster(final RasterTarget brush, TerrainInfo ti, final DomeRoof roof) {
-        Rect2i area = roof.getArea();
+    public void raster(RasterTarget target, DomeRoof roof, HeightMap hm) {
+        final Rect2i area = roof.getArea();
 
-        if (!brush.affects(area)) {
+        if (!area.overlaps(target.getAffectedArea())) {
             return;
         }
 
@@ -56,7 +64,7 @@ public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
             @Override
             public int apply(int rx, int rz) {
                 int height = roof.getHeight();
-                double y = getY(area, height, rx + 0.5, rz + 0.5);        // measure at block center
+                float y = getY(area, height, rx + 0.5f, rz + 0.5f);        // measure at block center
 
                 return roof.getBaseHeight() + (int) Math.max(1, y);
             }
@@ -68,35 +76,36 @@ public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
             public int apply(int rx, int rz) {
                 int baseHeight = roof.getBaseHeight();
 
-                if (rx == area.x || rz == area.y) {
+                if (rx == area.minX() || rz == area.minY()) {
                     return baseHeight;
                 }
 
-                if (rx == area.x + area.getWidth() - 1 || rz == area.y + area.getHeight() - 1) {
+                if (rx == area.maxX() || rz == area.maxY()) {
                     return baseHeight;
                 }
 
                 int height = roof.getHeight();
-                double y = getY(area, height, rx + 0.5, rz + 0.5);        // measure at block center
+                float y = getY(area, height, rx + 0.5f, rz + 0.5f);        // measure at block center
 
                 return baseHeight + (int) Math.max(0, y - 2);
             }
         };
 
-        brush.fillRect(area, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        Pen pen = Pens.fill(target, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        RasterUtil.fillRect(pen, area);
     }
 
-    private double getY(Rectangle area, int height, double rx, double rz) {
+    private float getY(Rect2i area, int height, float rx, float rz) {
 
-        double x = rx - area.x - area.width * 0.5;   // distance from the center
-        double z = rz - area.y - area.height * 0.5;
+        float x = rx - area.minX() - area.width() * 0.5f;   // distance from the center
+        float z = rz - area.minY() - area.height() * 0.5f;
 
-        double a = area.width * 0.5;
-        double b = height;
-        double c = area.height * 0.5;
+        float a = area.width() * 0.5f;
+        float b = height;
+        float c = area.height() * 0.5f;
 
-        double y2 = b * b * (1 - (x * x) / (a * a) - (z * z) / (c * c));
+        float y2 = b * b * (1 - (x * x) / (a * a) - (z * z) / (c * c));
 
-        return Math.sqrt(y2);
+        return (float) Math.sqrt(y2);
     }
 }
