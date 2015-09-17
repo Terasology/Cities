@@ -16,6 +16,8 @@
 
 package org.terasology.cities.raster;
 
+import org.terasology.math.geom.Rect2i;
+
 /**
  * Assigns blocks based on x and z values
  */
@@ -27,4 +29,8 @@ public interface Pen {
      */
     void draw(int x, int z);
 
+    /**
+     * @return the valid target area
+     */
+    Rect2i getTargetArea();
 }

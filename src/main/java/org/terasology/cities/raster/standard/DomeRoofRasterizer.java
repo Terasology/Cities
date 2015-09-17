@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.DomeRoof;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -32,7 +32,7 @@ import org.terasology.math.geom.Rect2i;
 public class DomeRoofRasterizer implements Rasterizer<DomeRoof> {
 
     @Override
-    public void raster(final Brush brush, TerrainInfo ti, final DomeRoof roof) {
+    public void raster(final RasterTarget brush, TerrainInfo ti, final DomeRoof roof) {
         Rect2i area = roof.getArea();
 
         if (!brush.affects(area)) {

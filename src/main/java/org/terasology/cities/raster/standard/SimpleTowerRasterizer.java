@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.SimpleTower;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
 
@@ -30,7 +30,7 @@ import org.terasology.cities.raster.TerrainInfo;
 public class SimpleTowerRasterizer extends AbstractRasterizer<SimpleTower> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, SimpleTower tower) {
+    public void raster(RasterTarget brush, TerrainInfo ti, SimpleTower tower) {
 
         Rectangle rc = tower.getLayout();
         

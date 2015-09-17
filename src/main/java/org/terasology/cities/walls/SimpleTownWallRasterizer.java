@@ -17,7 +17,7 @@
 package org.terasology.cities.walls;
 
 import org.terasology.cities.bldg.Tower;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
@@ -29,7 +29,7 @@ import org.terasology.cities.raster.standard.StandardRegistry;
 public class SimpleTownWallRasterizer implements Rasterizer<TownWall> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, TownWall tw) {
+    public void raster(RasterTarget brush, TerrainInfo ti, TownWall tw) {
         RasterRegistry registry = StandardRegistry.getInstance();
 
         for (WallSegment ws : tw.getWalls()) {

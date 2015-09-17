@@ -18,7 +18,7 @@ package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.FlatRoof;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -31,7 +31,7 @@ import org.terasology.math.geom.Rect2i;
 public class FlatRoofRasterizer implements Rasterizer<FlatRoof> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, final FlatRoof roof) {
+    public void raster(RasterTarget brush, TerrainInfo ti, final FlatRoof roof) {
         Rect2i area = roof.getArea();
 
         if (!brush.affects(area)) {

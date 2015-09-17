@@ -18,17 +18,18 @@ package org.terasology.cities.bldg;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.raster.Brush;
-import org.terasology.cities.raster.ChunkBrush;
+import org.terasology.cities.raster.AbstractPen;
+import org.terasology.cities.raster.ChunkRasterTarget;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.RasterTarget;
+import org.terasology.cities.raster.RasterUtil;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generation.Region;
 import org.terasology.world.generation.WorldRasterizer;
-import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 /**
  * @param <T> the target class
@@ -39,10 +40,10 @@ public abstract class BuildingPartRasterizer<T> implements WorldRasterizer {
     private final Class<T> targetClass;
 
     /**
-     * @param theme
-     * @param targetClass
+     * @param theme the block theme that is used to map type to blocks
+     * @param targetClass the target class that is rasterized
      */
-    public BuildingPartRasterizer(BlockTheme theme, Class<T> targetClass) {
+    protected BuildingPartRasterizer(BlockTheme theme, Class<T> targetClass) {
         this.theme = theme;
         this.targetClass = targetClass;
     }
@@ -54,11 +55,11 @@ public abstract class BuildingPartRasterizer<T> implements WorldRasterizer {
 
     @Override
     public void generateChunk(CoreChunk chunk, Region chunkRegion) {
-        Brush brush = new ChunkBrush(chunk, theme);
+        RasterTarget brush = new ChunkRasterTarget(chunk, theme);
         raster(brush, chunkRegion);
     }
 
-    public void raster(Brush brush, Region chunkRegion) {
+    public void raster(RasterTarget brush, Region chunkRegion) {
         BuildingFacet buildingFacet = chunkRegion.getFacet(BuildingFacet.class);
         InfiniteSurfaceHeightFacet heightFacet = chunkRegion.getFacet(InfiniteSurfaceHeightFacet.class);
         HeightMap hm = new HeightMap() {
@@ -77,25 +78,54 @@ public abstract class BuildingPartRasterizer<T> implements WorldRasterizer {
         }
     }
 
-    protected abstract void raster(Brush brush, T part, HeightMap heightMap);
+    protected abstract void raster(RasterTarget brush, T part, HeightMap heightMap);
 
     /**
-     * @param brush the brush to use
+     * @param target the target to write to
      * @param rc the rectangle to prepare
      * @param terrain the terrain height map
      * @param baseHeight the floor level
      * @param floor the floor block type
      */
-    protected void prepareFloor(Brush brush, Rect2i rc, HeightMap terrain, int baseHeight, BlockTypes floor) {
+    protected static void prepareFloor(RasterTarget target, Rect2i rc, HeightMap terrainHeightMap, int baseHeight, BlockTypes floor) {
 
-        // clear area above floor level
-        brush.fillRect(rc, baseHeight, HeightMaps.offset(terrain, 1), BlockTypes.AIR);
+        Pen floorPen = new AbstractPen(target.getAffectedArea()) {
 
-        // lay floor level
-        brush.fillRect(rc, baseHeight - 1, baseHeight, floor);
+            @Override
+            public void draw(int x, int z) {
+                int terrain = terrainHeightMap.apply(x, z);
+                int y = Math.max(target.getMinHeight(), terrain);
+                if (y > target.getMaxHeight()) {
+                    return;
+                }
 
-        // put foundation concrete below
-        brush.fillRect(rc, terrain, baseHeight - 1, BlockTypes.BUILDING_FOUNDATION);
+                // put foundation material below between terrain and floor level
+                while (y < baseHeight) {
+                    target.setBlock(x, y, z, BlockTypes.BUILDING_FOUNDATION);
+                    y++;
+                    if (y > target.getMaxHeight()) {
+                        return;
+                    }
+                }
+
+                // y can be larger than baseHeight here
+                if (baseHeight < target.getMinHeight()) { // if the minY is fully above, we need to exit now
+                    return;
+                }
+
+                // lay floor level
+                target.setBlock(x, baseHeight, z, floor);
+                y = baseHeight + 1;
+
+                // clear area above floor level
+                while (y <= target.getMaxHeight() && y <= terrain) {
+                    target.setBlock(x, y, z, BlockTypes.AIR);
+                    y++;
+                }
+            }
+        };
+
+        RasterUtil.fillRect(floorPen, rc);
     }
 }
 

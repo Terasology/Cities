@@ -20,7 +20,10 @@ import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.RectBuildingPart;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
+import org.terasology.cities.raster.RasterTarget;
+import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.geom.Rect2i;
 
@@ -34,7 +37,7 @@ public class RectPartRasterizer extends BuildingPartRasterizer<RectBuildingPart>
     }
 
     @Override
-    protected void raster(Brush brush, RectBuildingPart part, HeightMap heightMap) {
+    protected void raster(RasterTarget brush, RectBuildingPart part, HeightMap heightMap) {
         Rect2i rc = part.getShape();
 //        int topHeight = part.getBaseHeight() + part.getWallHeight() + part.getRoof().getHeight;
 //        Region3i bbox = Region3i(rc.minX(), part.getBaseHeight(), rc.minY(), rc.maxX(), topHeight, rc.maxY());
@@ -47,7 +50,8 @@ public class RectPartRasterizer extends BuildingPartRasterizer<RectBuildingPart>
         prepareFloor(brush, rc, heightMap, baseHeight, BlockTypes.BUILDING_FLOOR);
 
         // create walls
-        brush.frame(rc, baseHeight, part.getBaseHeight() + wallHeight, BlockTypes.BUILDING_WALL);
+        Pen wallPen = Pens.fill(brush, baseHeight, baseHeight + wallHeight, BlockTypes.BUILDING_WALL);
+        RasterUtil.drawRect(wallPen, rc);
     }
 }
 

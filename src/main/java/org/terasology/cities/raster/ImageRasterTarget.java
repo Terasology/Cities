@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.debug;
+package org.terasology.cities.raster;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -23,7 +23,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.raster.Brush;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
@@ -31,18 +30,18 @@ import org.terasology.math.geom.Rect2i;
 import com.google.common.base.Function;
 
 /**
- * Converts model elements into blocks of of a chunk
+ * Converts model elements into pixels in an image.
  */
-public class SwingBrush extends Brush {
+public class ImageRasterTarget implements RasterTarget {
 
-    private static final Logger logger = LoggerFactory.getLogger(SwingBrush.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageRasterTarget.class);
 
     private final Function<BlockTypes, Color> blockColor;
     private final Rect2i affectedArea;
 
     private final BufferedImage image;
     private final short[][] heightMap;      // [x][z]
-    private final BlockTypes[][] typeMap;      // [x][z]
+    private final BlockTypes[][] typeMap;   // [x][z]
 
     private final int wz;
     private final int wx;
@@ -53,7 +52,7 @@ public class SwingBrush extends Brush {
      * @param image the image to draw onto
      * @param blockColor a mapping String type -> block
      */
-    public SwingBrush(int wx, int wz, BufferedImage image, Function<BlockTypes, Color> blockColor) {
+    public ImageRasterTarget(int wx, int wz, BufferedImage image, Function<BlockTypes, Color> blockColor) {
         this.blockColor = blockColor;
         this.image = image;
         this.wx = wx;

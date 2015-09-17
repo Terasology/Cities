@@ -17,7 +17,7 @@
 package org.terasology.cities.walls;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -29,7 +29,7 @@ import org.terasology.commonworld.heightmap.HeightMaps;
 public class SolidWallSegmentRasterizer implements Rasterizer<SolidWallSegment> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, SolidWallSegment element) {
+    public void raster(RasterTarget brush, TerrainInfo ti, SolidWallSegment element) {
 
         HeightMap bottomHm = ti.getHeightMap();
         HeightMap topHm = HeightMaps.offset(bottomHm, element.getWallHeight());

@@ -16,17 +16,31 @@
 
 package org.terasology.cities.raster;
 
+import org.terasology.math.geom.Rect2i;
 
 /**
- * Converts T elements into blocks
- * @param <T> the element type
+ * A {@link Pen} that checks all write operations before calling the delegate.
  */
-public interface Rasterizer<T> {
-    
+public class CheckedPen implements Pen {
+
+    private final Pen pen;
+
     /**
-     * @param brush the brush
-     * @param ti terrain info
-     * @param element the object that is converted into blocks
+     * @param pen the underlying instance to constrain
      */
-    void raster(Brush brush, TerrainInfo ti, T element);
+    public CheckedPen(Pen pen) {
+        this.pen = pen;
+    }
+
+    @Override
+    public void draw(int x, int z) {
+        if (pen.getTargetArea().contains(x, z)) {
+            pen.draw(x, z);
+        }
+    }
+
+    @Override
+    public Rect2i getTargetArea() {
+        return pen.getTargetArea();
+    }
 }

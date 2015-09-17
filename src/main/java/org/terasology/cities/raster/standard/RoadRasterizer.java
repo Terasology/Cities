@@ -27,7 +27,7 @@ import javax.vecmath.Point3d;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.common.Plane2d;
 import org.terasology.cities.model.Road;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.geom.BoundingBox;
@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
 public class RoadRasterizer implements Rasterizer<Road> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, Road road) {
+    public void raster(RasterTarget brush, TerrainInfo ti, Road road) {
         List<Vector2i> pts = Lists.newArrayList(road.getPoints());
 
         pts.add(0, road.getStart().getCoords());

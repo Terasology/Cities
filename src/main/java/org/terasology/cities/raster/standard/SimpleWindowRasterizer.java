@@ -18,7 +18,7 @@ package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.SimpleWindow;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 
@@ -28,7 +28,7 @@ import org.terasology.cities.raster.TerrainInfo;
 public class SimpleWindowRasterizer implements Rasterizer<SimpleWindow> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, SimpleWindow wnd) {
+    public void raster(RasterTarget brush, TerrainInfo ti, SimpleWindow wnd) {
         brush.fillRect(wnd.getRect(), wnd.getBaseHeight() + 1, wnd.getTopHeight() + 1, BlockTypes.AIR);
     }
 

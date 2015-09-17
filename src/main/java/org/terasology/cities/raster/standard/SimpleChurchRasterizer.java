@@ -24,7 +24,7 @@ import org.terasology.cities.bldg.SimpleChurch;
 import org.terasology.cities.bldg.SimpleDoor;
 import org.terasology.cities.bldg.Window;
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterRegistry;
 import org.terasology.cities.raster.TerrainInfo;
 
@@ -34,7 +34,7 @@ import org.terasology.cities.raster.TerrainInfo;
 public class SimpleChurchRasterizer extends AbstractRasterizer<SimpleChurch> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, SimpleChurch blg) {
+    public void raster(RasterTarget brush, TerrainInfo ti, SimpleChurch blg) {
         
         for (BuildingPart bp : blg.getParts()) {
             rasterBuildingPart(brush, ti, (SimpleBuildingPart) bp);
@@ -53,7 +53,7 @@ public class SimpleChurchRasterizer extends AbstractRasterizer<SimpleChurch> {
         brush.fillRect(door.getRect(), door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
     }
 
-    private void rasterBuildingPart(Brush brush, TerrainInfo ti, SimpleBuildingPart part) {
+    private void rasterBuildingPart(RasterTarget brush, TerrainInfo ti, SimpleBuildingPart part) {
         Rectangle shape = part.getLayout();
         
         if (brush.affects(shape)) {

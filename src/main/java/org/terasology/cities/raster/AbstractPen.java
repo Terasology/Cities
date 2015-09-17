@@ -16,26 +16,24 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.geom.Rect2i;
 
 /**
- * Some terrain info for {@link Rasterizer}s
+ * A {@link Pen} that stores the valid target area.
  */
-public class TerrainInfo {
+public abstract class AbstractPen implements Pen {
 
-    private HeightMap hm;
-    
+    private final Rect2i targetArea;
+
     /**
-     * @param hm the terrain height map
+     * @param targetArea the valid area
      */
-    public TerrainInfo(HeightMap hm) {
-        this.hm = hm;
+    public AbstractPen(Rect2i targetArea) {
+        this.targetArea = targetArea;
     }
 
-    /**
-     * @return the terrain height map
-     */
-    public HeightMap getHeightMap() {
-        return hm;
+    @Override
+    public Rect2i getTargetArea() {
+        return targetArea;
     }
 }

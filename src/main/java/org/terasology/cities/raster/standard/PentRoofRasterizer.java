@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.PentRoof;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.geom.Rectangles;
@@ -35,7 +35,7 @@ import org.terasology.math.geom.BaseVector2i;
 public class PentRoofRasterizer implements Rasterizer<PentRoof> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, final PentRoof roof) {
+    public void raster(RasterTarget brush, TerrainInfo ti, final PentRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {

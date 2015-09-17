@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.SimpleFence;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -36,7 +36,7 @@ import org.terasology.math.Vector2i;
 public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, SimpleFence fence) {
+    public void raster(RasterTarget brush, TerrainInfo ti, SimpleFence fence) {
         Rectangle fenceRc = fence.getRect();
         Rectangle brushRc = brush.getAffectedArea();
         
@@ -156,7 +156,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         }
     }
 
-    private void wallX(Brush brush, HeightMap hm, int x1, int x2, int z, BlockTypes type, Set<Side> side) {
+    private void wallX(RasterTarget brush, HeightMap hm, int x1, int x2, int z, BlockTypes type, Set<Side> side) {
         for (int x = x1; x <= x2; x++) {
             int y = hm.apply(x, z);
             
@@ -169,7 +169,7 @@ public class SimpleFenceRasterizer implements Rasterizer<SimpleFence> {
         }
     }
     
-    private void wallZ(Brush brush, HeightMap hm, int x, int z1, int z2, BlockTypes type, Set<Side> side) {
+    private void wallZ(RasterTarget brush, HeightMap hm, int x, int z1, int z2, BlockTypes type, Set<Side> side) {
         for (int z = z1; z <= z2; z++) {
             int y = hm.apply(x, z);
             

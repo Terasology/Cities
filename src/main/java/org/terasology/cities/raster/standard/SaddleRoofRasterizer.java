@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.SaddleRoof;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -35,7 +35,7 @@ import org.terasology.commonworld.heightmap.HeightMaps;
 public class SaddleRoofRasterizer implements Rasterizer<SaddleRoof> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, final SaddleRoof roof) {
+    public void raster(RasterTarget brush, TerrainInfo ti, final SaddleRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {

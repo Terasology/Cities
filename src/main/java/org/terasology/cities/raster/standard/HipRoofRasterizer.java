@@ -20,7 +20,7 @@ import java.awt.Rectangle;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.HipRoof;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Rasterizer;
 import org.terasology.cities.raster.TerrainInfo;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -33,7 +33,7 @@ import org.terasology.math.TeraMath;
 public class HipRoofRasterizer implements Rasterizer<HipRoof> {
 
     @Override
-    public void raster(Brush brush, TerrainInfo ti, final HipRoof roof) {
+    public void raster(RasterTarget brush, TerrainInfo ti, final HipRoof roof) {
         final Rectangle area = roof.getArea();
 
         if (!brush.affects(area)) {

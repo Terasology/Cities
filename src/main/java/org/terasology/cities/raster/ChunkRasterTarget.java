@@ -32,9 +32,9 @@ import com.google.common.base.Preconditions;
 /**
  * Converts model elements into blocks of of a chunk
  */
-public class ChunkBrush extends Brush {
+public class ChunkRasterTarget implements RasterTarget {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChunkBrush.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChunkRasterTarget.class);
 
     private final CoreChunk chunk;
     private final BlockTheme blockType;
@@ -44,7 +44,7 @@ public class ChunkBrush extends Brush {
      * @param chunk     the chunk to work on
      * @param blockType a mapping String type to block
      */
-    public ChunkBrush(CoreChunk chunk, BlockTheme blockType) {
+    public ChunkRasterTarget(CoreChunk chunk, BlockTheme blockType) {
         this.blockType = blockType;
         this.chunk = chunk;
 

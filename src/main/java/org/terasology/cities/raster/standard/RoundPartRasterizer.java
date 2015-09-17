@@ -22,7 +22,7 @@ import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.RoundBuildingPart;
-import org.terasology.cities.raster.Brush;
+import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.Pen;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
@@ -43,7 +43,7 @@ public class RoundPartRasterizer extends BuildingPartRasterizer<RoundBuildingPar
     }
 
     @Override
-    protected void raster(Brush brush, RoundBuildingPart element, HeightMap heightMap) {
+    protected void raster(RasterTarget brush, RoundBuildingPart element, HeightMap heightMap) {
 
         Circle area = element.getShape();
 

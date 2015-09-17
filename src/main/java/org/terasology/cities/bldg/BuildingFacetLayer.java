@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.debug.SwingBrush;
+import org.terasology.cities.raster.ImageRasterTarget;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
 import org.terasology.rendering.nui.properties.Checkbox;
@@ -95,11 +95,11 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         int wx = region.getRegion().minX();
         int wz = region.getRegion().minZ();
 
-        SwingBrush brush = new SwingBrush(wx, wz, img, blockColors::get);
+        ImageRasterTarget brush = new ImageRasterTarget(wx, wz, img, blockColors::get);
         render(brush, region);
     }
 
-    private void render(SwingBrush brush, Region region) {
+    private void render(ImageRasterTarget brush, Region region) {
         if (config.showBase) {
             for (BuildingPartRasterizer<?> rasterizer : rasterizers.get(RasterizerType.BASE)) {
                 rasterizer.raster(brush, region);
@@ -111,7 +111,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
     public String getWorldText(Region region, int wx, int wy) {
         int dx = bufferImage.getWidth() / 2;
         int dy = bufferImage.getHeight() / 2;
-        SwingBrush brush = new SwingBrush(wx - dx, wy - dy, bufferImage, blockColors::get);
+        ImageRasterTarget brush = new ImageRasterTarget(wx - dx, wy - dy, bufferImage, blockColors::get);
         for (RasterizerType type : rasterizers.keys()) {
             for (BuildingPartRasterizer<?> rasterizer : rasterizers.get(type)) {
                 rasterizer.raster(brush, region);
