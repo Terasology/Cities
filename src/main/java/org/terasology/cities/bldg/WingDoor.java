@@ -17,27 +17,29 @@
 package org.terasology.cities.bldg;
 
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.Rect2i;
 
 /**
- * A single block window in a wall
+ * A simple, rectangular door with fixed height and orientation
  */
-public class SimpleWindow implements Window {
+public class WingDoor implements Door {
 
     private final Orientation orientation;
-    private final ImmutableVector2i pos;
-    private final int height;
+    private final int baseHeight;
+    private final int topHeight;
+    private final Rect2i area;
 
     /**
      * @param orientation the orientation
-     * @param pos the window position
-     * @param height the height at the bottom
+     * @param area the door area (must be 2x1 or 1x2 sized)
+     * @param baseHeight the height at the bottom
+     * @param topHeight the height at the top
      */
-    public SimpleWindow(Orientation orientation, BaseVector2i pos, int height) {
+    public WingDoor(Orientation orientation, Rect2i area, int baseHeight, int topHeight) {
         this.orientation = orientation;
-        this.pos = ImmutableVector2i.createOrUse(pos);
-        this.height = height;
+        this.area = area;
+        this.baseHeight = baseHeight;
+        this.topHeight = topHeight;
     }
 
     /**
@@ -48,16 +50,23 @@ public class SimpleWindow implements Window {
     }
 
     /**
-     * @return the window position
+     * @return the door area
      */
-    public ImmutableVector2i getPos() {
-        return this.pos;
+    public Rect2i getArea() {
+        return this.area;
     }
 
     /**
      * @return the baseHeight
      */
-    public int getHeight() {
-        return this.height;
+    public int getBaseHeight() {
+        return this.baseHeight;
+    }
+
+    /**
+     * @return the topHeight
+     */
+    public int getTopHeight() {
+        return this.topHeight;
     }
 }

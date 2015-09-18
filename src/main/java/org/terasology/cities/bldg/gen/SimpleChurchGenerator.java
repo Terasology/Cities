@@ -20,10 +20,11 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.math.RoundingMode;
 
+import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.DefaultBuildingPart;
+import org.terasology.cities.bldg.RectWindow;
 import org.terasology.cities.bldg.SimpleChurch;
-import org.terasology.cities.bldg.SimpleDoor;
-import org.terasology.cities.bldg.SimpleWindow;
+import org.terasology.cities.bldg.WingDoor;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.PentRoof;
@@ -72,7 +73,7 @@ public class SimpleChurchGenerator {
 
         int sideOff = 3;
         int sideWidth = 5;
-        int entranceWidth = 3;
+        int entranceWidth = 2;
         int entranceHeight = 4;
         double relationLength = 0.2;       // tower size compared to nave size
         double relationWidth = 2.0;
@@ -127,20 +128,20 @@ public class SimpleChurchGenerator {
         int hallHeight = baseHeight + 9;
         int sideHeight = baseHeight + 4;
 
-        SimpleDoor entrance = new SimpleDoor(doorOrientation, doorRc, baseHeight, baseHeight + entranceHeight);
+        Rect2i towerRoofRect = towerRect.expand(1, 1);
+        HipRoof towerRoof = new HipRoof(towerRoofRect, towerHeight, 2);
+        DefaultBuildingPart tower = new DefaultBuildingPart(towerRect, towerRoof, baseHeight, towerHeight);
 
         Rect2i naveRoofRect = naveRect.expand(1, 1);
-        Rect2i towerRoofRect = towerRect.expand(1, 1);
-
+        WingDoor entrance = new WingDoor(doorOrientation, doorRc, baseHeight, baseHeight + entranceHeight);
         SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, hallHeight, entrance.getOrientation(), 1);
-        HipRoof towerRoof = new HipRoof(towerRoofRect, towerHeight, 2);
+        DefaultBuildingPart nave = new DefaultBuildingPart(naveRect, naveRoof, baseHeight, hallHeight);
+        nave.addDoor(entrance);
+
+        SimpleChurch church = new SimpleChurch(doorOrientation, nave, tower);
+
         PentRoof roofLeft = new PentRoof(aisleLeftRc.expand(1, 1), sideHeight, leftOrient, 0.5);
         PentRoof roofRight = new PentRoof(aisleRightRc.expand(1, 1), sideHeight, rightOrient, 0.5);
-
-        DefaultBuildingPart nave = new DefaultBuildingPart(naveRect, naveRoof, baseHeight, hallHeight);
-        DefaultBuildingPart tower = new DefaultBuildingPart(towerRect, towerRoof, baseHeight, towerHeight);
-        SimpleChurch church = new SimpleChurch(doorOrientation, nave, tower, entrance);
-
         DefaultBuildingPart aisleLeft = new DefaultBuildingPart(aisleLeftRc, roofLeft, baseHeight, sideHeight);
         DefaultBuildingPart aisleRight = new DefaultBuildingPart(aisleRightRc, roofRight, baseHeight, sideHeight);
 
@@ -155,7 +156,7 @@ public class SimpleChurchGenerator {
             Vector2i towerPos = new Vector2i(towerBorder.lerp(0.5f), RoundingMode.HALF_UP);
 
             Rect2i wndRect = Rect2i.createFromMinAndSize(towerPos.getX(), towerPos.getY(), 1, 1);
-            tower.addWindow(new SimpleWindow(orient, wndRect, towerHeight - 3, towerHeight - 1));
+            tower.addWindow(new RectWindow(orient, wndRect, towerHeight - 3, towerHeight - 1, BlockTypes.AIR));
         }
 
         return church;

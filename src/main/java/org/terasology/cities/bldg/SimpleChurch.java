@@ -23,20 +23,18 @@ import org.terasology.commonworld.Orientation;
  */
 public class SimpleChurch extends DefaultBuilding {
 
-    private final SimpleDoor door;
     private BuildingPart tower;
     private BuildingPart nave;
 
     /**
+     * @param orient the orientation of the building
      * @param bellTower the bell tower
      * @param nave the nave
-     * @param entrance the entrance door
      */
-    public SimpleChurch(Orientation orient, BuildingPart nave, BuildingPart bellTower, SimpleDoor entrance) {
+    public SimpleChurch(Orientation orient, BuildingPart nave, BuildingPart bellTower) {
         super(orient);
         this.tower = bellTower;
         this.nave = nave;
-        this.door = entrance;
 
         addPart(bellTower);
         addPart(nave);
@@ -56,12 +54,4 @@ public class SimpleChurch extends DefaultBuilding {
     public BuildingPart getNave() {
         return this.nave;
     }
-
-    /**
-     * @return the door
-     */
-    public SimpleDoor getDoor() {
-        return this.door;
-    }
-
 }
