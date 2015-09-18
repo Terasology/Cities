@@ -52,11 +52,23 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
     public Set<Building> generate(Parcel parcel, InfiniteSurfaceHeightFacet heightFacet) {
         Random rng = new FastRandom(parcel.getShape().hashCode() ^ seed);
         Building b;
-        if (rng.nextFloat() < 0.2f) {
-            b = generateRoundHouse(parcel, heightFacet);
-        } else {
-            b = gen.apply(parcel, heightFacet);
+        switch (parcel.getZone()) {
+        case RESIDENTAL:
+            if (rng.nextFloat() < 0.2f) {
+                b = generateRoundHouse(parcel, heightFacet);
+            } else {
+                b = gen.apply(parcel, heightFacet);
+            }
+            break;
+
+        case CLERICAL:
+            b = new SimpleChurchGenerator(seed).apply(parcel, heightFacet);
+            break;
+
+        default:
+            return Collections.emptySet();
         }
+
         return Collections.singleton(b);
     }
 

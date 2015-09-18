@@ -29,18 +29,22 @@ import com.google.common.collect.Sets;
  * A parcel where buildings can be placed on.
  */
 public class Parcel {
+
     private final Rect2i shape;
 
     private final Set<Building> buildings = Sets.newHashSet();
 
     private final Orientation orientation;
+    private final Zone zone;
 
     /**
      * @param shape the shape of the lot
+     * @param zone the zone type
      * @param orientation the orientation of the parcel (e.g. towards the closest street)
      */
-    protected Parcel(Rect2i shape, Orientation orientation) {
+    protected Parcel(Rect2i shape, Zone zone, Orientation orientation) {
         this.shape = shape;
+        this.zone = zone;
         this.orientation = orientation;
     }
 
@@ -56,6 +60,13 @@ public class Parcel {
      */
     public Orientation getOrientation() {
         return orientation;
+    }
+
+    /**
+     * @return the zone type that was assigned to this parcel
+     */
+    public Zone getZone() {
+        return zone;
     }
 
     /**

@@ -17,13 +17,9 @@
 package org.terasology.cities.parcels;
 
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import javax.vecmath.Point2d;
-import javax.vecmath.Vector2d;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +30,11 @@ import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.commonworld.Orientation;
 import org.terasology.entitySystem.Component;
+import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Circle;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Vector2f;
 import org.terasology.rendering.nui.properties.Range;
 import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
@@ -103,60 +101,72 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         region.setRegionFacet(ParcelFacet.class, facet);
     }
 
-    private Set<RectParcel> generateParcels(Site city, BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
-        Random rand = new FastRandom(Objects.hash(seed, city));
+    private Set<RectParcel> generateParcels(Site site, BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
+        Random rng = new FastRandom(seed ^ site.getPos().hashCode());
 
-        BaseVector2i center = city.getPos();
+        Set<RectParcel> result = new LinkedHashSet<>();
+        result.addAll(generateParcels(site, rng, 25, 40, 1, Zone.CLERICAL, blockedAreaFacet, terrainFacet));
+        result.addAll(generateParcels(site, rng, config.minSize, config.maxSize, config.maxLots,
+                Zone.RESIDENTAL, blockedAreaFacet, terrainFacet));
+        return result;
+    }
+
+    private Set<RectParcel> generateParcels(Site site, Random rng, float minSize, float maxSize, int count, Zone zoneType,
+            BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
+
+        BaseVector2i center = site.getPos();
 
         Set<RectParcel> lots = new LinkedHashSet<>();  // the order is important for deterministic generation
-        float maxLotRad = config.maxSize * (float) Math.sqrt(2) * 0.5f;
-        float minRad = 5 + config.maxSize * 0.5f;
-        float maxRad = city.getRadius() - maxLotRad;
+        float maxLotRad = maxSize * (float) Math.sqrt(2) * 0.5f;
+        float minRad = 5 + maxSize * 0.5f;
+        float maxRad = site.getRadius() - maxLotRad;
 
         if (minRad >= maxRad) {
             return lots;        // which is empty
         }
 
-        for (int i = 0; i < config.maxTries && lots.size() < config.maxLots;  i++) {
-            double ang = rand.nextDouble(0, Math.PI * 2.0);
-            double rad = rand.nextDouble(minRad, maxRad);
-            double desSizeX = rand.nextDouble(config.minSize, config.maxSize);
-            double desSizeZ = rand.nextDouble(config.minSize, config.maxSize);
+        for (int i = 0; i < count; i++) {
+            for (int j = 0; j < config.maxTries; j++) {
+                float ang = rng.nextFloat(0, (float) Math.PI * 2.0f);
+                float rad = rng.nextFloat(minRad, maxRad);
+                float desSizeX = rng.nextFloat(minSize, maxSize);
+                float desSizeZ = rng.nextFloat(minSize, maxSize);
 
-            double x = center.getX() + rad * Math.cos(ang);
-            double z = center.getY() + rad * Math.sin(ang);
+                float x = center.getX() + rad * (float) Math.cos(ang);
+                float z = center.getY() + rad * (float) Math.sin(ang);
 
-            Point2d pos = new Point2d(x, z);
-            Vector2d maxSpace = getMaxSpace(pos, lots);
+                Vector2f pos = new Vector2f(x, z);
+                Vector2f maxSpace = getMaxSpace(pos, lots);
 
-            int sizeX = (int) Math.min(desSizeX, maxSpace.x);
-            int sizeZ = (int) Math.min(desSizeZ, maxSpace.y);
+                int sizeX = (int) Math.min(desSizeX, maxSpace.x);
+                int sizeZ = (int) Math.min(desSizeZ, maxSpace.y);
 
-            // check if enough space is available
-            if (sizeX < config.minSize || sizeZ < config.minSize) {
-                continue;
-            }
+                // check if enough space is available
+                if (sizeX < minSize || sizeZ < minSize) {
+                    continue;
+                }
 
-            int minX = (int) (pos.x - sizeX * 0.5);
-            int minY = (int) (pos.y - sizeZ * 0.5);
-            Rect2i shape = Rect2i.createFromMinAndSize(minX, minY, sizeX, sizeZ);
+                int minX = TeraMath.floorToInt(pos.x() - sizeX * 0.5f);
+                int minY = TeraMath.floorToInt(pos.y() - sizeZ * 0.5f);
+                Rect2i shape = Rect2i.createFromMinAndSize(minX, minY, sizeX, sizeZ);
 
-            if (terrainFacet.isBuildable(shape) && !blockedAreaFacet.isBlocked(shape)) {
-                Orientation orientation = Orientation.NORTH.getRotated(90 * rand.nextInt(4));
-                RectParcel lot = new RectParcel(shape, orientation);
-                blockedAreaFacet.addRect(shape);
-                lots.add(lot);
+                if (terrainFacet.isBuildable(shape) && !blockedAreaFacet.isBlocked(shape)) {
+                    Orientation orientation = Orientation.NORTH.getRotated(90 * rng.nextInt(4));
+                    RectParcel lot = new RectParcel(shape, zoneType, orientation);
+                    blockedAreaFacet.addRect(shape);
+                    lots.add(lot);
+                }
             }
         }
 
-        logger.debug("Generated {} parcels for settlement {}", lots.size(), city);
+        logger.debug("Generated {} parcels for settlement {}", lots.size(), site);
 
         return lots;
     }
 
-    private Vector2d getMaxSpace(Point2d pos, Set<RectParcel> lots) {
-        double maxX = Double.MAX_VALUE;
-        double maxZ = Double.MAX_VALUE;
+    private static Vector2f getMaxSpace(Vector2f pos, Set<RectParcel> lots) {
+        float maxX = Float.POSITIVE_INFINITY;
+        float maxZ = Float.POSITIVE_INFINITY;
 
         //      xxxxxxxxxxxxxxxxxxx
         //      x                 x             (p)
@@ -167,14 +177,14 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
         for (RectParcel lot : lots) {
             Rect2i bounds = lot.getShape();
-            double centerX = (bounds.maxX() + bounds.minX()) / 2;
-            double centerY = (bounds.maxY() + bounds.minY()) / 2;
-            double dx = Math.abs(pos.x - centerX) - bounds.width() * 0.5;
-            double dz = Math.abs(pos.y - centerY) - bounds.height() * 0.5;
+            float centerX = (bounds.maxX() + bounds.minX()) / 2;
+            float centerY = (bounds.maxY() + bounds.minY()) / 2;
+            float dx = Math.abs(pos.x() - centerX) - bounds.width() * 0.5f;
+            float dz = Math.abs(pos.y() - centerY) - bounds.height() * 0.5f;
 
             // the point is inside -> abort
             if (dx <= 0 && dz <= 0) {
-                return new Vector2d(0, 0);
+                return new Vector2f(0, 0);
             }
 
             // the point is diagonally outside -> restrict one of the two only
@@ -198,7 +208,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
             }
         }
 
-        return new Vector2d(2 * maxX, 2 * maxZ);
+        return new Vector2f(2 * maxX, 2 * maxZ);
     }
 
     @Override
@@ -230,8 +240,8 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         @Range(min = 5f, max = 50f, increment = 1f, precision = 0, description = "The max. parcel length")
         private float maxSize = 18;
 
-        @Range(min = 5, max = 250, increment = 1, precision = 0, description = "The max. number of placement attempts")
-        private int maxTries = 100;
+        @Range(min = 1, max = 5, increment = 1, precision = 0, description = "The max. number of placement attempts per parcel")
+        private int maxTries = 1;
 
         @Range(min = 5, max = 250, increment = 1, precision = 0, description = "The max. number of parcels")
         private int maxLots = 100;

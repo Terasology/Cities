@@ -16,25 +16,18 @@
 
 package org.terasology.cities.parcels;
 
-import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
-
 /**
- * A rectangular {@link Parcel}
+ * As part of a urban zoning scheme.
  */
-public class RectParcel extends Parcel {
+public enum Zone {
 
     /**
-     * @param shape the shape of the lot
-     * @param zone the zone type
-     * @param orientation the orientation of the parcel (e.g. towards the closest street)
+     * Typcially housing
      */
-    public RectParcel(Rect2i shape, Zone zone, Orientation orientation) {
-        super(shape, zone, orientation);
-    }
+    RESIDENTAL,
 
-    @Override
-    public Rect2i getShape() {
-        return super.getShape();
-    }
+    /**
+     * Churches, mosques, etc.
+     */
+    CLERICAL
 }
