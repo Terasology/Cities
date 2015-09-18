@@ -22,9 +22,24 @@ package org.terasology.cities;
 public enum BlockTypes {
 
     /**
-     * Air (maybe not required)
+     * Air
      */
     AIR,
+
+    /**
+     * Windows
+     */
+    WINDOW_GLASS,
+
+    /**
+     * A single-block door element
+     */
+    SIMPLE_DOOR,
+
+    /**
+     * A two-folded wing door
+     */
+    WING_DOOR,
 
     /**
      * Fill material under the surface of a road

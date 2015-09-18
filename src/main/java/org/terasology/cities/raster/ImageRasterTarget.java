@@ -23,9 +23,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTypes;
+import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Vector3i;
 
 import com.google.common.base.Function;
 
@@ -37,7 +39,7 @@ public class ImageRasterTarget implements RasterTarget {
     private static final Logger logger = LoggerFactory.getLogger(ImageRasterTarget.class);
 
     private final Function<BlockTypes, Color> blockColor;
-    private final Rect2i affectedArea;
+    private final Rect2i area;
 
     private final BufferedImage image;
     private final short[][] heightMap;      // [x][z]
@@ -45,6 +47,8 @@ public class ImageRasterTarget implements RasterTarget {
 
     private final int wz;
     private final int wx;
+
+    private Region3i region;
 
     /**
      * @param wx the world block x of the top-left corner
@@ -64,22 +68,20 @@ public class ImageRasterTarget implements RasterTarget {
         this.heightMap = new short[width][height];
         this.typeMap = new BlockTypes[width][height];
 
-        this.affectedArea = Rect2i.createFromMinAndSize(wx, wz, width, height);
+        this.area = Rect2i.createFromMinAndSize(wx, wz, width, height);
+        this.region = Region3i.createFromMinAndSize(
+                new Vector3i(wx, Short.MIN_VALUE, wz),
+                new Vector3i(width, Short.MAX_VALUE - Short.MIN_VALUE, height));
     }
 
     @Override
     public Rect2i getAffectedArea() {
-        return affectedArea;
+        return area;
     }
 
     @Override
-    public int getMaxHeight() {
-        return Short.MAX_VALUE;
-    }
-
-    @Override
-    public int getMinHeight() {
-        return Short.MIN_VALUE;
+    public Region3i getAffectedRegion() {
+        return region;
     }
 
     /**
@@ -136,8 +138,6 @@ public class ImageRasterTarget implements RasterTarget {
             }
         }
 
-        Color color = blockColor.apply(type);
-
         // if air is drawn at or below terrain level, then reduce height accordingly
         // The color remains unchanged which is wrong, but this information is not available in 2D
         if (type == BlockTypes.AIR) {
@@ -146,6 +146,13 @@ public class ImageRasterTarget implements RasterTarget {
 //                typeMap[lx][lz] = UNKNOWN;
 //                image.setRGB(lx, y, rgb);
             }
+            return;
+        }
+
+        Color color = blockColor.apply(type);
+
+        if (color == null) {
+            logger.warn("No mapping found for {}", type);
             return;
         }
 

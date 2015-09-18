@@ -39,9 +39,9 @@ public class SimpleDoorRasterizer extends DoorRasterizer<SimpleDoor> {
 
     @Override
     public void raster(RasterTarget target, SimpleDoor door, HeightMap hm) {
-        // TODO: check brush region
-        Pen pen = Pens.fill(target, door.getBaseHeight(), door.getTopHeight(), BlockTypes.AIR);
-        pen.draw(door.getPos());
+        if (target.getAffectedArea().contains(door.getPos())) {
+            Pen pen = Pens.fill(target, door.getBaseHeight(), door.getTopHeight(), BlockTypes.SIMPLE_DOOR);
+            pen.draw(door.getPos());
+        }
     }
-
 }

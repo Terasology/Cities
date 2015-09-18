@@ -113,6 +113,9 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .register(BlockTypes.ROOF_SADDLE, "Cities:wood3")
             .register(BlockTypes.ROOF_DOME, "core:plank")
             .register(BlockTypes.ROOF_GABLE, "core:plank")
+            .register(BlockTypes.SIMPLE_DOOR, BlockManager.AIR_ID)
+            .register(BlockTypes.WING_DOOR, BlockManager.AIR_ID)
+            .register(BlockTypes.WINDOW_GLASS, BlockManager.AIR_ID)
 
             .register(BlockTypes.TOWER_WALL, "Cities:stonawall1")
 

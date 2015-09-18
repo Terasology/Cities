@@ -18,32 +18,31 @@ package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.SimpleWindow;
-import org.terasology.cities.bldg.WindowRasterizer;
+import org.terasology.cities.bldg.DoorRasterizer;
+import org.terasology.cities.bldg.SimpleDoor;
+import org.terasology.cities.bldg.WingDoor;
+import org.terasology.cities.raster.Pen;
+import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
+import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
- * Converts {@link SimpleWindow} into blocks (or air actually)
+ * Converts {@link SimpleDoor} into blocks (or air actually)
  */
-public class SimpleWindowRasterizer extends WindowRasterizer<SimpleWindow> {
+public class WingDoorRasterizer extends DoorRasterizer<WingDoor> {
 
     /**
      * @param theme the block theme to use
      */
-    public SimpleWindowRasterizer(BlockTheme theme) {
-        super(theme, SimpleWindow.class);
+    public WingDoorRasterizer(BlockTheme theme) {
+        super(theme, WingDoor.class);
     }
 
     @Override
-    public void raster(RasterTarget target, SimpleWindow wnd, HeightMap hm) {
-        int x = wnd.getPos().x();
-        int y = wnd.getHeight();
-        int z = wnd.getPos().y();
-
-        if (target.getAffectedRegion().encompasses(x, y, z)) {
-            target.setBlock(x, y, z, BlockTypes.WINDOW_GLASS);
-        }
+    public void raster(RasterTarget target, WingDoor door, HeightMap hm) {
+        Pen pen = Pens.fill(target, door.getBaseHeight(), door.getTopHeight(), BlockTypes.SIMPLE_DOOR);
+        RasterUtil.fillRect(pen, door.getArea());
     }
 
 }

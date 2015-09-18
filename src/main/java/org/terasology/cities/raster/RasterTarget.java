@@ -53,23 +53,24 @@ public interface RasterTarget {
     /**
      * @return the maximum drawing height
      */
-    int getMaxHeight();
+    default int getMaxHeight() {
+        return getAffectedRegion().maxY();
+    }
 
     /**
      * @return the maximum drawing height
      */
-    int getMinHeight();
+    default int getMinHeight() {
+        return getAffectedRegion().minY();
+    }
 
     /**
-     * @return the area that is drawn by this raster target
+     * @return the XZ area that is drawn by this raster target
      */
     Rect2i getAffectedArea();
 
     /**
-     * @param rect the rectangle that should be drawn
-     * @return the intersection between the brush area and the rectangle
+     * @return the region that is drawn by this raster target
      */
-    default Rect2i getIntersectionArea(Rect2i rect) {
-        return getAffectedArea().intersect(rect);
-    }
+    Region3i getAffectedRegion();
 }

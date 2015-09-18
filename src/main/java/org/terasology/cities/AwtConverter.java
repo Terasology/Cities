@@ -57,7 +57,7 @@ public final class AwtConverter {
     }
 
     public static java.awt.Rectangle toAwt(Rect2i rc) {
-        return new Rectangle(rc.minX(), rc.minY(), rc.width(), rc.height());
+        return new Rectangle(rc.minX(), rc.minY(), rc.width() - 1, rc.height() - 1);
     }
 
     public static java.awt.geom.Rectangle2D toAwt(Rect2f rc) {

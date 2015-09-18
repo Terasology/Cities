@@ -22,34 +22,32 @@ import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.RasterTarget;
+import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
-import org.terasology.world.chunks.ChunkConstants;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.world.chunks.blockdata.TeraArray;
 import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
-
+import static org.terasology.world.chunks.ChunkConstants.SIZE_X;
+import static org.terasology.world.chunks.ChunkConstants.SIZE_Z;
 /**
  *
  */
 public class DebugRasterTarget implements RasterTarget {
 
     private final Rect2i area;
-
-    private int min;
-    private int max;
-
-    private TeraArray data;
+    private final Region3i region;
+    private final TeraArray data;
 
     public DebugRasterTarget(int min, int max) {
-        this.min = min;
-        this.max = max;
-        this.data = new TeraDenseArray16Bit(ChunkConstants.SIZE_X, max - min + 1, ChunkConstants.SIZE_Z);
-        this.area = Rect2i.createFromMinAndMax(0, 0, ChunkConstants.SIZE_X, ChunkConstants.SIZE_Z);
+        this.data = new TeraDenseArray16Bit(SIZE_X, max - min + 1, SIZE_Z);
+        this.area = Rect2i.createFromMinAndMax(0, 0, SIZE_X, SIZE_Z);
+        this.region = Region3i.createFromMinMax(new Vector3i(0, min, 0), new Vector3i(SIZE_X, max, SIZE_Z));
     }
 
     @Override
     public void setBlock(int x, int y, int z, BlockTypes type) {
-        data.set(x, y - min, z, type.ordinal());
+        data.set(x, y - region.minY(), z, type.ordinal());
     }
 
     @Override
@@ -58,18 +56,13 @@ public class DebugRasterTarget implements RasterTarget {
     }
 
     @Override
-    public int getMaxHeight() {
-        return max;
-    }
-
-    @Override
-    public int getMinHeight() {
-        return min;
-    }
-
-    @Override
     public Rect2i getAffectedArea() {
         return area;
+    }
+
+    @Override
+    public Region3i getAffectedRegion() {
+        return region;
     }
 
     public List<BlockTypes> getColumn(int x, int z) {
@@ -84,7 +77,7 @@ public class DebugRasterTarget implements RasterTarget {
 
             @Override
             public int size() {
-                return max - min + 1;
+                return region.maxY() - region.minY() + 1;
             }
         };
     }

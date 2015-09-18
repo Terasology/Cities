@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.Block;
@@ -56,6 +57,11 @@ public class ChunkRasterTarget implements RasterTarget {
     @Override
     public Rect2i getAffectedArea() {
         return affectedArea;
+    }
+
+    @Override
+    public Region3i getAffectedRegion() {
+        return chunk.getRegion();
     }
 
     @Override
