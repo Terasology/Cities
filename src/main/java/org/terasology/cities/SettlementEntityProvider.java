@@ -16,56 +16,51 @@
 
 package org.terasology.cities;
 
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.terasology.asset.Assets;
-import org.terasology.cities.roads.Road;
-import org.terasology.cities.roads.RoadFacet;
+import org.terasology.cities.settlements.Settlement;
+import org.terasology.cities.settlements.SettlementFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
+import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityStore;
-import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.logic.location.LocationComponent;
-import org.terasology.math.geom.BaseVector2i;
+import org.terasology.logic.nameTags.NameTagComponent;
+import org.terasology.math.TeraMath;
+import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.rendering.nui.Color;
 import org.terasology.world.generation.EntityBuffer;
 import org.terasology.world.generation.EntityProvider;
 import org.terasology.world.generation.Region;
 
 /**
- * TODO Type description
- * @author Martin Steiger
+ * Adds name tags for settlements.
  */
 public class SettlementEntityProvider implements EntityProvider {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(SettlementEntityProvider.class);
-
     @Override
     public void process(Region region, EntityBuffer buffer) {
-        RoadFacet roadFacet = region.getFacet(RoadFacet.class);
+        SettlementFacet settlementFacet = region.getFacet(SettlementFacet.class);
         InfiniteSurfaceHeightFacet heightFacet = region.getFacet(InfiniteSurfaceHeightFacet.class);
 
-        Optional<Prefab> optPrefab = Assets.getPrefab("QuestionMark");
-        if (!optPrefab.isPresent()) {
-            return;
-        }
+        for (Settlement settlement : settlementFacet.getSettlements()) {
+            ImmutableVector2i pos2d = settlement.getSite().getPos();
+            int x = pos2d.getX();
+            int z = pos2d.getY();
+            int y = TeraMath.floorToInt(heightFacet.getWorld(pos2d));
+            if (region.getRegion().encompasses(x, y, z)) {
 
-        Prefab prefab = optPrefab.get();
-        if (!prefab.hasComponent(LocationComponent.class)) {
-            return;
-        }
+                EntityStore entityStore = new EntityStore();
 
-        for (Road road : roadFacet.getRoads()) {
-            for (BaseVector2i pt : road.getPoints()) {
-                float y = heightFacet.getWorld(pt) + 5;
-                if (region.getRegion().encompasses(pt.getX(), (int) y, pt.getY())) {
-                    Vector3f position = new Vector3f(pt.getX(), y, pt.getY());
-                    EntityStore builder = new EntityStore(prefab);
-                    builder.addComponent(new LocationComponent(position));
-                    buffer.enqueue(builder);
-                }
+                NameTagComponent nameTagComponent = new NameTagComponent();
+                nameTagComponent.text = settlement.getName();
+                nameTagComponent.textColor = Color.WHITE;
+                nameTagComponent.yOffset = 10;
+                entityStore.addComponent(nameTagComponent);
+
+                Vector3f pos3d = new Vector3f(x, y, z);
+                LocationComponent locationComponent = new LocationComponent(pos3d);
+                entityStore.addComponent(locationComponent);
+
+                buffer.enqueue(entityStore);
             }
         }
    }

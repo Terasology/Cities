@@ -155,6 +155,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
                     RectParcel lot = new RectParcel(shape, zoneType, orientation);
                     blockedAreaFacet.addRect(shape);
                     lots.add(lot);
+                    break;
                 }
             }
         }

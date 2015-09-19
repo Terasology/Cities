@@ -23,6 +23,7 @@ import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterUtil;
+import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
@@ -30,7 +31,6 @@ import org.terasology.math.geom.LineSegment;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generation.Region;
 import org.terasology.world.generation.WorldRasterizer;
-import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 /**
  * Converts a {@link TownWall} into blocks
@@ -46,7 +46,7 @@ public class TownWallRasterizer implements WorldRasterizer {
     @Override
     public void generateChunk(CoreChunk chunk, Region chunkRegion) {
         TownWallFacet wallFacet = chunkRegion.getFacet(TownWallFacet.class);
-        SurfaceHeightFacet heightFacet = chunkRegion.getFacet(SurfaceHeightFacet.class);
+        InfiniteSurfaceHeightFacet heightFacet = chunkRegion.getFacet(InfiniteSurfaceHeightFacet.class);
         RasterTarget target = new ChunkRasterTarget(chunk, blockTheme);
         HeightMap hm = new HeightMap() {
 
