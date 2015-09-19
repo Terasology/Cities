@@ -7,7 +7,7 @@
     "dependencies" : [
         {
             "id" : "Core",
-            "minVersion" : "0.54.0"
+            "minVersion" : "0.54.2"
         },
         {
             "id" : "NameGenerator",
@@ -23,7 +23,7 @@
         },
         {
             "id" : "CommonWorld",
-            "minVersion" : "0.1.2"
+            "minVersion" : "0.2.0"
         },
         {
             "id" : "ItemRendering",
