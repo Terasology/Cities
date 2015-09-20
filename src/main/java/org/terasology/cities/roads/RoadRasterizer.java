@@ -100,18 +100,18 @@ public class RoadRasterizer implements WorldRasterizer {
                 for (RoadSegment seg : segs) {
                     BaseVector2i pointA = seg.getStart();
                     BaseVector2i pointB = seg.getEnd();
-                    float width = seg.getWidth();
+                    float rad = seg.getWidth() * 0.5f;
                     int y = Integer.MIN_VALUE;
 
                     // first check if close to start/end point
                     // if so, create a flat circle around it
                     // this ensures that junctions of multiple roads result in a nice common area
-                    if (pointA.distanceSquared(pos) < width * width) {
+                    if (pointA.distanceSquared(pos) < rad * rad) {
                         y = TeraMath.floorToInt(heightFacet.getWorld(pointA));
-                    } else if (pointB.distanceSquared(pos) < width * width) {
+                    } else if (pointB.distanceSquared(pos) < rad * rad) {
                         y = TeraMath.floorToInt(heightFacet.getWorld(pointB));
                     } else if (LineSegment.distanceToPoint(pointA.getX(), pointA.getY(),
-                            pointB.getX(), pointB.getY(), x, z) < width) {
+                            pointB.getX(), pointB.getY(), x, z) < rad) {
 
                         Ramp ramp = ramps.computeIfAbsent(seg, createRamp);
                         y = TeraMath.floorToInt(ramp.getClampedY(x, z));
