@@ -21,8 +21,6 @@ import java.awt.geom.AffineTransform;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.BuildingPart;
-import org.terasology.cities.bldg.DefaultBuildingPart;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.bldg.RectWindow;
 import org.terasology.cities.bldg.SimpleChurch;

@@ -25,7 +25,11 @@ import org.terasology.math.geom.Vector2i;
 /**
  *
  */
-public class Edges {
+public final class Edges {
+
+    private Edges() {
+        // no instances
+    }
 
     public static Vector2i getCorner(Rect2i rc, Orientation o) {
 

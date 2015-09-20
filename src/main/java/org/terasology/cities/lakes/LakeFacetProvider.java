@@ -21,7 +21,6 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.util.Collection;
 
-import org.terasology.cities.model.Lake;
 import org.terasology.commonworld.contour.Contour;
 import org.terasology.commonworld.contour.ContourTracer;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -53,6 +52,7 @@ public class LakeFacetProvider implements FacetProvider {
 
     private long seed;
 
+    @Override
     public void setSeed(long seed) {
         this.seed = seed;
     }

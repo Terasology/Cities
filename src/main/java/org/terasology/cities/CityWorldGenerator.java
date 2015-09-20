@@ -147,6 +147,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new EnsureSpawnableChunkZeroProvider())
                 .addRasterizer(new SolidRasterizer())
                 .addPlugins()
+                .addEntities(new SettlementEntityProvider())
                 .addRasterizer(new RoadRasterizer(theme))
                 .addRasterizer(new TownWallRasterizer(theme))
                 .addRasterizer(new SimpleFenceRasterizer(theme))
@@ -164,6 +165,10 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new WingDoorRasterizer(theme))
                 .addRasterizer(new FloraRasterizer());
         return worldBuilder;
+    }
+
+    public void expungeCaches() {
+        // TODO: clear all caches
     }
 
 }

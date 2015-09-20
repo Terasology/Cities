@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.terasology.cities.events;
 
-package org.terasology.cities.model;
+import org.terasology.cities.settlements.Settlement;
+import org.terasology.entitySystem.event.Event;
 
-import org.terasology.math.geom.BaseVector2d;
-
-/**
- * A named area
- */
-public interface NamedArea {
+public class OnEnterSettlementEvent implements Event {
+    private final Settlement settlement;
 
     /**
-     * @return the name of the area
+     * @param settlement the settlement that was entered
      */
-    String getName();
+    public OnEnterSettlementEvent(Settlement settlement) {
+        this.settlement = settlement;
+    }
 
     /**
-     * @param pos the position
-     * @return true if inside the area
+     * @return the area that was entered
      */
-    boolean contains(BaseVector2d pos);
+    public Settlement getSettlement() {
+        return settlement;
+    }
 }

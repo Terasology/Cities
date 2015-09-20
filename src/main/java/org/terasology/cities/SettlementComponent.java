@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 MovingBlocks
+ * Copyright 2013 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.cities.events;
 
-import org.terasology.cities.model.NamedArea;
-import org.terasology.entitySystem.event.Event;
+package org.terasology.cities;
 
-public class OnLeaveAreaEvent implements Event {
-    private final NamedArea area;
+import org.terasology.cities.settlements.Settlement;
+import org.terasology.entitySystem.Component;
 
-    /**
-     * @param area the area that was left
-     */
-    public OnLeaveAreaEvent(NamedArea area) {
-        this.area = area;
-    }
+/**
+ * Indicates a settlement.
+ */
+public final class SettlementComponent implements Component {
 
-    /**
-     * @return the area that was left
-     */
-    public NamedArea getArea() {
-        return area;
+    public Settlement settlement;
+
+    public SettlementComponent(Settlement settlement) {
+        this.settlement = settlement;
     }
 }

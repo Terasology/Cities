@@ -19,13 +19,13 @@ package org.terasology.cities;
 import org.terasology.cities.settlements.Settlement;
 import org.terasology.cities.settlements.SettlementFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
-import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityStore;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.logic.nameTags.NameTagComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.network.NetworkComponent;
 import org.terasology.rendering.nui.Color;
 import org.terasology.world.generation.EntityBuffer;
 import org.terasology.world.generation.EntityProvider;
@@ -54,11 +54,15 @@ public class SettlementEntityProvider implements EntityProvider {
                 nameTagComponent.text = settlement.getName();
                 nameTagComponent.textColor = Color.WHITE;
                 nameTagComponent.yOffset = 10;
+                nameTagComponent.scale = 20;
                 entityStore.addComponent(nameTagComponent);
 
                 Vector3f pos3d = new Vector3f(x, y, z);
                 LocationComponent locationComponent = new LocationComponent(pos3d);
                 entityStore.addComponent(locationComponent);
+
+                entityStore.addComponent(new NetworkComponent());
+                entityStore.addComponent(new SettlementComponent(settlement));
 
                 buffer.enqueue(entityStore);
             }

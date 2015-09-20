@@ -19,7 +19,6 @@ package org.terasology.cities.bldg;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.raster.ChunkRasterTarget;
 import org.terasology.cities.raster.RasterTarget;
-import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.CoreChunk;

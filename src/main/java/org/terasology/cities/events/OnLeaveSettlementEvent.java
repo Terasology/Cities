@@ -15,23 +15,23 @@
  */
 package org.terasology.cities.events;
 
-import org.terasology.cities.model.NamedArea;
+import org.terasology.cities.settlements.Settlement;
 import org.terasology.entitySystem.event.Event;
 
-public class OnEnterAreaEvent implements Event {
-    private final NamedArea area;
+public class OnLeaveSettlementEvent implements Event {
+    private final Settlement settlement;
 
     /**
-     * @param area the area that was entered
+     * @param settlement the settlement that was left
      */
-    public OnEnterAreaEvent(NamedArea area) {
-        this.area = area;
+    public OnLeaveSettlementEvent(Settlement settlement) {
+        this.settlement = settlement;
     }
 
     /**
-     * @return the area that was entered
+     * @return the area that was left
      */
-    public NamedArea getArea() {
-        return area;
+    public Settlement getSettlement() {
+        return settlement;
     }
 }

@@ -16,6 +16,11 @@
 
 package org.terasology.cities.bldg;
 
+import static org.terasology.cities.BlockTypes.AIR;
+import static org.terasology.cities.BlockTypes.BUILDING_FLOOR;
+import static org.terasology.cities.BlockTypes.BUILDING_FOUNDATION;
+import static org.terasology.cities.BlockTypes.FENCE;
+
 import java.util.Arrays;
 
 import org.junit.Assert;
@@ -28,8 +33,6 @@ import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.geom.Rect2i;
-
-import static org.terasology.cities.BlockTypes.*;
 /**
  * Tests the {@link BuildingPartRasterizer} class.
  */

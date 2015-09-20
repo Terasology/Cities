@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.model;
+package org.terasology.cities.lakes;
 
 import java.util.Collections;
 import java.util.Set;
 
 import org.terasology.commonworld.contour.Contour;
-import org.terasology.math.geom.BaseVector2d;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
@@ -28,7 +27,7 @@ import com.google.common.collect.Sets;
 /**
  * Defines a lake
  */
-public class Lake implements NamedArea {
+public class Lake {
 
     private final Contour contour;
     private final Set<Contour> islands = Sets.newHashSet();
@@ -45,17 +44,8 @@ public class Lake implements NamedArea {
         this.name = name;
     }
 
-    @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * Islands are considered part of the lake
-     */
-    @Override
-    public boolean contains(BaseVector2d pos) {
-        return contour.isInside(pos.getX(), pos.getY());
     }
 
     /**

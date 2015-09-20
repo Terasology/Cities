@@ -19,14 +19,9 @@ package org.terasology.cities.raster;
 import java.util.Set;
 
 import org.terasology.cities.BlockTypes;
-import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.Region3i;
 import org.terasology.math.Side;
-import org.terasology.math.TeraMath;
-import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2f;
 
 /**
  * Converts model elements into blocks

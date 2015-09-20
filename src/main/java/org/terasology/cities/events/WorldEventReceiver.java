@@ -15,7 +15,7 @@
  */
 package org.terasology.cities.events;
 
-import org.terasology.cities.WorldFacade;
+import org.terasology.cities.CityWorldGenerator;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -23,25 +23,26 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.registry.In;
 import org.terasology.world.WorldComponent;
 import org.terasology.world.chunks.event.PurgeWorldEvent;
+import org.terasology.world.generator.WorldGenerator;
 
 /**
  * Receives events for {@link WorldComponent} and delegates
- * the "purgeWorld" command to the {@link WorldFacade} class.
+ * the "purgeWorld" command to the {@link CityWorldGenerator} class.
  */
 @RegisterSystem
 public class WorldEventReceiver extends BaseComponentSystem {
 
     @In
-    private WorldFacade worldFacade;
-    
+    private WorldGenerator worldGenerator;
+
     /**
      * @param event the event
      * @param worldEntity the world entity (empty)
      */
     @ReceiveEvent(components = {WorldComponent.class})
     public void onPurgeWorld(PurgeWorldEvent event, EntityRef worldEntity) {
-        if (worldFacade != null) {
-            worldFacade.expungeCache();
+        if (worldGenerator instanceof CityWorldGenerator) {
+            ((CityWorldGenerator) worldGenerator).expungeCaches();
         }
     }
 }
