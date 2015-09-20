@@ -90,7 +90,7 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
         ImmutableVector2i doorDir = orient.getDir();
         Vector2i probePos = new Vector2i(doorPos.x() + doorDir.getX(), doorPos.y() + doorDir.getY());
 
-        int baseHeight = TeraMath.floorToInt(heightFacet.getWorld(probePos));
+        int baseHeight = TeraMath.floorToInt(heightFacet.getWorld(probePos)) + 1;
         int sideHeight = 4;
 
         SimpleRoundHouse house = new SimpleRoundHouse(orient, new ImmutableVector2i(centerX, centerY), towerRad, baseHeight, sideHeight);

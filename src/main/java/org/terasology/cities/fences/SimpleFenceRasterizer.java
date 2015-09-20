@@ -114,7 +114,7 @@ public class SimpleFenceRasterizer implements WorldRasterizer {
         if (gatePos.x() >= brushRc.minX() && gatePos.x() <= brushRc.maxX()
          && gatePos.y() >= brushRc.minZ() && gatePos.y() <= brushRc.maxZ()) {
             int y = TeraMath.floorToInt(heightFacet.getWorld(gatePos.x(), gatePos.y())) + 1;
-            if (brushRc.minY() >= y && brushRc.maxY() <= y) {
+            if (brushRc.minY() <= y && brushRc.maxY() >= y) {
                 Side side = getSide(fence.getGateOrientation());
 
                 if (side != null) {

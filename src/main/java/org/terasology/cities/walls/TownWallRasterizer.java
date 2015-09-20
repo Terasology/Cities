@@ -16,6 +16,8 @@
 
 package org.terasology.cities.walls;
 
+import java.math.RoundingMode;
+
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.ChunkRasterTarget;
@@ -24,6 +26,7 @@ import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterUtil;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
+import org.terasology.commonworld.geom.Ramp;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
@@ -31,6 +34,8 @@ import org.terasology.math.geom.LineSegment;
 import org.terasology.world.chunks.CoreChunk;
 import org.terasology.world.generation.Region;
 import org.terasology.world.generation.WorldRasterizer;
+
+import com.google.common.math.DoubleMath;
 
 /**
  * Converts a {@link TownWall} into blocks
@@ -68,12 +73,24 @@ public class TownWallRasterizer implements WorldRasterizer {
     }
 
     private void rasterSolid(RasterTarget target, SolidWallSegment element, HeightMap hm) {
-        HeightMap topHm = HeightMaps.offset(hm, element.getWallHeight());
 
         int x1 = element.getStart().getX();
         int z1 = element.getStart().getY();
+        int y1 = hm.apply(x1, z1) + element.getWallHeight();
         int x2 = element.getEnd().getX();
         int z2 = element.getEnd().getY();
+        int y2 = hm.apply(x2, z2) + element.getWallHeight();
+
+        Ramp ramp = new Ramp(x1, y1, z1, x2, y2, z2);
+
+        HeightMap topHm = new HeightMap() {
+
+            @Override
+            public int apply(int x, int z) {
+                float y = ramp.getY(x, z);
+                return DoubleMath.roundToInt(y, RoundingMode.HALF_UP);
+            }
+        };
 
         Pen pen = Pens.fill(target, hm, topHm, BlockTypes.TOWER_WALL);
         RasterUtil.drawLine(pen, new LineSegment(x1, z1, x2, z2));
@@ -81,37 +98,41 @@ public class TownWallRasterizer implements WorldRasterizer {
 
     private void rasterGate(RasterTarget target, GateWallSegment element, HeightMap terrain) {
 
-        final int x1 = element.getStart().getX();
-        final int z1 = element.getStart().getY();
-        final int x2 = element.getEnd().getX();
-        final int z2 = element.getEnd().getY();
-        final double width = Math.sqrt((x2 - x1) * (x2 - x1) + (z2 - z1) * (z2 - z1));
-        final int height = element.getWallHeight();
+        int x1 = element.getStart().getX();
+        int z1 = element.getStart().getY();
+        int y1 = terrain.apply(x1, z1) + element.getWallHeight();
+        int x2 = element.getEnd().getX();
+        int z2 = element.getEnd().getY();
+        int y2 = terrain.apply(x2, z2) + element.getWallHeight();
+
+        Ramp ramp = new Ramp(x1, y1, z1, x2, y2, z2);
+
+        HeightMap hmTop = new HeightMap() {
+
+            @Override
+            public int apply(int x, int z) {
+                float y = ramp.getY(x, z);
+                return DoubleMath.roundToInt(y, RoundingMode.HALF_UP);
+            }
+        };
 
         HeightMap hmBottom = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
-                double cx = (x1 + x2) * 0.5;
-                double cz = (z1 + z2) * 0.5;
-                double dx = x - cx;
-                double dz = z - cz;
+                int top = hmTop.apply(x, z);
+                int minHeight = element.getWallHeight() / 3;
 
-                // dist is at maximum 0.5 * width
-                double dist = Math.sqrt((dx * dx) + (dz * dz));
+                float l = ramp.getLambda(x, z);
 
-                // normalize
-                dist = 2 * dist / width;
+                // dist is max. at 0.5 * width
+                float zig = Math.abs(0.5f - l);
+                float arc = zig * zig * 4; // applying the sqr makes 0.25 the max. So we multiply with 4
 
-                // make it a squeezed circle shape
-                dist = Math.min(1.0, dist * dist * 4);
-
-                int base = terrain.apply(x, z);
-                return (int) (base + height * (1.0 - dist) - 1);
+                int base = TeraMath.floorToInt((top - minHeight) * (1 - arc));
+                return base;
             }
         };
-
-        HeightMap hmTop = HeightMaps.offset(terrain, height);
 
         Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.TOWER_WALL);
         RasterUtil.drawLine(pen, new LineSegment(x1, z1, x2, z2));

@@ -131,9 +131,11 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         public Builder register(BlockTypes blockType, BlockUri blockUri) {
             Block block = blockManager.getBlock(blockUri);
 
-            if (block == null || block.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
-                logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
-                block = defaultBlock;
+            if (!BlockManager.AIR_ID.equals(blockUri)) {
+                if (block == null || block.equals(blockManager.getBlock(BlockManager.AIR_ID))) {
+                    logger.warn("Could not resolve block URI \"{}\" - using default", blockUri);
+                    block = defaultBlock;
+                }
             }
 
             blockMap.put(blockType, block);

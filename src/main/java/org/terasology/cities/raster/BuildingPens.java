@@ -42,13 +42,14 @@ public final class BuildingPens {
             @Override
             public void draw(int x, int z) {
                 int terrain = terrainHeightMap.apply(x, z);
+                int floorLevel = baseHeight - 1;
                 int y = Math.max(target.getMinHeight(), terrain);
                 if (y > target.getMaxHeight()) {
                     return;
                 }
 
                 // put foundation material below between terrain and floor level
-                while (y < baseHeight) {
+                while (y < floorLevel) {
                     target.setBlock(x, y, z, BlockTypes.BUILDING_FOUNDATION);
                     y++;
                     if (y > target.getMaxHeight()) {
@@ -57,13 +58,13 @@ public final class BuildingPens {
                 }
 
                 // y can be larger than baseHeight here
-                if (baseHeight < target.getMinHeight()) { // if the minY is fully above, we need to exit now
+                if (floorLevel < target.getMinHeight()) { // if the minY is fully above, we need to exit now
                     return;
                 }
 
                 // lay floor level
-                target.setBlock(x, baseHeight, z, floor);
-                y = baseHeight + 1;
+                target.setBlock(x, floorLevel, z, floor);
+                y = floorLevel + 1;
 
                 // clear area above floor level
                 while (y <= target.getMaxHeight() && y <= terrain) {
