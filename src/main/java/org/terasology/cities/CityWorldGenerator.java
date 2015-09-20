@@ -147,7 +147,6 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new EnsureSpawnableChunkZeroProvider())
                 .addRasterizer(new SolidRasterizer())
                 .addPlugins()
-                .addEntities(new SettlementEntityProvider())
                 .addRasterizer(new RoadRasterizer(theme))
                 .addRasterizer(new TownWallRasterizer(theme))
                 .addRasterizer(new SimpleFenceRasterizer(theme))
