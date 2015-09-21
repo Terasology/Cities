@@ -19,6 +19,7 @@ package org.terasology.cities.bldg;
 import java.math.RoundingMode;
 
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;

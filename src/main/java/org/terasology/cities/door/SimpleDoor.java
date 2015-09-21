@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.bldg;
+package org.terasology.cities.door;
 
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.BaseVector2i;
@@ -32,6 +32,7 @@ public class SimpleDoor implements Door {
 
     /**
      * @param orientation the orientation
+     * @param pos the position in the XZ plane
      * @param baseHeight the height at the bottom
      * @param topHeight the height at the top
      */

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.door;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.DoorRasterizer;
-import org.terasology.cities.bldg.SimpleDoor;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;

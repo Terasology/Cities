@@ -20,13 +20,11 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.math.RoundingMode;
 
-
-
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.bldg.SimpleChurch;
-import org.terasology.cities.bldg.WingDoor;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.door.WingDoor;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.model.roof.SaddleRoof;

@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.bldg.gen.BuildingGenerator;
 import org.terasology.cities.bldg.gen.DefaultBuildingGenerator;
+import org.terasology.cities.door.Door;
+import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
@@ -44,7 +46,7 @@ import com.google.common.cache.CacheBuilder;
  * Produces a {@link BuildingFacet}.
  */
 @Produces(BuildingFacet.class)
-@Updates(@Facet(WindowFacet.class))
+@Updates({@Facet(WindowFacet.class), @Facet(DoorFacet.class)})
 @Requires({@Facet(ParcelFacet.class), @Facet(SurfaceHeightFacet.class)})
 public class BuildingFacetProvider implements FacetProvider {
 
@@ -69,6 +71,7 @@ public class BuildingFacetProvider implements FacetProvider {
         InfiniteSurfaceHeightFacet heightFacet = region.getRegionFacet(InfiniteSurfaceHeightFacet.class);
 
         WindowFacet windowFacet = region.getRegionFacet(WindowFacet.class);
+        DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
 
         for (Parcel parcel : parcelFacet.getParcels()) {
             Set<Building> bldgs;
@@ -77,9 +80,13 @@ public class BuildingFacetProvider implements FacetProvider {
                 for (Building bldg : bldgs) {
                     facet.addBuilding(bldg);
 
+                    // TODO: add bounds check
                     for (BuildingPart part : bldg.getParts()) {
                         for (Window wnd : part.getWindows()) {
                             windowFacet.addWindow(wnd);
+                        }
+                        for (Door door : part.getDoors()) {
+                            doorFacet.addDoor(door);
                         }
                     }
                 }

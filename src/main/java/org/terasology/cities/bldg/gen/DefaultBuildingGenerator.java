@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.terasology.cities.bldg.Building;
-import org.terasology.cities.bldg.SimpleDoor;
 import org.terasology.cities.bldg.SimpleRoundHouse;
+import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.SimpleWindow;
