@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.bldg;
+package org.terasology.cities.window;
 
 import org.terasology.cities.BlockTypes;
 import org.terasology.commonworld.Orientation;

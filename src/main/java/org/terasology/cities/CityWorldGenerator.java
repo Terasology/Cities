@@ -28,11 +28,9 @@ import org.terasology.cities.raster.standard.FlatRoofRasterizer;
 import org.terasology.cities.raster.standard.HipRoofRasterizer;
 import org.terasology.cities.raster.standard.PentRoofRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
-import org.terasology.cities.raster.standard.RectWindowRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
 import org.terasology.cities.raster.standard.SaddleRoofRasterizer;
 import org.terasology.cities.raster.standard.SimpleDoorRasterizer;
-import org.terasology.cities.raster.standard.SimpleWindowRasterizer;
 import org.terasology.cities.raster.standard.WingDoorRasterizer;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
@@ -43,6 +41,9 @@ import org.terasology.cities.surface.SurfaceHeightFacetProvider;
 import org.terasology.cities.terrain.BuildableTerrainFacetProvider;
 import org.terasology.cities.walls.TownWallFacetProvider;
 import org.terasology.cities.walls.TownWallRasterizer;
+import org.terasology.cities.window.RectWindowRasterizer;
+import org.terasology.cities.window.SimpleWindowRasterizer;
+import org.terasology.cities.window.WindowFacetProvider;
 import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
 import org.terasology.core.world.generator.facetProviders.EnsureSpawnableChunkZeroProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
@@ -141,6 +142,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new RoadFacetProvider())
                 .addProvider(new ParcelFacetProvider())
                 .addProvider(new FenceFacetProvider())
+                .addProvider(new WindowFacetProvider())
                 .addProvider(new BuildingFacetProvider())
                 .addProvider(new SettlementFacetProvider())
                 .addProvider(new DefaultFloraProvider())

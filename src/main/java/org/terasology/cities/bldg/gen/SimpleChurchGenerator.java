@@ -20,9 +20,10 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.math.RoundingMode;
 
+
+
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.RectBuildingPart;
-import org.terasology.cities.bldg.RectWindow;
 import org.terasology.cities.bldg.SimpleChurch;
 import org.terasology.cities.bldg.WingDoor;
 import org.terasology.cities.common.Edges;
@@ -31,6 +32,7 @@ import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
+import org.terasology.cities.window.RectWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.ImmutableVector2i;

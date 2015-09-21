@@ -19,6 +19,7 @@ package org.terasology.cities.bldg;
 import java.util.Set;
 
 import org.terasology.cities.model.roof.Roof;
+import org.terasology.cities.window.Window;
 import org.terasology.math.geom.Shape;
 
 /**

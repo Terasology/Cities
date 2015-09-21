@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.window;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.SimpleWindow;
-import org.terasology.cities.bldg.WindowRasterizer;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
 
