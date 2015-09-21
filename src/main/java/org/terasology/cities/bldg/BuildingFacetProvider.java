@@ -27,6 +27,7 @@ import org.terasology.cities.door.Door;
 import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
+import org.terasology.cities.roof.RoofFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.Window;
 import org.terasology.cities.window.WindowFacet;
@@ -46,7 +47,7 @@ import com.google.common.cache.CacheBuilder;
  * Produces a {@link BuildingFacet}.
  */
 @Produces(BuildingFacet.class)
-@Updates({@Facet(WindowFacet.class), @Facet(DoorFacet.class)})
+@Updates({@Facet(WindowFacet.class), @Facet(DoorFacet.class), @Facet(RoofFacet.class)})
 @Requires({@Facet(ParcelFacet.class), @Facet(SurfaceHeightFacet.class)})
 public class BuildingFacetProvider implements FacetProvider {
 
@@ -72,6 +73,7 @@ public class BuildingFacetProvider implements FacetProvider {
 
         WindowFacet windowFacet = region.getRegionFacet(WindowFacet.class);
         DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
+        RoofFacet roofFacet = region.getRegionFacet(RoofFacet.class);
 
         for (Parcel parcel : parcelFacet.getParcels()) {
             Set<Building> bldgs;
@@ -88,6 +90,7 @@ public class BuildingFacetProvider implements FacetProvider {
                         for (Door door : part.getDoors()) {
                             doorFacet.addDoor(door);
                         }
+                        roofFacet.addRoof(part.getRoof());
                     }
                 }
             } catch (ExecutionException e) {

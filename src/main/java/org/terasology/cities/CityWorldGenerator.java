@@ -25,16 +25,17 @@ import org.terasology.cities.fences.FenceFacetProvider;
 import org.terasology.cities.fences.SimpleFenceRasterizer;
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
-import org.terasology.cities.raster.standard.ConicRoofRasterizer;
-import org.terasology.cities.raster.standard.DomeRoofRasterizer;
-import org.terasology.cities.raster.standard.FlatRoofRasterizer;
-import org.terasology.cities.raster.standard.HipRoofRasterizer;
-import org.terasology.cities.raster.standard.PentRoofRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
-import org.terasology.cities.raster.standard.SaddleRoofRasterizer;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
+import org.terasology.cities.roof.ConicRoofRasterizer;
+import org.terasology.cities.roof.DomeRoofRasterizer;
+import org.terasology.cities.roof.FlatRoofRasterizer;
+import org.terasology.cities.roof.HipRoofRasterizer;
+import org.terasology.cities.roof.PentRoofRasterizer;
+import org.terasology.cities.roof.RoofFacetProvider;
+import org.terasology.cities.roof.SaddleRoofRasterizer;
 import org.terasology.cities.settlements.SettlementFacetProvider;
 import org.terasology.cities.sites.SiteFacetProvider;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacetProvider;
@@ -145,6 +146,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new FenceFacetProvider())
                 .addProvider(new WindowFacetProvider())
                 .addProvider(new DoorFacetProvider())
+                .addProvider(new RoofFacetProvider())
                 .addProvider(new BuildingFacetProvider())
                 .addProvider(new SettlementFacetProvider())
                 .addProvider(new DefaultFloraProvider())

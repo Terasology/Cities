@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.raster.standard;
+package org.terasology.cities.roof;
 
 import static org.terasology.commonworld.Orientation.EAST;
 import static org.terasology.commonworld.Orientation.WEST;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
-import org.terasology.cities.bldg.RoofRasterizer;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;

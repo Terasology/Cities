@@ -14,30 +14,54 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.bldg;
+package org.terasology.cities.roof;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.model.roof.Roof;
+import org.terasology.cities.raster.ChunkRasterTarget;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.TeraMath;
+import org.terasology.world.chunks.CoreChunk;
+import org.terasology.world.generation.Region;
+import org.terasology.world.generation.WorldRasterizer;
+import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 /**
  * @param <T> the target class
  */
-public abstract class RoofRasterizer<T extends Roof> extends AbstractBuildingRasterizer<T> {
+public abstract class RoofRasterizer<T extends Roof> implements WorldRasterizer {
+
+    private final BlockTheme theme;
+    private final Class<T> targetClass;
 
     /**
      * @param theme the block theme that is used to map type to blocks
      * @param targetClass the target class that is rasterized
      */
     protected RoofRasterizer(BlockTheme theme, Class<T> targetClass) {
-        super(theme, targetClass);
+        this.theme = theme;
+        this.targetClass = targetClass;
     }
 
     @Override
-    public void raster(RasterTarget brush, Building bldg, HeightMap hm) {
-        for (BuildingPart part : bldg.getParts()) {
-            Roof roof = part.getRoof();
+    public void initialize() {
+        // nothing to do
+    }
+
+    @Override
+    public void generateChunk(CoreChunk chunk, Region chunkRegion) {
+        SurfaceHeightFacet heightFacet = chunkRegion.getFacet(SurfaceHeightFacet.class);
+        HeightMap hm = new HeightMap() {
+
+            @Override
+            public int apply(int x, int z) {
+                return TeraMath.floorToInt(heightFacet.getWorld(x, z));
+            }
+        };
+        RasterTarget brush = new ChunkRasterTarget(chunk, theme);
+        RoofFacet buildingFacet = chunkRegion.getFacet(RoofFacet.class);
+        for (Roof roof : buildingFacet.getRoofs()) {
             if (targetClass.isInstance(roof)) {
                 raster(brush, targetClass.cast(roof), hm);
             }
