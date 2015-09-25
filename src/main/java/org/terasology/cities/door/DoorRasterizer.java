@@ -67,6 +67,12 @@ public abstract class DoorRasterizer<T extends Door> implements WorldRasterizer 
         }
     }
 
+    public void tryRaster(RasterTarget brush, Door door, HeightMap heightMap) {
+        if (targetClass.isInstance(door)) {
+            raster(brush, targetClass.cast(door), heightMap);
+        }
+    }
+
     protected abstract void raster(RasterTarget brush, T part, HeightMap heightMap);
 }
 
