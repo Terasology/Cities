@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.door;
+package org.terasology.cities.roof;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.raster.ImageRasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.TeraMath;
@@ -36,27 +37,34 @@ import org.terasology.world.viewer.layers.ZOrder;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Draws doors in a given image
+ * Draws roofs in a given image
  */
-@Renders(value = DoorFacet.class, order = ZOrder.BIOME + 3)
-public class DoorFacetLayer extends AbstractFacetLayer {
+@Renders(value = RoofFacet.class, order = ZOrder.BIOME + 3)
+public class RoofFacetLayer extends AbstractFacetLayer {
 
     private final BufferedImage bufferImage = new BufferedImage(4, 4, BufferedImage.TYPE_INT_ARGB);
 
     private final Map<BlockTypes, Color> blockColors = ImmutableMap.<BlockTypes, Color>builder()
             .put(BlockTypes.AIR, new Color(0, 0, 0, 0))
-            .put(BlockTypes.WING_DOOR, new Color(110, 110, 10))
-            .put(BlockTypes.SIMPLE_DOOR, new Color(210, 110, 210))
+            .put(BlockTypes.ROOF_FLAT, new Color(255, 60, 60))
+            .put(BlockTypes.ROOF_HIP, new Color(255, 60, 60))
+            .put(BlockTypes.ROOF_SADDLE, new Color(224, 120, 100))
+            .put(BlockTypes.ROOF_DOME, new Color(160, 190, 190))
+            .put(BlockTypes.ROOF_GABLE, new Color(180, 120, 100))
             .build();
 
-    private Set<DoorRasterizer<?>> rasterizers = new HashSet<>();
+    private Set<RoofRasterizer<?>> rasterizers = new HashSet<>();
 
-    public DoorFacetLayer() {
+    public RoofFacetLayer() {
         setVisible(true);
 
         BlockTheme theme = null;
-        rasterizers.add(new SimpleDoorRasterizer(theme));
-        rasterizers.add(new WingDoorRasterizer(theme));
+        rasterizers.add(new FlatRoofRasterizer(theme));
+        rasterizers.add(new SaddleRoofRasterizer(theme));
+        rasterizers.add(new PentRoofRasterizer(theme));
+        rasterizers.add(new HipRoofRasterizer(theme));
+        rasterizers.add(new ConicRoofRasterizer(theme));
+        rasterizers.add(new DomeRoofRasterizer(theme));
     }
 
     @Override
@@ -78,10 +86,10 @@ public class DoorFacetLayer extends AbstractFacetLayer {
             }
         };
 
-        DoorFacet doorFacet = chunkRegion.getFacet(DoorFacet.class);
-        for (Door door : doorFacet.getDoors()) {
-            for (DoorRasterizer<?> rasterizer : rasterizers) {
-                rasterizer.tryRaster(brush, door, hm);
+        RoofFacet roofFacet = chunkRegion.getFacet(RoofFacet.class);
+        for (Roof roof : roofFacet.getRoofs()) {
+            for (RoofRasterizer<?> rasterizer : rasterizers) {
+                rasterizer.tryRaster(brush, roof, hm);
             }
         }
     }

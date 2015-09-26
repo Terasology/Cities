@@ -17,6 +17,7 @@
 package org.terasology.cities.window;
 
 import org.terasology.cities.BlockTheme;
+import org.terasology.cities.door.Door;
 import org.terasology.cities.raster.ChunkRasterTarget;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -64,6 +65,12 @@ public abstract class WindowRasterizer<T extends Window> implements WorldRasteri
             if (targetClass.isInstance(window)) {
                 raster(brush, targetClass.cast(window), hm);
             }
+        }
+    }
+
+    public void tryRaster(RasterTarget brush, Window window, HeightMap heightMap) {
+        if (targetClass.isInstance(window)) {
+            raster(brush, targetClass.cast(window), heightMap);
         }
     }
 

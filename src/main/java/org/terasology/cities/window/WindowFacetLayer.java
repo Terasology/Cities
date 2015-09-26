@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.door;
+package org.terasology.cities.window;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -36,27 +36,26 @@ import org.terasology.world.viewer.layers.ZOrder;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * Draws doors in a given image
+ * Draws windows in a given image
  */
-@Renders(value = DoorFacet.class, order = ZOrder.BIOME + 3)
-public class DoorFacetLayer extends AbstractFacetLayer {
+@Renders(value = WindowFacet.class, order = ZOrder.BIOME + 3)
+public class WindowFacetLayer extends AbstractFacetLayer {
 
     private final BufferedImage bufferImage = new BufferedImage(4, 4, BufferedImage.TYPE_INT_ARGB);
 
     private final Map<BlockTypes, Color> blockColors = ImmutableMap.<BlockTypes, Color>builder()
             .put(BlockTypes.AIR, new Color(0, 0, 0, 0))
-            .put(BlockTypes.WING_DOOR, new Color(110, 110, 10))
-            .put(BlockTypes.SIMPLE_DOOR, new Color(210, 110, 210))
+            .put(BlockTypes.WINDOW_GLASS, new Color(110, 210, 110))
             .build();
 
-    private Set<DoorRasterizer<?>> rasterizers = new HashSet<>();
+    private Set<WindowRasterizer<?>> rasterizers = new HashSet<>();
 
-    public DoorFacetLayer() {
+    public WindowFacetLayer() {
         setVisible(true);
 
         BlockTheme theme = null;
-        rasterizers.add(new SimpleDoorRasterizer(theme));
-        rasterizers.add(new WingDoorRasterizer(theme));
+        rasterizers.add(new SimpleWindowRasterizer(theme));
+        rasterizers.add(new RectWindowRasterizer(theme));
     }
 
     @Override
@@ -78,10 +77,10 @@ public class DoorFacetLayer extends AbstractFacetLayer {
             }
         };
 
-        DoorFacet doorFacet = chunkRegion.getFacet(DoorFacet.class);
-        for (Door door : doorFacet.getDoors()) {
-            for (DoorRasterizer<?> rasterizer : rasterizers) {
-                rasterizer.tryRaster(brush, door, hm);
+        WindowFacet windowFacet = chunkRegion.getFacet(WindowFacet.class);
+        for (Window window : windowFacet.getWindows()) {
+            for (WindowRasterizer<?> rasterizer : rasterizers) {
+                rasterizer.tryRaster(brush, window, hm);
             }
         }
     }
