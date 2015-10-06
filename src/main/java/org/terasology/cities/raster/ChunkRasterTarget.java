@@ -66,7 +66,7 @@ public class ChunkRasterTarget implements RasterTarget {
 
     @Override
     public int getMaxHeight() {
-        return chunk.chunkToWorldPositionY(0) + chunk.getChunkSizeY();
+        return chunk.chunkToWorldPositionY(0) + chunk.getChunkSizeY() - 1;
     }
 
     @Override
