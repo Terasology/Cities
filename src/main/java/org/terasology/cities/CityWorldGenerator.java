@@ -36,6 +36,7 @@ import org.terasology.cities.roof.HipRoofRasterizer;
 import org.terasology.cities.roof.PentRoofRasterizer;
 import org.terasology.cities.roof.RoofFacetProvider;
 import org.terasology.cities.roof.SaddleRoofRasterizer;
+import org.terasology.cities.settlements.CitizenProvider;
 import org.terasology.cities.settlements.SettlementFacetProvider;
 import org.terasology.cities.sites.SiteFacetProvider;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacetProvider;
@@ -154,6 +155,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new SolidRasterizer())
                 .addPlugins()
                 .addEntities(new SettlementEntityProvider())
+                .addEntities(new CitizenProvider())
                 .addRasterizer(new RoadRasterizer(theme))
                 .addRasterizer(new TownWallRasterizer(theme))
                 .addRasterizer(new SimpleFenceRasterizer(theme))
