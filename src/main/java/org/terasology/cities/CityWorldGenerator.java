@@ -18,24 +18,25 @@ package org.terasology.cities;
 
 import org.terasology.cities.bldg.BuildingFacetProvider;
 import org.terasology.cities.blocked.BlockedAreaFacetProvider;
+import org.terasology.cities.door.DoorFacetProvider;
+import org.terasology.cities.door.SimpleDoorRasterizer;
+import org.terasology.cities.door.WingDoorRasterizer;
 import org.terasology.cities.fences.FenceFacetProvider;
 import org.terasology.cities.fences.SimpleFenceRasterizer;
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
-import org.terasology.cities.raster.standard.ConicRoofRasterizer;
-import org.terasology.cities.raster.standard.DomeRoofRasterizer;
-import org.terasology.cities.raster.standard.FlatRoofRasterizer;
-import org.terasology.cities.raster.standard.HipRoofRasterizer;
-import org.terasology.cities.raster.standard.PentRoofRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
-import org.terasology.cities.raster.standard.RectWindowRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
-import org.terasology.cities.raster.standard.SaddleRoofRasterizer;
-import org.terasology.cities.raster.standard.SimpleDoorRasterizer;
-import org.terasology.cities.raster.standard.SimpleWindowRasterizer;
-import org.terasology.cities.raster.standard.WingDoorRasterizer;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
+import org.terasology.cities.roof.ConicRoofRasterizer;
+import org.terasology.cities.roof.DomeRoofRasterizer;
+import org.terasology.cities.roof.FlatRoofRasterizer;
+import org.terasology.cities.roof.HipRoofRasterizer;
+import org.terasology.cities.roof.PentRoofRasterizer;
+import org.terasology.cities.roof.RoofFacetProvider;
+import org.terasology.cities.roof.SaddleRoofRasterizer;
+import org.terasology.cities.settlements.CitizenProvider;
 import org.terasology.cities.settlements.SettlementFacetProvider;
 import org.terasology.cities.sites.SiteFacetProvider;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacetProvider;
@@ -43,6 +44,9 @@ import org.terasology.cities.surface.SurfaceHeightFacetProvider;
 import org.terasology.cities.terrain.BuildableTerrainFacetProvider;
 import org.terasology.cities.walls.TownWallFacetProvider;
 import org.terasology.cities.walls.TownWallRasterizer;
+import org.terasology.cities.window.RectWindowRasterizer;
+import org.terasology.cities.window.SimpleWindowRasterizer;
+import org.terasology.cities.window.WindowFacetProvider;
 import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
 import org.terasology.core.world.generator.facetProviders.EnsureSpawnableChunkZeroProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
@@ -141,12 +145,17 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new RoadFacetProvider())
                 .addProvider(new ParcelFacetProvider())
                 .addProvider(new FenceFacetProvider())
+                .addProvider(new WindowFacetProvider())
+                .addProvider(new DoorFacetProvider())
+                .addProvider(new RoofFacetProvider())
                 .addProvider(new BuildingFacetProvider())
                 .addProvider(new SettlementFacetProvider())
                 .addProvider(new DefaultFloraProvider())
                 .addProvider(new EnsureSpawnableChunkZeroProvider())
                 .addRasterizer(new SolidRasterizer())
                 .addPlugins()
+                .addEntities(new SettlementEntityProvider())
+                .addEntities(new CitizenProvider())
                 .addRasterizer(new RoadRasterizer(theme))
                 .addRasterizer(new TownWallRasterizer(theme))
                 .addRasterizer(new SimpleFenceRasterizer(theme))
@@ -164,6 +173,10 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new WingDoorRasterizer(theme))
                 .addRasterizer(new FloraRasterizer());
         return worldBuilder;
+    }
+
+    public void expungeCaches() {
+        // TODO: clear all caches
     }
 
 }

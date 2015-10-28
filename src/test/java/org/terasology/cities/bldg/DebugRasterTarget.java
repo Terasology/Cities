@@ -16,6 +16,9 @@
 
 package org.terasology.cities.bldg;
 
+import static org.terasology.world.chunks.ChunkConstants.SIZE_X;
+import static org.terasology.world.chunks.ChunkConstants.SIZE_Z;
+
 import java.util.AbstractList;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +31,6 @@ import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.chunks.blockdata.TeraArray;
 import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
-import static org.terasology.world.chunks.ChunkConstants.SIZE_X;
-import static org.terasology.world.chunks.ChunkConstants.SIZE_Z;
 /**
  *
  */

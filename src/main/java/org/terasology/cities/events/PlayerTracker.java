@@ -16,36 +16,35 @@
 
 package org.terasology.cities.events;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.WorldFacade;
-import org.terasology.cities.model.NamedArea;
-import org.terasology.commonworld.Sector;
-import org.terasology.commonworld.Sectors;
+import org.terasology.cities.SettlementComponent;
+import org.terasology.cities.settlements.Settlement;
+import org.terasology.cities.sites.Site;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.logic.characters.events.OnEnterBlockEvent;
 import org.terasology.logic.console.Console;
 import org.terasology.logic.location.LocationComponent;
-import org.terasology.math.geom.Vector2d;
+import org.terasology.math.geom.Circle;
+import org.terasology.math.geom.Vector2f;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
-import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.rendering.FontColor;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 /**
- * Tracks player movements with respect to {@link NamedArea}s
+ * Tracks player movements with respect to {@link Settlement} entities.
  */
 @RegisterSystem
 public class PlayerTracker extends BaseComponentSystem {
@@ -58,7 +57,13 @@ public class PlayerTracker extends BaseComponentSystem {
     @In
     private Console console;
 
-    private final Map<String, NamedArea> prevAreaMap = Maps.newHashMap();
+    private final Set<Settlement> knownSettlements = new LinkedHashSet<>();
+    private final Map<String, Settlement> prevLoc = new HashMap<>();
+
+    @ReceiveEvent(components = {SettlementComponent.class})
+    public void onActivated(OnActivatedComponent event, EntityRef entity, SettlementComponent comp) {
+        knownSettlements.add(comp.settlement);
+    }
 
     /**
      * Called whenever a block is entered
@@ -69,8 +74,7 @@ public class PlayerTracker extends BaseComponentSystem {
     public void onEnterBlock(OnEnterBlockEvent event, EntityRef entity) {
         LocationComponent loc = entity.getComponent(LocationComponent.class);
         Vector3f worldPos3d = loc.getWorldPosition();
-        Vector2d worldPos = new Vector2d(worldPos3d.x, worldPos3d.z);
-        Sector sector = Sectors.getSectorForPosition(worldPos3d);
+        Vector2f worldPos = new Vector2f(worldPos3d.x, worldPos3d.z);
 
         Client client = networkSystem.getOwner(entity);
 
@@ -82,39 +86,27 @@ public class PlayerTracker extends BaseComponentSystem {
         String id = client.getId();
         String name = client.getName();
 
-        // TODO: facade is null if a different WorldGenerator is used
-        WorldFacade facade = CoreRegistry.get(WorldFacade.class);
-        if (facade != null) {
-
-            NamedArea prevArea = prevAreaMap.get(id);        // can be null !
-            NamedArea newArea = null;
-
-            Set<NamedArea> areas = Sets.newHashSet();
-
-            areas.addAll(facade.getCities(sector));
-            areas.addAll(facade.getLakes(sector));
-
-            for (NamedArea area : areas) {
-                if (area.contains(worldPos)) {
-                    if (newArea != null) {
-                        logger.warn("{} appears to be in {} and {} at the same time!", name, newArea.getName(), area.getName());
-                    }
-
-                    newArea = area;
-                }
-            }
-
-            if (!Objects.equals(newArea, prevArea)) {       // both can be null
+        Settlement newArea = null;
+        for (Settlement area : knownSettlements) {
+            Site site = area.getSite();
+            Circle circle = new Circle(site.getPos().x(), site.getPos().y(), site.getRadius());
+            if (circle.contains(worldPos)) {
                 if (newArea != null) {
-                    entity.send(new OnEnterAreaEvent(newArea));
-                }
-                if (prevArea != null) {
-                    entity.send(new OnLeaveAreaEvent(prevArea));
+                    logger.warn("{} appears to be in {} and {} at the same time!", name, newArea.getName(), area.getName());
                 }
 
-                prevAreaMap.put(id, newArea);
+                newArea = area;
             }
+        }
 
+        if (!Objects.equals(newArea, prevLoc.get(id))) {       // both can be null
+            if (newArea != null) {
+                entity.send(new OnEnterSettlementEvent(newArea));
+            }
+            Settlement prevArea = prevLoc.put(id, newArea);
+            if (prevArea != null) {
+                entity.send(new OnLeaveSettlementEvent(prevArea));
+            }
         }
     }
 
@@ -124,11 +116,11 @@ public class PlayerTracker extends BaseComponentSystem {
      * @param entity the character entity reference "player:engine"
      */
     @ReceiveEvent
-    public void onEnterArea(OnEnterAreaEvent event, EntityRef entity) {
+    public void onEnterArea(OnEnterSettlementEvent event, EntityRef entity) {
 
         Client client = networkSystem.getOwner(entity);
         String playerName = String.format("%s (%s)", client.getName(), client.getId());
-        String areaName = event.getArea().getName();
+        String areaName = event.getSettlement().getName();
 
         playerName = FontColor.getColored(playerName, CitiesColors.PLAYER);
         areaName = FontColor.getColored(areaName, CitiesColors.AREA);
@@ -142,11 +134,11 @@ public class PlayerTracker extends BaseComponentSystem {
      * @param entity the character entity reference "player:engine"
      */
     @ReceiveEvent
-    public void onLeaveArea(OnLeaveAreaEvent event, EntityRef entity) {
+    public void onLeaveArea(OnLeaveSettlementEvent event, EntityRef entity) {
 
         Client client = networkSystem.getOwner(entity);
         String playerName = String.format("%s (%s)", client.getName(), client.getId());
-        String areaName = event.getArea().getName();
+        String areaName = event.getSettlement().getName();
 
         playerName = FontColor.getColored(playerName, CitiesColors.PLAYER);
         areaName = FontColor.getColored(areaName, CitiesColors.AREA);

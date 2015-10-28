@@ -16,6 +16,11 @@
 
 package org.terasology.cities.bldg;
 
+import static org.terasology.cities.BlockTypes.AIR;
+import static org.terasology.cities.BlockTypes.BUILDING_FLOOR;
+import static org.terasology.cities.BlockTypes.BUILDING_FOUNDATION;
+import static org.terasology.cities.BlockTypes.FENCE;
+
 import java.util.Arrays;
 
 import org.junit.Assert;
@@ -28,8 +33,6 @@ import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.geom.Rect2i;
-
-import static org.terasology.cities.BlockTypes.*;
 /**
  * Tests the {@link BuildingPartRasterizer} class.
  */
@@ -42,15 +45,15 @@ public class BuildingPartRasterizerTest {
         DebugRasterTarget target = new DebugRasterTarget(0, 9);
         HeightMap terrainHeightMap = HeightMaps.constant(3);
         int baseHeight = 5;
-        fillColumn(target, 0, baseHeight, FENCE);
+        fillColumn(target, 0, baseHeight - 1, FENCE);
         Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
         RasterUtil.fillRect(pen, rc);
 
         Assert.assertEquals(Arrays.asList(
                 FENCE, FENCE, FENCE,
-                BUILDING_FOUNDATION, BUILDING_FOUNDATION, // 3-4 are filled up
+                BUILDING_FOUNDATION, // 3-4 are filled up
                 BUILDING_FLOOR,
-                AIR, AIR, AIR, AIR),
+                AIR, AIR, AIR, AIR, AIR),
                 target.getColumn(0, 0));
     }
 
@@ -85,7 +88,7 @@ public class BuildingPartRasterizerTest {
     public void testPrepareFloorPartlyTooHigh() {
         DebugRasterTarget target = new DebugRasterTarget(4, 6);
         HeightMap terrainHeightMap = HeightMaps.constant(3);
-        int baseHeight = 5;
+        int baseHeight = 6;
         Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
         RasterUtil.fillRect(pen, rc);
 
@@ -98,7 +101,7 @@ public class BuildingPartRasterizerTest {
     public void testPrepareFloorPartlyTooLow() {
         DebugRasterTarget target = new DebugRasterTarget(2, 4);
         HeightMap terrainHeightMap = HeightMaps.constant(3);
-        int baseHeight = 5;
+        int baseHeight = 6;
         fillColumn(target, 2, 4, FENCE);
         Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
         RasterUtil.fillRect(pen, rc);
@@ -112,7 +115,7 @@ public class BuildingPartRasterizerTest {
     public void testPrepareFloorFillWithAir() {
         DebugRasterTarget target = new DebugRasterTarget(1, 6);
         HeightMap terrainHeightMap = HeightMaps.constant(5);
-        int baseHeight = 3;
+        int baseHeight = 4;
         fillColumn(target, 1, baseHeight, FENCE);
         Pen pen = BuildingPens.floorPen(target, terrainHeightMap, baseHeight, BUILDING_FLOOR);
         RasterUtil.fillRect(pen, rc);

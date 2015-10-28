@@ -122,7 +122,7 @@ public class RoadFacetProvider implements FacetProvider {
                 if (distX < thres && distY < thres) {
                     try {
                         Optional<Road> opt = roadCache.get(new UnorderedPair<Site>(siteA, siteB),
-                                () -> tryBuild(posA, posB, 6f, terrainFacet));
+                                () -> tryBuild(posA, posB, 8f, terrainFacet));
                         if (opt.isPresent()) {
                             candidates.add(opt.get());
                         }

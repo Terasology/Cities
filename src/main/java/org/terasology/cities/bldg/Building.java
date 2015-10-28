@@ -24,7 +24,7 @@ import java.util.Collection;
 public interface Building {
 
     /**
-     * @return
+     * @return the parts of the building
      */
     Collection<BuildingPart> getParts();
 

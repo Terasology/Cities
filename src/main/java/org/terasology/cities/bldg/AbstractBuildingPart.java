@@ -19,7 +19,9 @@ package org.terasology.cities.bldg;
 import java.util.Collections;
 import java.util.Set;
 
+import org.terasology.cities.door.Door;
 import org.terasology.cities.model.roof.Roof;
+import org.terasology.cities.window.Window;
 import org.terasology.math.geom.Shape;
 
 import com.google.common.collect.Sets;

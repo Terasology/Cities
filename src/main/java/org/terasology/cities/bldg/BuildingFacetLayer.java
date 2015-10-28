@@ -20,26 +20,16 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.terasology.cities.AwtConverter;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.ImageRasterTarget;
-import org.terasology.cities.raster.standard.ConicRoofRasterizer;
-import org.terasology.cities.raster.standard.DomeRoofRasterizer;
-import org.terasology.cities.raster.standard.FlatRoofRasterizer;
-import org.terasology.cities.raster.standard.HipRoofRasterizer;
-import org.terasology.cities.raster.standard.PentRoofRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
-import org.terasology.cities.raster.standard.RectWindowRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
-import org.terasology.cities.raster.standard.SaddleRoofRasterizer;
-import org.terasology.cities.raster.standard.SimpleDoorRasterizer;
-import org.terasology.cities.raster.standard.SimpleWindowRasterizer;
-import org.terasology.cities.raster.standard.WingDoorRasterizer;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.rendering.nui.properties.Checkbox;
@@ -51,8 +41,6 @@ import org.terasology.world.viewer.layers.Renders;
 import org.terasology.world.viewer.layers.ZOrder;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * Draws buildings area in a given image
@@ -69,26 +57,10 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
             .put(BlockTypes.BUILDING_WALL, new Color(158, 158, 158))
             .put(BlockTypes.BUILDING_FLOOR, new Color(100, 100, 100))
             .put(BlockTypes.BUILDING_FOUNDATION, new Color(90, 60, 60))
-            .put(BlockTypes.ROOF_FLAT, new Color(255, 60, 60))
-            .put(BlockTypes.ROOF_HIP, new Color(255, 60, 60))
-            .put(BlockTypes.ROOF_SADDLE, new Color(224, 120, 100))
-            .put(BlockTypes.ROOF_DOME, new Color(160, 190, 190))
-            .put(BlockTypes.ROOF_GABLE, new Color(180, 120, 100))
             .put(BlockTypes.TOWER_WALL, new Color(200, 100, 200))
-            .put(BlockTypes.WING_DOOR, new Color(110, 110, 10))
-            .put(BlockTypes.SIMPLE_DOOR, new Color(210, 110, 210))
-            .put(BlockTypes.WINDOW_GLASS, new Color(110, 210, 110))
             .build();
 
-    private enum RasterizerType {
-        BASE,
-        WNDW,
-        DOOR,
-        ROOF
-    }
-
-    private final ListMultimap<RasterizerType, AbstractBuildingRasterizer<?>> rasterizers = Multimaps.newListMultimap(
-            new EnumMap<>(RasterizerType.class), ArrayList::new);
+    private Set<BuildingPartRasterizer<?>> rasterizers = new HashSet<>();
 
     private Config config = new Config();
 
@@ -96,18 +68,8 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         setVisible(true);
 
         BlockTheme theme = null;
-        rasterizers.put(RasterizerType.BASE, new RectPartRasterizer(theme));
-        rasterizers.put(RasterizerType.BASE, new RoundPartRasterizer(theme));
-        rasterizers.put(RasterizerType.ROOF, new FlatRoofRasterizer(theme));
-        rasterizers.put(RasterizerType.ROOF, new SaddleRoofRasterizer(theme));
-        rasterizers.put(RasterizerType.ROOF, new PentRoofRasterizer(theme));
-        rasterizers.put(RasterizerType.ROOF, new HipRoofRasterizer(theme));
-        rasterizers.put(RasterizerType.ROOF, new ConicRoofRasterizer(theme));
-        rasterizers.put(RasterizerType.ROOF, new DomeRoofRasterizer(theme));
-        rasterizers.put(RasterizerType.DOOR, new SimpleDoorRasterizer(theme));
-        rasterizers.put(RasterizerType.DOOR, new WingDoorRasterizer(theme));
-        rasterizers.put(RasterizerType.WNDW, new SimpleWindowRasterizer(theme));
-        rasterizers.put(RasterizerType.WNDW, new RectWindowRasterizer(theme));
+        rasterizers.add(new RectPartRasterizer(theme));
+        rasterizers.add(new RoundPartRasterizer(theme));
     }
 
     /**
@@ -168,22 +130,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         BuildingFacet buildingFacet = chunkRegion.getFacet(BuildingFacet.class);
         for (Building bldg : buildingFacet.getBuildings()) {
             if (config.showBase) {
-                for (AbstractBuildingRasterizer<?> rasterizer : rasterizers.get(RasterizerType.BASE)) {
-                    rasterizer.raster(brush, bldg, hm);
-                }
-            }
-            if (config.showRoofs) {
-                for (AbstractBuildingRasterizer<?> rasterizer : rasterizers.get(RasterizerType.ROOF)) {
-                    rasterizer.raster(brush, bldg, hm);
-                }
-            }
-            if (config.showDoors) {
-                for (AbstractBuildingRasterizer<?> rasterizer : rasterizers.get(RasterizerType.DOOR)) {
-                    rasterizer.raster(brush, bldg, hm);
-                }
-            }
-            if (config.showWindows) {
-                for (AbstractBuildingRasterizer<?> rasterizer : rasterizers.get(RasterizerType.WNDW)) {
+                for (BuildingPartRasterizer<?> rasterizer : rasterizers) {
                     rasterizer.raster(brush, bldg, hm);
                 }
             }
@@ -212,9 +159,6 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
      */
     private static class Config implements FacetLayerConfig {
         @Checkbox private boolean showFloorPlan;
-        @Checkbox private boolean showBase;
-        @Checkbox private boolean showRoofs = true;
-        @Checkbox private boolean showWindows;
-        @Checkbox private boolean showDoors;
+        @Checkbox private boolean showBase = true;
     }
 }

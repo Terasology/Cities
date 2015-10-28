@@ -23,15 +23,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.bldg.gen.BuildingGenerator;
 import org.terasology.cities.bldg.gen.DefaultBuildingGenerator;
+import org.terasology.cities.door.Door;
+import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
+import org.terasology.cities.roof.RoofFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
+import org.terasology.cities.window.Window;
+import org.terasology.cities.window.WindowFacet;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.Facet;
 import org.terasology.world.generation.FacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
+import org.terasology.world.generation.Updates;
 import org.terasology.world.generation.facets.SurfaceHeightFacet;
 
 import com.google.common.cache.Cache;
@@ -41,6 +47,7 @@ import com.google.common.cache.CacheBuilder;
  * Produces a {@link BuildingFacet}.
  */
 @Produces(BuildingFacet.class)
+@Updates({@Facet(WindowFacet.class), @Facet(DoorFacet.class), @Facet(RoofFacet.class)})
 @Requires({@Facet(ParcelFacet.class), @Facet(SurfaceHeightFacet.class)})
 public class BuildingFacetProvider implements FacetProvider {
 
@@ -64,12 +71,27 @@ public class BuildingFacetProvider implements FacetProvider {
         ParcelFacet parcelFacet = region.getRegionFacet(ParcelFacet.class);
         InfiniteSurfaceHeightFacet heightFacet = region.getRegionFacet(InfiniteSurfaceHeightFacet.class);
 
+        WindowFacet windowFacet = region.getRegionFacet(WindowFacet.class);
+        DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
+        RoofFacet roofFacet = region.getRegionFacet(RoofFacet.class);
+
         for (Parcel parcel : parcelFacet.getParcels()) {
             Set<Building> bldgs;
             try {
                 bldgs = cache.get(parcel, () -> bldgGenerator.generate(parcel, heightFacet));
                 for (Building bldg : bldgs) {
                     facet.addBuilding(bldg);
+
+                    // TODO: add bounds check
+                    for (BuildingPart part : bldg.getParts()) {
+                        for (Window wnd : part.getWindows()) {
+                            windowFacet.addWindow(wnd);
+                        }
+                        for (Door door : part.getDoors()) {
+                            doorFacet.addDoor(door);
+                        }
+                        roofFacet.addRoof(part.getRoof());
+                    }
                 }
             } catch (ExecutionException e) {
                 logger.error("Could not compute buildings for {}", region.getRegion(), e);

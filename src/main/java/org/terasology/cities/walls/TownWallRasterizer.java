@@ -28,7 +28,6 @@ import org.terasology.cities.raster.RasterUtil;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.geom.Ramp;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.world.chunks.CoreChunk;
