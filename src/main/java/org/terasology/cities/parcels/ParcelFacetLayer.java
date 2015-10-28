@@ -67,9 +67,9 @@ public class ParcelFacetLayer extends AbstractFacetLayer {
     public String getWorldText(org.terasology.world.generation.Region region, int wx, int wy) {
         ParcelFacet facet = region.getFacet(ParcelFacet.class);
 
-        for (Parcel settlement : facet.getParcels()) {
-            if (settlement.getShape().contains(wx, wy)) {
-                return "Parcel";
+        for (Parcel parcel : facet.getParcels()) {
+            if (parcel.getShape().contains(wx, wy)) {
+                return "Parcel [" + parcel.getZone() + "]";
             }
         }
         return null;

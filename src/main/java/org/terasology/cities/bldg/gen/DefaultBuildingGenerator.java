@@ -53,7 +53,7 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
         Random rng = new FastRandom(parcel.getShape().hashCode() ^ seed);
         Building b;
         switch (parcel.getZone()) {
-        case RESIDENTAL:
+        case RESIDENTIAL:
             if (rng.nextFloat() < 0.2f) {
                 b = generateRoundHouse(parcel, heightFacet);
             } else {

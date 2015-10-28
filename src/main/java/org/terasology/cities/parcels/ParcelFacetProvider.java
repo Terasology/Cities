@@ -107,7 +107,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         Set<RectParcel> result = new LinkedHashSet<>();
         result.addAll(generateParcels(site, rng, 25, 40, 1, Zone.CLERICAL, blockedAreaFacet, terrainFacet));
         result.addAll(generateParcels(site, rng, config.minSize, config.maxSize, config.maxLots,
-                Zone.RESIDENTAL, blockedAreaFacet, terrainFacet));
+                Zone.RESIDENTIAL, blockedAreaFacet, terrainFacet));
         return result;
     }
 

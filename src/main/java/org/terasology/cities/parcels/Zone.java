@@ -22,9 +22,9 @@ package org.terasology.cities.parcels;
 public enum Zone {
 
     /**
-     * Typcially housing
+     * Typically housing
      */
-    RESIDENTAL,
+    RESIDENTIAL,
 
     /**
      * Churches, mosques, etc.

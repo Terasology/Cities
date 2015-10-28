@@ -52,14 +52,14 @@ public class CitizenProvider implements EntityProviderPlugin {
     private static final float TWO_PI = (float) Math.PI * 2f;
 
     private final List<Prefab> fabs = new ArrayList<>();
-    private BehaviorTree tree;
+    private Optional<BehaviorTree> tree;
 
     @Override
     public void initialize() {
         fabs.addAll(createAssetList("Oreons:OreonBuilder", 2));  // adding it twice doubles the probability of builders
         fabs.addAll(createAssetList("Oreons:OreonGuard", 1));
 
-        tree = Assets.get("stray", BehaviorTree.class).get();
+        tree = Assets.get("stray", BehaviorTree.class);
     }
 
     private Collection<? extends Prefab> createAssetList(String uri, int count) {
@@ -114,9 +114,11 @@ public class CitizenProvider implements EntityProviderPlugin {
         float heightOff = 2;
         EntityStore entity = new EntityStore(npc);
         entity.addComponent(new LocationComponent(new Vector3f(px, py + heightOff, pz)));
-        BehaviorComponent behavior = new BehaviorComponent();
-        behavior.tree = tree;
-        entity.addComponent(behavior);
+        if (tree.isPresent()) {
+            BehaviorComponent behavior = new BehaviorComponent();
+            behavior.tree = tree.get();
+            entity.addComponent(behavior);
+        }
         return entity;
     }
 
