@@ -59,11 +59,11 @@ public class PentRoofRasterizer extends RoofRasterizer<PentRoof> {
                 BaseVector2i dir = roof.getOrientation().getDir();
 
                 if (dir.getX() < 0) {
-                    rx -= area.width();
+                    rx -= area.width() + 1;  // maxX
                 }
 
                 if (dir.getY() < 0) {
-                    rz -= area.height();
+                    rz -= area.height() + 1; // maxY
                 }
 
                 int hx = rx * dir.getX();

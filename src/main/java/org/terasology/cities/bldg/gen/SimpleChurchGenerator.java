@@ -31,6 +31,7 @@ import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.RectWindow;
+import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
@@ -120,22 +121,31 @@ public class SimpleChurchGenerator {
     private BuildingPart createNave(Turtle cur, Rect2i naveRect, Rect2i doorRc, int baseHeight) {
         int entranceHeight = 4;
 
-        int hallHeight = 9;
+        int hallHeight = 10;
+        int topHeight = baseHeight + hallHeight;
 
         Rect2i naveRoofRect = naveRect.expand(1, 1);
-        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, baseHeight + hallHeight, cur.getOrientation(), 1);
+        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, topHeight, cur.getOrientation(), 1);
 
         RectBuildingPart nave = new RectBuildingPart(naveRect, naveRoof, baseHeight, hallHeight);
 
         WingDoor entrance = new WingDoor(cur.getOrientation(), doorRc, baseHeight, baseHeight + entranceHeight);
         nave.addDoor(entrance);
 
+        int wallDist = cur.width(naveRect) / 2;
+        for (int i = 4; i < cur.length(naveRect) - 4; i += 3) {
+            Orientation left = cur.getOrientation().getRotated(-90);
+            Orientation right = cur.getOrientation().getRotated(90);
+            nave.addWindow(new SimpleWindow(left, cur.transform(-wallDist, i), topHeight - 3));
+            nave.addWindow(new SimpleWindow(right, cur.transform(wallDist, i), topHeight - 3));
+        }
+
         return nave;
     }
 
     private BuildingPart createTower(Turtle turtle, Rect2i rect, int baseHeight) {
         int towerHeight = 22;
-        int doorHeight = 5;
+        int doorHeight = 8;
 
         Orientation dir = turtle.getOrientation();
         Rect2i towerRoofRect = rect.expand(1, 1);
@@ -155,7 +165,7 @@ public class SimpleChurchGenerator {
             Vector2i towerPos = new Vector2i(towerBorder.lerp(0.5f), RoundingMode.HALF_UP);
 
             Rect2i wndRect = Rect2i.createFromMinAndSize(towerPos.getX(), towerPos.getY(), 1, 1);
-            tower.addWindow(new RectWindow(orient, wndRect, baseHeight + towerHeight - 3, baseHeight + towerHeight - 1, BlockTypes.AIR));
+            tower.addWindow(new RectWindow(orient, wndRect, baseHeight + towerHeight - 4, baseHeight + towerHeight - 1, BlockTypes.AIR));
         }
 
         return tower;
@@ -168,15 +178,15 @@ public class SimpleChurchGenerator {
         int doorHeight = sideWallHeight - 1;
         Orientation dir = turtle.getOrientation();
         Orientation roofOrient = dir.getOpposite();
-        PentRoof roof = new PentRoof(roofRect, baseHeight + sideWallHeight, roofOrient, 0.5);
+        PentRoof roof = new PentRoof(roofRect, baseHeight + sideWallHeight, roofOrient, 0.333f);
         RectBuildingPart aisle = new RectBuildingPart(rect, roof, baseHeight, sideWallHeight);
 
         turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));
 
         int len = turtle.width(rect) / 2 - 2;
-        aisle.addDoor(new WingDoor(dir, turtle.rect(-len+1, 0, 3, 1), baseHeight, baseHeight + doorHeight));
-        aisle.addDoor(new WingDoor(dir, turtle.rect(-1, 0, 3, 1), baseHeight, baseHeight + doorHeight));
-        aisle.addDoor(new WingDoor(dir, turtle.rect(len-3, 0, 3, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(-len + 1, 0, 5, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(-2, 0, 5, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(len - 5, 0, 5, 1), baseHeight, baseHeight + doorHeight));
 
         return aisle;
     }

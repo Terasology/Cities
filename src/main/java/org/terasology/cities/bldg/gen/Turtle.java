@@ -18,6 +18,7 @@ package org.terasology.cities.bldg.gen;
 
 import org.terasology.cities.common.Edges;
 import org.terasology.commonworld.Orientation;
+import org.terasology.math.geom.BaseVector2f;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.Rect2i;
@@ -176,6 +177,18 @@ public class Turtle
      */
     public ImmutableVector2i getPos() {
         return new ImmutableVector2i(pos);
+    }
+
+    /**
+     * Apply the current position offset and rotation to the given translation vector
+     * @param right amount to the right
+     * @param forward amount forward
+     * @return the transformed translation
+     */
+    public Vector2i transform(int right, int forward) {
+        int x = pos.getX() + rotateX(orient.getDir(), right, forward);
+        int y = pos.getY() + rotateY(orient.getDir(), right, forward);
+        return new Vector2i(x, y);
     }
 
     private boolean isHorz() {
