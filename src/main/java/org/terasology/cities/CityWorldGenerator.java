@@ -60,15 +60,12 @@ import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.world.block.BlockManager;
 import org.terasology.world.generation.BaseFacetedWorldGenerator;
-import org.terasology.world.generation.World;
 import org.terasology.world.generation.WorldBuilder;
 import org.terasology.world.generator.RegisterWorldGenerator;
 import org.terasology.world.generator.plugin.WorldGeneratorPluginLibrary;
 
 @RegisterWorldGenerator(id = "city", displayName = "City World")
 public class CityWorldGenerator extends BaseFacetedWorldGenerator {
-
-    World world;
 
     private final Spawner spawner = new CitySpawner();
 
@@ -82,19 +79,6 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
      */
     public CityWorldGenerator(SimpleUri uri) {
         super(uri);
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
-
-//        noiseMap = new NoiseHeightMap();
-//        heightMap = HeightMaps.symmetric(noiseMap, Symmetries.alongNegativeDiagonal());
-
-//        register(new HeightMapTerrainGenerator(heightMap));
-//        register(new BoundaryGenerator(heightMap));
-//        register(new CityTerrainGenerator(heightMap));
-//        register(new FloraGeneratorFast(heightMap));
     }
 
     @Override
