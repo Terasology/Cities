@@ -16,13 +16,13 @@
 
 package org.terasology.cities.bldg.gen;
 
-import java.awt.Point;
-import java.awt.geom.AffineTransform;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.bldg.Building;
+import org.terasology.cities.bldg.BuildingPart;
+import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
-import org.terasology.cities.bldg.SimpleChurch;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.door.WingDoor;
 import org.terasology.cities.model.roof.HipRoof;
@@ -33,7 +33,6 @@ import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.RectWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
@@ -41,7 +40,7 @@ import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
 /**
- * Creates {@link SimpleChurch}es
+ * Creates building models of a simple church.
  */
 public class SimpleChurchGenerator {
 
@@ -56,143 +55,130 @@ public class SimpleChurchGenerator {
 
     /**
      * @param lot the lot to use
-     * @return a generated {@link SimpleChurch} model
+     * @param hm the height map to define the floor level
+     * @return a generated building model of a simple church
      */
-    public SimpleChurch apply(Parcel lot, InfiniteSurfaceHeightFacet hm) {
+    public Building apply(Parcel lot, InfiniteSurfaceHeightFacet hm) {
 
         Random rand = new MersenneRandom(seed ^ lot.getShape().hashCode());
 
         // make build-able area 1 block smaller, so make the roof stay inside
         Rect2i lotRc = lot.getShape().expand(new Vector2i(-1, -1));
 
-        boolean alignEast = (lotRc.width() > lotRc.height());
+        boolean alignEastWest = (lotRc.width() > lotRc.height());
+        Orientation o = alignEastWest ? Orientation.EAST : Orientation.NORTH;
 
-        // build along larger axis and rotate later, if necessary
-        int width = Math.max(lotRc.width(), lotRc.height());
-        int height = Math.min(lotRc.width(), lotRc.height());
+        if (rand.nextBoolean()) {
+            o = o.getOpposite();
+        }
 
-        int sideOff = 3;
-        int sideWidth = 5;
-        int entranceWidth = 2;
-        int entranceHeight = 4;
-        double relationLength = 0.2;       // tower size compared to nave size
+        Turtle turtle = new Turtle(Edges.getCorner(lotRc, o.getOpposite()), o);
+        int length = turtle.length(lotRc);
+        int width = turtle.width(lotRc);
+
         double relationWidth = 2.0;
 
-        int towerSize = (int) (width * relationLength);
+        int towerSize = (int) (length * 0.2);  // tower size compared to nave size
 
         // make it odd, so that the tented roof looks nice (1 block thick at the center)
         if (towerSize % 2 == 0) {
             towerSize++;
         }
 
-        int naveLen = width - towerSize;
-        int naveWidth = (int) Math.min(height - 2 * sideWidth, towerSize * relationWidth);
+        int sideOff = 3;
+        int sideWidth = 5;
+
+        int naveLen = length - towerSize;
+        int naveWidth = (int) Math.min(width - 2 * sideWidth, towerSize * relationWidth);
+        int sideLen = naveLen - 2 * sideOff;
 
         // make it odd, so it looks symmetric with the tower - make it smaller though
         if (naveWidth % 2 == 0) {
             naveWidth--;
         }
 
-        int ty = (height - towerSize) / 2;
-        int dy = (height - entranceWidth) / 2;
-        int ny = (height - naveWidth) / 2;
-        Rect2i naveRect = Rect2i.createFromMinAndSize(0, ny, naveLen, naveWidth);
-        Rect2i towerRect = Rect2i.createFromMinAndSize(naveLen - 1, ty, towerSize, towerSize); // -1 makes them overlap
-        Rect2i doorRc = Rect2i.createFromMinAndSize(0, dy, 1, entranceWidth);
-        Orientation doorOrientation = Orientation.WEST;
+        int entranceWidth = 3;  // odd number to center properly
+        Rect2i entranceRect = turtle.rectCentered(0, entranceWidth, 1);
 
-        Rect2i aisleLeftRc = Rect2i.createFromMinAndSize(sideOff, ny - sideWidth + 1, naveLen - 2 * sideOff, sideWidth);    // make them overlap
-        Rect2i aisleRightRc = Rect2i.createFromMinAndSize(sideOff, ny + naveWidth - 1, naveLen - 2 * sideOff, sideWidth);   // make them overlap
+        Rect2i naveRect = turtle.rectCentered(0, naveWidth, naveLen);
+        Rect2i towerRect = turtle.rectCentered(naveLen - 1, towerSize, towerSize); // the -1 makes tower and nave overlap
+        int baseHeight = getMaxHeight(entranceRect, hm) + 1; // 0 == terrain
 
-        int rot = alignEast ? 0 : 90;
+        DefaultBuilding church = new DefaultBuilding(turtle.getOrientation());
+        church.addPart(createNave(new Turtle(turtle), naveRect, entranceRect, baseHeight));
+        church.addPart(createTower(new Turtle(turtle), towerRect, baseHeight));
 
-        if (rand.nextBoolean()) {
-            rot += 180;
-        }
+        Rect2i aisleLeftRc = turtle.rect(-naveWidth / 2 - sideWidth + 1, sideOff, sideWidth, sideLen);  // make them overlap
+        Rect2i aisleRightRc = turtle.rect(naveWidth / 2, sideOff, sideWidth, sideLen); // make them overlap
 
-        Point center = new Point(width / 2, height / 2);
-        naveRect = transformRect(naveRect, lotRc, center, rot);
-        towerRect = transformRect(towerRect, lotRc, center, rot);
-        doorRc = transformRect(doorRc, lotRc, center, rot);
-        aisleLeftRc = transformRect(aisleLeftRc, lotRc, center, rot);
-        aisleRightRc = transformRect(aisleRightRc, lotRc, center, rot);
-        doorOrientation = doorOrientation.getRotated(rot);
-        Orientation leftOrient = Orientation.SOUTH.getRotated(rot);
-        Orientation rightOrient = Orientation.NORTH.getRotated(rot);
+        church.addPart(createAisle(new Turtle(turtle).rotate(-90), aisleLeftRc, baseHeight));
+        church.addPart(createAisle(new Turtle(turtle).rotate(90), aisleRightRc, baseHeight));
 
-        ImmutableVector2i doorDir = doorOrientation.getDir();
-        Rect2i probeRc = Rect2i.createFromMinAndSize(doorRc.minX() + doorDir.getX(), doorRc.minY() + doorDir.getY(), doorRc.width(), doorRc.height());
+        return church;
+    }
 
-        int baseHeight = getMaxHeight(probeRc, hm) + 1; // 0 == terrain
-        int towerHeight = 22;
+    private BuildingPart createNave(Turtle cur, Rect2i naveRect, Rect2i doorRc, int baseHeight) {
+        int entranceHeight = 4;
+
         int hallHeight = 9;
-        int sideHeight = 4;
-
-        Rect2i towerRoofRect = towerRect.expand(1, 1);
-        HipRoof towerRoof = new HipRoof(towerRoofRect, baseHeight + towerHeight, 2);
-        RectBuildingPart tower = new RectBuildingPart(towerRect, towerRoof, baseHeight, towerHeight);
 
         Rect2i naveRoofRect = naveRect.expand(1, 1);
-        WingDoor entrance = new WingDoor(doorOrientation, doorRc, baseHeight, baseHeight + entranceHeight);
-        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, baseHeight + hallHeight, entrance.getOrientation(), 1);
+        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, baseHeight + hallHeight, cur.getOrientation(), 1);
+
         RectBuildingPart nave = new RectBuildingPart(naveRect, naveRoof, baseHeight, hallHeight);
+
+        WingDoor entrance = new WingDoor(cur.getOrientation(), doorRc, baseHeight, baseHeight + entranceHeight);
         nave.addDoor(entrance);
 
-        SimpleChurch church = new SimpleChurch(doorOrientation, nave, tower);
+        return nave;
+    }
 
-        PentRoof roofLeft = new PentRoof(aisleLeftRc.expand(1, 1), baseHeight + sideHeight, leftOrient, 0.5);
-        PentRoof roofRight = new PentRoof(aisleRightRc.expand(1, 1), baseHeight + sideHeight, rightOrient, 0.5);
-        RectBuildingPart aisleLeft = new RectBuildingPart(aisleLeftRc, roofLeft, baseHeight, sideHeight);
-        RectBuildingPart aisleRight = new RectBuildingPart(aisleRightRc, roofRight, baseHeight, sideHeight);
+    private BuildingPart createTower(Turtle turtle, Rect2i rect, int baseHeight) {
+        int towerHeight = 22;
+        int doorHeight = 5;
 
-        church.addPart(aisleLeft);
-        church.addPart(aisleRight);
+        Orientation dir = turtle.getOrientation();
+        Rect2i towerRoofRect = rect.expand(1, 1);
+        HipRoof towerRoof = new HipRoof(towerRoofRect, baseHeight + towerHeight, 2);
+        RectBuildingPart tower = new RectBuildingPart(rect, towerRoof, baseHeight, towerHeight);
+
+        turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));
+
+        int width = turtle.width(rect) - 2;
+        tower.addDoor(new WingDoor(dir, turtle.rectCentered(0, width, 1), baseHeight, baseHeight + doorHeight));
 
         // create and add tower windows
         for (int i = 0; i < 3; i++) {
             // use the other three cardinal directions to place windows
-            Orientation orient = entrance.getOrientation().getRotated(90 * (i + 1));
-            LineSegment towerBorder = Edges.getEdge(towerRect, orient);
+            Orientation orient = dir.getRotated(90 * (i - 1)); // left, forward, right
+            LineSegment towerBorder = Edges.getEdge(rect, orient);
             Vector2i towerPos = new Vector2i(towerBorder.lerp(0.5f), RoundingMode.HALF_UP);
 
             Rect2i wndRect = Rect2i.createFromMinAndSize(towerPos.getX(), towerPos.getY(), 1, 1);
             tower.addWindow(new RectWindow(orient, wndRect, baseHeight + towerHeight - 3, baseHeight + towerHeight - 1, BlockTypes.AIR));
         }
 
-        return church;
+        return tower;
     }
 
-    /**
-     * @param rc the rectangle to transform
-     * @param bounds the bounding rectangle for the transformation (translation offset and rotation center)
-     * @param center the center of the original placing rect
-     * @param rot the rotation in degrees (only multiples of 45deg.)
-     * @return the translated and rotated rectangle
-     */
-    public static Rect2i transformRect(Rect2i rc, Rect2i bounds, Point center, int rot) {
+    private RectBuildingPart createAisle(Turtle turtle, Rect2i rect, int baseHeight) {
+        Rect2i roofRect = turtle.adjustRect(rect, -1, 1, 1, 1);  // back overlap +1 to not intersect with nave
 
-        double anchorx = bounds.width() * 0.5;
-        double anchory = bounds.height() * 0.5;
+        int sideWallHeight = 4;
+        int doorHeight = sideWallHeight - 1;
+        Orientation dir = turtle.getOrientation();
+        Orientation roofOrient = dir.getOpposite();
+        PentRoof roof = new PentRoof(roofRect, baseHeight + sideWallHeight, roofOrient, 0.5);
+        RectBuildingPart aisle = new RectBuildingPart(rect, roof, baseHeight, sideWallHeight);
 
-        AffineTransform at = new AffineTransform();
-        at.translate(bounds.minX(), bounds.minY());
-        at.translate(anchorx, anchory);
-        at.rotate(Math.toRadians(rot));
-        at.translate(-center.x, -center.y);
+        turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));
 
-        Point ptSrc1 = new Point(rc.minX(), rc.minY());
-        Point ptSrc2 = new Point(rc.minX() + rc.width(), rc.minY() + rc.height());
-        Point ptDst1 = new Point();
-        Point ptDst2 = new Point();
-        at.transform(ptSrc1, ptDst1);
-        at.transform(ptSrc2, ptDst2);
+        int len = turtle.width(rect) / 2 - 2;
+        aisle.addDoor(new WingDoor(dir, turtle.rect(-len+1, 0, 3, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(-1, 0, 3, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(len-3, 0, 3, 1), baseHeight, baseHeight + doorHeight));
 
-        int x = Math.min(ptDst1.x, ptDst2.x);
-        int y = Math.min(ptDst1.y, ptDst2.y);
-        int width = Math.max(ptDst1.x, ptDst2.x) - x;
-        int height = Math.max(ptDst1.y, ptDst2.y) - y;
-        Rect2i result = Rect2i.createFromMinAndSize(x, y, width, height);
-        return result;
+        return aisle;
     }
 
     private int getMaxHeight(Rect2i rc, InfiniteSurfaceHeightFacet hm) {
