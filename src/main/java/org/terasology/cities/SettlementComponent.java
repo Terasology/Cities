@@ -26,6 +26,9 @@ public final class SettlementComponent implements Component {
 
     public Settlement settlement;
 
+    public SettlementComponent() {
+    }
+
     public SettlementComponent(Settlement settlement) {
         this.settlement = settlement;
     }
