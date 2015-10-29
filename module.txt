@@ -24,14 +24,6 @@
         {
             "id" : "CommonWorld",
             "minVersion" : "0.2.0"
-        },
-        {
-            "id" : "ItemRendering",
-            "minVersion" : "0.1.0"
-        },
-        {
-            "id" : "Oreons",
-            "minVersion" : "0.2.1-SNAPSHOT"
         }
     ],
     "isServerSideOnly" : false,
