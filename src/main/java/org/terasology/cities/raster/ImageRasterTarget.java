@@ -141,10 +141,9 @@ public class ImageRasterTarget implements RasterTarget {
         // if air is drawn at or below terrain level, then reduce height accordingly
         // The color remains unchanged which is wrong, but this information is not available in 2D
         if (type == BlockTypes.AIR) {
-            if (heightMap[lx][lz] >= y) {
+            // reduce top height only if the top block is replaced with air
+            if (heightMap[lx][lz] == y) {
                 heightMap[lx][lz] = (short) (y - 1);
-//                typeMap[lx][lz] = UNKNOWN;
-//                image.setRGB(lx, y, rgb);
             }
             return;
         }
