@@ -16,6 +16,8 @@
 
 package org.terasology.cities.roof;
 
+import java.math.RoundingMode;
+
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.model.roof.PentRoof;
@@ -28,6 +30,8 @@ import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.Rect2i;
+
+import com.google.common.math.DoubleMath;
 
 /**
  * Converts a {@link PentRoof} into blocks
@@ -59,17 +63,17 @@ public class PentRoofRasterizer extends RoofRasterizer<PentRoof> {
                 BaseVector2i dir = roof.getOrientation().getDir();
 
                 if (dir.getX() < 0) {
-                    rx -= area.width() + 1;  // maxX
+                    rx -= area.width() - 1;  // maxX
                 }
 
                 if (dir.getY() < 0) {
-                    rz -= area.height() + 1; // maxY
+                    rz -= area.height() - 1; // maxY
                 }
 
                 int hx = rx * dir.getX();
                 int hz = rz * dir.getY();
 
-                int h = TeraMath.floorToInt(Math.max(hx, hz) * roof.getPitch());
+                int h = DoubleMath.roundToInt(Math.max(hx, hz) * roof.getPitch(), RoundingMode.HALF_UP);
 
                 return roof.getBaseHeight() + h;
             }
@@ -80,7 +84,7 @@ public class PentRoofRasterizer extends RoofRasterizer<PentRoof> {
         Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_HIP);
         RasterUtil.fillRect(pen, area);
 
-        final Rect2i wallRect = roof.getArea().expand(-1, -1);
+        final Rect2i wallRect = roof.getBaseArea();
 
         HeightMap hmGableBottom = new HeightMap() {
 

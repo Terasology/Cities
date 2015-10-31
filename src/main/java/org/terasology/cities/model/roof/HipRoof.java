@@ -27,25 +27,27 @@ public class HipRoof extends RectangularRoof {
     private final double pitch;
 
     /**
-     * @param rc the roof area
+     * @param baseRect the building rectangle (must be fully inside <code>withEaves</code>).
+     * @param withEaves the roof area including eaves (=overhang)
      * @param baseHeight the base height of the roof
      * @param maxHeight the maximum height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rect2i rc, int baseHeight, double pitch, int maxHeight) {
-        super(rc, baseHeight);
+    public HipRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, double pitch, int maxHeight) {
+        super(baseRect, withEaves, baseHeight);
 
         this.maxHeight = maxHeight;
         this.pitch = pitch;
     }
 
     /**
-     * @param rc the roof area
+     * @param baseRect the building rectangle (must be fully inside <code>withEaves</code>).
+     * @param withEaves the roof area including eaves (=overhang)
      * @param baseHeight the base height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rect2i rc, int baseHeight, double pitch) {
-        this(rc, baseHeight, pitch, Integer.MAX_VALUE);
+    public HipRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, double pitch) {
+        this(baseRect, withEaves, baseHeight, pitch, Integer.MAX_VALUE);
     }
 
     /**

@@ -24,12 +24,13 @@ import org.terasology.math.geom.Rect2i;
 public class BattlementRoof extends FlatRoof {
 
     /**
-     * @param rc the roof shape
+     * @param baseRect the building rectangle (must be fully inside <code>withEaves</code>).
+     * @param withEaves the roof area including eaves (=overhang)
      * @param baseHeight the base height of the roof
      * @param merlonHeight the height of the border
      */
-    public BattlementRoof(Rect2i rc, int baseHeight, int merlonHeight) {
-        super(rc, baseHeight, merlonHeight);
+    public BattlementRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, int merlonHeight) {
+        super(baseRect, withEaves, baseHeight, merlonHeight);
     }
 
     /**

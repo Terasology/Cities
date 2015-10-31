@@ -72,9 +72,7 @@ public class RectHouseGenerator {
 
         int roofBaseHeight = floorHeight + wallHeight;
 
-        // the roof area is 1 block larger all around
-        Rect2i roofArea = layout.expand(new Vector2i(1, 1));
-        Roof roof = createRoof(rng, roofArea, roofBaseHeight);
+        Roof roof = createRoof(rng, layout, roofBaseHeight);
 
         RectBuildingPart part = new RectBuildingPart(layout, roof, floorHeight, wallHeight);
         bldg.addPart(part);
@@ -137,22 +135,25 @@ public class RectHouseGenerator {
         return result;
     }
 
-    private Roof createRoof(Random r, Rect2i roofArea, int roofBaseHeight) {
+    private Roof createRoof(Random r, Rect2i layout, int roofBaseHeight) {
+        // the roof area is 1 block larger all around
+        Rect2i roofArea = layout.expand(new Vector2i(1, 1));
+
         int type = r.nextInt(100);
 
         if (type < 33) {
             int roofPitch = 1;
-            return new HipRoof(roofArea, roofBaseHeight, roofPitch, roofBaseHeight + 1);
+            return new HipRoof(layout, roofArea, roofBaseHeight, roofPitch, roofBaseHeight + 1);
         }
 
         if (type < 66) {
-            return new DomeRoof(roofArea, roofBaseHeight, Math.min(roofArea.width(), roofArea.height()) / 2);
+            return new DomeRoof(layout, roofArea, roofBaseHeight, Math.min(roofArea.width(), roofArea.height()) / 2);
         }
 
         boolean alongX = (roofArea.width() > roofArea.height());
         Orientation o = alongX ? Orientation.EAST : Orientation.NORTH;
 
-        return new SaddleRoof(roofArea, roofBaseHeight, o, 1);
+        return new SaddleRoof(layout, roofArea, roofBaseHeight, o, 1);
     }
 
 }

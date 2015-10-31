@@ -33,7 +33,7 @@ public class SimpleTower extends SimpleRectHouse implements Tower {
      * @param wallHeight the building height above the floor level
      */
     public SimpleTower(Orientation orient, Rect2i layout, int baseHeight, int wallHeight) {
-        super(orient, layout, new BattlementRoof(layout.expand(new Vector2i(2, 2)),
+        super(orient, layout, new BattlementRoof(layout, layout.expand(new Vector2i(2, 2)),
                 baseHeight + wallHeight, 1), baseHeight, wallHeight);
     }
 

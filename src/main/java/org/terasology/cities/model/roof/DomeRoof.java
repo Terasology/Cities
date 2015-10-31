@@ -26,12 +26,13 @@ public class DomeRoof extends RectangularRoof {
     private final int height;
 
     /**
-     * @param rc the roof shape
+     * @param baseRect the building rectangle (must be fully inside <code>withEaves</code>).
+     * @param withEaves the roof area including eaves (=overhang)
      * @param baseHeight the base height of the roof
      * @param maxHeight the maximum height of the roof
      */
-    public DomeRoof(Rect2i rc, int baseHeight, int maxHeight) {
-        super(rc, baseHeight);
+    public DomeRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, int maxHeight) {
+        super(baseRect, withEaves, baseHeight);
 
         this.height = maxHeight;
     }

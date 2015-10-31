@@ -79,21 +79,23 @@ public class SaddleRoofRasterizer extends RoofRasterizer<SaddleRoof> {
         Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_SADDLE);
         RasterUtil.fillRect(pen, area);
 
+        Rect2i wallRect = roof.getBaseArea();
+
         HeightMap hmGableBottom = new HeightMap() {
 
             @Override
             public int apply(int x, int z) {
                 int h0 = roof.getBaseHeight();
                 if (alongX) {
-                    int left = area.minX() + 1;    // building border is +1
-                    int right = area.maxX() - 1;   // building border is -1
+                    int left = wallRect.minX();
+                    int right = wallRect.maxX();
 
                     if (x == left || x == right) {
                         return h0;
                     }
                 } else {
-                    int top = area.minY() + 1;    // building border is +1
-                    int bottom = area.maxY() - 1;  // building border is -1
+                    int top = wallRect.minY();
+                    int bottom = wallRect.maxY();
                     if (z == top || z == bottom) {
                         return h0;
                     }

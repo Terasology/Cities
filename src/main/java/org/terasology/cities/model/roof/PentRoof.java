@@ -30,13 +30,14 @@ public class PentRoof extends RectangularRoof {
     private final Orientation orientation;
 
     /**
-     * @param rc the roof shape
+     * @param baseRect the building rectangle (must be fully inside <code>withEaves</code>).
+     * @param withEaves the roof area including eaves (=overhang)
      * @param baseHeight the base height of the roof
      * @param pitch the roof pitch
      * @param orientation where the top edge is
      */
-    public PentRoof(Rect2i rc, int baseHeight, Orientation orientation, double pitch) {
-        super(rc, baseHeight);
+    public PentRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, Orientation orientation, double pitch) {
+        super(baseRect, withEaves, baseHeight);
 
         Preconditions.checkArgument(pitch > 0 && pitch < 10, "pitch must be in [0..10]");
 

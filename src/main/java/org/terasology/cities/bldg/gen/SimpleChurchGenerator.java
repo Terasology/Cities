@@ -125,7 +125,7 @@ public class SimpleChurchGenerator {
         int topHeight = baseHeight + hallHeight;
 
         Rect2i naveRoofRect = naveRect.expand(1, 1);
-        SaddleRoof naveRoof = new SaddleRoof(naveRoofRect, topHeight, cur.getOrientation(), 1);
+        SaddleRoof naveRoof = new SaddleRoof(naveRect, naveRoofRect, topHeight, cur.getOrientation(), 1);
 
         RectBuildingPart nave = new RectBuildingPart(naveRect, naveRoof, baseHeight, hallHeight);
 
@@ -149,7 +149,7 @@ public class SimpleChurchGenerator {
 
         Orientation dir = turtle.getOrientation();
         Rect2i towerRoofRect = rect.expand(1, 1);
-        HipRoof towerRoof = new HipRoof(towerRoofRect, baseHeight + towerHeight, 2);
+        HipRoof towerRoof = new HipRoof(rect, towerRoofRect, baseHeight + towerHeight, 2);
         RectBuildingPart tower = new RectBuildingPart(rect, towerRoof, baseHeight, towerHeight);
 
         turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));
@@ -178,7 +178,7 @@ public class SimpleChurchGenerator {
         int doorHeight = sideWallHeight - 1;
         Orientation dir = turtle.getOrientation();
         Orientation roofOrient = dir.getOpposite();
-        PentRoof roof = new PentRoof(roofRect, baseHeight + sideWallHeight, roofOrient, 0.333f);
+        PentRoof roof = new PentRoof(rect, roofRect, baseHeight + sideWallHeight, roofOrient, 0.333f);
         RectBuildingPart aisle = new RectBuildingPart(rect, roof, baseHeight, sideWallHeight);
 
         turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));

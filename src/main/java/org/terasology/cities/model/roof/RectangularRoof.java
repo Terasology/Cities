@@ -23,16 +23,27 @@ import org.terasology.math.geom.Rect2i;
  */
 public class RectangularRoof extends AbstractRoof {
 
+    private Rect2i baseRect;
+
     /**
-     * @param rc the roof area
+     * @param baseRect the building rectangle (must be fully inside <code>withEaves</code>).
+     * @param withEaves the roof area including eaves (=overhang)
      * @param baseHeight the base height of the roof
      */
-    public RectangularRoof(Rect2i rc, int baseHeight) {
-        super(rc, baseHeight);
+    public RectangularRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight) {
+        super(withEaves, baseHeight);
+        this.baseRect = baseRect;
     }
 
     /**
-     * @return the roof area
+     * @return the roof area including eaves
+     */
+    public Rect2i getBaseArea() {
+        return baseRect;
+    }
+
+    /**
+     * @return the roof area including eaves
      */
     @Override
     public Rect2i getArea() {
