@@ -47,7 +47,6 @@ import org.terasology.cities.window.RectWindowRasterizer;
 import org.terasology.cities.window.SimpleWindowRasterizer;
 import org.terasology.cities.window.WindowFacetProvider;
 import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
-import org.terasology.core.world.generator.facetProviders.EnsureSpawnableChunkZeroProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
 import org.terasology.core.world.generator.facetProviders.SurfaceToDensityProvider;
 import org.terasology.core.world.generator.rasterizers.FloraRasterizer;
@@ -134,7 +133,6 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new BuildingFacetProvider())
                 .addProvider(new SettlementFacetProvider())
                 .addProvider(new DefaultFloraProvider())
-                .addProvider(new EnsureSpawnableChunkZeroProvider())
                 .addRasterizer(new SolidRasterizer())
                 .addPlugins()
                 .addEntities(new SettlementEntityProvider())
