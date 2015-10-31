@@ -21,9 +21,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import org.terasology.cities.AwtConverter;
-import org.terasology.cities.bldg.BuildingPart;
-import org.terasology.cities.bldg.Tower;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.world.generation.Region;
 import org.terasology.world.viewer.layers.AbstractFacetLayer;
@@ -35,9 +32,6 @@ import org.terasology.world.viewer.layers.ZOrder;
  */
 @Renders(value = TownWallFacet.class, order = ZOrder.BIOME + 3)
 public class TownWallFacetLayer extends AbstractFacetLayer {
-
-    private static final Color TOWER_COLOR = new Color(128, 32, 16);
-    private static final Color TOWER_FILL_COLOR = new Color(64, 32, 16);
 
     private static final Color WALL_FILL_COLOR = new Color(192, 192, 192);
     private static final Color WALL_COLOR = new Color(96, 96, 96);
@@ -71,17 +65,6 @@ public class TownWallFacetLayer extends AbstractFacetLayer {
             g.setColor(WALL_FILL_COLOR);
             g.setStroke(new BasicStroke(ws.getWallThickness() - 2, BasicStroke.CAP_ROUND, BasicStroke.CAP_BUTT));
             g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
-        }
-
-
-        for (Tower tower : tw.getTowers()) {
-            for (BuildingPart part : tower.getParts()) {
-                java.awt.Shape shape = AwtConverter.toAwt(part.getShape());
-                g.setColor(TOWER_FILL_COLOR);
-                g.fill(shape);
-                g.setColor(TOWER_COLOR);
-                g.draw(shape);
-            }
         }
     }
 }

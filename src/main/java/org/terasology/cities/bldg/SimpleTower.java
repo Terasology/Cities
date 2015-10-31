@@ -16,7 +16,12 @@
 
 package org.terasology.cities.bldg;
 
+import java.math.RoundingMode;
+
+import org.terasology.cities.common.Edges;
+import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.BattlementRoof;
+import org.terasology.cities.model.roof.Roof;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
@@ -24,7 +29,10 @@ import org.terasology.math.geom.Vector2i;
 /**
  * A simple tower
  */
-public class SimpleTower extends SimpleRectHouse implements Tower {
+public class SimpleTower extends DefaultBuilding implements Tower {
+
+    private Rect2i shape;
+    private RectBuildingPart room;
 
     /**
      * @param orient the orientation of the building
@@ -33,9 +41,23 @@ public class SimpleTower extends SimpleRectHouse implements Tower {
      * @param wallHeight the building height above the floor level
      */
     public SimpleTower(Orientation orient, Rect2i layout, int baseHeight, int wallHeight) {
-        super(orient, layout, new BattlementRoof(layout, layout.expand(new Vector2i(2, 2)),
-                baseHeight + wallHeight, 1), baseHeight, wallHeight);
+        super(orient);
+        this.shape = layout;
+
+        Rect2i roofArea = layout.expand(new Vector2i(2, 2));
+        Roof roof = new BattlementRoof(layout, roofArea, baseHeight + wallHeight, 1);
+        room = new RectBuildingPart(layout, roof, baseHeight, wallHeight);
+        Vector2i doorPos = new Vector2i(Edges.getCorner(layout, orient));
+        room.addDoor(new SimpleDoor(orient, doorPos, baseHeight, baseHeight + 2));
+        addPart(room);
     }
 
+    public Rect2i getShape() {
+        return shape;
+    }
+
+    public RectBuildingPart getRoom() {
+        return room;
+    }
 
 }

@@ -31,7 +31,7 @@ import org.terasology.math.geom.Vector2i;
 public class SimpleRectHouse extends DefaultBuilding {
 
     private Rect2i shape;
-    private DefaultBuildingPart room;
+    private RectBuildingPart room;
 
     /**
      * @param orient the orientation of the building
@@ -44,7 +44,7 @@ public class SimpleRectHouse extends DefaultBuilding {
         super(orient);
 
         this.shape = layout;
-        room = new DefaultBuildingPart(layout, roof, baseHeight, wallHeight);
+        room = new RectBuildingPart(layout, roof, baseHeight, wallHeight);
         Vector2i doorPos = new Vector2i(Edges.getEdge(layout, orient).lerp(0.5f), RoundingMode.HALF_UP);
         room.addDoor(new SimpleDoor(orient, doorPos, baseHeight, baseHeight + 2));
         addPart(room);
@@ -54,7 +54,7 @@ public class SimpleRectHouse extends DefaultBuilding {
         return shape;
     }
 
-    public DefaultBuildingPart getRoom() {
+    public RectBuildingPart getRoom() {
         return room;
     }
 }

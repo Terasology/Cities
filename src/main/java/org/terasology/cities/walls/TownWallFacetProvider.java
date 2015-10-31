@@ -22,12 +22,20 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.bldg.BuildingFacet;
+import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.SimpleTower;
+import org.terasology.cities.bldg.Tower;
 import org.terasology.cities.blocked.BlockedAreaFacet;
+import org.terasology.cities.door.Door;
+import org.terasology.cities.door.DoorFacet;
+import org.terasology.cities.roof.RoofFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
+import org.terasology.cities.window.Window;
+import org.terasology.cities.window.WindowFacet;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.BaseVector2i;
@@ -41,6 +49,7 @@ import org.terasology.world.generation.FacetProvider;
 import org.terasology.world.generation.GeneratingRegion;
 import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
+import org.terasology.world.generation.Updates;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -51,6 +60,7 @@ import com.google.common.collect.Lists;
  * while respecting blocked areas
  */
 @Produces(TownWallFacet.class)
+@Updates(@Facet(BuildingFacet.class)) // TODO: find out why specifying door/window/roof does not work
 @Requires({
     @Facet(SiteFacet.class),
     @Facet(BlockedAreaFacet.class),
@@ -76,6 +86,10 @@ public class TownWallFacetProvider implements FacetProvider {
         SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
         BuildableTerrainFacet buildableAreaFacet = region.getRegionFacet(BuildableTerrainFacet.class);
+        BuildingFacet buildingFacet = region.getRegionFacet(BuildingFacet.class);
+        WindowFacet windowFacet = region.getRegionFacet(WindowFacet.class);
+        RoofFacet roofFacet = region.getRegionFacet(RoofFacet.class);
+        DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
 
         for (Site site : siteFacet.getSettlements()) {
             if (Circle.intersects(site.getPos(), site.getRadius(), wallFacet.getWorldRegion())) {
@@ -83,6 +97,20 @@ public class TownWallFacetProvider implements FacetProvider {
                     Optional<TownWall> opt = cache.get(site, () -> generate(site, heightFacet, buildableAreaFacet, blockedAreaFacet));
                     if (opt.isPresent()) {
                         wallFacet.addTownWall(opt.get());
+                        for (Tower tower : opt.get().getTowers()) {
+                            buildingFacet.addBuilding(tower);
+
+                            // TODO: add bounds check
+                            for (BuildingPart part : tower.getParts()) {
+                                for (Window wnd : part.getWindows()) {
+                                    windowFacet.addWindow(wnd);
+                                }
+                                for (Door door : part.getDoors()) {
+                                    doorFacet.addDoor(door);
+                                }
+                                roofFacet.addRoof(part.getRoof());
+                            }
+                        }
                     }
                 } catch (ExecutionException e) {
                     logger.error("Could not compute buildings for {}", region.getRegion(), e);
