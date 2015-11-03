@@ -24,12 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.bldg.BuildingFacet;
 import org.terasology.cities.bldg.BuildingPart;
+import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.bldg.SimpleTower;
 import org.terasology.cities.bldg.Tower;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.door.DoorFacet;
+import org.terasology.cities.door.WingDoor;
 import org.terasology.cities.roof.RoofFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
@@ -297,6 +299,13 @@ public class TownWallFacetProvider implements FacetProvider {
     private SimpleTower createTower(Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
         int towerHeight = 9;
         SimpleTower tower = createTower(towerHeight, orient, hm, towerPos);
+        RectBuildingPart staircase = tower.getStaircase();
+        Rect2i staircaseRect = staircase.getShape().expand(-1, -1); // inner staircase
+        Vector2i c1 = Edges.getCorner(staircaseRect, orient.getRotated(180 - 45));
+        Vector2i c2 = Edges.getCorner(staircaseRect, orient.getRotated(180 + 45));
+        Rect2i doorRect = Rect2i.createEncompassing(c1, c2);
+        int roofLevel = staircase.getTopHeight();
+        staircase.addDoor(new WingDoor(orient.getOpposite(), doorRect, roofLevel, roofLevel + 1));
         return tower;
     }
 
