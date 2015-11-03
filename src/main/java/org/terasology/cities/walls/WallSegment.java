@@ -22,7 +22,7 @@ import org.terasology.math.geom.ImmutableVector2i;
 /**
  * A straight wall segment
   */
-public class WallSegment {
+public abstract class WallSegment {
 
     private final ImmutableVector2i start;
     private final ImmutableVector2i end;
@@ -61,4 +61,8 @@ public class WallSegment {
         return this.wallThickness;
     }
 
+    /**
+     * @return true if the segment is passable
+     */
+    public abstract boolean isGate();
 }

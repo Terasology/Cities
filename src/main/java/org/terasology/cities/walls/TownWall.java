@@ -16,6 +16,7 @@
 
 package org.terasology.cities.walls;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -26,13 +27,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * Defines a town wall consisting of {@link Tower}s 
+ * Defines a town wall consisting of {@link Tower}s
  * and {@link WallSegment}s.
  */
 public class TownWall {
 
     private final List<WallSegment> walls = Lists.newArrayList();
-    private final Set<Tower> towers = Sets.newHashSet();
+    private final List<Tower> towers = new ArrayList<>();
 
     /**
      * @param wallSegment the wall segment to add
@@ -58,7 +59,7 @@ public class TownWall {
     /**
      * @return an unmodifiable view on the towers
      */
-    public Set<Tower> getTowers() {
-        return Collections.unmodifiableSet(towers);
+    public List<Tower> getTowers() {
+        return Collections.unmodifiableList(towers);
     }
 }

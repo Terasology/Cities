@@ -20,7 +20,7 @@ import org.terasology.math.geom.BaseVector2i;
 
 /**
  * A straight, solid wall segment
-  */
+ */
 public class SolidWallSegment extends WallSegment {
 
     private int wallHeight;
@@ -41,5 +41,10 @@ public class SolidWallSegment extends WallSegment {
      */
     public int getWallHeight() {
         return this.wallHeight;
+    }
+
+    @Override
+    public boolean isGate() {
+        return false;
     }
 }

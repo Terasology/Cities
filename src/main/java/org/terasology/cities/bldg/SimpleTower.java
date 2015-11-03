@@ -54,7 +54,7 @@ public class SimpleTower extends DefaultBuilding implements Tower {
         return shape;
     }
 
-    public RectBuildingPart getRoom() {
+    public RectBuildingPart getStaircase() {
         return room;
     }
 

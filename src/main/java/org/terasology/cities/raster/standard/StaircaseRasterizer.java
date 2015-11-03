@@ -54,13 +54,15 @@ public class StaircaseRasterizer extends BuildingPartRasterizer<StaircaseBuildin
             return;
         }
 
+        if (part.getTopHeight() < target.getMinHeight()) {
+            return;
+        }
+
+        int y = part.getBaseHeight();
         Rect2i stairsRect = rc.expand(-1, -1);
         Orientation o = part.getOrientation();
-        Vector2i entry = Edges.getCorner(stairsRect, o);
+        Vector2i entry = Edges.getCorner(stairsRect, o.getOpposite());
         Iterator<BaseVector2i> it = new RectIterable(stairsRect, false, entry).iterator();
-        it.next(); // don't start right in front of the door
-        it.next(); // don't start right in front of the door
-        int y = part.getBaseHeight();
         while (y < part.getTopHeight() && y <= target.getMaxHeight()) {
             BaseVector2i v = it.next();
             // parts of the staircase could be outside

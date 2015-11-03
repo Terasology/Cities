@@ -33,6 +33,7 @@ import org.terasology.world.viewer.layers.ZOrder;
 @Renders(value = TownWallFacet.class, order = ZOrder.BIOME + 3)
 public class TownWallFacetLayer extends AbstractFacetLayer {
 
+    private static final Color GATE_FILL_COLOR = new Color(255, 255, 224);
     private static final Color WALL_FILL_COLOR = new Color(192, 192, 192);
     private static final Color WALL_COLOR = new Color(96, 96, 96);
 
@@ -62,7 +63,11 @@ public class TownWallFacetLayer extends AbstractFacetLayer {
             g.setStroke(new BasicStroke(ws.getWallThickness(), BasicStroke.CAP_ROUND, BasicStroke.CAP_BUTT));
             g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
 
-            g.setColor(WALL_FILL_COLOR);
+            if (ws.isGate()) {
+                g.setColor(GATE_FILL_COLOR);
+            } else {
+                g.setColor(WALL_FILL_COLOR);
+            }
             g.setStroke(new BasicStroke(ws.getWallThickness() - 2, BasicStroke.CAP_ROUND, BasicStroke.CAP_BUTT));
             g.drawLine(start.getX(), start.getY(), end.getX(), end.getY());
         }

@@ -27,6 +27,7 @@ import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.SimpleTower;
 import org.terasology.cities.bldg.Tower;
 import org.terasology.cities.blocked.BlockedAreaFacet;
+import org.terasology.cities.common.Edges;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.roof.RoofFacet;
@@ -34,6 +35,8 @@ import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
+import org.terasology.cities.window.RectWindow;
+import org.terasology.cities.window.SimpleWindow;
 import org.terasology.cities.window.Window;
 import org.terasology.cities.window.WindowFacet;
 import org.terasology.commonworld.Orientation;
@@ -145,6 +148,8 @@ public class TownWallFacetProvider implements FacetProvider {
         // generate towers first
         List<Vector2i> tp = getTowerPosList(rand, center, maxRad, step);
         List<Boolean> blocked = getBlockedPos(tp, buildableAreaFacet, blockedAreaFacet);
+        SimpleTower lastTower = null;
+        SimpleTower firstTower = null;
         int lastHit = Short.MIN_VALUE;
         int firstHit = Short.MIN_VALUE;
 
@@ -160,49 +165,57 @@ public class TownWallFacetProvider implements FacetProvider {
                 Orientation orient = orientationFromDirection(dirFromCenter);
 
                 if (!prevOk) {                          // the previous location was blocked -> this is the second part of a gate
-                    tw.addTower(createGateTower(orient, heightFacet, tp.get(i)));
+                    SimpleTower tower = createGateTower(orient, heightFacet, tp.get(i));
+                    tw.addTower(tower);
 
                     if (firstHit < 0) {
                         firstHit = i;
+                        firstTower = tower;
                     }
 
                     if (lastHit >= 0) {
-                        Vector2i start = tp.get(lastHit);
-                        Vector2i end = tp.get(i);
-
+                        Vector2i start = getAnchor(lastTower, -90);
+                        Vector2i end = getAnchor(tower, 90);
                         tw.addWall(createGateWall(start, end));
                     }
                     lastHit = i;
+                    lastTower = tower;
                 } else
 
                 if (!nextOk) {                          // the next location is blocked -> this is the first part of a gate
-                    tw.addTower(createGateTower(orient, heightFacet, tp.get(i)));
+                    SimpleTower tower = createGateTower(orient, heightFacet, tp.get(i));
+                    tw.addTower(tower);
 
                     if (firstHit < 0) {
                         firstHit = i;
+                        firstTower = tower;
                     }
                     if (lastHit >= 0) {
-                        Vector2i start = tp.get(lastHit);
-                        Vector2i end = tp.get(i);
+                        Vector2i start = getAnchor(lastTower, -90);
+                        Vector2i end = getAnchor(tower, 90);
 
                         tw.addWall(createSolidWall(start, end));
                     }
                     lastHit = i;
+                    lastTower = tower;
                 } else
 
                 if (i - lastHit > 5 && tp.size() + i - firstHit > 5) {          // the last/next tower is n segments away -> place another one
-                    tw.addTower(createTower(orient, heightFacet, tp.get(i)));
+                    SimpleTower tower = createTower(orient, heightFacet, tp.get(i));
+                    tw.addTower(tower);
 
                     if (firstHit < 0) {
                         firstHit = i;
+                        firstTower = tower;
                     }
 
                     if (lastHit >= 0) {
-                        Vector2i start = tp.get(lastHit);
-                        Vector2i end = tp.get(i);
+                        Vector2i start = getAnchor(lastTower, -90);
+                        Vector2i end = getAnchor(tower, 90);
                         tw.addWall(createSolidWall(start, end));
                     }
                     lastHit = i;
+                    lastTower = tower;
                 }
             }
         }
@@ -211,12 +224,18 @@ public class TownWallFacetProvider implements FacetProvider {
         // --> this could be a gate segment
         // --> TODO: find out
         if (firstHit >= 0 && lastHit >= 0) {
-            Vector2i start = tp.get(lastHit);
-            Vector2i end = tp.get(firstHit);
+            Vector2i start = getAnchor(lastTower, -90);
+            Vector2i end = getAnchor(firstTower, 90);
             tw.addWall(createSolidWall(start, end));
         }
 
         return Optional.of(tw);
+    }
+
+    private Vector2i getAnchor(SimpleTower tower, int degrees) {
+        Orientation orientation = tower.getOrientation();
+        Rect2i lastRect = tower.getStaircase().getShape();
+        return Edges.getCorner(lastRect, orientation.getRotated(degrees));
     }
 
     private static Orientation orientationFromDirection(Vector2i d) {
@@ -263,21 +282,27 @@ public class TownWallFacetProvider implements FacetProvider {
         return list;
     }
 
-    private SimpleTower createGateTower(Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
-        int towerHeight = 10;
-        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos)) + 1;
+    private SimpleTower createTower(int towerHeight, Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i pos) {
+        int baseHeight = TeraMath.floorToInt(hm.getWorld(pos)) + 1;
 
-        Rect2i layout = getTowerRect(towerPos);
+        Rect2i layout = getTowerRect(pos);
+        int stairHalfLoop = layout.width() - 2 + layout.height() - 2 - 2;
+        int wndHeight = stairHalfLoop + 3;
         SimpleTower tower = new SimpleTower(orient, layout, baseHeight, towerHeight);
+        Vector2i windowPos = new Vector2i(Edges.getCorner(layout, orient));
+        tower.getStaircase().addWindow(new SimpleWindow(orient.getOpposite(), windowPos, baseHeight + wndHeight));
         return tower;
     }
 
     private SimpleTower createTower(Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
         int towerHeight = 9;
-        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos)) + 1;
+        SimpleTower tower = createTower(towerHeight, orient, hm, towerPos);
+        return tower;
+    }
 
-        Rect2i layout = getTowerRect(towerPos);
-        SimpleTower tower = new SimpleTower(orient, layout, baseHeight, towerHeight);
+    private SimpleTower createGateTower(Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
+        int towerHeight = 10;
+        SimpleTower tower = createTower(towerHeight, orient, hm, towerPos);
         return tower;
     }
 
