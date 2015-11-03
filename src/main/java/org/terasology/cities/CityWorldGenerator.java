@@ -27,6 +27,7 @@ import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
+import org.terasology.cities.raster.standard.StaircaseRasterizer;
 import org.terasology.cities.roads.RoadFacetProvider;
 import org.terasology.cities.roads.RoadRasterizer;
 import org.terasology.cities.roof.ConicRoofRasterizer;
@@ -96,6 +97,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .register(BlockTypes.BUILDING_WALL, "Cities:stonawall1")
             .register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark")
             .register(BlockTypes.BUILDING_FOUNDATION, "core:gravel")
+            .register(BlockTypes.TOWER_STAIRS, "core:CobbleStone")
             .register(BlockTypes.ROOF_FLAT, "Cities:rooftiles2")
             .register(BlockTypes.ROOF_HIP, "Cities:wood3")
             .register(BlockTypes.ROOF_SADDLE, "Cities:wood3")
@@ -141,6 +143,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new SimpleFenceRasterizer(theme))
                 .addRasterizer(new RectPartRasterizer(theme))
                 .addRasterizer(new RoundPartRasterizer(theme))
+                .addRasterizer(new StaircaseRasterizer(theme))
                 .addRasterizer(new FlatRoofRasterizer(theme))
                 .addRasterizer(new SaddleRoofRasterizer(theme))
                 .addRasterizer(new PentRoofRasterizer(theme))

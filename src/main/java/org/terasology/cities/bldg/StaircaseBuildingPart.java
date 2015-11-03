@@ -16,37 +16,24 @@
 
 package org.terasology.cities.bldg;
 
-import java.util.Set;
-
-import org.terasology.cities.door.Door;
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.cities.window.Window;
-import org.terasology.math.geom.Shape;
+import org.terasology.commonworld.Orientation;
+import org.terasology.math.geom.Rect2i;
 
 /**
- * Defines a part of a building.
- * This is similar to an entire building.
+ *
  */
-public interface BuildingPart {
+public class StaircaseBuildingPart extends RectBuildingPart {
 
-    /**
-     * @return the building layout
-     */
-    Shape getShape();
+    private Orientation orientation;
 
-    Roof getRoof();
-
-    int getWallHeight();
-
-    int getBaseHeight();
-
-    /**
-     * @return baseHeight + wallHeight;
-     */
-    default int getTopHeight() {
-        return getBaseHeight() + getWallHeight();
+    public StaircaseBuildingPart(Rect2i layout, Orientation o, Roof roof, int baseHeight, int wallHeight) {
+        super(layout, roof, baseHeight, wallHeight);
+        this.orientation = o;
     }
 
-    Set<Window> getWindows();
-    Set<Door> getDoors();
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
 }

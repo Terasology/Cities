@@ -16,8 +16,6 @@
 
 package org.terasology.cities.bldg;
 
-import java.math.RoundingMode;
-
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.BattlementRoof;
@@ -44,9 +42,9 @@ public class SimpleTower extends DefaultBuilding implements Tower {
         super(orient);
         this.shape = layout;
 
-        Rect2i roofArea = layout.expand(new Vector2i(2, 2));
+        Rect2i roofArea = layout.expand(new Vector2i(1, 1));
         Roof roof = new BattlementRoof(layout, roofArea, baseHeight + wallHeight, 1);
-        room = new RectBuildingPart(layout, roof, baseHeight, wallHeight);
+        room = new StaircaseBuildingPart(layout, orient, roof, baseHeight, wallHeight);
         Vector2i doorPos = new Vector2i(Edges.getCorner(layout, orient));
         room.addDoor(new SimpleDoor(orient, doorPos, baseHeight, baseHeight + 2));
         addPart(room);

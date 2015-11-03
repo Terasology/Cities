@@ -30,6 +30,7 @@ import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.ImageRasterTarget;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
+import org.terasology.cities.raster.standard.StaircaseRasterizer;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.rendering.nui.properties.Checkbox;
@@ -58,6 +59,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
             .put(BlockTypes.BUILDING_FLOOR, new Color(100, 100, 100))
             .put(BlockTypes.BUILDING_FOUNDATION, new Color(90, 60, 60))
             .put(BlockTypes.TOWER_WALL, new Color(200, 100, 200))
+            .put(BlockTypes.TOWER_STAIRS, new Color(160, 128, 128))
             .build();
 
     private Set<BuildingPartRasterizer<?>> rasterizers = new HashSet<>();
@@ -70,6 +72,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         BlockTheme theme = null;
         rasterizers.add(new RectPartRasterizer(theme));
         rasterizers.add(new RoundPartRasterizer(theme));
+        rasterizers.add(new StaircaseRasterizer(theme));
     }
 
     /**

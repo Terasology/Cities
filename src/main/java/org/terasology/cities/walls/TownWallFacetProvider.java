@@ -265,7 +265,7 @@ public class TownWallFacetProvider implements FacetProvider {
 
     private SimpleTower createGateTower(Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
         int towerHeight = 10;
-        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos));
+        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos)) + 1;
 
         Rect2i layout = getTowerRect(towerPos);
         SimpleTower tower = new SimpleTower(orient, layout, baseHeight, towerHeight);
@@ -274,7 +274,7 @@ public class TownWallFacetProvider implements FacetProvider {
 
     private SimpleTower createTower(Orientation orient, InfiniteSurfaceHeightFacet hm, Vector2i towerPos) {
         int towerHeight = 9;
-        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos));
+        int baseHeight = TeraMath.floorToInt(hm.getWorld(towerPos)) + 1;
 
         Rect2i layout = getTowerRect(towerPos);
         SimpleTower tower = new SimpleTower(orient, layout, baseHeight, towerHeight);

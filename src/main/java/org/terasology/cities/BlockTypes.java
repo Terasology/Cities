@@ -111,4 +111,8 @@ public enum BlockTypes {
      */
     FENCE_GATE,
 
+    /**
+     * Tower staircase
+     */
+    TOWER_STAIRS
 }
