@@ -140,10 +140,10 @@ public abstract class RasterUtil {
         Vector2f p0 = new Vector2f();
         Vector2f p1 = new Vector2f();
         if (line.getClipped(outerBox, p0, p1)) {
-            int cx1 = TeraMath.floorToInt(p0.getX() + 0.5f);
-            int cy1 = TeraMath.floorToInt(p0.getY() + 0.5f);
-            int cx2 = TeraMath.floorToInt(p1.getX() + 0.5f);
-            int cy2 = TeraMath.floorToInt(p1.getY() + 0.5f);
+            int cx1 = TeraMath.floorToInt(p0.getX());
+            int cy1 = TeraMath.floorToInt(p0.getY());
+            int cx2 = TeraMath.floorToInt(p1.getX());
+            int cy2 = TeraMath.floorToInt(p1.getY());
             drawClippedLine(pen, cx1, cy1, cx2, cy2);
         }
     }
