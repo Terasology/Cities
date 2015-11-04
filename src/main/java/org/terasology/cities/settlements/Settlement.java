@@ -19,7 +19,6 @@ package org.terasology.cities.settlements;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.roads.Road;
 import org.terasology.cities.sites.Site;
 
@@ -32,7 +31,6 @@ public class Settlement {
     private String name;
 
     private final Collection<Road> roads = new ArrayList<>();
-    private final Collection<Parcel> parcels = new ArrayList<>();
 
     /**
      * @param site the site of the settlement
@@ -48,6 +46,17 @@ public class Settlement {
      */
     public Site getSite() {
         return site;
+    }
+
+    public float getSettlementRadius() {
+        return (hasTownwall() ? 0.9f : 1.0f) * site.getRadius();
+    }
+
+    /**
+     * @return
+     */
+    public boolean hasTownwall() {
+        return site.getRadius() > 150;
     }
 
     /**
@@ -67,12 +76,5 @@ public class Settlement {
      */
     public void addRoad(Road road) {
         roads.add(road);
-    }
-
-    /**
-     * @param parcel the parcel to add
-     */
-    public void addParcel(Parcel parcel) {
-        parcels.add(parcel);
     }
 }

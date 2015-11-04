@@ -16,8 +16,6 @@
 
 package org.terasology.cities.settlements;
 
-import org.terasology.cities.parcels.Parcel;
-import org.terasology.cities.parcels.ParcelFacet;
 import org.terasology.cities.roads.Road;
 import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.sites.Site;
@@ -36,7 +34,7 @@ import org.terasology.world.generation.Requires;
  *
  */
 @Produces(SettlementFacet.class)
-@Requires({@Facet(SiteFacet.class), @Facet(ParcelFacet.class), @Facet(RoadFacet.class)})
+@Requires({@Facet(SiteFacet.class), @Facet(RoadFacet.class)})
 public class SettlementFacetProvider implements FacetProvider {
 
     private WhiteNoise nameNoiseGen;
@@ -50,7 +48,6 @@ public class SettlementFacetProvider implements FacetProvider {
     public void process(GeneratingRegion region) {
 
         SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
-        ParcelFacet parcelFacet = region.getRegionFacet(ParcelFacet.class);
         RoadFacet roadFacet = region.getRegionFacet(RoadFacet.class);
 
         Border3D border = region.getBorderForFacet(SettlementFacet.class);
@@ -68,10 +65,6 @@ public class SettlementFacetProvider implements FacetProvider {
                 if (road.endsAt(site.getPos())) {
                     settlement.addRoad(road);
                 }
-            }
-
-            for (Parcel parcel : parcelFacet.getParcels(site)) {
-                settlement.addParcel(parcel);
             }
 
             settlementFacet.addSettlement(settlement);

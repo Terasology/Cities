@@ -33,6 +33,8 @@ import org.terasology.cities.door.Door;
 import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.door.WingDoor;
 import org.terasology.cities.roof.RoofFacet;
+import org.terasology.cities.settlements.Settlement;
+import org.terasology.cities.settlements.SettlementFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
@@ -75,7 +77,7 @@ public class TownWallFacetProvider implements FacetProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(TownWallFacetProvider.class);
 
-    private final Cache<Site, Optional<TownWall>> cache = CacheBuilder.newBuilder().build();
+    private final Cache<Site, TownWall> cache = CacheBuilder.newBuilder().build();
 
     private long seed;
 
@@ -88,7 +90,7 @@ public class TownWallFacetProvider implements FacetProvider {
     public void process(GeneratingRegion region) {
         InfiniteSurfaceHeightFacet heightFacet = region.getRegionFacet(InfiniteSurfaceHeightFacet.class);
         TownWallFacet wallFacet = new TownWallFacet(region.getRegion(), region.getBorderForFacet(TownWallFacet.class));
-        SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
+        SettlementFacet settlementFacet = region.getRegionFacet(SettlementFacet.class);
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
         BuildableTerrainFacet buildableAreaFacet = region.getRegionFacet(BuildableTerrainFacet.class);
         BuildingFacet buildingFacet = region.getRegionFacet(BuildingFacet.class);
@@ -96,13 +98,14 @@ public class TownWallFacetProvider implements FacetProvider {
         RoofFacet roofFacet = region.getRegionFacet(RoofFacet.class);
         DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
 
-        for (Site site : siteFacet.getSettlements()) {
-            if (Circle.intersects(site.getPos(), site.getRadius(), wallFacet.getWorldRegion())) {
-                try {
-                    Optional<TownWall> opt = cache.get(site, () -> generate(site, heightFacet, buildableAreaFacet, blockedAreaFacet));
-                    if (opt.isPresent()) {
-                        wallFacet.addTownWall(opt.get());
-                        for (Tower tower : opt.get().getTowers()) {
+        for (Settlement settlement : settlementFacet.getSettlements()) {
+            if (settlement.hasTownwall()) {
+                Site site = settlement.getSite();
+                if (Circle.intersects(site.getPos(), site.getRadius(), wallFacet.getWorldRegion())) {
+                    try {
+                        TownWall tw = cache.get(site, () -> generate(site, heightFacet, buildableAreaFacet, blockedAreaFacet));
+                        wallFacet.addTownWall(tw);
+                        for (Tower tower : tw.getTowers()) {
                             buildingFacet.addBuilding(tower);
 
                             // TODO: add bounds check
@@ -116,9 +119,9 @@ public class TownWallFacetProvider implements FacetProvider {
                                 roofFacet.addRoof(part.getRoof());
                             }
                         }
+                    } catch (ExecutionException e) {
+                        logger.error("Could not compute buildings for {}", region.getRegion(), e);
                     }
-                } catch (ExecutionException e) {
-                    logger.error("Could not compute buildings for {}", region.getRegion(), e);
                 }
             }
         }
@@ -126,11 +129,7 @@ public class TownWallFacetProvider implements FacetProvider {
         region.setRegionFacet(TownWallFacet.class, wallFacet);
     }
 
-    private Optional<TownWall> generate(Site city, InfiniteSurfaceHeightFacet heightFacet, BuildableTerrainFacet buildableAreaFacet, BlockedAreaFacet blockedAreaFacet) {
-        int minRadForTownWall = 150;
-        if (city.getRadius() < minRadForTownWall) {
-            return Optional.empty();
-        }
+    private TownWall generate(Site city, InfiniteSurfaceHeightFacet heightFacet, BuildableTerrainFacet buildableAreaFacet, BlockedAreaFacet blockedAreaFacet) {
 
         Random rand = new FastRandom(seed ^ city.getPos().hashCode());
 
@@ -238,7 +237,7 @@ public class TownWallFacetProvider implements FacetProvider {
             tw.addWall(createSolidWall(start, end));
         }
 
-        return Optional.of(tw);
+        return tw;
     }
 
     private float distToTower(Vector2i pos, SimpleTower tower) {

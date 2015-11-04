@@ -25,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.roads.RoadFacet;
+import org.terasology.cities.settlements.Settlement;
+import org.terasology.cities.settlements.SettlementFacet;
 import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
@@ -52,7 +54,7 @@ import com.google.common.cache.CacheBuilder;
     @Facet(BlockedAreaFacet.class),
     @Facet(RoadFacet.class),                  // not really required, but roads update the blocked area facet
     @Facet(BuildableTerrainFacet.class),
-    @Facet(SiteFacet.class)
+    @Facet(SettlementFacet.class)
 })
 public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
@@ -74,7 +76,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
     @Override
     public void process(GeneratingRegion region) {
         ParcelFacet facet = new ParcelFacet();
-        SiteFacet siteFacet = region.getRegionFacet(SiteFacet.class);
+        SettlementFacet settlementFacet = region.getRegionFacet(SettlementFacet.class);
         BuildableTerrainFacet terrainFacet = region.getRegionFacet(BuildableTerrainFacet.class);
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
 
@@ -82,9 +84,10 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
 
         try {
             lock.readLock().lock();
-            for (Site site : siteFacet.getSettlements()) {
+            for (Settlement settlement : settlementFacet.getSettlements()) {
+                Site site = settlement.getSite();
                 if (Circle.intersects(site.getPos(), site.getRadius(), worldRect)) {
-                    Set<RectParcel> parcels = cache.get(site, () -> generateParcels(site, blockedAreaFacet, terrainFacet));
+                    Set<RectParcel> parcels = cache.get(site, () -> generateParcels(settlement, blockedAreaFacet, terrainFacet));
                     for (RectParcel parcel : parcels) {
                         if (parcel.getShape().overlaps(worldRect)) {
                             facet.addParcel(site, parcel);
@@ -101,25 +104,25 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         region.setRegionFacet(ParcelFacet.class, facet);
     }
 
-    private Set<RectParcel> generateParcels(Site site, BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
-        Random rng = new FastRandom(seed ^ site.getPos().hashCode());
+    private Set<RectParcel> generateParcels(Settlement settlement, BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
+        Random rng = new FastRandom(seed ^ settlement.getSite().getPos().hashCode());
 
         Set<RectParcel> result = new LinkedHashSet<>();
-        result.addAll(generateParcels(site, rng, 25, 40, 1, Zone.CLERICAL, blockedAreaFacet, terrainFacet));
-        result.addAll(generateParcels(site, rng, config.minSize, config.maxSize, config.maxLots,
+        result.addAll(generateParcels(settlement, rng, 25, 40, 1, Zone.CLERICAL, blockedAreaFacet, terrainFacet));
+        result.addAll(generateParcels(settlement, rng, config.minSize, config.maxSize, config.maxLots,
                 Zone.RESIDENTIAL, blockedAreaFacet, terrainFacet));
         return result;
     }
 
-    private Set<RectParcel> generateParcels(Site site, Random rng, float minSize, float maxSize, int count, Zone zoneType,
+    private Set<RectParcel> generateParcels(Settlement settlement, Random rng, float minSize, float maxSize, int count, Zone zoneType,
             BlockedAreaFacet blockedAreaFacet, BuildableTerrainFacet terrainFacet) {
 
-        BaseVector2i center = site.getPos();
+        BaseVector2i center = settlement.getSite().getPos();
 
         Set<RectParcel> lots = new LinkedHashSet<>();  // the order is important for deterministic generation
         float maxLotRad = maxSize * (float) Math.sqrt(2) * 0.5f;
         float minRad = 5 + maxSize * 0.5f;
-        float maxRad = site.getRadius() - maxLotRad;
+        float maxRad = settlement.getSettlementRadius() - maxLotRad;
 
         if (minRad >= maxRad) {
             return lots;        // which is empty
@@ -160,7 +163,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
             }
         }
 
-        logger.debug("Generated {} parcels for settlement {}", lots.size(), site);
+        logger.debug("Generated {} parcels for settlement {}", lots.size(), settlement);
 
         return lots;
     }
