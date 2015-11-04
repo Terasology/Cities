@@ -145,29 +145,35 @@ public class TownWallFacetProvider implements FacetProvider {
 
         TownWall tw = new TownWall();
 
-        double step = Math.toRadians(5);
+        float sampleDist = 15; // average distance between two consecutive potential tower locations
+        float minDist = 50;  // minimum distance between two consecutive towers in blocks
 
         // generate towers first
-        List<Vector2i> tp = getTowerPosList(rand, center, maxRad, step);
+        List<Vector2i> tp = getTowerPosList(rand, center, maxRad, sampleDist);
         List<Boolean> blocked = getBlockedPos(tp, buildableAreaFacet, blockedAreaFacet);
         SimpleTower lastTower = null;
         SimpleTower firstTower = null;
         int lastHit = Short.MIN_VALUE;
         int firstHit = Short.MIN_VALUE;
+        int count = tp.size();
 
-        for (int i = 0; i < tp.size(); i++) {
+        for (int i = 0; i < count; i++) {
+
+            int nextIndex = (i + 1) % count;
+            int prevIndex = (i + count - 1) % count;
 
             boolean thisOk = blocked.get(i);
-            boolean nextOk = blocked.get((i + 1) % tp.size());
-            boolean prevOk = blocked.get((i + tp.size() - 1) % tp.size());
+            boolean nextOk = blocked.get(nextIndex);
+            boolean prevOk = blocked.get(prevIndex);
+
+            Vector2i towerPos = tp.get(i);
 
             if (thisOk) {
-                Vector2i towerPos = tp.get(i);
                 Vector2i dirFromCenter = new Vector2i(center).sub(towerPos);
                 Orientation orient = orientationFromDirection(dirFromCenter);
 
-                if (!prevOk) {                          // the previous location was blocked -> this is the second part of a gate
-                    SimpleTower tower = createGateTower(orient, heightFacet, tp.get(i));
+                if (!prevOk) {            // the previous location was blocked -> this is the second part of a gate
+                    SimpleTower tower = createGateTower(orient, heightFacet, towerPos);
                     tw.addTower(tower);
 
                     if (firstHit < 0) {
@@ -184,8 +190,8 @@ public class TownWallFacetProvider implements FacetProvider {
                     lastTower = tower;
                 } else
 
-                if (!nextOk) {                          // the next location is blocked -> this is the first part of a gate
-                    SimpleTower tower = createGateTower(orient, heightFacet, tp.get(i));
+                if (!nextOk) {            // the next location is blocked -> this is the first part of a gate
+                    SimpleTower tower = createGateTower(orient, heightFacet, towerPos);
                     tw.addTower(tower);
 
                     if (firstHit < 0) {
@@ -202,8 +208,9 @@ public class TownWallFacetProvider implements FacetProvider {
                     lastTower = tower;
                 } else
 
-                if (i - lastHit > 5 && tp.size() + i - firstHit > 5) {          // the last/next tower is n segments away -> place another one
-                    SimpleTower tower = createTower(orient, heightFacet, tp.get(i));
+                if (distToTower(towerPos, firstTower) > minDist && distToTower(towerPos, lastTower) > minDist) {
+                    // the last/next tower is too far away -> place another one
+                    SimpleTower tower = createTower(orient, heightFacet, towerPos);
                     tw.addTower(tower);
 
                     if (firstHit < 0) {
@@ -232,6 +239,18 @@ public class TownWallFacetProvider implements FacetProvider {
         }
 
         return Optional.of(tw);
+    }
+
+    private float distToTower(Vector2i pos, SimpleTower tower) {
+        if (tower == null) {
+            return Float.POSITIVE_INFINITY; // larger than any finite number
+        }
+        Rect2i rc = tower.getShape();
+        float cx = (rc.minX() + rc.maxX()) * 0.5f;
+        float cy = (rc.minY() + rc.maxY()) * 0.5f;
+        float dx = pos.x() - cx;
+        float dy = pos.y() - cy;
+        return (float) Math.sqrt(dx * dx + dy * dy);
     }
 
     private Vector2i getAnchor(SimpleTower tower, int degrees) {
@@ -277,7 +296,7 @@ public class TownWallFacetProvider implements FacetProvider {
 
         for (Vector2i pos : tp) {
             Rect2i layout = getTowerRect(pos);
-            boolean ok = buildable.isBuildable(layout) && !blocked.isBlocked(layout);
+            boolean ok = buildable.isPassable(layout) && !blocked.isBlocked(layout);
             list.add(Boolean.valueOf(ok));
         }
 
@@ -301,8 +320,8 @@ public class TownWallFacetProvider implements FacetProvider {
         SimpleTower tower = createTower(towerHeight, orient, hm, towerPos);
         RectBuildingPart staircase = tower.getStaircase();
         Rect2i staircaseRect = staircase.getShape().expand(-1, -1); // inner staircase
-        Vector2i c1 = Edges.getCorner(staircaseRect, orient.getRotated(180 - 45));
-        Vector2i c2 = Edges.getCorner(staircaseRect, orient.getRotated(180 + 45));
+        Vector2i c1 = Edges.getCorner(staircaseRect, orient.getRotated(270 - 45));
+        Vector2i c2 = Edges.getCorner(staircaseRect, orient.getRotated(270 + 45));
         Rect2i doorRect = Rect2i.createEncompassing(c1, c2);
         int roofLevel = staircase.getTopHeight();
         staircase.addDoor(new WingDoor(orient.getOpposite(), doorRect, roofLevel, roofLevel + 1));
@@ -315,10 +334,11 @@ public class TownWallFacetProvider implements FacetProvider {
         return tower;
     }
 
-    private List<Vector2i> getTowerPosList(Random rand, Vector2i center, double maxRad, double step) {
+    private List<Vector2i> getTowerPosList(Random rand, Vector2i center, double maxRad, double sampleDist) {
+
+        double step = sampleDist / maxRad;
 
         double maxRadiusDiv = maxRad * 0.1;
-
         double maxAngularDiv = step * 0.1;
 
         List<Vector2i> list = Lists.newArrayList();

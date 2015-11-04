@@ -45,4 +45,13 @@ public interface BuildableTerrainFacet extends WorldFacet {
     }
 
     boolean isPassable(int worldX, int worldY);
+
+    default boolean isPassable(Rect2i rect) {
+        // approximate by checking corners only
+        // TODO: find a better solution
+        return isPassable(rect.minX(), rect.minY())
+            && isPassable(rect.minX(), rect.maxY())
+            && isPassable(rect.maxX(), rect.minY())
+            && isPassable(rect.maxX(), rect.maxY());
+    }
 }
