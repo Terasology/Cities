@@ -35,6 +35,9 @@ import org.terasology.world.viewer.layers.ZOrder;
 @Renders(value = RoadFacet.class, order = ZOrder.BIOME + 1)
 public class RoadFacetLayer extends AbstractFacetLayer {
 
+    private final Color fillColor = new Color(128, 128, 16, 232);
+    private final Color dotColor = new Color(64, 64, 0, 192);
+
     public RoadFacetLayer() {
         // use default settings
     }
@@ -42,9 +45,6 @@ public class RoadFacetLayer extends AbstractFacetLayer {
     @Override
     public void render(BufferedImage img, org.terasology.world.generation.Region region) {
         RoadFacet roadFacet = region.getFacet(RoadFacet.class);
-
-        Color fillColor = new Color(128, 128, 16, 128);
-        Color frameColor = new Color(128, 128, 16, 224);
 
         Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -63,17 +63,15 @@ public class RoadFacetLayer extends AbstractFacetLayer {
             }
 
             float width = road.getWidth();
-            BasicStroke strokeOuter = new BasicStroke(width);
-            BasicStroke strokeInner = new BasicStroke(width - 2);
+            BasicStroke stroke = new BasicStroke(width);
 
-            g.setColor(frameColor);
-            g.setStroke(strokeOuter);
-            g.draw(path);
             g.setColor(fillColor);
-            g.setStroke(strokeInner);
+            g.setStroke(stroke);
             g.draw(path);
 
-            g.setColor(Color.BLUE);
+            BasicStroke dots = new BasicStroke(2.5f);
+            g.setColor(dotColor);
+            g.setStroke(dots);
             for (int i = 0; i < road.getPoints().size(); i++) {
                 BaseVector2i p1 = road.getPoints().get(i);
                 g.drawLine(p1.getX(), p1.getY(), p1.getX(), p1.getY());
