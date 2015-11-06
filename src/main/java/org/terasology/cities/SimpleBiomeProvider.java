@@ -26,6 +26,7 @@ import org.terasology.world.generation.Produces;
 import org.terasology.world.generation.Requires;
 import org.terasology.world.generation.facets.SeaLevelFacet;
 import org.terasology.world.generation.facets.SurfaceHeightFacet;
+import org.terasology.world.generation.facets.SurfaceHumidityFacet;
 
 /**
  * Determines the biome based on temperature and humidity
@@ -33,7 +34,9 @@ import org.terasology.world.generation.facets.SurfaceHeightFacet;
 @Produces(BiomeFacet.class)
 @Requires({
     @Facet(SeaLevelFacet.class),
-    @Facet(SurfaceHeightFacet.class)})
+    @Facet(SurfaceHeightFacet.class),
+    @Facet(SurfaceHumidityFacet.class)
+    })
 public class SimpleBiomeProvider implements FacetProvider {
 
     @Override
@@ -44,6 +47,7 @@ public class SimpleBiomeProvider implements FacetProvider {
     public void process(GeneratingRegion region) {
         SeaLevelFacet seaLevelFacet = region.getRegionFacet(SeaLevelFacet.class);
         SurfaceHeightFacet heightFacet = region.getRegionFacet(SurfaceHeightFacet.class);
+        SurfaceHumidityFacet humidityFacet = region.getRegionFacet(SurfaceHumidityFacet.class);
 
         Border3D border = region.getBorderForFacet(BiomeFacet.class);
         BiomeFacet biomeFacet = new BiomeFacet(region.getRegion(), border);
@@ -53,17 +57,21 @@ public class SimpleBiomeProvider implements FacetProvider {
         for (Vector2i pos : biomeFacet.getRelativeRegion()) {
             float height = heightFacet.get(pos);
 
+            CoreBiome biome;
             if (height <= seaLevel) {
-                 biomeFacet.set(pos, CoreBiome.OCEAN);
+                 biome = CoreBiome.OCEAN;
             } else if (height <= seaLevel + 2) {
-                biomeFacet.set(pos, CoreBiome.BEACH);
+                biome = CoreBiome.BEACH;
             } else if (height <= seaLevel + 30) {
-                biomeFacet.set(pos, CoreBiome.PLAINS);
+                float humidity = humidityFacet.get(pos);
+                biome = (humidity <= 0.66f) ? CoreBiome.PLAINS : CoreBiome.FOREST;
             } else if (height <= seaLevel + 40) {
-                biomeFacet.set(pos, CoreBiome.MOUNTAINS);
+                biome = CoreBiome.MOUNTAINS;
             } else {
-                biomeFacet.set(pos, CoreBiome.SNOW);
+                biome = CoreBiome.SNOW;
             }
+
+            biomeFacet.set(pos, biome);
         }
         region.setRegionFacet(BiomeFacet.class, biomeFacet);
     }

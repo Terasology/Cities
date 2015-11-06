@@ -23,6 +23,8 @@ import org.terasology.cities.door.SimpleDoorRasterizer;
 import org.terasology.cities.door.WingDoorRasterizer;
 import org.terasology.cities.fences.FenceFacetProvider;
 import org.terasology.cities.fences.SimpleFenceRasterizer;
+import org.terasology.cities.flora.FloraFacetProvider;
+import org.terasology.cities.flora.TreeFacetProvider;
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
@@ -48,10 +50,12 @@ import org.terasology.cities.window.RectWindowRasterizer;
 import org.terasology.cities.window.SimpleWindowRasterizer;
 import org.terasology.cities.window.WindowFacetProvider;
 import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
+import org.terasology.core.world.generator.facetProviders.PerlinHumidityProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
 import org.terasology.core.world.generator.facetProviders.SurfaceToDensityProvider;
 import org.terasology.core.world.generator.rasterizers.FloraRasterizer;
 import org.terasology.core.world.generator.rasterizers.SolidRasterizer;
+import org.terasology.core.world.generator.rasterizers.TreeRasterizer;
 import org.terasology.engine.SimpleUri;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.spawner.Spawner;
@@ -123,6 +127,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new BuildableTerrainFacetProvider())
                 .addProvider(new BlockedAreaFacetProvider())
                 .addProvider(new LakeFacetProvider())
+                .addProvider(new PerlinHumidityProvider())
                 .addProvider(new SimpleBiomeProvider())
                 .addProvider(new SiteFacetProvider())
                 .addProvider(new TownWallFacetProvider())
@@ -134,7 +139,8 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new RoofFacetProvider())
                 .addProvider(new BuildingFacetProvider())
                 .addProvider(new SettlementFacetProvider())
-                .addProvider(new DefaultFloraProvider())
+                .addProvider(new FloraFacetProvider())
+                .addProvider(new TreeFacetProvider())
                 .addRasterizer(new SolidRasterizer())
                 .addPlugins()
                 .addEntities(new SettlementEntityProvider())
@@ -154,7 +160,8 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new RectWindowRasterizer(theme))
                 .addRasterizer(new SimpleDoorRasterizer(theme))
                 .addRasterizer(new WingDoorRasterizer(theme))
-                .addRasterizer(new FloraRasterizer());
+                .addRasterizer(new FloraRasterizer())
+                .addRasterizer(new TreeRasterizer());
         return worldBuilder;
     }
 
