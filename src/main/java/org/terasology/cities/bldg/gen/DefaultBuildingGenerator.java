@@ -61,6 +61,10 @@ public class DefaultBuildingGenerator implements BuildingGenerator {
             }
             break;
 
+        case GOVERNMENTAL:
+            b = new TownHallGenerator().generate(parcel, heightFacet);
+            break;
+
         case CLERICAL:
             b = new SimpleChurchGenerator(seed).apply(parcel, heightFacet);
             break;

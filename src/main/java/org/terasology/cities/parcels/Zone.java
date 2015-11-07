@@ -29,5 +29,10 @@ public enum Zone {
     /**
      * Churches, mosques, etc.
      */
-    CLERICAL
+    CLERICAL,
+
+    /**
+     * Town halls, etc.
+     */
+    GOVERNMENTAL
 }
