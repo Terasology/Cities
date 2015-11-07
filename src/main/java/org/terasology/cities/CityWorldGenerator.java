@@ -118,6 +118,10 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .registerFamily(BlockTypes.TOWER_STAIRS, "core:CobbleStone:engine:stair")
             .build();
 
+        PerlinHumidityProvider.Configuration humidityConfig = new PerlinHumidityProvider.Configuration();
+        humidityConfig.octaves = 4;
+        humidityConfig.scale = 0.5f;
+
         WorldBuilder worldBuilder = new WorldBuilder(CoreRegistry.get(WorldGeneratorPluginLibrary.class))
                 .setSeaLevel(seaLevel)
                 .addProvider(new SeaLevelProvider(seaLevel))
@@ -127,7 +131,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new BuildableTerrainFacetProvider())
                 .addProvider(new BlockedAreaFacetProvider())
                 .addProvider(new LakeFacetProvider())
-                .addProvider(new PerlinHumidityProvider())
+                .addProvider(new PerlinHumidityProvider(humidityConfig))
                 .addProvider(new SimpleBiomeProvider())
                 .addProvider(new SiteFacetProvider())
                 .addProvider(new TownWallFacetProvider())
