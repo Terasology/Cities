@@ -69,10 +69,10 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
 
     /**
      * @param input the block type
-     * @param side the connected sides
+     * @param sides the connected sides
      * @return the block
      */
-    public Block apply(BlockTypes input, Set<Side> side) {
+    public Block apply(BlockTypes input, Set<Side> sides) {
 
         BlockFamily family = familyMap.get(input);
 
@@ -82,9 +82,18 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         }
 
         BlockUri familyUri = family.getURI().getFamilyUri();
-        byte flags = SideBitFlag.getSides(side);
-        BlockUri blockUri = new BlockUri(familyUri + BlockUri.IDENTIFIER_SEPARATOR + flags);
-        Block block = family.getBlockFor(blockUri);
+        Block block = null;
+        if (sides.size() == 1) {
+            Side side = sides.iterator().next();
+            BlockUri blockUri = new BlockUri(familyUri + BlockUri.IDENTIFIER_SEPARATOR + side);
+            block = family.getBlockFor(blockUri);
+        }
+
+        if (block == null) {
+            byte flags = SideBitFlag.getSides(sides);
+            BlockUri blockUri = new BlockUri(familyUri + BlockUri.IDENTIFIER_SEPARATOR + flags);
+            block = family.getBlockFor(blockUri);
+        }
 
         if (block == null) {
             block = family.getArchetypeBlock();

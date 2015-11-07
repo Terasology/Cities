@@ -110,12 +110,12 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .register(BlockTypes.SIMPLE_DOOR, BlockManager.AIR_ID)
             .register(BlockTypes.WING_DOOR, BlockManager.AIR_ID)
             .register(BlockTypes.WINDOW_GLASS, BlockManager.AIR_ID)
-
             .register(BlockTypes.TOWER_WALL, "Cities:stonawall1")
 
              // -- requires Fences module
             .registerFamily(BlockTypes.FENCE, "Fences:Fence")
             .registerFamily(BlockTypes.FENCE_GATE, BlockManager.AIR_ID)  // there is no fence gate :-(
+            .registerFamily(BlockTypes.TOWER_STAIRS, "core:CobbleStone:engine:stair")
             .build();
 
         WorldBuilder worldBuilder = new WorldBuilder(CoreRegistry.get(WorldGeneratorPluginLibrary.class))

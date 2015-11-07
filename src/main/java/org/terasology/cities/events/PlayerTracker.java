@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.cities.CityWorldGenerator;
 import org.terasology.cities.SettlementComponent;
 import org.terasology.cities.settlements.Settlement;
 import org.terasology.cities.sites.Site;
@@ -42,6 +43,8 @@ import org.terasology.network.Client;
 import org.terasology.network.NetworkSystem;
 import org.terasology.registry.In;
 import org.terasology.rendering.FontColor;
+import org.terasology.world.WorldComponent;
+import org.terasology.world.chunks.event.PurgeWorldEvent;
 
 /**
  * Tracks player movements with respect to {@link Settlement} entities.
@@ -113,6 +116,7 @@ public class PlayerTracker extends BaseComponentSystem {
     /**
      * Called whenever a named area is entered
      * @param event the event
+
      * @param entity the character entity reference "player:engine"
      */
     @ReceiveEvent
@@ -144,5 +148,11 @@ public class PlayerTracker extends BaseComponentSystem {
         areaName = FontColor.getColored(areaName, CitiesColors.AREA);
 
         console.addMessage(playerName + " left " + areaName);
+    }
+
+    @ReceiveEvent(components = {WorldComponent.class})
+    public void onPurgeWorld(PurgeWorldEvent event, EntityRef worldEntity) {
+        knownSettlements.clear();
+        prevLoc.clear();
     }
 }

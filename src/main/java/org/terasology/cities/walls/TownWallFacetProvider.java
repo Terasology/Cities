@@ -17,7 +17,6 @@
 package org.terasology.cities.walls;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -39,7 +38,6 @@ import org.terasology.cities.sites.Site;
 import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
-import org.terasology.cities.window.RectWindow;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.cities.window.Window;
 import org.terasology.cities.window.WindowFacet;
@@ -306,8 +304,7 @@ public class TownWallFacetProvider implements FacetProvider {
         int baseHeight = TeraMath.floorToInt(hm.getWorld(pos)) + 1;
 
         Rect2i layout = getTowerRect(pos);
-        int stairHalfLoop = layout.width() - 2 + layout.height() - 2 - 2;
-        int wndHeight = stairHalfLoop + 3;
+        int wndHeight = 4 + 1;
         SimpleTower tower = new SimpleTower(orient, layout, baseHeight, towerHeight);
         Vector2i windowPos = new Vector2i(Edges.getCorner(layout, orient));
         tower.getStaircase().addWindow(new SimpleWindow(orient.getOpposite(), windowPos, baseHeight + wndHeight));
