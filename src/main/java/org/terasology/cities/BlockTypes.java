@@ -114,5 +114,10 @@ public enum BlockTypes {
     /**
      * Tower staircase
      */
-    TOWER_STAIRS
+    TOWER_STAIRS,
+
+    /**
+     * A barrel
+     */
+    BARREL
 }

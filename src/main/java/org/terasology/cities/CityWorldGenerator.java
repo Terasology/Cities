@@ -18,6 +18,8 @@ package org.terasology.cities;
 
 import org.terasology.cities.bldg.BuildingFacetProvider;
 import org.terasology.cities.blocked.BlockedAreaFacetProvider;
+import org.terasology.cities.deco.BarrelRasterizer;
+import org.terasology.cities.deco.DecorationFacetProvider;
 import org.terasology.cities.door.DoorFacetProvider;
 import org.terasology.cities.door.SimpleDoorRasterizer;
 import org.terasology.cities.door.WingDoorRasterizer;
@@ -49,7 +51,6 @@ import org.terasology.cities.walls.TownWallRasterizer;
 import org.terasology.cities.window.RectWindowRasterizer;
 import org.terasology.cities.window.SimpleWindowRasterizer;
 import org.terasology.cities.window.WindowFacetProvider;
-import org.terasology.core.world.generator.facetProviders.DefaultFloraProvider;
 import org.terasology.core.world.generator.facetProviders.PerlinHumidityProvider;
 import org.terasology.core.world.generator.facetProviders.SeaLevelProvider;
 import org.terasology.core.world.generator.facetProviders.SurfaceToDensityProvider;
@@ -116,6 +117,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .registerFamily(BlockTypes.FENCE, "Fences:Fence")
             .registerFamily(BlockTypes.FENCE_GATE, BlockManager.AIR_ID)  // there is no fence gate :-(
             .registerFamily(BlockTypes.TOWER_STAIRS, "core:CobbleStone:engine:stair")
+            .registerFamily(BlockTypes.BARREL, "StructuralResources:Barrel")
             .build();
 
         PerlinHumidityProvider.Configuration humidityConfig = new PerlinHumidityProvider.Configuration();
@@ -139,6 +141,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addProvider(new ParcelFacetProvider())
                 .addProvider(new FenceFacetProvider())
                 .addProvider(new WindowFacetProvider())
+                .addProvider(new DecorationFacetProvider())
                 .addProvider(new DoorFacetProvider())
                 .addProvider(new RoofFacetProvider())
                 .addProvider(new BuildingFacetProvider())
@@ -164,6 +167,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new RectWindowRasterizer(theme))
                 .addRasterizer(new SimpleDoorRasterizer(theme))
                 .addRasterizer(new WingDoorRasterizer(theme))
+                .addRasterizer(new BarrelRasterizer(theme))
                 .addRasterizer(new FloraRasterizer())
                 .addRasterizer(new TreeRasterizer());
         return worldBuilder;

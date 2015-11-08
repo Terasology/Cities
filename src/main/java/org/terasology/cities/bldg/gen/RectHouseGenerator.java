@@ -16,13 +16,13 @@
 
 package org.terasology.cities.bldg.gen;
 
-import java.math.RoundingMode;
 import java.util.Set;
 
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.deco.Barrel;
 import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.DomeRoof;
 import org.terasology.cities.model.roof.HipRoof;
@@ -33,8 +33,8 @@ import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.BaseVector2f;
 import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.ImmutableVector3i;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
@@ -53,17 +53,15 @@ public class RectHouseGenerator {
         // use the rectangle, not the lot itself, because its hashcode is the identity hashcode
         Random rng = new MersenneRandom(parcel.getShape().hashCode());
 
-        DefaultBuilding bldg = new DefaultBuilding(parcel.getOrientation());
+        Orientation o = parcel.getOrientation();
+        DefaultBuilding bldg = new DefaultBuilding(o);
         int inset = 2;
         Rect2i layout = parcel.getShape().expand(new Vector2i(-inset, -inset));
 
-        LineSegment seg = Edges.getEdge(layout, parcel.getOrientation());
-        Vector2i doorPos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);
+        Vector2i doorPos = Edges.getCorner(layout, o);
 
-        // use door as base height -
-        // this is a bit dodgy, because only the first block is considered
-        // maybe sample along width of the door and use the average?
-        ImmutableVector2i doorDir = parcel.getOrientation().getDir();
+        // use door as base height for the entire building
+        ImmutableVector2i doorDir = o.getDir();
         Vector2i probePos = new Vector2i(doorPos.getX() + doorDir.getX(), doorPos.getY() + doorDir.getY());
 
         // we add +1, because the building starts at 1 block above the terrain
@@ -79,12 +77,12 @@ public class RectHouseGenerator {
 
         int doorHeight = 2;
 
-        SimpleDoor door = new SimpleDoor(parcel.getOrientation(), doorPos, floorHeight, floorHeight + doorHeight);
+        SimpleDoor door = new SimpleDoor(o, doorPos, floorHeight, floorHeight + doorHeight);
         part.addDoor(door);
 
         for (int i = 0; i < 3; i++) {
             // use the other three cardinal directions to place windows
-            Orientation orient = door.getOrientation().getRotated(90 * (i + 1));
+            Orientation orient = o.getRotated(90 * (i + 1));
             Set<SimpleWindow> wnds = createWindows(layout, floorHeight, orient);
 
             for (SimpleWindow wnd : wnds) {
@@ -98,7 +96,17 @@ public class RectHouseGenerator {
             }
         }
 
+        addDecorations(part, o.getOpposite(), floorHeight);
+
         return bldg;
+    }
+
+    private void addDecorations(RectBuildingPart part, Orientation o, int baseHeight) {
+        Rect2i rc = part.getShape().expand(-1, -1); // inside
+        Vector2i right = Edges.getCorner(rc, o.getRotated(45));
+        Vector2i left = Edges.getCorner(rc, o.getRotated(-45));
+        part.addDecoration(new Barrel(new ImmutableVector3i(left.x(), baseHeight, left.y())));
+        part.addDecoration(new Barrel(new ImmutableVector3i(right.x(), baseHeight, right.y())));
     }
 
     private Set<SimpleWindow> createWindows(Rect2i rc, int baseHeight, Orientation o) {

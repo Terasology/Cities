@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.bldg.gen.BuildingGenerator;
 import org.terasology.cities.bldg.gen.DefaultBuildingGenerator;
+import org.terasology.cities.deco.Decoration;
+import org.terasology.cities.deco.DecorationFacet;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.parcels.Parcel;
@@ -47,8 +49,15 @@ import com.google.common.cache.CacheBuilder;
  * Produces a {@link BuildingFacet}.
  */
 @Produces(BuildingFacet.class)
-@Updates({@Facet(WindowFacet.class), @Facet(DoorFacet.class), @Facet(RoofFacet.class)})
-@Requires({@Facet(ParcelFacet.class), @Facet(SurfaceHeightFacet.class)})
+@Updates({
+    @Facet(WindowFacet.class),
+    @Facet(DoorFacet.class),
+    @Facet(DecorationFacet.class),
+    @Facet(RoofFacet.class)})
+@Requires({
+    @Facet(ParcelFacet.class),
+    @Facet(SurfaceHeightFacet.class)
+})
 public class BuildingFacetProvider implements FacetProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(BuildingFacetProvider.class);
@@ -74,6 +83,7 @@ public class BuildingFacetProvider implements FacetProvider {
         WindowFacet windowFacet = region.getRegionFacet(WindowFacet.class);
         DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
         RoofFacet roofFacet = region.getRegionFacet(RoofFacet.class);
+        DecorationFacet decoFacet = region.getRegionFacet(DecorationFacet.class);
 
         for (Parcel parcel : parcelFacet.getParcels()) {
             Set<Building> bldgs;
@@ -89,6 +99,9 @@ public class BuildingFacetProvider implements FacetProvider {
                         }
                         for (Door door : part.getDoors()) {
                             doorFacet.addDoor(door);
+                        }
+                        for (Decoration deco : part.getDecorations()) {
+                            decoFacet.addDecoration(deco);
                         }
                         roofFacet.addRoof(part.getRoof());
                     }

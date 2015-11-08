@@ -21,6 +21,7 @@ import java.util.Set;
 import org.terasology.cities.BlockTypes;
 import org.terasology.math.Region3i;
 import org.terasology.math.Side;
+import org.terasology.math.geom.BaseVector3i;
 import org.terasology.math.geom.Rect2i;
 
 /**
@@ -37,13 +38,30 @@ public interface RasterTarget {
     void setBlock(int x, int y, int z, BlockTypes type);
 
     /**
+     * @param pos the position in world coords
+     * @param type the block type
+     */
+    default void setBlock(BaseVector3i pos, BlockTypes type) {
+        setBlock(pos.getX(), pos.getY(), pos.getZ(), type);
+    }
+
+    /**
      * @param x x in world coords
      * @param y y in world coords
      * @param z z in world coords
      * @param type the block type
-     * @param side the side (used to find the right block from the family)
+     * @param sides the sides (used to find the correct block from the family)
      */
     void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side);
+
+    /**
+     * @param pos the position in world coords
+     * @param type the block type
+     * @param sides the sides (used to find the correct block from the family)
+     */
+    default void setBlock(BaseVector3i pos, BlockTypes type, Set<Side> sides) {
+        setBlock(pos.getX(), pos.getY(), pos.getZ(), type, sides);
+    }
 
     /**
      * @return the maximum drawing height

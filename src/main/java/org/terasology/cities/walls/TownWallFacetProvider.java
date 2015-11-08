@@ -28,6 +28,8 @@ import org.terasology.cities.bldg.SimpleTower;
 import org.terasology.cities.bldg.Tower;
 import org.terasology.cities.blocked.BlockedAreaFacet;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.deco.Decoration;
+import org.terasology.cities.deco.DecorationFacet;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.door.DoorFacet;
 import org.terasology.cities.door.WingDoor;
@@ -92,9 +94,11 @@ public class TownWallFacetProvider implements FacetProvider {
         BlockedAreaFacet blockedAreaFacet = region.getRegionFacet(BlockedAreaFacet.class);
         BuildableTerrainFacet buildableAreaFacet = region.getRegionFacet(BuildableTerrainFacet.class);
         BuildingFacet buildingFacet = region.getRegionFacet(BuildingFacet.class);
+
         WindowFacet windowFacet = region.getRegionFacet(WindowFacet.class);
         RoofFacet roofFacet = region.getRegionFacet(RoofFacet.class);
         DoorFacet doorFacet = region.getRegionFacet(DoorFacet.class);
+        DecorationFacet decoFacet = region.getRegionFacet(DecorationFacet.class);
 
         for (Settlement settlement : settlementFacet.getSettlements()) {
             if (settlement.hasTownwall()) {
@@ -113,6 +117,9 @@ public class TownWallFacetProvider implements FacetProvider {
                                 }
                                 for (Door door : part.getDoors()) {
                                     doorFacet.addDoor(door);
+                                }
+                                for (Decoration deco : part.getDecorations()) {
+                                    decoFacet.addDecoration(deco);
                                 }
                                 roofFacet.addRoof(part.getRoof());
                             }

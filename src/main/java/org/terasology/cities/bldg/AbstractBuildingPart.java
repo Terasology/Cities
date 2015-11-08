@@ -17,8 +17,10 @@
 package org.terasology.cities.bldg;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
+import org.terasology.cities.deco.Decoration;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.window.Window;
@@ -33,6 +35,7 @@ public abstract class AbstractBuildingPart implements BuildingPart {
 
     private final Set<Window> windows = Sets.newHashSet();
     private final Set<Door> doors = Sets.newHashSet();
+    private final Set<Decoration> decorations = new HashSet<>();
     private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
@@ -85,6 +88,13 @@ public abstract class AbstractBuildingPart implements BuildingPart {
         doors.add(door);
     }
 
+    /**
+     * @param decoration the decoration to add
+     */
+    public void addDecoration(Decoration decoration) {
+        decorations.add(decoration);
+    }
+
     @Override
     public Set<Window> getWindows() {
         return Collections.unmodifiableSet(windows);
@@ -93,5 +103,10 @@ public abstract class AbstractBuildingPart implements BuildingPart {
     @Override
     public Set<Door> getDoors() {
         return Collections.unmodifiableSet(doors);
+    }
+
+    @Override
+    public Set<Decoration> getDecorations() {
+        return Collections.unmodifiableSet(decorations);
     }
 }
