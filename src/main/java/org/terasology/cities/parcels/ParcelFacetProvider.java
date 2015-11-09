@@ -110,6 +110,7 @@ public class ParcelFacetProvider implements ConfigurableFacetProvider {
         Set<RectParcel> result = new LinkedHashSet<>();
         result.addAll(generateParcels(settlement, rng, 25, 40, 1, Zone.CLERICAL, blockedAreaFacet, terrainFacet));
         result.addAll(generateParcels(settlement, rng, 25, 40, 1, Zone.GOVERNMENTAL, blockedAreaFacet, terrainFacet));
+        result.addAll(generateParcels(settlement, rng, 20, 30, 1, Zone.COMMERCIAL, blockedAreaFacet, terrainFacet));
         result.addAll(generateParcels(settlement, rng, config.minSize, config.maxSize, config.maxLots,
                 Zone.RESIDENTIAL, blockedAreaFacet, terrainFacet));
         return result;

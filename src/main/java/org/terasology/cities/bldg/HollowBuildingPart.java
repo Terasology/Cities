@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.terasology.cities.parcels;
+package org.terasology.cities.bldg;
+
+import org.terasology.cities.model.roof.Roof;
+import org.terasology.math.geom.Rect2i;
 
 /**
- * As part of a urban zoning scheme.
+ *
  */
-public enum Zone {
+public class HollowBuildingPart extends AbstractBuildingPart {
 
-    /**
-     * Typically housing
-     */
-    RESIDENTIAL,
+    private int arcRadius;
 
-    /**
-     * Churches, mosques, etc.
-     */
-    CLERICAL,
+    public HollowBuildingPart(Rect2i layout, Roof roof, int baseHeight, int wallHeight, int arcRadius) {
+        super(layout, roof, baseHeight, wallHeight);
+        this.arcRadius = arcRadius;
+    }
 
-    /**
-     * Town halls, etc.
-     */
-    GOVERNMENTAL,
+    @Override
+    public Rect2i getShape() {
+        return (Rect2i) super.getShape();
+    }
 
-    /**
-     * Markets, storage sites, etc.
-     */
-    COMMERCIAL
+    public int getArcRadius() {
+        return arcRadius;
+    }
 }

@@ -28,6 +28,7 @@ import org.terasology.cities.AwtConverter;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.ImageRasterTarget;
+import org.terasology.cities.raster.standard.HollowBuildingPartRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
 import org.terasology.cities.raster.standard.StaircaseRasterizer;
@@ -73,6 +74,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         rasterizers.add(new RectPartRasterizer(theme));
         rasterizers.add(new RoundPartRasterizer(theme));
         rasterizers.add(new StaircaseRasterizer(theme));
+        rasterizers.add(new HollowBuildingPartRasterizer(theme));
     }
 
     /**

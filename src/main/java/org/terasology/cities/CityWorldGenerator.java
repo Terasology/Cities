@@ -29,6 +29,7 @@ import org.terasology.cities.flora.FloraFacetProvider;
 import org.terasology.cities.flora.TreeFacetProvider;
 import org.terasology.cities.lakes.LakeFacetProvider;
 import org.terasology.cities.parcels.ParcelFacetProvider;
+import org.terasology.cities.raster.standard.HollowBuildingPartRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
 import org.terasology.cities.raster.standard.RoundPartRasterizer;
 import org.terasology.cities.raster.standard.StaircaseRasterizer;
@@ -156,6 +157,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new TownWallRasterizer(theme))
                 .addRasterizer(new SimpleFenceRasterizer(theme))
                 .addRasterizer(new RectPartRasterizer(theme))
+                .addRasterizer(new HollowBuildingPartRasterizer(theme))
                 .addRasterizer(new RoundPartRasterizer(theme))
                 .addRasterizer(new StaircaseRasterizer(theme))
                 .addRasterizer(new FlatRoofRasterizer(theme))

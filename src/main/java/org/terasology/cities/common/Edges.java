@@ -42,6 +42,28 @@ public final class Edges {
         return new Vector2i(x, y);
     }
 
+    public static int getDistanceToBorder(Rect2i rc, int x, int z) {
+        int rx = x - rc.minX();
+        int rz = z - rc.minY();
+
+        // distance to border along both axes
+        int borderDistX = Math.min(rx, rc.width() - 1 - rx);
+        int borderDistZ = Math.min(rz, rc.height() - 1 - rz);
+
+        int dist = Math.min(borderDistX, borderDistZ);
+        return dist;
+    }
+
+    public static float getDistanceToCorner(Rect2i rc, int x, int y) {
+        return (float) Math.sqrt(getDistanceToCorner(rc, x, y));
+    }
+
+    public static int getDistanceToCornerSq(Rect2i rc, int x, int y) {
+        int dx = Math.min(x - rc.minX(), rc.maxX() - x);
+        int dy = Math.min(y - rc.minY(), rc.maxY() - y);
+        return dx * dx + dy * dy;
+    }
+
     public static LineSegment getEdge(Rect2i rc, Orientation o) {
 
         Vector2i p0 = getCorner(rc, o.getRotated(-45));

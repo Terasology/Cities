@@ -18,6 +18,7 @@ package org.terasology.cities.roof;
 
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockTypes;
+import org.terasology.cities.common.Edges;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
@@ -55,21 +56,13 @@ public class HipRoofRasterizer extends RoofRasterizer<HipRoof> {
 
             @Override
             public int apply(int x, int z) {
-                int rx = x - area.minX();
-                int rz = z - area.minY();
-
-                // distance to border of the roof
-                int borderDistX = Math.min(rx, area.width() - 1 - rx);
-                int borderDistZ = Math.min(rz, area.height() - 1 - rz);
-
-                int dist = Math.min(borderDistX, borderDistZ);
-
+                int dist = Edges.getDistanceToBorder(area, x, z);
                 int y = TeraMath.floorToInt(roof.getBaseHeight() + dist * roof.getPitch());
                 return Math.min(y, roof.getMaxHeight());
             }
         };
 
-        HeightMap hmTop = HeightMaps.offset(hmBottom, (int) roof.getPitch());
+        HeightMap hmTop = HeightMaps.offset(hmBottom, TeraMath.ceilToInt(roof.getPitch()));
         Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_HIP);
         RasterUtil.fillRect(pen, area);
     }
