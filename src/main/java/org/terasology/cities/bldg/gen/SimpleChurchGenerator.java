@@ -190,10 +190,10 @@ public class SimpleChurchGenerator {
 
         turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));
 
-        int len = turtle.width(rect) / 2 - 2;
-        aisle.addDoor(new WingDoor(dir, turtle.rect(-len + 1, 0, 5, 1), baseHeight, baseHeight + doorHeight));
-        aisle.addDoor(new WingDoor(dir, turtle.rect(-2, 0, 5, 1), baseHeight, baseHeight + doorHeight));
-        aisle.addDoor(new WingDoor(dir, turtle.rect(len - 5, 0, 5, 1), baseHeight, baseHeight + doorHeight));
+        int len = 8;
+        aisle.addDoor(new WingDoor(dir, turtle.rect(-len + 2, 0, 3, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(-1, 0, 3, 1), baseHeight, baseHeight + doorHeight));
+        aisle.addDoor(new WingDoor(dir, turtle.rect(len - 4, 0, 3, 1), baseHeight, baseHeight + doorHeight));
 
         return aisle;
     }
