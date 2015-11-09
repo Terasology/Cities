@@ -24,6 +24,7 @@ import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.deco.SingleBlockDecoration;
 import org.terasology.cities.door.WingDoor;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.PentRoof;
@@ -33,10 +34,12 @@ import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.RectWindow;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
+import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
@@ -167,6 +170,10 @@ public class SimpleChurchGenerator {
             Rect2i wndRect = Rect2i.createFromMinAndSize(towerPos.getX(), towerPos.getY(), 1, 1);
             tower.addWindow(new RectWindow(orient, wndRect, baseHeight + towerHeight - 4, baseHeight + towerHeight - 1, BlockTypes.AIR));
         }
+
+        Vector2i torchPos2d = turtle.transform(0, turtle.length(rect) - 2);
+        Vector3i torchPos3d = new Vector3i(torchPos2d.x(), baseHeight + 4, torchPos2d.y());
+        tower.addDecoration(new SingleBlockDecoration(BlockTypes.TORCH, torchPos3d, Side.FRONT));
 
         return tower;
     }

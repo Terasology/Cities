@@ -18,11 +18,12 @@ package org.terasology.cities.bldg.gen;
 
 import java.util.Set;
 
+import org.terasology.cities.BlockTypes;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
-import org.terasology.cities.deco.Barrel;
+import org.terasology.cities.deco.SingleBlockDecoration;
 import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.DomeRoof;
 import org.terasology.cities.model.roof.HipRoof;
@@ -32,6 +33,7 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
+import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.ImmutableVector3i;
@@ -96,17 +98,23 @@ public class RectHouseGenerator {
             }
         }
 
-        addDecorations(part, o.getOpposite(), floorHeight);
+        addDecorations(part, o.getOpposite(), floorHeight, rng);
 
         return bldg;
     }
 
-    private void addDecorations(RectBuildingPart part, Orientation o, int baseHeight) {
+    private void addDecorations(RectBuildingPart part, Orientation o, int baseHeight, Random rng) {
         Rect2i rc = part.getShape().expand(-1, -1); // inside
-        Vector2i right = Edges.getCorner(rc, o.getRotated(45));
-        Vector2i left = Edges.getCorner(rc, o.getRotated(-45));
-        part.addDecoration(new Barrel(new ImmutableVector3i(left.x(), baseHeight, left.y())));
-        part.addDecoration(new Barrel(new ImmutableVector3i(right.x(), baseHeight, right.y())));
+        if (rng.nextBoolean()) {
+            Vector2i pos = Edges.getCorner(rc, o.getRotated(-45));
+            ImmutableVector3i pos3d = new ImmutableVector3i(pos.x(), baseHeight, pos.y());
+            part.addDecoration(new SingleBlockDecoration(BlockTypes.BARREL, pos3d, Side.FRONT));
+        }
+        if (rng.nextBoolean()) {
+            Vector2i pos = Edges.getCorner(rc, o.getRotated(45));
+            ImmutableVector3i pos3d = new ImmutableVector3i(pos.x(), baseHeight, pos.y());
+            part.addDecoration(new SingleBlockDecoration(BlockTypes.BARREL, pos3d, Side.FRONT));
+        }
     }
 
     private Set<SimpleWindow> createWindows(Rect2i rc, int baseHeight, Orientation o) {

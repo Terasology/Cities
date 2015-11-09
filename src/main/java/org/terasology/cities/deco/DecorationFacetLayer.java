@@ -45,6 +45,7 @@ public class DecorationFacetLayer extends AbstractFacetLayer {
 
     private final Map<BlockTypes, Color> blockColors = ImmutableMap.<BlockTypes, Color>builder()
             .put(BlockTypes.BARREL, new Color(110, 110, 10))
+            .put(BlockTypes.TORCH, new Color(240, 240, 10))
             .build();
 
     private Set<DecorationRasterizer<?>> rasterizers = new HashSet<>();
@@ -53,7 +54,7 @@ public class DecorationFacetLayer extends AbstractFacetLayer {
         setVisible(true);
 
         BlockTheme theme = null;
-        rasterizers.add(new BarrelRasterizer(theme));
+        rasterizers.add(new SingleBlockRasterizer(theme));
     }
 
     @Override

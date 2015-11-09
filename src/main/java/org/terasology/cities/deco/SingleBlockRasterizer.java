@@ -19,27 +19,25 @@ package org.terasology.cities.deco;
 import java.util.Collections;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.math.Side;
 
 /**
- * Converts {@link Barrel} into blocks
+ * Converts {@link SingleBlockDecoration} into blocks
  */
-public class BarrelRasterizer extends DecorationRasterizer<Barrel> {
+public class SingleBlockRasterizer extends DecorationRasterizer<SingleBlockDecoration> {
 
     /**
      * @param theme the block theme to use
      */
-    public BarrelRasterizer(BlockTheme theme) {
-        super(theme, Barrel.class);
+    public SingleBlockRasterizer(BlockTheme theme) {
+        super(theme, SingleBlockDecoration.class);
     }
 
     @Override
-    public void raster(RasterTarget target, Barrel barrel, HeightMap hm) {
-        if (target.getAffectedRegion().encompasses(barrel.getPos())) {
-            target.setBlock(barrel.getPos(), BlockTypes.BARREL, Collections.singleton(Side.BACK));
+    public void raster(RasterTarget target, SingleBlockDecoration deco, HeightMap hm) {
+        if (target.getAffectedRegion().encompasses(deco.getPos())) {
+            target.setBlock(deco.getPos(), deco.getType(), Collections.singleton(deco.getSide()));
         }
     }
 

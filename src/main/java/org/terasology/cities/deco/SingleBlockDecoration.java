@@ -16,27 +16,49 @@
 
 package org.terasology.cities.deco;
 
+import org.terasology.cities.BlockTypes;
+import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 import org.terasology.math.geom.ImmutableVector3i;
 
 /**
- * A single block barrel
+ * A single block decoration
  */
-public class Barrel implements Decoration {
+public class SingleBlockDecoration implements Decoration {
 
     private final ImmutableVector3i pos;
+    private BlockTypes type;
+    private Side side;
 
     /**
+     * @param type the decoration type
      * @param pos the window position
+     * @param side the direction of the decoration
      */
-    public Barrel(BaseVector3i pos) {
+    public SingleBlockDecoration(BlockTypes type, BaseVector3i pos, Side side) {
+        this.type = type;
+        this.side = side;
         this.pos = ImmutableVector3i.createOrUse(pos);
     }
 
     /**
-     * @return the window position
+     * @return the position
      */
     public ImmutableVector3i getPos() {
         return this.pos;
+    }
+
+    /**
+     * @return the block type to raster
+     */
+    public BlockTypes getType() {
+        return type;
+    }
+
+    /**
+     * @return the orientation of the block
+     */
+    public Side getSide() {
+        return side;
     }
 }

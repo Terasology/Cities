@@ -119,5 +119,10 @@ public enum BlockTypes {
     /**
      * A barrel
      */
-    BARREL
+    BARREL,
+
+    /**
+     * A torch
+     */
+    TORCH
 }
