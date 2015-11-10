@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
+import org.terasology.cities.parcels.Zone;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.BaseVector2f;
 import org.terasology.math.geom.LineSegment;
@@ -82,13 +83,14 @@ public class FenceFacetProvider implements FacetProvider {
 
     private Optional<SimpleFence> generateFence(Parcel parcel) {
 
-        Rect2i fenceRc = Rect2i.createFromMinAndMax(parcel.getShape().min(), parcel.getShape().max());
-//        Rect2i fenceRc = new Rect2i(parcel.getShape());                // TODO: add copy constructor
-        Orientation gateOrient = parcel.getOrientation();
-        LineSegment seg = Edges.getEdge(fenceRc, parcel.getOrientation());
-        Vector2i gatePos = new Vector2i(BaseVector2f.lerp(seg.getStart(), seg.getEnd(), 0.5f), RoundingMode.HALF_UP);
-
-        return Optional.of(new SimpleFence(fenceRc, gateOrient, gatePos));
+        if (parcel.getZone() == Zone.RESIDENTIAL) {
+            Rect2i fenceRc = Rect2i.createFromMinAndMax(parcel.getShape().min(), parcel.getShape().max());
+            Orientation gateOrient = parcel.getOrientation();
+            Vector2i gatePos = Edges.getCorner(fenceRc, parcel.getOrientation());
+            return Optional.of(new SimpleFence(fenceRc, gateOrient, gatePos));
+        } else {
+            return Optional.empty();
+        }
     }
 
 }
