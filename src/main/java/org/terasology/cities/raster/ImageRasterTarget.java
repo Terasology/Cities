@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
+import org.terasology.cities.ShapeType;
 import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
@@ -98,9 +99,13 @@ public class ImageRasterTarget implements RasterTarget {
 
     @Override
     public void setBlock(int x, int y, int z, BlockType type, Set<Side> side) {
-        renderBlock(x, y, z, type);
+        setBlock(x, y, z, type); // ignore side flags
     }
 
+    @Override
+    public void setBlock(int x, int y, int z, BlockType type, ShapeType shape) {
+        setBlock(x, y, z, type); // ignore shape
+    }
 
     /**
      * @param x x in world coords

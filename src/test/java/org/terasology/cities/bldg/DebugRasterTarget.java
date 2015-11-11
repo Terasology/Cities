@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
+import org.terasology.cities.ShapeType;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.math.Region3i;
 import org.terasology.math.Side;
@@ -64,6 +65,11 @@ public class DebugRasterTarget implements RasterTarget {
     @Override
     public void setBlock(int x, int y, int z, BlockType type, Set<Side> side) {
         setBlock(x, y, z, type); // ignore side flags
+    }
+
+    @Override
+    public void setBlock(int x, int y, int z, BlockType type, ShapeType shape) {
+        setBlock(x, y, z, type); // ignore shape
     }
 
     @Override

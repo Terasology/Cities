@@ -124,5 +124,10 @@ public enum DefaultBlockType implements BlockType {
     /**
      * A torch
      */
-    TORCH
+    TORCH,
+
+    /**
+     *
+     */
+    PILLAR
 }
