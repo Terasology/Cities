@@ -17,7 +17,7 @@
 package org.terasology.cities.door;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
 import org.terasology.cities.raster.RasterTarget;
@@ -38,7 +38,7 @@ public class WingDoorRasterizer extends DoorRasterizer<WingDoor> {
 
     @Override
     public void raster(RasterTarget target, WingDoor door, HeightMap hm) {
-        Pen pen = Pens.fill(target, door.getBaseHeight(), door.getTopHeight(), BlockTypes.WING_DOOR);
+        Pen pen = Pens.fill(target, door.getBaseHeight(), door.getTopHeight(), DefaultBlockType.WING_DOOR);
         RasterUtil.fillRect(pen, door.getArea());
     }
 

@@ -16,7 +16,7 @@
 
 package org.terasology.cities;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -31,22 +31,22 @@ import org.terasology.world.block.BlockUri;
 import org.terasology.world.block.family.BlockFamily;
 
 /**
- * A mapping from block types (as defined in {@link BlockTypes}) to actual blocks
+ * A mapping from block types (as defined in {@link BlockType}) to actual blocks
  */
-public final class BlockTheme implements Function<BlockTypes, Block> {
+public final class BlockTheme implements Function<BlockType, Block> {
 
     private static final Logger logger = LoggerFactory.getLogger(BlockTheme.class);
 
-    private final Map<BlockTypes, Block> blockMap;
-    private final Map<BlockTypes, BlockFamily> familyMap;
+    private final Map<BlockType, Block> blockMap;
+    private final Map<BlockType, BlockFamily> familyMap;
 
     private final BlockFamily defaultFamily;
     private final Block defaultBlock;
 
-    private BlockTheme(Map<BlockTypes, Block> blocks, Block defBlock, Map<BlockTypes, BlockFamily> families, BlockFamily defFamily) {
-        this.blockMap = new EnumMap<>(blocks);
+    private BlockTheme(Map<BlockType, Block> blocks, Block defBlock, Map<BlockType, BlockFamily> families, BlockFamily defFamily) {
+        this.blockMap = new HashMap<>(blocks);
         this.defaultBlock = defBlock;
-        this.familyMap = new EnumMap<>(families);
+        this.familyMap = new HashMap<>(families);
         this.defaultFamily = defFamily;
     }
 
@@ -55,7 +55,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
     }
 
     @Override
-    public Block apply(BlockTypes input) {
+    public Block apply(BlockType input) {
 
         Block block = blockMap.get(input);
 
@@ -72,7 +72,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
      * @param sides the connected sides
      * @return the block
      */
-    public Block apply(BlockTypes input, Set<Side> sides) {
+    public Block apply(BlockType input, Set<Side> sides) {
 
         BlockFamily family = familyMap.get(input);
 
@@ -108,12 +108,12 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
         private final Block defaultBlock;
         private final BlockFamily defaultFamily;
 
-        private final Map<BlockTypes, Block> blockMap = new EnumMap<>(BlockTypes.class);
-        private final Map<BlockTypes, BlockFamily> familyMap = new EnumMap<>(BlockTypes.class);
+        private final Map<BlockType, Block> blockMap = new HashMap<>();
+        private final Map<BlockType, BlockFamily> familyMap = new HashMap<>();
 
         private Builder(BlockManager blockManager) {
             this.blockManager = blockManager;
-            blockMap.put(BlockTypes.AIR, blockManager.getBlock(BlockManager.AIR_ID));
+            blockMap.put(DefaultBlockType.AIR, blockManager.getBlock(BlockManager.AIR_ID));
             defaultBlock = blockManager.getBlock(BlockManager.UNLOADED_ID);
             defaultFamily = blockManager.getBlockFamily(BlockManager.UNLOADED_ID);
         }
@@ -127,7 +127,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
          * @param blockUri the qualified block uri (modulename:id)
          * @return this
          */
-        public Builder register(BlockTypes blockType, String blockUri) {
+        public Builder register(BlockType blockType, String blockUri) {
             register(blockType, new BlockUri(blockUri));
             return this;
         }
@@ -137,7 +137,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
          * @param blockUri the block uri
          * @return this
          */
-        public Builder register(BlockTypes blockType, BlockUri blockUri) {
+        public Builder register(BlockType blockType, BlockUri blockUri) {
             Block block = blockManager.getBlock(blockUri);
 
             if (!BlockManager.AIR_ID.equals(blockUri)) {
@@ -156,7 +156,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
          * @param blockUri the qualified block family uri (modulename:id)
          * @return this
          */
-        public Builder registerFamily(BlockTypes blockType, String blockUri) {
+        public Builder registerFamily(BlockType blockType, String blockUri) {
             registerFamily(blockType, new BlockUri(blockUri));
             return this;
         }
@@ -166,7 +166,7 @@ public final class BlockTheme implements Function<BlockTypes, Block> {
          * @param blockUri the block family uri
          * @return this
          */
-        public Builder registerFamily(BlockTypes blockType, BlockUri blockUri) {
+        public Builder registerFamily(BlockType blockType, BlockUri blockUri) {
             BlockFamily family = blockManager.getBlockFamily(blockUri);
 
             if (family == null) {

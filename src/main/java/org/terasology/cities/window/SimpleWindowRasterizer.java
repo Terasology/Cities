@@ -17,7 +17,7 @@
 package org.terasology.cities.window;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
 
@@ -40,7 +40,7 @@ public class SimpleWindowRasterizer extends WindowRasterizer<SimpleWindow> {
         int z = wnd.getPos().y();
 
         if (target.getAffectedRegion().encompasses(x, y, z)) {
-            target.setBlock(x, y, z, BlockTypes.WINDOW_GLASS);
+            target.setBlock(x, y, z, DefaultBlockType.WINDOW_GLASS);
         }
     }
 

@@ -19,7 +19,7 @@ package org.terasology.cities.walls;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.ChunkRasterTarget;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
@@ -91,7 +91,7 @@ public class TownWallRasterizer implements WorldRasterizer {
             }
         };
 
-        Pen pen = Pens.fill(target, hm, topHm, BlockTypes.TOWER_WALL);
+        Pen pen = Pens.fill(target, hm, topHm, DefaultBlockType.TOWER_WALL);
         RasterUtil.drawLine(pen, new LineSegment(x1, z1, x2, z2));
     }
 
@@ -133,7 +133,7 @@ public class TownWallRasterizer implements WorldRasterizer {
             }
         };
 
-        Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.TOWER_WALL);
+        Pen pen = Pens.fill(target, hmBottom, hmTop, DefaultBlockType.TOWER_WALL);
         RasterUtil.drawLine(pen, new LineSegment(x1, z1, x2, z2));
     }
 

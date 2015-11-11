@@ -17,7 +17,7 @@
 package org.terasology.cities.roof;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.model.roof.DomeRoof;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
@@ -90,7 +90,7 @@ public class DomeRoofRasterizer extends RoofRasterizer<DomeRoof> {
             }
         };
 
-        Pen pen = Pens.fill(target, bottomHm, topHm, BlockTypes.ROOF_FLAT);
+        Pen pen = Pens.fill(target, bottomHm, topHm, DefaultBlockType.ROOF_FLAT);
         RasterUtil.fillRect(pen, area);
     }
 

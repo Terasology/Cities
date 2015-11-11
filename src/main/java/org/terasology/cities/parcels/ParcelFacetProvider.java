@@ -28,7 +28,6 @@ import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.settlements.Settlement;
 import org.terasology.cities.settlements.SettlementFacet;
 import org.terasology.cities.sites.Site;
-import org.terasology.cities.sites.SiteFacet;
 import org.terasology.cities.terrain.BuildableTerrainFacet;
 import org.terasology.commonworld.Orientation;
 import org.terasology.entitySystem.Component;

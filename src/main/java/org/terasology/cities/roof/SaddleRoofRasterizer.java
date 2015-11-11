@@ -20,7 +20,7 @@ import static org.terasology.commonworld.Orientation.EAST;
 import static org.terasology.commonworld.Orientation.WEST;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
@@ -76,7 +76,7 @@ public class SaddleRoofRasterizer extends RoofRasterizer<SaddleRoof> {
         };
 
         HeightMap hmBottom = HeightMaps.offset(hmTop, -1);
-        Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_SADDLE);
+        Pen pen = Pens.fill(target, hmBottom, hmTop, DefaultBlockType.ROOF_SADDLE);
         RasterUtil.fillRect(pen, area);
 
         Rect2i wallRect = roof.getBaseArea();
@@ -105,7 +105,7 @@ public class SaddleRoofRasterizer extends RoofRasterizer<SaddleRoof> {
             }
         };
 
-        pen = Pens.fill(target, hmGableBottom, hmBottom, BlockTypes.ROOF_GABLE);
+        pen = Pens.fill(target, hmGableBottom, hmBottom, DefaultBlockType.ROOF_GABLE);
         RasterUtil.fillRect(pen, area);
     }
 }

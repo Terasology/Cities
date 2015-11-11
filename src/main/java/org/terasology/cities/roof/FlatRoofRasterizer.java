@@ -17,7 +17,7 @@
 package org.terasology.cities.roof;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.model.roof.FlatRoof;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
@@ -71,7 +71,7 @@ public class FlatRoofRasterizer extends RoofRasterizer<FlatRoof> {
         };
         HeightMap hmBottom = HeightMaps.constant(roof.getBaseHeight());
 
-        Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_FLAT);
+        Pen pen = Pens.fill(target, hmBottom, hmTop, DefaultBlockType.ROOF_FLAT);
         RasterUtil.fillRect(pen, area);
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.geom.BoundingBox;
 import org.terasology.commonworld.geom.Ramp;
@@ -125,19 +125,19 @@ public class RoadRasterizer implements WorldRasterizer {
                         // fill up with air until default surface height is reached
                         for (int i = Math.max(reg.minY(), y + 1); i <= Math.min(reg.maxY(), heightP); i++) {
                             int cy = i - chunk.getChunkWorldOffsetY();
-                            chunk.setBlock(cx, cy, cz, blockTheme.apply(BlockTypes.AIR));
+                            chunk.setBlock(cx, cy, cz, blockTheme.apply(DefaultBlockType.AIR));
                         }
 
                         // fill up with dirt (top soil layer inclusive) until road height is reached
                         for (int i = Math.max(reg.minY(), heightP); i <= Math.min(reg.maxY(), y - 1); i++) {
                             int cy = i - chunk.getChunkWorldOffsetY();
-                            chunk.setBlock(cx, cy, cz, blockTheme.apply(BlockTypes.ROAD_FILL));
+                            chunk.setBlock(cx, cy, cz, blockTheme.apply(DefaultBlockType.ROAD_FILL));
                         }
 
                         // put actual road layer
                         if (y >= reg.minY() && y <= reg.maxY()) {
                             int cy = y - chunk.getChunkWorldOffsetY();
-                            chunk.setBlock(cx, cy, cz, blockTheme.apply(BlockTypes.ROAD_SURFACE));
+                            chunk.setBlock(cx, cy, cz, blockTheme.apply(DefaultBlockType.ROAD_SURFACE));
                         }
                     }
                 }

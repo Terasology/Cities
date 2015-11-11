@@ -17,7 +17,7 @@
 package org.terasology.cities.raster.standard;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.raster.BuildingPens;
@@ -53,11 +53,11 @@ public class RectPartRasterizer extends BuildingPartRasterizer<RectBuildingPart>
         int baseHeight = part.getBaseHeight();
         int wallHeight = part.getWallHeight();
 
-        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, BlockTypes.BUILDING_FLOOR);
+        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, DefaultBlockType.BUILDING_FLOOR);
         RasterUtil.fillRect(floorPen, rc);
 
         // create walls
-        Pen wallPen = Pens.fill(brush, baseHeight, baseHeight + wallHeight, BlockTypes.BUILDING_WALL);
+        Pen wallPen = Pens.fill(brush, baseHeight, baseHeight + wallHeight, DefaultBlockType.BUILDING_WALL);
         RasterUtil.drawRect(wallPen, rc);
     }
 }

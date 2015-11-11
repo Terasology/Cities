@@ -19,12 +19,10 @@ package org.terasology.cities.walls;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.terasology.cities.bldg.Tower;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * Defines a town wall consisting of {@link Tower}s

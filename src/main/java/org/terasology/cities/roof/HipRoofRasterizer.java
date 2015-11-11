@@ -17,7 +17,7 @@
 package org.terasology.cities.roof;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.raster.Pen;
@@ -63,7 +63,7 @@ public class HipRoofRasterizer extends RoofRasterizer<HipRoof> {
         };
 
         HeightMap hmTop = HeightMaps.offset(hmBottom, TeraMath.ceilToInt(roof.getPitch()));
-        Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_HIP);
+        Pen pen = Pens.fill(target, hmBottom, hmTop, DefaultBlockType.ROOF_HIP);
         RasterUtil.fillRect(pen, area);
     }
 

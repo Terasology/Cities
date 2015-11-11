@@ -19,7 +19,7 @@ package org.terasology.cities.fences;
 import java.util.EnumSet;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.Region3i;
@@ -82,25 +82,25 @@ public class SimpleFenceRasterizer implements WorldRasterizer {
 
         // top wall is in brush area
         if (ftop >= btop && ftop <= bbot) {
-            Block block = theme.apply(BlockTypes.FENCE, EnumSet.of(Side.LEFT, Side.RIGHT));
+            Block block = theme.apply(DefaultBlockType.FENCE, EnumSet.of(Side.LEFT, Side.RIGHT));
             wallX(chunk, heightFacet, wallX1, wallX2, ftop, block);
         }
 
         // bottom wall is in brush area
         if (fbot >= btop && fbot <= bbot) {
-            Block block = theme.apply(BlockTypes.FENCE, EnumSet.of(Side.LEFT, Side.RIGHT));
+            Block block = theme.apply(DefaultBlockType.FENCE, EnumSet.of(Side.LEFT, Side.RIGHT));
             wallX(chunk, heightFacet, wallX1, wallX2, fbot, block);
         }
 
         // left wall is in brush area
         if (fleft >= bleft && fleft <= bright) {
-            Block block = theme.apply(BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.BACK));
+            Block block = theme.apply(DefaultBlockType.FENCE, EnumSet.of(Side.FRONT, Side.BACK));
             wallZ(chunk, heightFacet, fleft, wallZ1, wallZ2, block);
         }
 
         // right wall is in brush area
         if (fright >= bleft && fright <= bright) {
-            Block block = theme.apply(BlockTypes.FENCE, EnumSet.of(Side.FRONT, Side.BACK));
+            Block block = theme.apply(DefaultBlockType.FENCE, EnumSet.of(Side.FRONT, Side.BACK));
             wallZ(chunk, heightFacet, fright, wallZ1, wallZ2, block);
         }
 
@@ -118,7 +118,7 @@ public class SimpleFenceRasterizer implements WorldRasterizer {
                 Side side = getSide(fence.getGateOrientation());
 
                 if (side != null) {
-                    Block gateBlock = theme.apply(BlockTypes.FENCE_GATE, EnumSet.of(side));
+                    Block gateBlock = theme.apply(DefaultBlockType.FENCE_GATE, EnumSet.of(side));
                     chunk.setBlock(gatePos.x() - brushRc.minX(), y - brushRc.minY(), gatePos.y() - brushRc.minZ(), gateBlock);
                 }
             }
@@ -130,7 +130,7 @@ public class SimpleFenceRasterizer implements WorldRasterizer {
         int y = TeraMath.floorToInt(hm.getWorld(x, z)) + 1;
         Orientation a = o.getRotated(180 - 45);
         Orientation b = o.getRotated(180 + 45);
-        Block cornerPost = theme.apply(BlockTypes.FENCE, EnumSet.of(getSide(a), getSide(b)));
+        Block cornerPost = theme.apply(DefaultBlockType.FENCE, EnumSet.of(getSide(a), getSide(b)));
         if (region.encompasses(x, y, z)) {
             chunk.setBlock(x - region.minX(), y - region.minY(), z - region.minZ(), cornerPost);
         }

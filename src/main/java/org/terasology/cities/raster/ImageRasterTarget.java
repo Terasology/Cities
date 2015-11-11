@@ -22,7 +22,8 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
@@ -38,12 +39,12 @@ public class ImageRasterTarget implements RasterTarget {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageRasterTarget.class);
 
-    private final Function<BlockTypes, Color> blockColor;
+    private final Function<BlockType, Color> blockColor;
     private final Rect2i area;
 
     private final BufferedImage image;
     private final short[][] heightMap;      // [x][z]
-    private final BlockTypes[][] typeMap;   // [x][z]
+    private final BlockType[][] typeMap;   // [x][z]
 
     private final int wz;
     private final int wx;
@@ -56,7 +57,7 @@ public class ImageRasterTarget implements RasterTarget {
      * @param image the image to draw onto
      * @param blockColor a mapping String type -> block
      */
-    public ImageRasterTarget(int wx, int wz, BufferedImage image, Function<BlockTypes, Color> blockColor) {
+    public ImageRasterTarget(int wx, int wz, BufferedImage image, Function<BlockType, Color> blockColor) {
         this.blockColor = blockColor;
         this.image = image;
         this.wx = wx;
@@ -66,7 +67,7 @@ public class ImageRasterTarget implements RasterTarget {
         int height = image.getHeight();
 
         this.heightMap = new short[width][height];
-        this.typeMap = new BlockTypes[width][height];
+        this.typeMap = new BlockType[width][height];
 
         this.area = Rect2i.createFromMinAndSize(wx, wz, width, height);
         this.region = Region3i.createFromMinAndSize(
@@ -91,12 +92,12 @@ public class ImageRasterTarget implements RasterTarget {
      * @param type the block type
      */
     @Override
-    public void setBlock(int x, int y, int z, BlockTypes type) {
+    public void setBlock(int x, int y, int z, BlockType type) {
         renderBlock(x, y, z, type);
     }
 
     @Override
-    public void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side) {
+    public void setBlock(int x, int y, int z, BlockType type, Set<Side> side) {
         renderBlock(x, y, z, type);
     }
 
@@ -107,7 +108,7 @@ public class ImageRasterTarget implements RasterTarget {
      * @param z z in world coords
      * @param color the actual block color
      */
-    protected void renderBlock(int x, int y, int z, BlockTypes type) {
+    protected void renderBlock(int x, int y, int z, BlockType type) {
 
         int lx = x - wx;
         int lz = z - wz;
@@ -140,7 +141,7 @@ public class ImageRasterTarget implements RasterTarget {
 
         // if air is drawn at or below terrain level, then reduce height accordingly
         // The color remains unchanged which is wrong, but this information is not available in 2D
-        if (type == BlockTypes.AIR) {
+        if (type == DefaultBlockType.AIR) {
             // reduce top height only if the top block is replaced with air
             if (heightMap[lx][lz] == y) {
                 heightMap[lx][lz] = (short) (y - 1);
@@ -171,10 +172,10 @@ public class ImageRasterTarget implements RasterTarget {
         return heightMap[lx][lz];
     }
 
-    public BlockTypes getBlockType(int x, int z) {
+    public BlockType getBlockType(int x, int z) {
         int lx = x - wx;
         int lz = z - wz;
-        BlockTypes type = typeMap[lx][lz];
+        BlockType type = typeMap[lx][lz];
         return type;
     }
 

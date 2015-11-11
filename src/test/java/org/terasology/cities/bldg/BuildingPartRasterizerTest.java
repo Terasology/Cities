@@ -16,16 +16,16 @@
 
 package org.terasology.cities.bldg;
 
-import static org.terasology.cities.BlockTypes.AIR;
-import static org.terasology.cities.BlockTypes.BUILDING_FLOOR;
-import static org.terasology.cities.BlockTypes.BUILDING_FOUNDATION;
-import static org.terasology.cities.BlockTypes.FENCE;
+import static org.terasology.cities.DefaultBlockType.AIR;
+import static org.terasology.cities.DefaultBlockType.BUILDING_FLOOR;
+import static org.terasology.cities.DefaultBlockType.BUILDING_FOUNDATION;
+import static org.terasology.cities.DefaultBlockType.FENCE;
 
 import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
 import org.terasology.cities.raster.BuildingPens;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.RasterTarget;
@@ -152,7 +152,7 @@ public class BuildingPartRasterizerTest {
                 target.getColumn(0, 0));
     }
 
-    private void fillColumn(RasterTarget target, int min, int max, BlockTypes type) {
+    private void fillColumn(RasterTarget target, int min, int max, BlockType type) {
         for (int y = min; y <= max; y++) {
             target.setBlock(0, y, 0, type);
         }

@@ -19,7 +19,7 @@ package org.terasology.cities.raster.standard;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.RoundBuildingPart;
 import org.terasology.cities.raster.BuildingPens;
@@ -60,11 +60,11 @@ public class RoundPartRasterizer extends BuildingPartRasterizer<RoundBuildingPar
         int baseHeight = element.getBaseHeight();
         int wallHeight = element.getWallHeight();
 
-        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, BlockTypes.BUILDING_FLOOR);
+        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, DefaultBlockType.BUILDING_FLOOR);
         RasterUtil.fillCircle(new CheckedPen(floorPen), center.x(), center.y(), radius);
 
         // create walls
-        Pen wallPen = Pens.fill(brush, baseHeight, baseHeight + wallHeight, BlockTypes.BUILDING_WALL);
+        Pen wallPen = Pens.fill(brush, baseHeight, baseHeight + wallHeight, DefaultBlockType.BUILDING_WALL);
         RasterUtil.drawCircle(new CheckedPen(wallPen), center.x(), center.y(), radius);
     }
 }

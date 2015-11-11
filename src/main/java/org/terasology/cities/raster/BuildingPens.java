@@ -16,7 +16,8 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
@@ -35,7 +36,7 @@ public final class BuildingPens {
      * @param floor the floor block type
      * @return a new instance
      */
-    public static Pen floorPen(RasterTarget target, HeightMap terrainHeightMap, int baseHeight, BlockTypes floor) {
+    public static Pen floorPen(RasterTarget target, HeightMap terrainHeightMap, int baseHeight, BlockType floor) {
 
         return new AbstractPen(target.getAffectedArea()) {
 
@@ -50,7 +51,7 @@ public final class BuildingPens {
 
                 // put foundation material below between terrain and floor level
                 while (y < floorLevel) {
-                    target.setBlock(x, y, z, BlockTypes.BUILDING_FOUNDATION);
+                    target.setBlock(x, y, z, DefaultBlockType.BUILDING_FOUNDATION);
                     y++;
                     if (y > target.getMaxHeight()) {
                         return;
@@ -68,7 +69,7 @@ public final class BuildingPens {
 
                 // clear area above floor level
                 while (y <= target.getMaxHeight() && y <= terrain) {
-                    target.setBlock(x, y, z, BlockTypes.AIR);
+                    target.setBlock(x, y, z, DefaultBlockType.AIR);
                     y++;
                 }
             }

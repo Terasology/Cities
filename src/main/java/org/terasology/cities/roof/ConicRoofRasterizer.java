@@ -19,7 +19,7 @@ package org.terasology.cities.roof;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.model.roof.ConicRoof;
 import org.terasology.cities.raster.CheckedPen;
 import org.terasology.cities.raster.Pen;
@@ -70,7 +70,7 @@ public class ConicRoofRasterizer extends RoofRasterizer<ConicRoof> {
             }
         };
 
-        Pen pen = Pens.fill(target, hmBottom, HeightMaps.offset(hmBottom, 1), BlockTypes.ROOF_HIP);
+        Pen pen = Pens.fill(target, hmBottom, HeightMaps.offset(hmBottom, 1), DefaultBlockType.ROOF_HIP);
         RasterUtil.fillCircle(new CheckedPen(pen), center.getX(), center.getY(), radius);
     }
 

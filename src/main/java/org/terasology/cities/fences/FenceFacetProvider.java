@@ -16,7 +16,6 @@
 
 package org.terasology.cities.fences;
 
-import java.math.RoundingMode;
 import java.util.Optional;
 
 import org.terasology.cities.common.Edges;
@@ -24,8 +23,6 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.parcels.ParcelFacet;
 import org.terasology.cities.parcels.Zone;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.BaseVector2f;
-import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
 import org.terasology.world.generation.Border3D;

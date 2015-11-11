@@ -16,7 +16,7 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
 import org.terasology.commonworld.heightmap.HeightMap;
 
 /**
@@ -35,7 +35,7 @@ public final class Pens {
      * @param type the block type
      * @return a new instance
      */
-    public static Pen fill(RasterTarget target, int bottomHeight, int topHeight, BlockTypes type) {
+    public static Pen fill(RasterTarget target, int bottomHeight, int topHeight, BlockType type) {
         int bot = Math.max(target.getMinHeight(), bottomHeight);
         int top = Math.min(target.getMaxHeight(), topHeight - 1);  // top layer is exclusive
         return new AbstractPen(target.getAffectedArea()) {
@@ -56,7 +56,7 @@ public final class Pens {
      * @param type the block type
      * @return a new instance
      */
-    public static Pen fill(RasterTarget target, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
+    public static Pen fill(RasterTarget target, HeightMap hmBottom, HeightMap hmTop, BlockType type) {
         return new AbstractPen(target.getAffectedArea()) {
 
             @Override
@@ -76,7 +76,7 @@ public final class Pens {
      * @param type the block type
      * @return a new instance
      */
-    public static Pen singleLayer(RasterTarget target, HeightMap hm, BlockTypes type) {
+    public static Pen singleLayer(RasterTarget target, HeightMap hm, BlockType type) {
         return new AbstractPen(target.getAffectedArea()) {
 
             @Override

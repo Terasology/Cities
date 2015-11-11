@@ -18,8 +18,8 @@ package org.terasology.cities;
 
 import org.terasology.cities.bldg.BuildingFacetProvider;
 import org.terasology.cities.blocked.BlockedAreaFacetProvider;
-import org.terasology.cities.deco.SingleBlockRasterizer;
 import org.terasology.cities.deco.DecorationFacetProvider;
+import org.terasology.cities.deco.SingleBlockRasterizer;
 import org.terasology.cities.door.DoorFacetProvider;
 import org.terasology.cities.door.SimpleDoorRasterizer;
 import org.terasology.cities.door.WingDoorRasterizer;
@@ -97,29 +97,29 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
         int seaLevel = 2;
 
         theme = BlockTheme.builder(blockManager)
-            .register(BlockTypes.ROAD_FILL, "core:dirt")
-            .register(BlockTypes.ROAD_SURFACE, "core:Gravel")
-            .register(BlockTypes.LOT_EMPTY, "core:dirt")
-            .register(BlockTypes.BUILDING_WALL, "Cities:stonawall1")
-            .register(BlockTypes.BUILDING_FLOOR, "Cities:stonawall1dark")
-            .register(BlockTypes.BUILDING_FOUNDATION, "core:gravel")
-            .register(BlockTypes.TOWER_STAIRS, "core:CobbleStone")
-            .register(BlockTypes.ROOF_FLAT, "Cities:rooftiles2")
-            .register(BlockTypes.ROOF_HIP, "Cities:wood3")
-            .register(BlockTypes.ROOF_SADDLE, "Cities:wood3")
-            .register(BlockTypes.ROOF_DOME, "core:plank")
-            .register(BlockTypes.ROOF_GABLE, "core:plank")
-            .register(BlockTypes.SIMPLE_DOOR, BlockManager.AIR_ID)
-            .register(BlockTypes.WING_DOOR, BlockManager.AIR_ID)
-            .register(BlockTypes.WINDOW_GLASS, BlockManager.AIR_ID)
-            .register(BlockTypes.TOWER_WALL, "Cities:stonawall1")
+            .register(DefaultBlockType.ROAD_FILL, "core:dirt")
+            .register(DefaultBlockType.ROAD_SURFACE, "core:Gravel")
+            .register(DefaultBlockType.LOT_EMPTY, "core:dirt")
+            .register(DefaultBlockType.BUILDING_WALL, "Cities:stonawall1")
+            .register(DefaultBlockType.BUILDING_FLOOR, "Cities:stonawall1dark")
+            .register(DefaultBlockType.BUILDING_FOUNDATION, "core:gravel")
+            .register(DefaultBlockType.TOWER_STAIRS, "core:CobbleStone")
+            .register(DefaultBlockType.ROOF_FLAT, "Cities:rooftiles2")
+            .register(DefaultBlockType.ROOF_HIP, "Cities:wood3")
+            .register(DefaultBlockType.ROOF_SADDLE, "Cities:wood3")
+            .register(DefaultBlockType.ROOF_DOME, "core:plank")
+            .register(DefaultBlockType.ROOF_GABLE, "core:plank")
+            .register(DefaultBlockType.SIMPLE_DOOR, BlockManager.AIR_ID)
+            .register(DefaultBlockType.WING_DOOR, BlockManager.AIR_ID)
+            .register(DefaultBlockType.WINDOW_GLASS, BlockManager.AIR_ID)
+            .register(DefaultBlockType.TOWER_WALL, "Cities:stonawall1")
 
              // -- requires Fences module
-            .registerFamily(BlockTypes.FENCE, "Fences:Fence")
-            .registerFamily(BlockTypes.FENCE_GATE, BlockManager.AIR_ID)  // there is no fence gate :-(
-            .registerFamily(BlockTypes.TOWER_STAIRS, "core:CobbleStone:engine:stair")
-            .registerFamily(BlockTypes.BARREL, "StructuralResources:Barrel")
-            .registerFamily(BlockTypes.TORCH, "Core:Torch")
+            .registerFamily(DefaultBlockType.FENCE, "Fences:Fence")
+            .registerFamily(DefaultBlockType.FENCE_GATE, BlockManager.AIR_ID)  // there is no fence gate :-(
+            .registerFamily(DefaultBlockType.TOWER_STAIRS, "core:CobbleStone:engine:stair")
+            .registerFamily(DefaultBlockType.BARREL, "StructuralResources:Barrel")
+            .registerFamily(DefaultBlockType.TORCH, "Core:Torch")
             .build();
 
         PerlinHumidityProvider.Configuration humidityConfig = new PerlinHumidityProvider.Configuration();

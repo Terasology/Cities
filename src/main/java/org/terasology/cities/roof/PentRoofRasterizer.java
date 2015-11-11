@@ -19,7 +19,7 @@ package org.terasology.cities.roof;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.raster.Pen;
 import org.terasology.cities.raster.Pens;
@@ -81,7 +81,7 @@ public class PentRoofRasterizer extends RoofRasterizer<PentRoof> {
 
         int thickness = TeraMath.ceilToInt(roof.getPitch());
         HeightMap hmTop = HeightMaps.offset(hmBottom, thickness);
-        Pen pen = Pens.fill(target, hmBottom, hmTop, BlockTypes.ROOF_HIP);
+        Pen pen = Pens.fill(target, hmBottom, hmTop, DefaultBlockType.ROOF_HIP);
         RasterUtil.fillRect(pen, area);
 
         final Rect2i wallRect = roof.getBaseArea();
@@ -110,7 +110,7 @@ public class PentRoofRasterizer extends RoofRasterizer<PentRoof> {
             }
         };
 
-        pen = Pens.fill(target, hmGableBottom, hmBottom, BlockTypes.ROOF_GABLE);
+        pen = Pens.fill(target, hmGableBottom, hmBottom, DefaultBlockType.ROOF_GABLE);
         RasterUtil.fillRect(pen, area);
     }
 }

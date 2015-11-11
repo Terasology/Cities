@@ -18,7 +18,7 @@ package org.terasology.cities.raster;
 
 import java.util.Set;
 
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
 import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
@@ -35,13 +35,13 @@ public interface RasterTarget {
      * @param z z in world coords
      * @param type the block type
      */
-    void setBlock(int x, int y, int z, BlockTypes type);
+    void setBlock(int x, int y, int z, BlockType type);
 
     /**
      * @param pos the position in world coords
      * @param type the block type
      */
-    default void setBlock(BaseVector3i pos, BlockTypes type) {
+    default void setBlock(BaseVector3i pos, BlockType type) {
         setBlock(pos.getX(), pos.getY(), pos.getZ(), type);
     }
 
@@ -52,14 +52,14 @@ public interface RasterTarget {
      * @param type the block type
      * @param sides the sides (used to find the correct block from the family)
      */
-    void setBlock(int x, int y, int z, BlockTypes type, Set<Side> side);
+    void setBlock(int x, int y, int z, BlockType type, Set<Side> side);
 
     /**
      * @param pos the position in world coords
      * @param type the block type
      * @param sides the sides (used to find the correct block from the family)
      */
-    default void setBlock(BaseVector3i pos, BlockTypes type, Set<Side> sides) {
+    default void setBlock(BaseVector3i pos, BlockType type, Set<Side> sides) {
         setBlock(pos.getX(), pos.getY(), pos.getZ(), type, sides);
     }
 

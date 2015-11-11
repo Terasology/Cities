@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.terasology.cities.CityWorldGenerator;
 import org.terasology.cities.SettlementComponent;
 import org.terasology.cities.settlements.Settlement;
 import org.terasology.cities.sites.Site;

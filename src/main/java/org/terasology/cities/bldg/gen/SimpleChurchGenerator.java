@@ -18,7 +18,7 @@ package org.terasology.cities.bldg.gen;
 
 import java.math.RoundingMode;
 
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.DefaultBuilding;
@@ -152,7 +152,8 @@ public class SimpleChurchGenerator {
 
         Orientation dir = turtle.getOrientation();
         Rect2i towerRoofRect = rect.expand(1, 1);
-        HipRoof towerRoof = new HipRoof(rect, towerRoofRect, baseHeight + towerHeight, 2);
+        int topHeight = baseHeight + towerHeight;
+        HipRoof towerRoof = new HipRoof(rect, towerRoofRect, topHeight, 2);
         RectBuildingPart tower = new RectBuildingPart(rect, towerRoof, baseHeight, towerHeight);
 
         turtle.setPosition(Edges.getCorner(rect, dir.getOpposite()));
@@ -168,12 +169,12 @@ public class SimpleChurchGenerator {
             Vector2i towerPos = new Vector2i(towerBorder.lerp(0.5f), RoundingMode.HALF_UP);
 
             Rect2i wndRect = Rect2i.createFromMinAndSize(towerPos.getX(), towerPos.getY(), 1, 1);
-            tower.addWindow(new RectWindow(orient, wndRect, baseHeight + towerHeight - 4, baseHeight + towerHeight - 1, BlockTypes.AIR));
+            tower.addWindow(new RectWindow(orient, wndRect, topHeight - 4, topHeight - 1, DefaultBlockType.AIR));
         }
 
         Vector2i torchPos2d = turtle.transform(0, turtle.length(rect) - 2);
         Vector3i torchPos3d = new Vector3i(torchPos2d.x(), baseHeight + 4, torchPos2d.y());
-        tower.addDecoration(new SingleBlockDecoration(BlockTypes.TORCH, torchPos3d, Side.FRONT));
+        tower.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, torchPos3d, Side.FRONT));
 
         return tower;
     }

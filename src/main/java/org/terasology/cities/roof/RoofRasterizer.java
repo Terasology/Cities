@@ -20,7 +20,6 @@ import org.terasology.cities.BlockTheme;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.raster.ChunkRasterTarget;
 import org.terasology.cities.raster.RasterTarget;
-import org.terasology.cities.window.Window;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.TeraMath;
 import org.terasology.world.chunks.CoreChunk;

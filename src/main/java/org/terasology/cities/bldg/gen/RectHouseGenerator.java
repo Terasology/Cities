@@ -18,7 +18,7 @@ package org.terasology.cities.bldg.gen;
 
 import java.util.Set;
 
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
@@ -108,12 +108,12 @@ public class RectHouseGenerator {
         if (rng.nextBoolean()) {
             Vector2i pos = Edges.getCorner(rc, o.getRotated(-45));
             ImmutableVector3i pos3d = new ImmutableVector3i(pos.x(), baseHeight, pos.y());
-            part.addDecoration(new SingleBlockDecoration(BlockTypes.BARREL, pos3d, Side.FRONT));
+            part.addDecoration(new SingleBlockDecoration(DefaultBlockType.BARREL, pos3d, Side.FRONT));
         }
         if (rng.nextBoolean()) {
             Vector2i pos = Edges.getCorner(rc, o.getRotated(45));
             ImmutableVector3i pos3d = new ImmutableVector3i(pos.x(), baseHeight, pos.y());
-            part.addDecoration(new SingleBlockDecoration(BlockTypes.BARREL, pos3d, Side.FRONT));
+            part.addDecoration(new SingleBlockDecoration(DefaultBlockType.BARREL, pos3d, Side.FRONT));
         }
     }
 

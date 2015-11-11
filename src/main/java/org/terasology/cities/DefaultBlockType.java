@@ -19,7 +19,7 @@ package org.terasology.cities;
 /**
  * A set of constants used for city building
  */
-public enum BlockTypes {
+public enum DefaultBlockType implements BlockType {
 
     /**
      * Air

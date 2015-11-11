@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.raster.ImageRasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
@@ -44,13 +45,13 @@ public class RoofFacetLayer extends AbstractFacetLayer {
 
     private final BufferedImage bufferImage = new BufferedImage(4, 4, BufferedImage.TYPE_INT_ARGB);
 
-    private final Map<BlockTypes, Color> blockColors = ImmutableMap.<BlockTypes, Color>builder()
-            .put(BlockTypes.AIR, new Color(0, 0, 0, 0))
-            .put(BlockTypes.ROOF_FLAT, new Color(255, 60, 60))
-            .put(BlockTypes.ROOF_HIP, new Color(255, 60, 60))
-            .put(BlockTypes.ROOF_SADDLE, new Color(224, 120, 100))
-            .put(BlockTypes.ROOF_DOME, new Color(160, 190, 190))
-            .put(BlockTypes.ROOF_GABLE, new Color(180, 120, 100))
+    private final Map<BlockType, Color> blockColors = ImmutableMap.<BlockType, Color>builder()
+            .put(DefaultBlockType.AIR, new Color(0, 0, 0, 0))
+            .put(DefaultBlockType.ROOF_FLAT, new Color(255, 60, 60))
+            .put(DefaultBlockType.ROOF_HIP, new Color(255, 60, 60))
+            .put(DefaultBlockType.ROOF_SADDLE, new Color(224, 120, 100))
+            .put(DefaultBlockType.ROOF_DOME, new Color(160, 190, 190))
+            .put(DefaultBlockType.ROOF_GABLE, new Color(180, 120, 100))
             .build();
 
     private Set<RoofRasterizer<?>> rasterizers = new HashSet<>();
@@ -102,7 +103,7 @@ public class RoofFacetLayer extends AbstractFacetLayer {
         render(brush, region);
 
         int height = brush.getHeight(wx, wy);
-        BlockTypes type = brush.getBlockType(wx, wy);
+        BlockType type = brush.getBlockType(wx, wy);
         return type == null ? null : type.toString() + "(" + height + ")";
     }
 }

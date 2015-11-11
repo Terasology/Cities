@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.StaircaseBuildingPart;
 import org.terasology.cities.common.Edges;
@@ -68,10 +68,10 @@ public class StaircaseRasterizer extends BuildingPartRasterizer<StaircaseBuildin
             // parts of the staircase could be outside
             if (target.getAffectedArea().contains(v.getX(), v.getY())) {
                 if (isCorner && y - 1 >= target.getMinHeight()) {
-                    target.setBlock(v.getX(), y - 1, v.getY(), BlockTypes.TOWER_STAIRS);
+                    target.setBlock(v.getX(), y - 1, v.getY(), DefaultBlockType.TOWER_STAIRS);
                 } else if (y >= target.getMinHeight()) {
                     Side side = findSide(stairsRect, v, clockwise).yawClockwise(1);
-                    target.setBlock(v.getX(), y, v.getY(), BlockTypes.TOWER_STAIRS, Collections.singleton(side));
+                    target.setBlock(v.getX(), y, v.getY(), DefaultBlockType.TOWER_STAIRS, Collections.singleton(side));
                 }
             }
 

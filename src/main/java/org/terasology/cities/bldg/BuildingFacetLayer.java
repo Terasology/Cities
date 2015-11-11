@@ -26,7 +26,8 @@ import java.util.Set;
 
 import org.terasology.cities.AwtConverter;
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.ImageRasterTarget;
 import org.terasology.cities.raster.standard.HollowBuildingPartRasterizer;
 import org.terasology.cities.raster.standard.RectPartRasterizer;
@@ -52,15 +53,15 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
 
     private final BufferedImage bufferImage = new BufferedImage(4, 4, BufferedImage.TYPE_INT_ARGB);
 
-    private final Map<BlockTypes, Color> blockColors = ImmutableMap.<BlockTypes, Color>builder()
-            .put(BlockTypes.AIR, new Color(0, 0, 0, 0))
-            .put(BlockTypes.ROAD_SURFACE, new Color(160, 40, 40))
-            .put(BlockTypes.LOT_EMPTY, new Color(224, 224, 64))
-            .put(BlockTypes.BUILDING_WALL, new Color(158, 158, 158))
-            .put(BlockTypes.BUILDING_FLOOR, new Color(100, 100, 100))
-            .put(BlockTypes.BUILDING_FOUNDATION, new Color(90, 60, 60))
-            .put(BlockTypes.TOWER_WALL, new Color(200, 100, 200))
-            .put(BlockTypes.TOWER_STAIRS, new Color(160, 128, 128))
+    private final Map<BlockType, Color> blockColors = ImmutableMap.<BlockType, Color>builder()
+            .put(DefaultBlockType.AIR, new Color(0, 0, 0, 0))
+            .put(DefaultBlockType.ROAD_SURFACE, new Color(160, 40, 40))
+            .put(DefaultBlockType.LOT_EMPTY, new Color(224, 224, 64))
+            .put(DefaultBlockType.BUILDING_WALL, new Color(158, 158, 158))
+            .put(DefaultBlockType.BUILDING_FLOOR, new Color(100, 100, 100))
+            .put(DefaultBlockType.BUILDING_FOUNDATION, new Color(90, 60, 60))
+            .put(DefaultBlockType.TOWER_WALL, new Color(200, 100, 200))
+            .put(DefaultBlockType.TOWER_STAIRS, new Color(160, 128, 128))
             .build();
 
     private Set<BuildingPartRasterizer<?>> rasterizers = new HashSet<>();
@@ -150,7 +151,7 @@ public class BuildingFacetLayer extends AbstractFacetLayer {
         render(brush, region);
 
         int height = brush.getHeight(wx, wy);
-        BlockTypes type = brush.getBlockType(wx, wy);
+        BlockType type = brush.getBlockType(wx, wy);
         return type == null ? null : type.toString() + "(" + height + ")";
     }
 

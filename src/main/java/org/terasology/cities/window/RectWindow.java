@@ -16,7 +16,8 @@
 
 package org.terasology.cities.window;
 
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.BlockType;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
 
@@ -29,7 +30,7 @@ public class RectWindow implements Window {
     private Rect2i area;
     private int baseHeight;
     private int topHeight;
-    private BlockTypes blockType;
+    private BlockType blockType;
 
     /**
      * @param orientation the orientation
@@ -38,7 +39,7 @@ public class RectWindow implements Window {
      * @param topHeight the height at the bottom
      */
     public RectWindow(Orientation orientation, Rect2i area, int baseHeight, int topHeight) {
-        this(orientation, area, baseHeight, topHeight, BlockTypes.AIR);
+        this(orientation, area, baseHeight, topHeight, DefaultBlockType.AIR);
     }
 
     /**
@@ -48,7 +49,7 @@ public class RectWindow implements Window {
      * @param topHeight the height at the bottom
      * @param blockType the type of the window
      */
-    public RectWindow(Orientation orientation, Rect2i area, int baseHeight, int topHeight, BlockTypes blockType) {
+    public RectWindow(Orientation orientation, Rect2i area, int baseHeight, int topHeight, BlockType blockType) {
         this.orientation = orientation;
         this.area = area;
         this.baseHeight = baseHeight;
@@ -87,7 +88,7 @@ public class RectWindow implements Window {
     /**
      * @return the block type
      */
-    public BlockTypes getBlockType() {
+    public BlockType getBlockType() {
         return blockType;
     }
 }

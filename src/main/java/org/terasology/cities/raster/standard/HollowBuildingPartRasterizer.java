@@ -19,7 +19,7 @@ package org.terasology.cities.raster.standard;
 import java.math.RoundingMode;
 
 import org.terasology.cities.BlockTheme;
-import org.terasology.cities.BlockTypes;
+import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.BuildingPartRasterizer;
 import org.terasology.cities.bldg.HollowBuildingPart;
 import org.terasology.cities.common.Edges;
@@ -30,7 +30,6 @@ import org.terasology.cities.raster.RasterTarget;
 import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
-import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
 
 import com.google.common.math.DoubleMath;
@@ -58,7 +57,7 @@ public class HollowBuildingPartRasterizer extends BuildingPartRasterizer<HollowB
         int wallHeight = part.getWallHeight();
         int arcRadius = part.getArcRadius();
 
-        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, BlockTypes.BUILDING_FLOOR);
+        Pen floorPen = BuildingPens.floorPen(brush, heightMap, baseHeight, DefaultBlockType.BUILDING_FLOOR);
         RasterUtil.fillRect(floorPen, rc);
 
         HeightMap hmTop = HeightMaps.constant(baseHeight + wallHeight);
@@ -82,7 +81,7 @@ public class HollowBuildingPartRasterizer extends BuildingPartRasterizer<HollowB
         };
 
         // create walls
-        Pen wallPen = Pens.fill(brush, hmBottom, hmTop, BlockTypes.BUILDING_WALL);
+        Pen wallPen = Pens.fill(brush, hmBottom, hmTop, DefaultBlockType.BUILDING_WALL);
         RasterUtil.drawRect(wallPen, rc);
     }
 }
