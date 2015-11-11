@@ -127,7 +127,12 @@ public enum DefaultBlockType implements BlockType {
     TORCH,
 
     /**
-     *
+     * Pillar material
      */
-    PILLAR
+    PILLAR,
+
+    /**
+     * A ladder element
+     */
+    LADDER
 }

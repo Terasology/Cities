@@ -80,6 +80,10 @@ public final class BlockTheme implements Function<BlockType, Block> {
             logger.warn("Could not resolve block type \"{}\" - using default", type);
         }
 
+        if (shape == null) {
+            return family.getArchetypeBlock();
+        }
+
         ResourceUrn familyUrn = family.getURI().getBlockFamilyDefinitionUrn();
         ResourceUrn shapeUrn = shapeMap.get(shape);
         Block block = family.getBlockFor(new BlockUri(familyUrn, shapeUrn));

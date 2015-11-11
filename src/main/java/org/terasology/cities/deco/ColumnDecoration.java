@@ -20,29 +20,34 @@ import java.util.List;
 
 import org.terasology.cities.BlockType;
 import org.terasology.cities.ShapeType;
+import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 import org.terasology.math.geom.ImmutableVector3i;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
 /**
- * A single block decoration
+ * A decoration made up by a column of blocks (e.g. ladders, pillars, etc.)
  */
 public class ColumnDecoration implements Decoration {
 
     private final ImmutableVector3i pos;
-    private ImmutableList<BlockType> blocks;
-    private ImmutableList<ShapeType> shapes;
+    private final List<BlockType> blocks;
+    private final List<ShapeType> shapes;
+    private final List<Side> sides;
 
     /**
-     * @param blockTypes the decoration type
+     * @param blocks the decoration block types
+     * @param shapes the shapes of the blocks
+     * @param sides the facing sides of the blocks
      * @param basePos the window position
      */
-    public ColumnDecoration(List<BlockType> blockTypes, List<ShapeType> shapeTypes, BaseVector3i basePos) {
-        Preconditions.checkArgument(blockTypes.size() == shapeTypes.size(), "");
-        this.blocks = ImmutableList.copyOf(blockTypes);
-        this.shapes = ImmutableList.copyOf(shapeTypes);
+    public ColumnDecoration(List<BlockType> blocks, List<ShapeType> shapes, List<Side> sides, BaseVector3i basePos) {
+        Preconditions.checkArgument(blocks.size() == shapes.size(), "blockCount != shapeCount");
+        Preconditions.checkArgument(blocks.size() == sides.size(), "blockCount != sideCount");
+        this.blocks = blocks;
+        this.shapes = shapes;
+        this.sides = sides;
         this.pos = ImmutableVector3i.createOrUse(basePos);
     }
 
@@ -56,21 +61,28 @@ public class ColumnDecoration implements Decoration {
     /**
      * @return the block type to raster
      */
-    public ImmutableList<BlockType> getBlockTypes() {
+    public List<BlockType> getBlockTypes() {
         return blocks;
     }
 
     /**
-     * @return
+     * @return the shapes of the blocks
      */
     public List<ShapeType> getShapeTypes() {
         return shapes;
     }
 
     /**
-     * @return
+     * @return the facing sides of the blocks
+     */
+    public List<Side> getSides() {
+        return sides;
+    }
+
+    /**
+     * @return the height of the column
      */
     public int getHeight() {
-        return blocks.size(); // both lists are equally long
+        return blocks.size(); // the lists are equally long
     }
 }

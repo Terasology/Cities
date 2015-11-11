@@ -18,6 +18,7 @@ package org.terasology.cities;
 
 import org.terasology.cities.bldg.BuildingFacetProvider;
 import org.terasology.cities.blocked.BlockedAreaFacetProvider;
+import org.terasology.cities.deco.ColumnRasterizer;
 import org.terasology.cities.deco.DecorationFacetProvider;
 import org.terasology.cities.deco.SingleBlockRasterizer;
 import org.terasology.cities.door.DoorFacetProvider;
@@ -119,7 +120,13 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .registerFamily(DefaultBlockType.FENCE_GATE, BlockManager.AIR_ID)  // there is no fence gate :-(
             .registerFamily(DefaultBlockType.TOWER_STAIRS, "core:CobbleStone:engine:stair")
             .registerFamily(DefaultBlockType.BARREL, "StructuralResources:Barrel")
+            .registerFamily(DefaultBlockType.LADDER, "Core:Ladder")
+            .registerFamily(DefaultBlockType.PILLAR, "Core:Stone")
             .registerFamily(DefaultBlockType.TORCH, "Core:Torch")
+
+            .registerShape(DefaultShapeType.PILLAR_BASE, "StructuralResources:pillarBase")
+            .registerShape(DefaultShapeType.PILLAR_MIDDLE, "StructuralResources:pillar")
+            .registerShape(DefaultShapeType.PILLAR_TOP, "StructuralResources:pillarTop")
             .build();
 
         PerlinHumidityProvider.Configuration humidityConfig = new PerlinHumidityProvider.Configuration();
@@ -171,6 +178,7 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
                 .addRasterizer(new SimpleDoorRasterizer(theme))
                 .addRasterizer(new WingDoorRasterizer(theme))
                 .addRasterizer(new SingleBlockRasterizer(theme))
+                .addRasterizer(new ColumnRasterizer(theme))
                 .addRasterizer(new FloraRasterizer())
                 .addRasterizer(new TreeRasterizer());
         return worldBuilder;

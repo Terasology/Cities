@@ -24,6 +24,8 @@ import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.deco.Ladder;
+import org.terasology.cities.deco.Pillar;
 import org.terasology.cities.deco.SingleBlockDecoration;
 import org.terasology.cities.door.WingDoor;
 import org.terasology.cities.model.roof.HipRoof;
@@ -79,6 +81,8 @@ public class SimpleChurchGenerator {
         Turtle turtle = new Turtle(Edges.getCorner(lotRc, o.getOpposite()), o);
         int length = turtle.length(lotRc);
         int width = turtle.width(lotRc);
+
+        turtle.move(0, 1);
 
         double relationWidth = 2.0;
 
@@ -143,6 +147,12 @@ public class SimpleChurchGenerator {
             nave.addWindow(new SimpleWindow(right, cur.transform(wallDist, i), topHeight - 3));
         }
 
+        Vector2i colLeft = cur.transform(-wallDist + 2, cur.length(naveRect) - 2);
+        Vector2i colRight = cur.transform(wallDist - 2, cur.length(naveRect) - 2);
+        Vector3i colLeft3d = new Vector3i(colLeft.getX(), baseHeight + 1, colLeft.getY());
+        Vector3i colRight3d = new Vector3i(colRight.getX(), baseHeight + 1, colRight.getY());
+        nave.addDecoration(new Pillar(colLeft3d, hallHeight - 3));
+        nave.addDecoration(new Pillar(colRight3d, hallHeight - 3));
         return nave;
     }
 
@@ -175,6 +185,11 @@ public class SimpleChurchGenerator {
         Vector2i torchPos2d = turtle.transform(0, turtle.length(rect) - 2);
         Vector3i torchPos3d = new Vector3i(torchPos2d.x(), baseHeight + 4, torchPos2d.y());
         tower.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, torchPos3d, Side.FRONT));
+
+        Orientation ladderDir = dir.getRotated(270);
+        Vector2i ladderPos2d = Edges.getCorner(rect.expand(-1, -1), ladderDir);
+        Vector3i ladderPos3d = new Vector3i(ladderPos2d.getX(), baseHeight + 1, ladderPos2d.getY());
+        tower.addDecoration(new Ladder(ladderPos3d, ladderDir, towerHeight - 3));
 
         return tower;
     }

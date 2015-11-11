@@ -40,12 +40,13 @@ public class ColumnRasterizer extends DecorationRasterizer<ColumnDecoration> {
         ImmutableVector3i pos = deco.getBasePos();
         int y = pos.getY();
         if (target.getAffectedArea().contains(pos.getX(), pos.getZ())) {
-            if (y + deco.getBlockTypes().size() - 1 >= target.getMinHeight() && y <= target.getMaxHeight() )
-            for (int i = 0; i < deco.getHeight(); i++) {
-                BlockType type = deco.getBlockTypes().get(i);
-                ShapeType shape = deco.getShapeTypes().get(i);
-                target.setBlock(pos.getX(), y, pos.getZ(), type, shape);
-                y++;
+            if (y + deco.getBlockTypes().size() - 1 >= target.getMinHeight() && y <= target.getMaxHeight()) {
+                for (int i = 0; i < deco.getHeight(); i++) {
+                    BlockType type = deco.getBlockTypes().get(i);
+                    ShapeType shape = deco.getShapeTypes().get(i);
+                    target.setBlock(pos.getX(), y, pos.getZ(), type, shape);
+                    y++;
+                }
             }
         }
     }
