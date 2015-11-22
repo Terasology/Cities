@@ -121,12 +121,11 @@ public class CityWorldGenerator extends BaseFacetedWorldGenerator {
             .registerFamily(DefaultBlockType.TOWER_STAIRS, "core:CobbleStone:engine:stair")
             .registerFamily(DefaultBlockType.BARREL, "StructuralResources:Barrel")
             .registerFamily(DefaultBlockType.LADDER, "Core:Ladder")
-            .registerFamily(DefaultBlockType.PILLAR, "Core:Stone")
+            .registerFamily(DefaultBlockType.PILLAR_BASE, "core:CobbleStone:StructuralResources:pillarBase")
+            .registerFamily(DefaultBlockType.PILLAR_MIDDLE, "core:CobbleStone:StructuralResources:pillar")
+            .registerFamily(DefaultBlockType.PILLAR_TOP, "core:CobbleStone:StructuralResources:pillarTop")
             .registerFamily(DefaultBlockType.TORCH, "Core:Torch")
 
-            .registerShape(DefaultShapeType.PILLAR_BASE, "StructuralResources:pillarBase")
-            .registerShape(DefaultShapeType.PILLAR_MIDDLE, "StructuralResources:pillar")
-            .registerShape(DefaultShapeType.PILLAR_TOP, "StructuralResources:pillarTop")
             .build();
 
         PerlinHumidityProvider.Configuration humidityConfig = new PerlinHumidityProvider.Configuration();

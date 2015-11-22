@@ -19,9 +19,8 @@ package org.terasology.cities.deco;
 import java.util.Collections;
 import java.util.List;
 
+import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
-import org.terasology.cities.DefaultShapeType;
-import org.terasology.cities.ShapeType;
 import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 
@@ -35,17 +34,16 @@ public class Pillar extends ColumnDecoration {
      */
     public Pillar(BaseVector3i basePos, int height) {
         super(
-            Collections.nCopies(height, DefaultBlockType.PILLAR),
             createList(height),
             Collections.nCopies(height, (Side) null),
             basePos);
     }
 
-    private static List<ShapeType> createList(int height) {
-        return ImmutableList.<ShapeType>builder()
-            .add(DefaultShapeType.PILLAR_BASE)
-            .addAll(Collections.nCopies(height - 2, DefaultShapeType.PILLAR_MIDDLE))
-            .add(DefaultShapeType.PILLAR_TOP)
+    private static List<BlockType> createList(int height) {
+        return ImmutableList.<BlockType>builder()
+            .add(DefaultBlockType.PILLAR_BASE)
+            .addAll(Collections.nCopies(height - 2, DefaultBlockType.PILLAR_MIDDLE))
+            .add(DefaultBlockType.PILLAR_TOP)
             .build();
     }
 

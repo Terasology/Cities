@@ -16,11 +16,14 @@
 
 package org.terasology.cities.deco;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockType;
-import org.terasology.cities.ShapeType;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.Side;
 import org.terasology.math.geom.ImmutableVector3i;
 
 /**
@@ -43,8 +46,9 @@ public class ColumnRasterizer extends DecorationRasterizer<ColumnDecoration> {
             if (y + deco.getBlockTypes().size() - 1 >= target.getMinHeight() && y <= target.getMaxHeight()) {
                 for (int i = 0; i < deco.getHeight(); i++) {
                     BlockType type = deco.getBlockTypes().get(i);
-                    ShapeType shape = deco.getShapeTypes().get(i);
-                    target.setBlock(pos.getX(), y, pos.getZ(), type, shape);
+                    Side side = deco.getSides().get(i);
+                    Set<Side> sides = (side == null) ? EnumSet.noneOf(Side.class) : EnumSet.of(side);
+                    target.setBlock(pos.getX(), y, pos.getZ(), type, sides);
                     y++;
                 }
             }

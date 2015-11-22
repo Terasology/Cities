@@ -149,8 +149,8 @@ public class SimpleChurchGenerator {
 
         Vector2i colLeft = cur.transform(-wallDist + 2, cur.length(naveRect) - 2);
         Vector2i colRight = cur.transform(wallDist - 2, cur.length(naveRect) - 2);
-        Vector3i colLeft3d = new Vector3i(colLeft.getX(), baseHeight + 1, colLeft.getY());
-        Vector3i colRight3d = new Vector3i(colRight.getX(), baseHeight + 1, colRight.getY());
+        Vector3i colLeft3d = new Vector3i(colLeft.getX(), baseHeight, colLeft.getY());
+        Vector3i colRight3d = new Vector3i(colRight.getX(), baseHeight, colRight.getY());
         nave.addDecoration(new Pillar(colLeft3d, hallHeight - 3));
         nave.addDecoration(new Pillar(colRight3d, hallHeight - 3));
         return nave;

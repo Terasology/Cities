@@ -40,19 +40,16 @@ public final class BlockTheme implements Function<BlockType, Block> {
 
     private final Map<BlockType, Block> blockMap;
     private final Map<BlockType, BlockFamily> familyMap;
-    private final Map<ShapeType, ResourceUrn> shapeMap;
 
     private final BlockFamily defaultFamily;
     private final Block defaultBlock;
 
     private BlockTheme(Map<BlockType, Block> blocks, Block defBlock,
-            Map<BlockType, BlockFamily> families, BlockFamily defFamily,
-            Map<ShapeType, ResourceUrn> shapes) {
+            Map<BlockType, BlockFamily> families, BlockFamily defFamily) {
         this.blockMap = new HashMap<>(blocks);
         this.defaultBlock = defBlock;
         this.familyMap = new HashMap<>(families);
         this.defaultFamily = defFamily;
-        this.shapeMap = new HashMap<>(shapes);
     }
 
     public static Builder builder(BlockManager blockManager) {
@@ -69,24 +66,6 @@ public final class BlockTheme implements Function<BlockType, Block> {
             logger.warn("Could not resolve block type \"{}\" - using default", input);
         }
 
-        return block;
-    }
-
-    public Block apply(BlockType type, ShapeType shape) {
-        BlockFamily family = familyMap.get(type);
-
-        if (family == null) {
-            family = defaultFamily;
-            logger.warn("Could not resolve block type \"{}\" - using default", type);
-        }
-
-        if (shape == null) {
-            return family.getArchetypeBlock();
-        }
-
-        ResourceUrn familyUrn = family.getURI().getBlockFamilyDefinitionUrn();
-        ResourceUrn shapeUrn = shapeMap.get(shape);
-        Block block = family.getBlockFor(new BlockUri(familyUrn, shapeUrn));
         return block;
     }
 
@@ -133,7 +112,6 @@ public final class BlockTheme implements Function<BlockType, Block> {
 
         private final Map<BlockType, Block> blockMap = new HashMap<>();
         private final Map<BlockType, BlockFamily> familyMap = new HashMap<>();
-        private final Map<ShapeType, ResourceUrn> shapeMap = new HashMap<>();
 
         private Builder(BlockManager blockManager) {
             this.blockManager = blockManager;
@@ -143,7 +121,7 @@ public final class BlockTheme implements Function<BlockType, Block> {
         }
 
         public BlockTheme build() {
-            return new BlockTheme(blockMap, defaultBlock, familyMap, defaultFamily, shapeMap);
+            return new BlockTheme(blockMap, defaultBlock, familyMap, defaultFamily);
         }
 
         /**
@@ -199,15 +177,6 @@ public final class BlockTheme implements Function<BlockType, Block> {
             }
 
             familyMap.put(blockType, family);
-            return this;
-        }
-
-        public Builder registerShape(ShapeType shapeType, String shapeUrn) {
-            return registerShape(shapeType, new ResourceUrn(shapeUrn));
-        }
-
-        public Builder registerShape(ShapeType shapeType, ResourceUrn shapeUrn) {
-            shapeMap.put(shapeType, shapeUrn);
             return this;
         }
     }

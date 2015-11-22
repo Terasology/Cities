@@ -48,7 +48,9 @@ public class DecorationFacetLayer extends AbstractFacetLayer {
             .put(DefaultBlockType.BARREL, new Color(110, 110, 10))
             .put(DefaultBlockType.TORCH, new Color(240, 240, 10))
             .put(DefaultBlockType.LADDER, new Color(180, 80, 80))
-            .put(DefaultBlockType.PILLAR, new Color(210, 210, 210))
+            .put(DefaultBlockType.PILLAR_BASE, new Color(210, 210, 210))
+            .put(DefaultBlockType.PILLAR_MIDDLE, new Color(180, 180, 180))
+            .put(DefaultBlockType.PILLAR_TOP, new Color(150, 150, 150))
             .build();
 
     private Set<DecorationRasterizer<?>> rasterizers = new HashSet<>();

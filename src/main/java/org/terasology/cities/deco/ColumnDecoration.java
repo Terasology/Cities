@@ -19,7 +19,6 @@ package org.terasology.cities.deco;
 import java.util.List;
 
 import org.terasology.cities.BlockType;
-import org.terasology.cities.ShapeType;
 import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 import org.terasology.math.geom.ImmutableVector3i;
@@ -33,20 +32,16 @@ public class ColumnDecoration implements Decoration {
 
     private final ImmutableVector3i pos;
     private final List<BlockType> blocks;
-    private final List<ShapeType> shapes;
     private final List<Side> sides;
 
     /**
      * @param blocks the decoration block types
-     * @param shapes the shapes of the blocks
      * @param sides the facing sides of the blocks
      * @param basePos the window position
      */
-    public ColumnDecoration(List<BlockType> blocks, List<ShapeType> shapes, List<Side> sides, BaseVector3i basePos) {
-        Preconditions.checkArgument(blocks.size() == shapes.size(), "blockCount != shapeCount");
+    public ColumnDecoration(List<BlockType> blocks, List<Side> sides, BaseVector3i basePos) {
         Preconditions.checkArgument(blocks.size() == sides.size(), "blockCount != sideCount");
         this.blocks = blocks;
-        this.shapes = shapes;
         this.sides = sides;
         this.pos = ImmutableVector3i.createOrUse(basePos);
     }
@@ -63,13 +58,6 @@ public class ColumnDecoration implements Decoration {
      */
     public List<BlockType> getBlockTypes() {
         return blocks;
-    }
-
-    /**
-     * @return the shapes of the blocks
-     */
-    public List<ShapeType> getShapeTypes() {
-        return shapes;
     }
 
     /**

@@ -35,7 +35,6 @@ public class Ladder extends ColumnDecoration {
      */
     public Ladder(BaseVector3i basePos, Orientation o, int height) {
         super(Collections.nCopies(height, DefaultBlockType.LADDER),
-              Collections.nCopies(height, null),
               Collections.nCopies(height, getSide(o)),
               basePos);
     }

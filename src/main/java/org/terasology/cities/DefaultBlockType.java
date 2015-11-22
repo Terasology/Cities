@@ -129,7 +129,17 @@ public enum DefaultBlockType implements BlockType {
     /**
      * Pillar material
      */
-    PILLAR,
+    PILLAR_TOP,
+
+    /**
+     * Pillar material
+     */
+    PILLAR_MIDDLE,
+
+    /**
+     * Pillar material
+     */
+    PILLAR_BASE,
 
     /**
      * A ladder element
