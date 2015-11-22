@@ -174,7 +174,7 @@ public class TownWallFacetProvider implements FacetProvider {
 
             if (thisOk) {
                 Vector2i dirFromCenter = new Vector2i(center).sub(towerPos);
-                Orientation orient = orientationFromDirection(dirFromCenter);
+                Orientation orient = Orientation.cardinalFromDirection(dirFromCenter);
 
                 if (!prevOk) {            // the previous location was blocked -> this is the second part of a gate
                     SimpleTower tower = createGateTower(orient, heightFacet, towerPos);
@@ -261,22 +261,6 @@ public class TownWallFacetProvider implements FacetProvider {
         Orientation orientation = tower.getOrientation();
         Rect2i lastRect = tower.getStaircase().getShape();
         return Edges.getCorner(lastRect, orientation.getRotated(degrees));
-    }
-
-    private static Orientation orientationFromDirection(Vector2i d) {
-        if (Math.abs(d.x()) >= Math.abs(d.y())) {
-            if (d.x() > 0) {
-                return Orientation.EAST;
-            } else {
-                return Orientation.WEST;
-            }
-        } else {
-            if (d.y() > 0) {
-                return Orientation.SOUTH;
-            } else {
-                return Orientation.NORTH;
-            }
-        }
     }
 
     private WallSegment createSolidWall(Vector2i start, Vector2i end) {
