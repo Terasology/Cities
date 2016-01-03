@@ -7,7 +7,7 @@
     "dependencies" : [
         {
             "id" : "Core",
-            "minVersion" : "0.54.2"
+            "minVersion" : "1.0.0"
         },
         {
             "id" : "NameGenerator",
