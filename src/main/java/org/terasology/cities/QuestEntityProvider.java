@@ -18,7 +18,7 @@ package org.terasology.cities;
 
 import java.util.Optional;
 
-import org.terasology.asset.Assets;
+import org.terasology.utilities.Assets;
 import org.terasology.cities.roads.Road;
 import org.terasology.cities.roads.RoadFacet;
 import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
