@@ -16,8 +16,7 @@
 
 package org.terasology.cities.bldg.gen;
 
-import java.util.Set;
-
+import com.google.common.collect.Sets;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
@@ -30,27 +29,23 @@ import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.parcels.Parcel;
-import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.ImmutableVector3i;
-import org.terasology.math.geom.LineSegment;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.math.geom.*;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
-import com.google.common.collect.Sets;
+import java.util.Set;
 
 /**
  *
  */
-public class RectHouseGenerator {
+public class RectHouseGenerator implements BuildingGenerator {
 
-    public Building apply(Parcel parcel, InfiniteSurfaceHeightFacet hm) {
+    public Building generate(Parcel parcel, HeightMap hm) {
 
         // use the rectangle, not the lot itself, because its hashcode is the identity hashcode
         Random rng = new MersenneRandom(parcel.getShape().hashCode());
@@ -67,7 +62,7 @@ public class RectHouseGenerator {
         Vector2i probePos = new Vector2i(doorPos.getX() + doorDir.getX(), doorPos.getY() + doorDir.getY());
 
         // we add +1, because the building starts at 1 block above the terrain
-        int floorHeight = TeraMath.floorToInt(hm.getWorld(probePos)) + 1;
+        int floorHeight = TeraMath.floorToInt(hm.apply(probePos)) + 1;
         int wallHeight = 3;
 
         int roofBaseHeight = floorHeight + wallHeight;
@@ -92,7 +87,7 @@ public class RectHouseGenerator {
                 ImmutableVector2i wndDir = wnd.getOrientation().getDir();
                 ImmutableVector2i wndPos = wnd.getPos();
                 Vector2i probePosWnd = new Vector2i(wndPos.getX() + wndDir.getX(), wndPos.getY() + wndDir.getY());
-                if (wnd.getHeight() > hm.getWorld(probePosWnd)) {
+                if (wnd.getHeight() > hm.apply(probePosWnd)) {
                     part.addWindow(wnd);
                 }
             }

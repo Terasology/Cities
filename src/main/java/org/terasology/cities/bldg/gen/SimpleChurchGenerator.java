@@ -16,8 +16,6 @@
 
 package org.terasology.cities.bldg.gen;
 
-import java.math.RoundingMode;
-
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.BuildingPart;
@@ -32,10 +30,10 @@ import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.model.roof.PentRoof;
 import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.parcels.Parcel;
-import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.cities.window.RectWindow;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
@@ -45,10 +43,12 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
+import java.math.RoundingMode;
+
 /**
  * Creates building models of a simple church.
  */
-public class SimpleChurchGenerator {
+public class SimpleChurchGenerator implements BuildingGenerator {
 
     private final long seed;
 
@@ -64,7 +64,7 @@ public class SimpleChurchGenerator {
      * @param hm the height map to define the floor level
      * @return a generated building model of a simple church
      */
-    public Building apply(Parcel lot, InfiniteSurfaceHeightFacet hm) {
+    public Building generate(Parcel lot, HeightMap hm) {
 
         Random rand = new MersenneRandom(seed ^ lot.getShape().hashCode());
 
@@ -214,12 +214,12 @@ public class SimpleChurchGenerator {
         return aisle;
     }
 
-    private int getMaxHeight(Rect2i rc, InfiniteSurfaceHeightFacet hm) {
+    private int getMaxHeight(Rect2i rc, HeightMap hm) {
         int maxHeight = Integer.MIN_VALUE;
 
         for (int z = rc.minY(); z <= rc.maxY(); z++) {
             for (int x = rc.minX(); x <= rc.maxX(); x++) {
-                int height = TeraMath.floorToInt(hm.getWorld(x, z));
+                int height = TeraMath.floorToInt(hm.apply(x, z));
                 if (maxHeight < height) {
                     maxHeight = height;
                 }
