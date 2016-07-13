@@ -16,71 +16,23 @@
 
 package org.terasology.cities.parcels;
 
-import java.util.Collections;
-import java.util.Set;
-
-import org.terasology.cities.bldg.Building;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
-
-import com.google.common.collect.Sets;
 
 /**
  * A parcel where buildings can be placed on.
  */
-public class Parcel {
-
-    private final Rect2i shape;
-
-    private final Set<Building> buildings = Sets.newHashSet();
-
-    private final Orientation orientation;
-    private final Zone zone;
-
-    /**
-     * @param shape the shape of the lot
-     * @param zone the zone type
-     * @param orientation the orientation of the parcel (e.g. towards the closest street)
-     */
-    protected Parcel(Rect2i shape, Zone zone, Orientation orientation) {
-        this.shape = shape;
-        this.zone = zone;
-        this.orientation = orientation;
-    }
+public interface Parcel {
 
     /**
      * @return the layout shape
      */
-    public Rect2i getShape() {
-        return this.shape;
-    }
+    Rect2i getShape();
 
     /**
      * @return the orientation of the parcel
      */
-    public Orientation getOrientation() {
-        return orientation;
-    }
+    Orientation getOrientation();
 
-    /**
-     * @return the zone type that was assigned to this parcel
-     */
-    public Zone getZone() {
-        return zone;
-    }
-
-    /**
-     * @param bldg the building to add
-     */
-    public void addBuilding(Building bldg) {
-        buildings.add(bldg);
-    }
-
-    /**
-     * @return an unmodifiable view on all buildings in this lot
-     */
-    public Set<Building> getBuildings() {
-        return Collections.unmodifiableSet(buildings);
-    }
 
 }

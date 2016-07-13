@@ -24,21 +24,17 @@ import org.terasology.cities.common.Edges;
 import org.terasology.cities.deco.SingleBlockDecoration;
 import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.parcels.Parcel;
-import org.terasology.cities.surface.InfiniteSurfaceHeightFacet;
 import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.BaseVector3i;
-import org.terasology.math.geom.ImmutableVector3i;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.math.geom.*;
 import org.terasology.utilities.procedural.WhiteNoise;
 
 /**
  *
  */
-public class CommercialBuildingGenerator {
+public class CommercialBuildingGenerator implements BuildingGenerator {
 
     private long seed;
 
@@ -49,7 +45,7 @@ public class CommercialBuildingGenerator {
         this.seed = seed;
     }
 
-    public Building generate(Parcel parcel, InfiniteSurfaceHeightFacet heightFacet) {
+    public Building generate(Parcel parcel, HeightMap hm) {
         Orientation o = parcel.getOrientation();
         DefaultBuilding bldg = new DefaultBuilding(o);
 
@@ -61,7 +57,7 @@ public class CommercialBuildingGenerator {
 
         int centerX = (rc.minX() + rc.maxX()) / 2;
         int centerY = (rc.minY() + rc.maxY()) / 2;
-        int baseHeight = TeraMath.floorToInt(heightFacet.getWorld(centerX, centerY)) + 1;
+        int baseHeight = TeraMath.floorToInt(hm.apply(centerX, centerY)) + 1;
         int roofBaseHeight = baseHeight + wallHeight - 1; // 1 block overlap
 
         HipRoof roof = new HipRoof(roofRc, roofRc, roofBaseHeight, 0.5f, roofBaseHeight + 1);

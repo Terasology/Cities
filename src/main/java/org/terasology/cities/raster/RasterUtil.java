@@ -44,8 +44,8 @@ public abstract class RasterUtil {
 //            for (int x = rc.minX(); x <= rc.maxX(); x++) {
 //
 //                if (shape.contains(x, z)) {
-//                    int y1 = hmBottom.apply(x, z);
-//                    int y2 = hmTop.apply(x, z);
+//                    int y1 = hmBottom.generate(x, z);
+//                    int y2 = hmTop.generate(x, z);
 //
 //                    for (int y = y1; y < y2; y++) {
 //                        setBlock(x, y, z, type);
