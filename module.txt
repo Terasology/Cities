@@ -1,11 +1,10 @@
 {
     "id" : "Cities",
-    "version" : "1.0.0-SNAPSHOT",
+    "version" : "1.1.0",
     "author" : "msteiger",
     "displayName" : "City Generation Module",
     "description" : "This module adds several generators for human settlements and roads",
     "dependencies" : [
-        {"id" : "Core", "minVersion" : "3.0.0"},
         {"id" : "NameGenerator","minVersion" : "0.4.0"},
         {"id" : "Pathfinding", "minVersion" : "0.3.0"},
         {"id" : "Fences", "minVersion" : "0.1.0"},
@@ -13,5 +12,6 @@
         {"id" : "StructuralResources", "minVersion" : "2.0.0"}
     ],
     "isServerSideOnly" : false,
-    "isGameplay" : "false"
+    "isGameplay" : "false",
+    "isWorld": true
 }
