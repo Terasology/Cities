@@ -1,26 +1,5 @@
-*.bat          text
-*.block        text
-*.command      text eol=lf
-*.glsl         text
-*.gradle       text
-*.groovy       text
-*.html         text diff=html
-*.java         text diff=java
-*.markdown     text
-*.py           text diff=python
-*.properties   text
-*.sh           text eol=lf
-*.shape        text
-*.texinfo      text
-*.txt          text
-*.xml          text diff=html 
+* text=auto eol=lf
 
-*.blend        binary
-*.exe          binary
-*.jar          binary
-*.keystore     binary
-*.png          binary
+*.jpg  binary
 
-gradlew        text eol=lf
-LICENSE        text
-NOTICE         text
+gradlew text eol=lf
