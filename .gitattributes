@@ -20,6 +20,7 @@
 *.jar          binary
 *.keystore     binary
 *.png          binary
+*.jpg          binary
 
 gradlew        text eol=lf
 LICENSE        text
