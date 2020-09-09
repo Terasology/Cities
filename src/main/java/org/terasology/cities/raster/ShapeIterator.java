@@ -1,18 +1,5 @@
-/*
- * Copyright 2014 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 
 package org.terasology.cities.raster;
 
@@ -24,8 +11,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An iterator that runs along a shape using the flattening 
- * path iterator, generating Line2D elements.
+ * An iterator that runs along a shape using the flattening path iterator, generating Line2D elements.
  */
 public class ShapeIterator implements Iterable<Line2D> {
 
@@ -34,13 +20,14 @@ public class ShapeIterator implements Iterable<Line2D> {
 
     /**
      * @param shape The shape
-     * @param shapeFlatness The flatness of the shape, that will be passed to
-     *        the {@link Shape#getPathIterator(java.awt.geom.AffineTransform, double)} method
+     * @param shapeFlatness The flatness of the shape, that will be passed to the {@link
+     *         Shape#getPathIterator(java.awt.geom.AffineTransform, double)} method
      */
     public ShapeIterator(Shape shape, double shapeFlatness) {
         this.shape = shape;
         this.shapeFlatness = shapeFlatness;
     }
+
     /**
      * Returns an Iterable over the segments of the given shape
      */
@@ -48,7 +35,7 @@ public class ShapeIterator implements Iterable<Line2D> {
     public Iterator<Line2D> iterator() {
         return new SegmentIterator(shape, shapeFlatness);
     }
-    
+
     /**
      * Utility class that allows iterating over the segments of a shape
      */
@@ -56,22 +43,22 @@ public class ShapeIterator implements Iterable<Line2D> {
         /**
          * The (flattening) path iterator for the shape
          */
-        private PathIterator pi;
+        private final PathIterator pi;
 
         /**
          * Space for the coordinates of the path iterator
          */
-        private double[] coords = new double[6];
+        private final double[] coords = new double[6];
 
         /**
          * The the last point visited with SEG_MOVETO
          */
-        private Point2D firstPoint = new Point2D.Double();
+        private final Point2D firstPoint = new Point2D.Double();
 
         /**
          * The previous visited point
          */
-        private Point2D previousPoint = new Point2D.Double();
+        private final Point2D previousPoint = new Point2D.Double();
 
         /**
          * The next segment that will be returned
@@ -80,18 +67,19 @@ public class ShapeIterator implements Iterable<Line2D> {
 
         /**
          * Creates a new SegmentIterator for the given shape
+         *
          * @param shape The shape
-         * @param shapeFlatness The flatness of the shape, that will be passed
-         *        to the {@link Shape#getPathIterator(java.awt.geom.AffineTransform, double)}
-         *        method
+         * @param shapeFlatness The flatness of the shape, that will be passed to the {@link
+         *         Shape#getPathIterator(java.awt.geom.AffineTransform, double)} method
          */
         private SegmentIterator(Shape shape, double shapeFlatness) {
             pi = shape.getPathIterator(null, shapeFlatness);
             nextSegment = computeNext();
         }
-        
+
         /**
          * Compute the next segment
+         *
          * @return The next segment, or <code>null</code> if there are no more segments
          */
         private Line2D computeNext() {
@@ -106,7 +94,8 @@ public class ShapeIterator implements Iterable<Line2D> {
                     if (!pi.isDone()) {
                         int nextType = pi.currentSegment(coords);
                         if (nextType == PathIterator.SEG_LINETO) {
-                            result = new Line2D.Double(previousPoint.getX(), previousPoint.getY(), coords[0], coords[1]);
+                            result = new Line2D.Double(previousPoint.getX(), previousPoint.getY(), coords[0],
+                                    coords[1]);
                             previousPoint.setLocation(coords[0], coords[1]);
                         }
                         pi.next();
@@ -116,7 +105,8 @@ public class ShapeIterator implements Iterable<Line2D> {
                     previousPoint.setLocation(coords[0], coords[1]);
                     pi.next();
                 } else if (type == PathIterator.SEG_CLOSE) {
-                    result = new Line2D.Double(previousPoint.getX(), previousPoint.getY(), firstPoint.getX(), firstPoint.getY());
+                    result = new Line2D.Double(previousPoint.getX(), previousPoint.getY(), firstPoint.getX(),
+                            firstPoint.getY());
                     previousPoint.setLocation(firstPoint.getX(), firstPoint.getY());
                     pi.next();
                 }

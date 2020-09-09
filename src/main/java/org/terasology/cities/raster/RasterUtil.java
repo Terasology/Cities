@@ -1,18 +1,5 @@
-/*
- * Copyright 2015 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 
 package org.terasology.cities.raster;
 
@@ -57,6 +44,7 @@ public abstract class RasterUtil {
 
     /**
      * if (x2 < x1) nothing will be drawn.
+     *
      * @param pen the pen use
      * @param x1 left x coord
      * @param x2 right x coord
@@ -76,6 +64,7 @@ public abstract class RasterUtil {
 
     /**
      * if (z2 < z1) nothing will be drawn.
+     *
      * @param pen the pen use
      * @param z1 top z coord
      * @param z2 bottom z coord
@@ -128,8 +117,8 @@ public abstract class RasterUtil {
     }
 
     /**
-     * Draws a line.<br>
-     * See Wikipedia: Bresenham's line algorithm, chapter Simplification
+     * Draws a line.<br> See Wikipedia: Bresenham's line algorithm, chapter Simplification
+     *
      * @param pen the pen to use
      * @param line the line to draw
      */
@@ -185,8 +174,9 @@ public abstract class RasterUtil {
     }
 
     /**
-     * Draws a circle based on Horn's algorithm (see B. K. P. Horn: Circle Generators for Display Devices.
-     * Computer Graphics and Image Processing 5, 2 - June 1976)
+     * Draws a circle based on Horn's algorithm (see B. K. P. Horn: Circle Generators for Display Devices. Computer
+     * Graphics and Image Processing 5, 2 - June 1976)
+     *
      * @param cx the center x
      * @param cy the center y
      * @param rad the radius
