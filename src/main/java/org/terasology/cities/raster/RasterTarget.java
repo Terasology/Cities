@@ -23,6 +23,7 @@ import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockRegion;
 
 /**
  * Converts model elements into blocks
@@ -50,7 +51,7 @@ public interface RasterTarget {
      * @param y y in world coords
      * @param z z in world coords
      * @param type the block type
-     * @param sides the sides (used to find the correct block from the family)
+     * @param side the sides (used to find the correct block from the family)
      */
     void setBlock(int x, int y, int z, BlockType type, Set<Side> side);
 
@@ -67,14 +68,14 @@ public interface RasterTarget {
      * @return the maximum drawing height
      */
     default int getMaxHeight() {
-        return getAffectedRegion().maxY();
+        return getAffectedRegion().getMaxY();
     }
 
     /**
      * @return the maximum drawing height
      */
     default int getMinHeight() {
-        return getAffectedRegion().minY();
+        return getAffectedRegion().getMinY();
     }
 
     /**
@@ -85,5 +86,5 @@ public interface RasterTarget {
     /**
      * @return the region that is drawn by this raster target
      */
-    Region3i getAffectedRegion();
+    BlockRegion getAffectedRegion();
 }
