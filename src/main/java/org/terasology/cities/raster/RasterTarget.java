@@ -16,14 +16,13 @@
 
 package org.terasology.cities.raster;
 
-import java.util.Set;
-
 import org.terasology.cities.BlockType;
-import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.BlockRegion;
+
+import java.util.Set;
 
 /**
  * Converts model elements into blocks
@@ -68,14 +67,14 @@ public interface RasterTarget {
      * @return the maximum drawing height
      */
     default int getMaxHeight() {
-        return getAffectedRegion().getMaxY();
+        return getAffectedRegion().maxY();
     }
 
     /**
      * @return the maximum drawing height
      */
     default int getMinHeight() {
-        return getAffectedRegion().getMinY();
+        return getAffectedRegion().minY();
     }
 
     /**

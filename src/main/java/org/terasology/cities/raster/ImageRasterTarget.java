@@ -17,7 +17,6 @@
 package org.terasology.cities.raster;
 
 import com.google.common.base.Function;
-import org.joml.Vector3i;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockType;
@@ -26,7 +25,6 @@ import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.BlockRegion;
-import org.terasology.world.block.BlockRegions;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -70,9 +68,7 @@ public class ImageRasterTarget implements RasterTarget {
         this.typeMap = new BlockType[width][height];
 
         this.area = Rect2i.createFromMinAndSize(wx, wz, width, height);
-        this.region = BlockRegions.createFromMinAndSize(
-                new Vector3i(wx, Short.MIN_VALUE, wz),
-                new Vector3i(width, Short.MAX_VALUE - Short.MIN_VALUE, height));
+        this.region = new BlockRegion(wx, Short.MIN_VALUE, wz).setSize(width, Short.MAX_VALUE - Short.MIN_VALUE, height);
     }
 
     @Override
