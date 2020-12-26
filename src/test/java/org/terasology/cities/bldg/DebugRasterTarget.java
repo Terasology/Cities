@@ -16,23 +16,22 @@
 
 package org.terasology.cities.bldg;
 
-import static org.terasology.world.chunks.ChunkConstants.SIZE_X;
-import static org.terasology.world.chunks.ChunkConstants.SIZE_Z;
+import org.terasology.cities.BlockType;
+import org.terasology.cities.DefaultBlockType;
+import org.terasology.cities.raster.RasterTarget;
+import org.terasology.math.Side;
+import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockRegion;
+import org.terasology.world.chunks.blockdata.TeraArray;
+import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.terasology.cities.BlockType;
-import org.terasology.cities.DefaultBlockType;
-import org.terasology.cities.raster.RasterTarget;
-import org.terasology.math.Region3i;
-import org.terasology.math.Side;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector3i;
-import org.terasology.world.chunks.blockdata.TeraArray;
-import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
+import static org.terasology.world.chunks.ChunkConstants.SIZE_X;
+import static org.terasology.world.chunks.ChunkConstants.SIZE_Z;
 
 /**
  *
@@ -40,14 +39,14 @@ import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
 public class DebugRasterTarget implements RasterTarget {
 
     private final Rect2i area;
-    private final Region3i region;
+    private final BlockRegion region;
     private final TeraArray data;
     private final List<BlockType> mapping = new ArrayList<BlockType>();
 
     public DebugRasterTarget(int min, int max) {
         this.data = new TeraDenseArray16Bit(SIZE_X, max - min + 1, SIZE_Z);
         this.area = Rect2i.createFromMinAndMax(0, 0, SIZE_X, SIZE_Z);
-        this.region = Region3i.createFromMinMax(new Vector3i(0, min, 0), new Vector3i(SIZE_X, max, SIZE_Z));
+        this.region = new BlockRegion(0, min, 0, SIZE_X, max, SIZE_Z);
         this.mapping.add(DefaultBlockType.AIR); // map AIR to index zero
     }
 
@@ -72,7 +71,7 @@ public class DebugRasterTarget implements RasterTarget {
     }
 
     @Override
-    public Region3i getAffectedRegion() {
+    public BlockRegion getAffectedRegion() {
         return region;
     }
 

@@ -26,6 +26,7 @@ import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.Block;
+import org.terasology.world.block.BlockRegion;
 import org.terasology.world.chunks.CoreChunk;
 
 import com.google.common.base.Preconditions;
@@ -60,7 +61,7 @@ public class ChunkRasterTarget implements RasterTarget {
     }
 
     @Override
-    public Region3i getAffectedRegion() {
+    public BlockRegion getAffectedRegion() {
         return chunk.getRegion();
     }
 

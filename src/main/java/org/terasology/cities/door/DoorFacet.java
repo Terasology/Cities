@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.terasology.math.Region3i;
+import org.terasology.world.block.BlockRegion;
 import org.terasology.world.generation.Border3D;
 import org.terasology.world.generation.facets.base.BaseFacet2D;
 
@@ -31,7 +32,7 @@ public class DoorFacet extends BaseFacet2D {
 
     private final Collection<Door> doors = new ArrayList<>();
 
-    public DoorFacet(Region3i targetRegion, Border3D border) {
+    public DoorFacet(BlockRegion targetRegion, Border3D border) {
         super(targetRegion, border);
     }
 

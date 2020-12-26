@@ -1,6 +1,6 @@
 {
     "id": "Cities",
-    "version": "1.1.0",
+    "version": "1.1.0-SNAPSHOT",
     "author": "msteiger",
     "displayName": "City Generation Module",
     "description": "This module adds several generators for human settlements and roads",
