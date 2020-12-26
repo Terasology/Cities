@@ -48,7 +48,7 @@ public class DebugRasterTarget implements RasterTarget {
     public DebugRasterTarget(int min, int max) {
         this.data = new TeraDenseArray16Bit(SIZE_X, max - min + 1, SIZE_Z);
         this.area = Rect2i.createFromMinAndMax(0, 0, SIZE_X, SIZE_Z);
-        this.region = BlockRegions.createFromMinAndMax(new Vector3i(0, min, 0), new Vector3i(SIZE_X, max, SIZE_Z));
+        this.region = new BlockRegion(0, min, 0, SIZE_X, max, SIZE_Z);
         this.mapping.add(DefaultBlockType.AIR); // map AIR to index zero
     }
 
@@ -59,7 +59,7 @@ public class DebugRasterTarget implements RasterTarget {
             index = mapping.size();
             mapping.add(type);
         }
-        data.set(x, y - region.getMinY(), z, index);
+        data.set(x, y - region.minY(), z, index);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DebugRasterTarget implements RasterTarget {
 
             @Override
             public int size() {
-                return region.getMaxY() - region.getMinY() + 1;
+                return region.maxY() - region.minY() + 1;
             }
         };
     }
