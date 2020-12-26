@@ -16,14 +16,12 @@
 
 package org.terasology.cities.bldg;
 
-import org.joml.Vector3i;
 import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.BlockRegion;
-import org.terasology.world.block.BlockRegions;
 import org.terasology.world.chunks.blockdata.TeraArray;
 import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
 
