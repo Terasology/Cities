@@ -27,7 +27,7 @@ import org.terasology.math.geom.ImmutableVector3i;
  */
 public class SingleBlockDecoration implements Decoration {
 
-    private final Vector3ic pos;
+    private final Vector3ic pos = new Vector3i();
     private BlockType type;
     private Side side;
 
@@ -39,7 +39,7 @@ public class SingleBlockDecoration implements Decoration {
     public SingleBlockDecoration(BlockType type, Vector3ic pos, Side side) {
         this.type = type;
         this.side = side;
-        this.pos = pos;
+        this.pos.set(pos);
     }
 
     /**

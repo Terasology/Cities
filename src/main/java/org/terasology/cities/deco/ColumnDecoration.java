@@ -31,7 +31,7 @@ import com.google.common.base.Preconditions;
  */
 public class ColumnDecoration implements Decoration {
 
-    private final Vector3ic pos;
+    private final Vector3ic pos = new Vector3i();
     private final List<BlockType> blocks;
     private final List<Side> sides;
 
@@ -44,7 +44,7 @@ public class ColumnDecoration implements Decoration {
         Preconditions.checkArgument(blocks.size() == sides.size(), "blockCount != sideCount");
         this.blocks = blocks;
         this.sides = sides;
-        this.pos = basePos;
+        this.pos.set(basePos);
     }
 
     /**
