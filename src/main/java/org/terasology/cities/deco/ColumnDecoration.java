@@ -16,22 +16,20 @@
 
 package org.terasology.cities.deco;
 
-import java.util.List;
-
+import com.google.common.base.Preconditions;
+import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.terasology.cities.BlockType;
 import org.terasology.math.Side;
-import org.terasology.math.geom.BaseVector3i;
-import org.terasology.math.geom.ImmutableVector3i;
 
-import com.google.common.base.Preconditions;
+import java.util.List;
 
 /**
  * A decoration made up by a column of blocks (e.g. ladders, pillars, etc.)
  */
 public class ColumnDecoration implements Decoration {
 
-    private final Vector3ic pos = new Vector3i();
+    private final Vector3i pos = new Vector3i();
     private final List<BlockType> blocks;
     private final List<Side> sides;
 

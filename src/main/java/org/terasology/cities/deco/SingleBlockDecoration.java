@@ -16,18 +16,17 @@
 
 package org.terasology.cities.deco;
 
+import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.terasology.cities.BlockType;
 import org.terasology.math.Side;
-import org.terasology.math.geom.BaseVector3i;
-import org.terasology.math.geom.ImmutableVector3i;
 
 /**
  * A single block decoration
  */
 public class SingleBlockDecoration implements Decoration {
 
-    private final Vector3ic pos = new Vector3i();
+    private final Vector3i pos = new Vector3i();
     private BlockType type;
     private Side side;
 
