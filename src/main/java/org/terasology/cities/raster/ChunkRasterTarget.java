@@ -16,20 +16,18 @@
 
 package org.terasology.cities.raster;
 
-import java.util.Set;
-
+import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockType;
-import org.terasology.math.Region3i;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockRegion;
 import org.terasology.world.chunks.CoreChunk;
 
-import com.google.common.base.Preconditions;
+import java.util.Set;
 
 /**
  * Converts model elements into blocks of of a chunk

@@ -16,6 +16,7 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.Vector3i;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.BuildingPart;
@@ -39,7 +40,6 @@ import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
