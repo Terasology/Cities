@@ -16,6 +16,8 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
@@ -28,7 +30,9 @@ import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.*;
+import org.terasology.math.geom.BaseVector2i;
+import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.procedural.WhiteNoise;
 
 /**
@@ -72,7 +76,7 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
 
         for (BaseVector2i v : storeRc.contents()) {
             if (noiseGen.noise(v.getX(), v.getY()) * 0.5f + 0.5f < fillFactor) {
-                BaseVector3i pos = new ImmutableVector3i(v.getX(), baseHeight, v.getY());
+                Vector3i pos = new Vector3i(v.getX(), baseHeight, v.getY());
                 hall.addDecoration(new SingleBlockDecoration(DefaultBlockType.BARREL, pos, Side.FRONT));
             }
         }
@@ -80,7 +84,7 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
         Rect2i inner = rc.expand(-1, -1);
         for (int i = 0; i < 4; i++) {
             Vector2i pos = Edges.getCorner(inner, Orientation.NORTHEAST.getRotated(i * 90));
-            BaseVector3i pos3d = new ImmutableVector3i(pos.x(), roofBaseHeight - 2, pos.y());
+            Vector3i pos3d = new Vector3i(pos.x(), roofBaseHeight - 2, pos.y());
             hall.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, pos3d, Side.FRONT));
         }
 

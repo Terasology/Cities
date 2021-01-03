@@ -17,6 +17,8 @@
 package org.terasology.cities.bldg.gen;
 
 import com.google.common.collect.Sets;
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
@@ -34,7 +36,10 @@ import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.*;
+import org.terasology.math.geom.ImmutableVector2i;
+import org.terasology.math.geom.LineSegment;
+import org.terasology.math.geom.Rect2i;
+import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 
@@ -102,12 +107,12 @@ public class RectHouseGenerator implements BuildingGenerator {
         Rect2i rc = part.getShape().expand(-1, -1); // inside
         if (rng.nextBoolean()) {
             Vector2i pos = Edges.getCorner(rc, o.getRotated(-45));
-            ImmutableVector3i pos3d = new ImmutableVector3i(pos.x(), baseHeight, pos.y());
+            Vector3i pos3d = new Vector3i(pos.x(), baseHeight, pos.y());
             part.addDecoration(new SingleBlockDecoration(DefaultBlockType.BARREL, pos3d, Side.FRONT));
         }
         if (rng.nextBoolean()) {
             Vector2i pos = Edges.getCorner(rc, o.getRotated(45));
-            ImmutableVector3i pos3d = new ImmutableVector3i(pos.x(), baseHeight, pos.y());
+            Vector3i pos3d = new Vector3i(pos.x(), baseHeight, pos.y());
             part.addDecoration(new SingleBlockDecoration(DefaultBlockType.BARREL, pos3d, Side.FRONT));
         }
     }
