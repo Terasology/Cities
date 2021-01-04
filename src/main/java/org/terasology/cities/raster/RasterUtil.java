@@ -20,6 +20,7 @@ import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2f;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * Converts model elements into blocks
@@ -111,6 +112,24 @@ public abstract class RasterUtil {
         }
     }
 
+
+    /**
+     * @param rect the area to fill
+     * @param pen the pen to use for the rasterization of the rectangle
+     */
+    public static void fillRect(Pen pen, BlockAreac rect) {
+        Rect2i rc = pen.getTargetArea().intersect(Rect2i.createFromMinAndMax(rect.minX(), rect.minY(), rect.maxX(), rect.maxY()));
+
+        if (rc.isEmpty()) {
+            return;
+        }
+
+        for (int z = rc.minY(); z <= rc.maxY(); z++) {
+            for (int x = rc.minX(); x <= rc.maxX(); x++) {
+                pen.draw(x, z);
+            }
+        }
+    }
     /**
      * @param pen the pen to use
      * @param rc the rectangle to draw
@@ -126,6 +145,23 @@ public abstract class RasterUtil {
         drawLineZ(pen, rc.maxX(), rc.minY() + 1, rc.maxY() - 1); //  -> inset by one on both ends
 
     }
+
+    /**
+     * @param pen the pen to use
+     * @param rc the rectangle to draw
+     */
+    public static void drawRect(Pen pen, BlockAreac rc) {
+
+        // walls along x-axis
+        drawLineX(pen, rc.minX(), rc.maxX(), rc.minY());
+        drawLineX(pen, rc.minX(), rc.maxX(), rc.maxY());
+
+        // walls along z-axis
+        drawLineZ(pen, rc.minX(), rc.minY() + 1, rc.maxY() - 1); // no need to draw corners again
+        drawLineZ(pen, rc.maxX(), rc.minY() + 1, rc.maxY() - 1); //  -> inset by one on both ends
+
+    }
+
 
     /**
      * Draws a line.<br>
