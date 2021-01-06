@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
 import org.terasology.math.geom.BaseVector3i;
 
@@ -36,7 +37,7 @@ public class Pillar extends ColumnDecoration {
         super(
             createList(height),
             Collections.nCopies(height, (Side) null),
-            basePos);
+            JomlUtil.from(basePos));
     }
 
     private static List<BlockType> createList(int height) {
