@@ -16,17 +16,19 @@
 
 package org.terasology.cities.fences;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A rectangular fence
  */
 public class SimpleFence implements Fence {
 
-    private final Rect2i rect;
-    private final Vector2i gate;
+    private final BlockArea rect = new BlockArea(BlockArea.INVALID);
+    private final Vector2i gate = new Vector2i();
     private final Orientation gateOrient;
 
     /**
@@ -34,17 +36,17 @@ public class SimpleFence implements Fence {
      * @param gateOrient the gate's orientation
      * @param gate the gate position
      */
-    public SimpleFence(Rect2i rect, Orientation gateOrient, Vector2i gate) {
+    public SimpleFence(BlockAreac rect, Orientation gateOrient, Vector2ic gate) {
 
-        this.rect = rect;
+        this.rect.set(rect);
         this.gateOrient = gateOrient;
-        this.gate = gate;
+        this.gate.set(gate);
     }
 
     /**
      * @return the rect
      */
-    public Rect2i getRect() {
+    public BlockAreac getRect() {
         return this.rect;
     }
 
@@ -58,7 +60,7 @@ public class SimpleFence implements Fence {
     /**
      * @return the gate
      */
-    public Vector2i getGate() {
+    public Vector2ic getGate() {
         return this.gate;
     }
 }

@@ -16,20 +16,21 @@
 
 package org.terasology.cities.bldg;
 
+import org.joml.Vector2i;
 import org.terasology.cities.common.Edges;
 import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.BattlementRoof;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A simple tower
  */
 public class SimpleTower extends DefaultBuilding implements Tower {
 
-    private Rect2i shape;
+    private BlockArea shape = new BlockArea(BlockArea.INVALID);
     private RectBuildingPart room;
 
     /**
@@ -38,11 +39,11 @@ public class SimpleTower extends DefaultBuilding implements Tower {
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public SimpleTower(Orientation orient, Rect2i layout, int baseHeight, int wallHeight) {
+    public SimpleTower(Orientation orient, BlockAreac layout, int baseHeight, int wallHeight) {
         super(orient);
-        this.shape = layout;
+        this.shape.set(layout);
 
-        Rect2i roofArea = layout.expand(new Vector2i(1, 1));
+        BlockArea roofArea = layout.expand(1, 1,new BlockArea(BlockArea.INVALID));
         Roof roof = new BattlementRoof(layout, roofArea, baseHeight + wallHeight, 1);
         room = new StaircaseBuildingPart(layout, orient, roof, baseHeight, wallHeight);
         Vector2i doorPos = new Vector2i(Edges.getCorner(layout, orient));
@@ -50,7 +51,7 @@ public class SimpleTower extends DefaultBuilding implements Tower {
         addPart(room);
     }
 
-    public Rect2i getShape() {
+    public BlockAreac getShape() {
         return shape;
     }
 

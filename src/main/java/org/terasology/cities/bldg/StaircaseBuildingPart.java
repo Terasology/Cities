@@ -19,6 +19,8 @@ package org.terasology.cities.bldg;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  *
@@ -26,14 +28,20 @@ import org.terasology.math.geom.Rect2i;
 public class StaircaseBuildingPart extends RectBuildingPart {
 
     private Orientation orientation;
+    private BlockArea layout = new BlockArea(BlockArea.INVALID);
 
-    public StaircaseBuildingPart(Rect2i layout, Orientation o, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
+    public StaircaseBuildingPart(BlockAreac layout, Orientation o, Roof roof, int baseHeight, int wallHeight) {
+        super(roof, baseHeight, wallHeight);
+        this.layout.set(layout);
         this.orientation = o;
     }
 
     public Orientation getOrientation() {
         return orientation;
+    }
+
+    public BlockAreac getShape() {
+        return this.layout;
     }
 
 }

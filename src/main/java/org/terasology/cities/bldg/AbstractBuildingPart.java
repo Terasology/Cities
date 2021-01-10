@@ -36,27 +36,19 @@ public abstract class AbstractBuildingPart implements BuildingPart {
     private final Set<Window> windows = Sets.newHashSet();
     private final Set<Door> doors = Sets.newHashSet();
     private final Set<Decoration> decorations = new HashSet<>();
-    private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
     private final Roof roof;
 
     /**
-     * @param layout the building layout
      * @param roof the roof definition
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public AbstractBuildingPart(Shape layout, Roof roof, int baseHeight, int wallHeight) {
-        this.layout = layout;
+    public AbstractBuildingPart(Roof roof, int baseHeight, int wallHeight) {
         this.roof = roof;
         this.baseHeight = baseHeight;
         this.wallHeight = wallHeight;
-    }
-
-    @Override
-    public Shape getShape() {
-        return this.layout;
     }
 
     @Override

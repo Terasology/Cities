@@ -24,14 +24,8 @@ import org.terasology.math.geom.Rect2i;
  */
 public class RectBuildingPart extends AbstractBuildingPart {
 
-    public RectBuildingPart(Rect2i layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
+    public RectBuildingPart(Roof roof, int baseHeight, int wallHeight) {
+        super(roof, baseHeight, wallHeight);
     }
-
-    @Override
-    public Rect2i getShape() {
-        return (Rect2i) super.getShape();
-    }
-
 
 }

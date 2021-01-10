@@ -16,7 +16,9 @@
 
 package org.terasology.cities.model.roof;
 
-import org.terasology.math.geom.Rect2i;
+
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A flat battlement roof with merlons
@@ -29,7 +31,7 @@ public class BattlementRoof extends FlatRoof {
      * @param baseHeight the base height of the roof
      * @param merlonHeight the height of the border
      */
-    public BattlementRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, int merlonHeight) {
+    public BattlementRoof(BlockAreac baseRect, BlockAreac withEaves, int baseHeight, int merlonHeight) {
         super(baseRect, withEaves, baseHeight, merlonHeight);
     }
 

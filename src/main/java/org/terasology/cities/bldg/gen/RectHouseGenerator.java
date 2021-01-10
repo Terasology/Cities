@@ -17,8 +17,7 @@
 package org.terasology.cities.bldg.gen;
 
 import com.google.common.collect.Sets;
-import org.joml.Vector3i;
-import org.joml.Vector3ic;
+import org.joml.Vector2i;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
@@ -38,10 +37,10 @@ import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.ImmutableVector2i;
 import org.terasology.math.geom.LineSegment;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 import java.util.Set;
 
@@ -58,13 +57,13 @@ public class RectHouseGenerator implements BuildingGenerator {
         Orientation o = parcel.getOrientation();
         DefaultBuilding bldg = new DefaultBuilding(o);
         int inset = 2;
-        Rect2i layout = parcel.getShape().expand(new Vector2i(-inset, -inset));
+        BlockAreac layout = parcel.getShape().expand(new Vector2i(-inset, -inset), new BlockArea(BlockArea.INVALID));
 
         Vector2i doorPos = Edges.getCorner(layout, o);
 
         // use door as base height for the entire building
         ImmutableVector2i doorDir = o.getDir();
-        Vector2i probePos = new Vector2i(doorPos.getX() + doorDir.getX(), doorPos.getY() + doorDir.getY());
+        Vector2i probePos = new Vector2i(doorPos.x() + doorDir.getX(), doorPos.y() + doorDir.getY());
 
         // we add +1, because the building starts at 1 block above the terrain
         int floorHeight = TeraMath.floorToInt(hm.apply(probePos)) + 1;
@@ -151,7 +150,7 @@ public class RectHouseGenerator implements BuildingGenerator {
         return result;
     }
 
-    private Roof createRoof(Random r, Rect2i layout, int roofBaseHeight) {
+    private Roof createRoof(Random r, BlockAreac layout, int roofBaseHeight) {
         // the roof area is 1 block larger all around
         Rect2i roofArea = layout.expand(new Vector2i(1, 1));
 

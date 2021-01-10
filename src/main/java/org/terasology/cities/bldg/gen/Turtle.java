@@ -16,12 +16,10 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.terasology.cities.common.Edges;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 
 /**
  * A turtle has a position and direction. It can be used to define 2D shapes in a relative
@@ -31,7 +29,7 @@ public class Turtle {
     private Orientation orient;
     private Vector2i pos;
 
-    public Turtle(BaseVector2i pos, Orientation orientation) {
+    public Turtle(Vector2ic pos, Orientation orientation) {
         this.orient = orientation;
         this.pos = new Vector2i(pos);
     }
@@ -57,8 +55,8 @@ public class Turtle {
      * @param newPos the new coordinates
      * @return this
      */
-    public Turtle setPosition(BaseVector2i newPos) {
-        return setPosition(newPos.getX(), newPos.getY());
+    public Turtle setPosition(Vector2ic newPos) {
+        return setPosition(newPos.x(), newPos.y());
     }
 
     /**

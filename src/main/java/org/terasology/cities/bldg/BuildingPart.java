@@ -30,11 +30,6 @@ import org.terasology.math.geom.Shape;
  */
 public interface BuildingPart {
 
-    /**
-     * @return the building layout
-     */
-    Shape getShape();
-
     Roof getRoof();
 
     int getWallHeight();

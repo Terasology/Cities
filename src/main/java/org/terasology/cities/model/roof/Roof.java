@@ -16,16 +16,10 @@
 
 package org.terasology.cities.model.roof;
 
-import org.terasology.math.geom.Shape;
-
 /**
  * A basic interface for different roof types
  */
 public interface Roof {
 
-    /**
-     * @return the roof area
-     */
-    Shape getArea();
 
 }

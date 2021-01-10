@@ -42,6 +42,7 @@ import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
+import org.terasology.world.block.BlockAreac;
 
 import java.math.RoundingMode;
 
@@ -194,7 +195,7 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         return tower;
     }
 
-    private RectBuildingPart createAisle(Turtle turtle, Rect2i rect, int baseHeight) {
+    private RectBuildingPart createAisle(Turtle turtle, BlockAreac rect, int baseHeight) {
         Rect2i roofRect = turtle.adjustRect(rect, -1, 1, 1, 1);  // back overlap +1 to not intersect with nave
 
         int sideWallHeight = 4;

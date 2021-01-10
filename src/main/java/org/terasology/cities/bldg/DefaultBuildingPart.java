@@ -31,7 +31,7 @@ public class DefaultBuildingPart extends AbstractBuildingPart {
      * @param wallHeight the building height above the floor level
      */
     public DefaultBuildingPart(Shape layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
+        super(roof, baseHeight, wallHeight);
     }
 }
 
