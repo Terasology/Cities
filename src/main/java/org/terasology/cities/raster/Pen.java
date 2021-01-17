@@ -16,8 +16,8 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.Rect2i;
+import org.joml.Vector2ic;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * Assigns blocks based on x and z values
@@ -30,12 +30,12 @@ public interface Pen {
      */
     void draw(int x, int z);
 
-    default void draw(BaseVector2i p) {
-        draw(p.getX(), p.getY());
+    default void draw(Vector2ic p) {
+        draw(p.x(), p.y());
     }
 
     /**
      * @return the valid target area
      */
-    Rect2i getTargetArea();
+    BlockAreac getTargetArea();
 }

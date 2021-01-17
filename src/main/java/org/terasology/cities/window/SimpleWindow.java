@@ -16,6 +16,8 @@
 
 package org.terasology.cities.window;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.BaseVector2i;
 import org.terasology.math.geom.ImmutableVector2i;
@@ -26,7 +28,7 @@ import org.terasology.math.geom.ImmutableVector2i;
 public class SimpleWindow implements Window {
 
     private final Orientation orientation;
-    private final ImmutableVector2i pos;
+    private final Vector2ic pos;
     private final int height;
 
     /**
@@ -34,9 +36,9 @@ public class SimpleWindow implements Window {
      * @param pos the window position
      * @param height the height at the bottom
      */
-    public SimpleWindow(Orientation orientation, BaseVector2i pos, int height) {
+    public SimpleWindow(Orientation orientation, Vector2ic pos, int height) {
         this.orientation = orientation;
-        this.pos = ImmutableVector2i.createOrUse(pos);
+        this.pos = new Vector2i(pos);
         this.height = height;
     }
 
@@ -50,7 +52,7 @@ public class SimpleWindow implements Window {
     /**
      * @return the window position
      */
-    public ImmutableVector2i getPos() {
+    public Vector2ic getPos() {
         return this.pos;
     }
 

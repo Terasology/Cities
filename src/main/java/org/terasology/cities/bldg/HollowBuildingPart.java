@@ -16,6 +16,7 @@
 
 package org.terasology.cities.bldg;
 
+import org.terasology.cities.bldg.shape.RectangularBase;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.BlockArea;
@@ -24,7 +25,7 @@ import org.terasology.world.block.BlockAreac;
 /**
  *
  */
-public class HollowBuildingPart extends AbstractBuildingPart {
+public class HollowBuildingPart extends AbstractBuildingPart implements RectangularBase {
 
     private final int arcRadius;
     private final BlockArea layout = new BlockArea(BlockArea.INVALID);
@@ -35,6 +36,7 @@ public class HollowBuildingPart extends AbstractBuildingPart {
         this.arcRadius = arcRadius;
     }
 
+    @Override
     public BlockAreac getShape() {
         return this.layout;
     }

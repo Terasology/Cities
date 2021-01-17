@@ -16,24 +16,25 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A {@link Pen} that stores the valid target area.
  */
 public abstract class AbstractPen implements Pen {
 
-    private final Rect2i targetArea;
+    private final BlockAreac targetArea;
 
     /**
      * @param targetArea the valid area
      */
-    public AbstractPen(Rect2i targetArea) {
-        this.targetArea = targetArea;
+    public AbstractPen(BlockAreac targetArea) {
+        this.targetArea = new BlockArea(targetArea);
     }
 
     @Override
-    public Rect2i getTargetArea() {
+    public BlockAreac getTargetArea() {
         return targetArea;
     }
 }

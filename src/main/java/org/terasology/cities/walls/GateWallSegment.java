@@ -16,6 +16,7 @@
 
 package org.terasology.cities.walls;
 
+import org.joml.Vector2ic;
 import org.terasology.math.geom.BaseVector2i;
 
 /**
@@ -31,7 +32,7 @@ public class GateWallSegment extends WallSegment {
      * @param wallThickness the wall thickness in block
      * @param wallHeight the wall height in blocks above terrain
      */
-    public GateWallSegment(BaseVector2i start, BaseVector2i end, int wallThickness, int wallHeight) {
+    public GateWallSegment(Vector2ic start, Vector2ic end, int wallThickness, int wallHeight) {
         super(start, end, wallThickness);
         this.wallHeight = wallHeight;
     }

@@ -16,6 +16,7 @@
 
 package org.terasology.cities.common;
 
+import org.joml.LineSegmentf;
 import org.joml.Vector2i;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.geom.ImmutableVector2f;
@@ -33,8 +34,8 @@ public final class Edges {
 
     public static Vector2i getCorner(BlockAreac rc, Orientation o) {
 
-        int dx = o.getDir().getX() + 1; //  [0..2]
-        int dy = o.getDir().getY() + 1; //  [0..2]
+        int dx = o.direction().x() + 1; //  [0..2]
+        int dy = o.direction().y() + 1; //  [0..2]
 
         int x = rc.minX() + (rc.getSizeX() - 1) * dx / 2;
         int y = rc.minY() + (rc.getSizeY() - 1) * dy / 2;
@@ -64,10 +65,10 @@ public final class Edges {
         return dx * dx + dy * dy;
     }
 
-    public static LineSegment getEdge(BlockAreac rc, Orientation o) {
+    public static LineSegment2 getEdge(BlockAreac rc, Orientation o) {
 
         Vector2i p0 = getCorner(rc, o.getRotated(-45));
         Vector2i p1 = getCorner(rc, o.getRotated(45));
-        return new LineSegment(new ImmutableVector2f(p0.x(), p0.y()), new ImmutableVector2f(p1.x(), p1.y()));
+        return new LineSegment2(p0.x(), p0.y(), p1.x(), p1.y());
     }
 }

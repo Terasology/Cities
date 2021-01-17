@@ -16,16 +16,16 @@
 
 package org.terasology.cities.walls;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 /**
  * A straight wall segment
   */
 public abstract class WallSegment {
 
-    private final ImmutableVector2i start;
-    private final ImmutableVector2i end;
+    private final Vector2ic start;
+    private final Vector2ic end;
 
     private int wallThickness;
 
@@ -34,23 +34,23 @@ public abstract class WallSegment {
      * @param end the other end of the wall
      * @param wallThickness the wall thickness in block
      */
-    public WallSegment(BaseVector2i start, BaseVector2i end, int wallThickness) {
-        this.start = ImmutableVector2i.createOrUse(start);
-        this.end = ImmutableVector2i.createOrUse(end);
+    public WallSegment(Vector2ic start, Vector2ic end, int wallThickness) {
+        this.start = new Vector2i(start);
+        this.end = new Vector2i(end);
         this.wallThickness = wallThickness;
     }
 
     /**
      * @return one end of the wall
      */
-    public ImmutableVector2i getStart() {
+    public Vector2ic getStart() {
         return this.start;
     }
 
     /**
      * @return the other end of the wall
      */
-    public ImmutableVector2i getEnd() {
+    public Vector2ic getEnd() {
         return this.end;
     }
 

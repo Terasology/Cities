@@ -16,8 +16,9 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.joml.Vector3i;
-import org.joml.Vector3ic;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
@@ -30,10 +31,8 @@ import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.procedural.WhiteNoise;
+import org.terasology.world.block.BlockArea;
 
 /**
  *
@@ -53,15 +52,15 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
         Orientation o = parcel.getOrientation();
         DefaultBuilding bldg = new DefaultBuilding(o);
 
-        Rect2i rc = parcel.getShape().expand(-4, -4);
-        Rect2i roofRc = rc.expand(2, 2);
+        BlockArea rc = parcel.getShape().expand(-4, -4, new BlockArea(BlockArea.INVALID));
+        BlockArea roofRc = rc.expand(2, 2);
 
         int wallHeight = 8;
         int arcRadius = 4;
 
         int centerX = (rc.minX() + rc.maxX()) / 2;
         int centerY = (rc.minY() + rc.maxY()) / 2;
-        int baseHeight = TeraMath.floorToInt(hm.apply(centerX, centerY)) + 1;
+        int baseHeight = hm.apply(centerX, centerY) + 1;
         int roofBaseHeight = baseHeight + wallHeight - 1; // 1 block overlap
 
         HipRoof roof = new HipRoof(roofRc, roofRc, roofBaseHeight, 0.5f, roofBaseHeight + 1);
@@ -72,22 +71,21 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
         WhiteNoise noiseGen = new WhiteNoise(seed);
 
         float fillFactor = 0.3f;
-        Rect2i storeRc = rc.expand(-3, -3);
+        BlockArea storeRc = rc.expand(-3, -3);
 
-        for (BaseVector2i v : storeRc.contents()) {
-            if (noiseGen.noise(v.getX(), v.getY()) * 0.5f + 0.5f < fillFactor) {
-                Vector3i pos = new Vector3i(v.getX(), baseHeight, v.getY());
+        for (Vector2ic v : storeRc) {
+            if (noiseGen.noise(v.x(), v.y()) * 0.5f + 0.5f < fillFactor) {
+                Vector3i pos = new Vector3i(v.x(), baseHeight, v.y());
                 hall.addDecoration(new SingleBlockDecoration(DefaultBlockType.BARREL, pos, Side.FRONT));
             }
         }
 
-        Rect2i inner = rc.expand(-1, -1);
+        BlockArea inner = rc.expand(-1, -1, new BlockArea(BlockArea.INVALID));
         for (int i = 0; i < 4; i++) {
             Vector2i pos = Edges.getCorner(inner, Orientation.NORTHEAST.getRotated(i * 90));
             Vector3i pos3d = new Vector3i(pos.x(), roofBaseHeight - 2, pos.y());
             hall.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, pos3d, Side.FRONT));
         }
-
         return bldg;
     }
 

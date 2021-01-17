@@ -16,34 +16,35 @@
 
 package org.terasology.cities.roads;
 
-import org.terasology.math.geom.ImmutableVector2i;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 /**
  * A road segment is a part of a road with direction. One segment's end is the next segment's start.
  */
 public class RoadSegment {
 
-    private final ImmutableVector2i start;
-    private final ImmutableVector2i end;
+    private final Vector2ic start;
+    private final Vector2ic end;
     private final float width;
 
-    public RoadSegment(ImmutableVector2i start, ImmutableVector2i end, float width) {
-        this.start = start;
-        this.end = end;
+    public RoadSegment(Vector2ic start, Vector2ic end, float width) {
+        this.start = new Vector2i(start);
+        this.end = new Vector2i(end);
         this.width = width;
     }
 
     /**
      * @return the start point
      */
-    public ImmutableVector2i getStart() {
+    public Vector2ic getStart() {
         return start;
     }
 
     /**
      * @return the end point
      */
-    public ImmutableVector2i getEnd() {
+    public Vector2ic getEnd() {
         return end;
     }
 

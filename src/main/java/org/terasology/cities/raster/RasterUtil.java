@@ -20,7 +20,10 @@ import org.terasology.math.TeraMath;
 import org.terasology.math.geom.LineSegment;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2f;
+import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
+
+import java.util.Optional;
 
 /**
  * Converts model elements into blocks
@@ -64,7 +67,7 @@ public abstract class RasterUtil {
      * @param z the z coord
      */
     public static void drawLineX(Pen pen, int x1, int x2, int z) {
-        Rect2i rc = pen.getTargetArea();
+        BlockAreac rc = pen.getTargetArea();
 
         if (z >= rc.minY() && z <= rc.maxY()) {
             int minX = Math.max(x1, rc.minX());
@@ -83,7 +86,7 @@ public abstract class RasterUtil {
      * @param x the x coord
      */
     public static void drawLineZ(Pen pen, int x, int z1, int z2) {
-        Rect2i rc = pen.getTargetArea();
+        BlockAreac rc = pen.getTargetArea();
 
         if (x >= rc.minX() && x <= rc.maxX()) {
             int minZ = Math.max(z1, rc.minY());
@@ -98,34 +101,15 @@ public abstract class RasterUtil {
      * @param rect the area to fill
      * @param pen the pen to use for the rasterization of the rectangle
      */
-    public static void fillRect(Pen pen, Rect2i rect) {
-        Rect2i rc = pen.getTargetArea().intersect(rect);
-
-        if (rc.isEmpty()) {
-            return;
-        }
-
-        for (int z = rc.minY(); z <= rc.maxY(); z++) {
-            for (int x = rc.minX(); x <= rc.maxX(); x++) {
-                pen.draw(x, z);
-            }
-        }
-    }
-
-
-    /**
-     * @param rect the area to fill
-     * @param pen the pen to use for the rasterization of the rectangle
-     */
     public static void fillRect(Pen pen, BlockAreac rect) {
-        Rect2i rc = pen.getTargetArea().intersect(Rect2i.createFromMinAndMax(rect.minX(), rect.minY(), rect.maxX(), rect.maxY()));
+        Optional<BlockArea> rc = pen.getTargetArea().intersect(new BlockArea(rect.minX(), rect.minY(), rect.maxX(), rect.maxY()), new BlockArea(BlockArea.INVALID));
 
-        if (rc.isEmpty()) {
+        if (!rc.isPresent()) {
             return;
         }
 
-        for (int z = rc.minY(); z <= rc.maxY(); z++) {
-            for (int x = rc.minX(); x <= rc.maxX(); x++) {
+        for (int z = rc.get().minY(); z <= rc.get().maxY(); z++) {
+            for (int x = rc.get().minX(); x <= rc.get().maxX(); x++) {
                 pen.draw(x, z);
             }
         }
@@ -171,11 +155,11 @@ public abstract class RasterUtil {
      */
     public static void drawLine(Pen pen, LineSegment line) {
 
-        Rect2i outerBox = pen.getTargetArea();
+        BlockAreac outerBox = pen.getTargetArea();
 
         Vector2f p0 = new Vector2f();
         Vector2f p1 = new Vector2f();
-        if (line.getClipped(outerBox, p0, p1)) {
+        if (line.getClipped(Rect2i.createFromMinAndMax(outerBox.minX(), outerBox.minY(), outerBox.maxX(), outerBox.maxY()), p0, p1)) {
             int cx1 = TeraMath.floorToInt(p0.getX());
             int cy1 = TeraMath.floorToInt(p0.getY());
             int cx2 = TeraMath.floorToInt(p1.getX());

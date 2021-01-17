@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 
 import com.google.common.base.Preconditions;
 
@@ -31,7 +31,7 @@ import com.google.common.base.Preconditions;
  */
 public class Road {
 
-    private final List<ImmutableVector2i> segmentPoints;
+    private final List<Vector2ic> segmentPoints;
     private final List<RoadSegment> segments;
     private final float width;
     private final float length;
@@ -42,27 +42,27 @@ public class Road {
      * @param end1 the other end point
      * @param width the width of the road
      */
-    public Road(BaseVector2i end0, BaseVector2i end1, float width) {
-        this(Arrays.asList(end0, end1), width);
+    public Road(Vector2ic end0, Vector2ic end1, float width) {
+        this(Arrays.asList(new Vector2i(end0), new Vector2i(end1)), width);
     }
 
-    public Road(List<? extends BaseVector2i> segPoints, float width) {
+    public Road(List<? extends Vector2ic> segPoints, float width) {
         Preconditions.checkArgument(segPoints.size() >= 2, "must contain at least two points");
 
         segmentPoints = new ArrayList<>(segPoints.size());
 
         float tmpLength = 0;
-        BaseVector2i prev = segPoints.get(0);
-        for (BaseVector2i segPoint : segPoints) {
+        Vector2ic prev = segPoints.get(0);
+        for (Vector2ic segPoint : segPoints) {
             tmpLength += segPoint.distance(prev);
             prev = segPoint;
-            segmentPoints.add(ImmutableVector2i.createOrUse(segPoint));
+            segmentPoints.add(new Vector2i(segPoint));
         }
 
         segments = new ArrayList<>(segPoints.size() - 1);
         for (int i = 1; i < segPoints.size(); i++) {
-            ImmutableVector2i p = segmentPoints.get(i - 1);
-            ImmutableVector2i c = segmentPoints.get(i);
+            Vector2ic p = segmentPoints.get(i - 1);
+            Vector2ic c = segmentPoints.get(i);
             segments.add(new RoadSegment(p, c, width));
         }
 
@@ -73,21 +73,21 @@ public class Road {
     /**
      * @return the other end point
      */
-    public ImmutableVector2i getEnd1() {
+    public Vector2ic getEnd1() {
         return segmentPoints.get(segmentPoints.size() - 1);
     }
 
     /**
      * @return one end point
      */
-    public ImmutableVector2i getEnd0() {
+    public Vector2ic getEnd0() {
         return segmentPoints.get(0);
     }
 
     /**
      * @return an unmodifiable view on the segment points (at least two points)
      */
-    public List<ImmutableVector2i> getPoints() {
+    public List<Vector2ic> getPoints() {
         return Collections.unmodifiableList(segmentPoints);
     }
 
@@ -102,7 +102,7 @@ public class Road {
      * @param pos the coordinate to test
      * @return true, if the road ends at the given coordinate
      */
-    public boolean endsAt(BaseVector2i pos) {
+    public boolean endsAt(Vector2ic pos) {
         return getEnd0().equals(pos) || getEnd1().equals(pos);
     }
 
@@ -111,7 +111,7 @@ public class Road {
      * @return the other end
      * @throws IllegalArgumentException if not an end point of the road
      */
-    public ImmutableVector2i getOtherEnd(BaseVector2i pos) {
+    public Vector2ic getOtherEnd(Vector2ic pos) {
         if (getEnd0().equals(pos)) {
             return getEnd1();
         }

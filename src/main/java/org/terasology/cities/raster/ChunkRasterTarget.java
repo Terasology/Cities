@@ -24,7 +24,10 @@ import org.terasology.cities.BlockType;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.Block;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 import org.terasology.world.block.BlockRegion;
+import org.terasology.world.block.BlockRegionc;
 import org.terasology.world.chunks.CoreChunk;
 
 import java.util.Set;
@@ -38,7 +41,7 @@ public class ChunkRasterTarget implements RasterTarget {
 
     private final CoreChunk chunk;
     private final BlockTheme blockTheme;
-    private final Rect2i affectedArea;
+    private final BlockAreac affectedArea;
 
     /**
      * @param chunk     the chunk to work on
@@ -50,16 +53,18 @@ public class ChunkRasterTarget implements RasterTarget {
 
         int wx = chunk.getChunkWorldOffsetX();
         int wz = chunk.getChunkWorldOffsetZ();
-        this.affectedArea = Rect2i.createFromMinAndSize(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
+        this.affectedArea = new BlockArea(wx,wz).setSize(chunk.getChunkSizeX(), chunk.getChunkSizeZ());
+
+//        this.affectedArea = Rect2i.createFromMinAndSize(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
     }
 
     @Override
-    public Rect2i getAffectedArea() {
+    public BlockAreac getAffectedArea() {
         return affectedArea;
     }
 
     @Override
-    public BlockRegion getAffectedRegion() {
+    public BlockRegionc getAffectedRegion() {
         return chunk.getRegion();
     }
 

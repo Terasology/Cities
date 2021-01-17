@@ -17,13 +17,13 @@
 package org.terasology.cities.bldg;
 
 import org.joml.Circlef;
+import org.terasology.cities.bldg.shape.CircularBase;
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.math.geom.Circle;
 
 /**
  *
  */
-public class RoundBuildingPart extends AbstractBuildingPart {
+public class RoundBuildingPart extends AbstractBuildingPart implements CircularBase {
     private Circlef layout = new Circlef();
 
     public RoundBuildingPart(Circlef layout, Roof roof, int baseHeight, int wallHeight) {
@@ -33,6 +33,7 @@ public class RoundBuildingPart extends AbstractBuildingPart {
         this.layout.y = layout.y;
     }
 
+    @Override
     public Circlef getShape() {
         return layout;
     }
