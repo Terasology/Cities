@@ -29,6 +29,7 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.TeraMath;
 import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
@@ -58,7 +59,7 @@ public class TownHallGenerator implements BuildingGenerator {
         length -= length % 6;
 
         // we add +1, because the building starts at 1 block above the terrain
-        int floorHeight = TeraMath.floorToInt(hm.apply(probePos)) + 1;
+        int floorHeight = TeraMath.floorToInt(hm.apply(JomlUtil.from(probePos))) + 1;
         int wallHeight = 6;
 
         // Create entry hall
