@@ -16,7 +16,7 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A {@link Pen} that checks all write operations before calling the delegate.
@@ -40,7 +40,7 @@ public class CheckedPen implements Pen {
     }
 
     @Override
-    public Rect2i getTargetArea() {
+    public BlockAreac getTargetArea() {
         return pen.getTargetArea();
     }
 }

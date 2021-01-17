@@ -16,13 +16,12 @@
 
 package org.terasology.cities.deco;
 
-import java.util.Collections;
-
 import org.joml.Vector3ic;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.commonworld.Orientation;
 import org.terasology.math.Side;
-import org.terasology.math.geom.BaseVector3i;
+
+import java.util.Collections;
 
 /**
  * A straight, rising ladder made of a single block type

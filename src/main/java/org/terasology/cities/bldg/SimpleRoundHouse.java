@@ -20,8 +20,6 @@ import org.joml.Circlef;
 import org.joml.Vector2ic;
 import org.terasology.cities.model.roof.ConicRoof;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.Circle;
 
 /**
  * A round house with a conic roof

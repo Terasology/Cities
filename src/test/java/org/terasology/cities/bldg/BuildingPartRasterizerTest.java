@@ -33,12 +33,15 @@ import org.terasology.cities.raster.RasterUtil;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.commonworld.heightmap.HeightMaps;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
+
 /**
  * Tests the {@link BuildingPartRasterizer} class.
  */
 public class BuildingPartRasterizerTest {
 
-    private Rect2i rc = Rect2i.createFromMinAndSize(0, 0, 1, 1);
+    private BlockAreac rc = new BlockArea(0, 0).setSize( 1, 1);
 
     @Test
     public void testPrepareFloorFullyInside() {

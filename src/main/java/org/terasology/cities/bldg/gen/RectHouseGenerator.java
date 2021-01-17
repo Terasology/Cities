@@ -38,9 +38,6 @@ import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
-import org.terasology.math.TeraMath;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.LineSegment;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.block.BlockArea;
@@ -92,9 +89,9 @@ public class RectHouseGenerator implements BuildingGenerator {
 
             for (SimpleWindow wnd : wnds) {
                 // test if terrain outside window is lower than window base height
-                ImmutableVector2i wndDir = wnd.getOrientation().getDir();
-                ImmutableVector2i wndPos = wnd.getPos();
-                Vector2i probePosWnd = new Vector2i(wndPos.getX() + wndDir.getX(), wndPos.getY() + wndDir.getY());
+                Vector2ic wndDir = wnd.getOrientation().direction();
+                Vector2ic wndPos = wnd.getPos();
+                Vector2i probePosWnd = new Vector2i(wndPos.x() + wndDir.x(), wndPos.y() + wndDir.y());
                 if (wnd.getHeight() > hm.apply(probePosWnd)) {
                     part.addWindow(wnd);
                 }

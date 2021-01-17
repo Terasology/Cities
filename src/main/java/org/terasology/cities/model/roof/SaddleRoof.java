@@ -16,16 +16,14 @@
 
 package org.terasology.cities.model.roof;
 
+import com.google.common.base.Preconditions;
+import org.terasology.commonworld.Orientation;
+import org.terasology.world.block.BlockAreac;
+
 import static org.terasology.commonworld.Orientation.EAST;
 import static org.terasology.commonworld.Orientation.NORTH;
 import static org.terasology.commonworld.Orientation.SOUTH;
 import static org.terasology.commonworld.Orientation.WEST;
-
-import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
-
-import com.google.common.base.Preconditions;
-import org.terasology.world.block.BlockAreac;
 
 /**
  * A saddle(gable) roof

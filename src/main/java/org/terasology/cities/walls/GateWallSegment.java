@@ -17,7 +17,6 @@
 package org.terasology.cities.walls;
 
 import org.joml.Vector2ic;
-import org.terasology.math.geom.BaseVector2i;
 
 /**
  * A straight wall segment with a gate

@@ -18,7 +18,6 @@ package org.terasology.cities.bldg;
 
 import org.terasology.cities.bldg.shape.RectangularBase;
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
 

@@ -16,11 +16,8 @@
 
 package org.terasology.cities.common;
 
-import org.joml.LineSegmentf;
 import org.joml.Vector2i;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.ImmutableVector2f;
-import org.terasology.math.geom.LineSegment;
 import org.terasology.world.block.BlockAreac;
 
 /**

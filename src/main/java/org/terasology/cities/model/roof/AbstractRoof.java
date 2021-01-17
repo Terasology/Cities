@@ -16,8 +16,6 @@
 
 package org.terasology.cities.model.roof;
 
-import org.terasology.math.geom.Shape;
-
 /**
  * An abstract base class for different roof types
  */

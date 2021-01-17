@@ -22,11 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockType;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
-import org.terasology.world.block.BlockRegion;
 import org.terasology.world.block.BlockRegionc;
 import org.terasology.world.chunks.CoreChunk;
 
@@ -44,7 +42,7 @@ public class ChunkRasterTarget implements RasterTarget {
     private final BlockAreac affectedArea;
 
     /**
-     * @param chunk     the chunk to work on
+     * @param chunk the chunk to work on
      * @param blockTheme a mapping String type to block
      */
     public ChunkRasterTarget(CoreChunk chunk, BlockTheme blockTheme) {
@@ -53,7 +51,7 @@ public class ChunkRasterTarget implements RasterTarget {
 
         int wx = chunk.getChunkWorldOffsetX();
         int wz = chunk.getChunkWorldOffsetZ();
-        this.affectedArea = new BlockArea(wx,wz).setSize(chunk.getChunkSizeX(), chunk.getChunkSizeZ());
+        this.affectedArea = new BlockArea(wx, wz).setSize(chunk.getChunkSizeX(), chunk.getChunkSizeZ());
 
 //        this.affectedArea = Rect2i.createFromMinAndSize(wx, wz, chunk.getChunkSizeX(), chunk.getChunkSizeZ());
     }
@@ -79,9 +77,9 @@ public class ChunkRasterTarget implements RasterTarget {
     }
 
     /**
-     * @param x    x in world coords
-     * @param y    y in world coords
-     * @param z    z in world coords
+     * @param x x in world coords
+     * @param y y in world coords
+     * @param z z in world coords
      * @param type the block type
      */
     @Override
@@ -90,9 +88,9 @@ public class ChunkRasterTarget implements RasterTarget {
     }
 
     /**
-     * @param x    x in world coords
-     * @param y    y in world coords
-     * @param z    z in world coords
+     * @param x x in world coords
+     * @param y y in world coords
+     * @param z z in world coords
      * @param type the block type
      */
     @Override
@@ -101,9 +99,9 @@ public class ChunkRasterTarget implements RasterTarget {
     }
 
     /**
-     * @param x     x in world coords
-     * @param y     y in world coords
-     * @param z     z in world coords
+     * @param x x in world coords
+     * @param y y in world coords
+     * @param z z in world coords
      * @param block the actual block
      */
     protected void setBlock(int x, int y, int z, Block block) {
@@ -148,8 +146,6 @@ public class ChunkRasterTarget implements RasterTarget {
             }
         }
 
-
         chunk.setBlock(lx, ly, lz, block);
-
     }
 }

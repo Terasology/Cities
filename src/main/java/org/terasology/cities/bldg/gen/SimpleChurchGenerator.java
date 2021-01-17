@@ -16,6 +16,8 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.RoundingMode;
+import org.joml.Vector2i;
 import org.joml.Vector3i;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.bldg.Building;
@@ -23,6 +25,7 @@ import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
+import org.terasology.cities.common.LineSegment2;
 import org.terasology.cities.deco.Ladder;
 import org.terasology.cities.deco.Pillar;
 import org.terasology.cities.deco.SingleBlockDecoration;
@@ -37,14 +40,10 @@ import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.LineSegment;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
+import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
-
-import java.math.RoundingMode;
 
 /**
  * Creates building models of a simple church.
@@ -70,9 +69,9 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         Random rand = new MersenneRandom(seed ^ lot.getShape().hashCode());
 
         // make build-able area 1 block smaller, so make the roof stay inside
-        Rect2i lotRc = lot.getShape().expand(new Vector2i(-1, -1));
+        BlockAreac lotRc = lot.getShape().expand(new Vector2i(-1, -1), new BlockArea(BlockArea.INVALID));
 
-        boolean alignEastWest = (lotRc.width() > lotRc.height());
+        boolean alignEastWest = (lotRc.getSizeX() > lotRc.getSizeY());
         Orientation o = alignEastWest ? Orientation.EAST : Orientation.NORTH;
 
         if (rand.nextBoolean()) {
@@ -107,18 +106,18 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         }
 
         int entranceWidth = 3;  // odd number to center properly
-        Rect2i entranceRect = turtle.rectCentered(0, entranceWidth, 1);
+        BlockAreac entranceRect = turtle.rectCentered(0, entranceWidth, 1);
 
-        Rect2i naveRect = turtle.rectCentered(0, naveWidth, naveLen);
-        Rect2i towerRect = turtle.rectCentered(naveLen - 1, towerSize, towerSize); // the -1 makes tower and nave overlap
+        BlockAreac naveRect = turtle.rectCentered(0, naveWidth, naveLen);
+        BlockAreac towerRect = turtle.rectCentered(naveLen - 1, towerSize, towerSize); // the -1 makes tower and nave overlap
         int baseHeight = getMaxHeight(entranceRect, hm) + 1; // 0 == terrain
 
         DefaultBuilding church = new DefaultBuilding(turtle.getOrientation());
         church.addPart(createNave(new Turtle(turtle), naveRect, entranceRect, baseHeight));
         church.addPart(createTower(new Turtle(turtle), towerRect, baseHeight));
 
-        Rect2i aisleLeftRc = turtle.rect(-naveWidth / 2 - sideWidth + 1, sideOff, sideWidth, sideLen);  // make them overlap
-        Rect2i aisleRightRc = turtle.rect(naveWidth / 2, sideOff, sideWidth, sideLen); // make them overlap
+        BlockAreac aisleLeftRc = turtle.rect(-naveWidth / 2 - sideWidth + 1, sideOff, sideWidth, sideLen);  // make them overlap
+        BlockAreac aisleRightRc = turtle.rect(naveWidth / 2, sideOff, sideWidth, sideLen); // make them overlap
 
         church.addPart(createAisle(new Turtle(turtle).rotate(-90), aisleLeftRc, baseHeight));
         church.addPart(createAisle(new Turtle(turtle).rotate(90), aisleRightRc, baseHeight));
@@ -126,13 +125,13 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         return church;
     }
 
-    private BuildingPart createNave(Turtle cur, Rect2i naveRect, Rect2i doorRc, int baseHeight) {
+    private BuildingPart createNave(Turtle cur, BlockAreac naveRect, BlockAreac doorRc, int baseHeight) {
         int entranceHeight = 4;
 
         int hallHeight = 10;
         int topHeight = baseHeight + hallHeight;
 
-        Rect2i naveRoofRect = naveRect.expand(1, 1);
+        BlockAreac naveRoofRect = naveRect.expand(1, 1, new BlockArea(BlockArea.INVALID));
         SaddleRoof naveRoof = new SaddleRoof(naveRect, naveRoofRect, topHeight, cur.getOrientation(), 1);
 
         RectBuildingPart nave = new RectBuildingPart(naveRect, naveRoof, baseHeight, hallHeight);
@@ -150,19 +149,19 @@ public class SimpleChurchGenerator implements BuildingGenerator {
 
         Vector2i colLeft = cur.transform(-wallDist + 2, cur.length(naveRect) - 2);
         Vector2i colRight = cur.transform(wallDist - 2, cur.length(naveRect) - 2);
-        Vector3i colLeft3d = new Vector3i(colLeft.getX(), baseHeight, colLeft.getY());
-        Vector3i colRight3d = new Vector3i(colRight.getX(), baseHeight, colRight.getY());
+        Vector3i colLeft3d = new Vector3i(colLeft.x(), baseHeight, colLeft.y());
+        Vector3i colRight3d = new Vector3i(colRight.x(), baseHeight, colRight.y());
         nave.addDecoration(new Pillar(colLeft3d, hallHeight - 3));
         nave.addDecoration(new Pillar(colRight3d, hallHeight - 3));
         return nave;
     }
 
-    private BuildingPart createTower(Turtle turtle, Rect2i rect, int baseHeight) {
+    private BuildingPart createTower(Turtle turtle, BlockAreac rect, int baseHeight) {
         int towerHeight = 22;
         int doorHeight = 8;
 
         Orientation dir = turtle.getOrientation();
-        Rect2i towerRoofRect = rect.expand(1, 1);
+        BlockAreac towerRoofRect = rect.expand(1, 1, new BlockArea(BlockArea.INVALID));
         int topHeight = baseHeight + towerHeight;
         HipRoof towerRoof = new HipRoof(rect, towerRoofRect, topHeight, 2);
         RectBuildingPart tower = new RectBuildingPart(rect, towerRoof, baseHeight, towerHeight);
@@ -176,10 +175,10 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         for (int i = 0; i < 3; i++) {
             // use the other three cardinal directions to place windows
             Orientation orient = dir.getRotated(90 * (i - 1)); // left, forward, right
-            LineSegment towerBorder = Edges.getEdge(rect, orient);
+            LineSegment2 towerBorder = Edges.getEdge(rect, orient);
             Vector2i towerPos = new Vector2i(towerBorder.lerp(0.5f), RoundingMode.HALF_UP);
 
-            Rect2i wndRect = Rect2i.createFromMinAndSize(towerPos.getX(), towerPos.getY(), 1, 1);
+            BlockAreac wndRect = new BlockArea(towerPos.x(), towerPos.y()).setSize(1, 1);
             tower.addWindow(new RectWindow(orient, wndRect, topHeight - 4, topHeight - 1, DefaultBlockType.AIR));
         }
 
@@ -188,15 +187,15 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         tower.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, torchPos3d, Side.FRONT));
 
         Orientation ladderDir = dir.getRotated(270);
-        Vector2i ladderPos2d = Edges.getCorner(rect.expand(-1, -1), ladderDir);
-        Vector3i ladderPos3d = new Vector3i(ladderPos2d.getX(), baseHeight + 1, ladderPos2d.getY());
+        Vector2i ladderPos2d = Edges.getCorner(rect.expand(-1, -1, new BlockArea(BlockArea.INVALID)), ladderDir);
+        Vector3i ladderPos3d = new Vector3i(ladderPos2d.x(), baseHeight + 1, ladderPos2d.y());
         tower.addDecoration(new Ladder(ladderPos3d, ladderDir, towerHeight - 3));
 
         return tower;
     }
 
     private RectBuildingPart createAisle(Turtle turtle, BlockAreac rect, int baseHeight) {
-        Rect2i roofRect = turtle.adjustRect(rect, -1, 1, 1, 1);  // back overlap +1 to not intersect with nave
+        BlockAreac roofRect = turtle.adjustRect(rect, -1, 1, 1, 1);  // back overlap +1 to not intersect with nave
 
         int sideWallHeight = 4;
         int doorHeight = sideWallHeight - 1;
@@ -215,7 +214,7 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         return aisle;
     }
 
-    private int getMaxHeight(Rect2i rc, HeightMap hm) {
+    private int getMaxHeight(BlockAreac rc, HeightMap hm) {
         int maxHeight = Integer.MIN_VALUE;
 
         for (int z = rc.minY(); z <= rc.maxY(); z++) {

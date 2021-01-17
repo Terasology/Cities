@@ -21,7 +21,10 @@ import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 import org.terasology.world.block.BlockRegion;
+import org.terasology.world.chunks.Chunks;
 import org.terasology.world.chunks.blockdata.TeraArray;
 import org.terasology.world.chunks.blockdata.TeraDenseArray16Bit;
 
@@ -30,23 +33,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.terasology.world.chunks.ChunkConstants.SIZE_X;
-import static org.terasology.world.chunks.ChunkConstants.SIZE_Z;
 
 /**
  *
  */
 public class DebugRasterTarget implements RasterTarget {
 
-    private final Rect2i area;
+    private final BlockAreac area;
     private final BlockRegion region;
     private final TeraArray data;
     private final List<BlockType> mapping = new ArrayList<BlockType>();
 
     public DebugRasterTarget(int min, int max) {
-        this.data = new TeraDenseArray16Bit(SIZE_X, max - min + 1, SIZE_Z);
-        this.area = Rect2i.createFromMinAndMax(0, 0, SIZE_X, SIZE_Z);
-        this.region = new BlockRegion(0, min, 0, SIZE_X, max, SIZE_Z);
+        this.data = new TeraDenseArray16Bit(Chunks.SIZE_X, max - min + 1, Chunks.SIZE_Z);
+        this.area = new BlockArea(0, 0, Chunks.SIZE_X, Chunks.SIZE_Z);
+        this.region = new BlockRegion(0, min, 0, Chunks.SIZE_X, max, Chunks.SIZE_Z);
         this.mapping.add(DefaultBlockType.AIR); // map AIR to index zero
     }
 
@@ -66,7 +67,7 @@ public class DebugRasterTarget implements RasterTarget {
     }
 
     @Override
-    public Rect2i getAffectedArea() {
+    public BlockAreac getAffectedArea() {
         return area;
     }
 
