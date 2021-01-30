@@ -25,7 +25,6 @@ import org.terasology.cities.bldg.BuildingPart;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
-import org.terasology.cities.common.LineSegment2;
 import org.terasology.cities.deco.Ladder;
 import org.terasology.cities.deco.Pillar;
 import org.terasology.cities.deco.SingleBlockDecoration;
@@ -37,6 +36,7 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.window.RectWindow;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.geom.Line2f;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.math.TeraMath;
@@ -175,7 +175,7 @@ public class SimpleChurchGenerator implements BuildingGenerator {
         for (int i = 0; i < 3; i++) {
             // use the other three cardinal directions to place windows
             Orientation orient = dir.getRotated(90 * (i - 1)); // left, forward, right
-            LineSegment2 towerBorder = Edges.getEdge(rect, orient);
+            Line2f towerBorder = Edges.getEdge(rect, orient);
             Vector2i towerPos = new Vector2i(towerBorder.lerp(0.5f), RoundingMode.HALF_UP);
 
             BlockAreac wndRect = new BlockArea(towerPos.x(), towerPos.y()).setSize(1, 1);

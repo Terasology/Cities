@@ -26,7 +26,6 @@ import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
 import org.terasology.cities.common.Edges;
-import org.terasology.cities.common.LineSegment2;
 import org.terasology.cities.deco.SingleBlockDecoration;
 import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.DomeRoof;
@@ -36,6 +35,7 @@ import org.terasology.cities.model.roof.SaddleRoof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
+import org.terasology.commonworld.geom.Line2f;
 import org.terasology.commonworld.heightmap.HeightMap;
 import org.terasology.math.Side;
 import org.terasology.utilities.random.MersenneRandom;
@@ -126,7 +126,7 @@ public class RectHouseGenerator implements BuildingGenerator {
 
         Set<SimpleWindow> result = Sets.newHashSet();
 
-        LineSegment2 borderSeg = Edges.getEdge(rc, o);
+        Line2f borderSeg = Edges.getEdge(rc, o);
 
         BlockArea border = new BlockArea(BlockArea.INVALID)
             .union(new Vector2i(borderSeg.getStart(), RoundingMode.FLOOR))
