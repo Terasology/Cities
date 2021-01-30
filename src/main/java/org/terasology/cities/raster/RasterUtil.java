@@ -30,34 +30,6 @@ import java.util.Optional;
  */
 public abstract class RasterUtil {
 
-//    /**
-//     * @param shape the shape to fill
-//     * @param hmBottom the bottom height map (inclusive)
-//     * @param hmTop top height map (exclusive)
-//     * @param type the block type
-//     */
-//    public static void fillShape(Shape shape, HeightMap hmBottom, HeightMap hmTop, BlockTypes type) {
-//
-//        if (!getAffectedArea().overlaps(shape.getBounds()) {
-//            return;
-//        }
-//
-//        Rect2i rc = getIntersectionArea(shape.getBounds());
-//
-//        for (int z = rc.minY(); z <= rc.maxY(); z++) {
-//            for (int x = rc.minX(); x <= rc.maxX(); x++) {
-//
-//                if (shape.contains(x, z)) {
-//                    int y1 = hmBottom.generate(x, z);
-//                    int y2 = hmTop.generate(x, z);
-//
-//                    for (int y = y1; y < y2; y++) {
-//                        setBlock(x, y, z, type);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     /**
      * if (x2 < x1) nothing will be drawn.

@@ -26,7 +26,7 @@ import org.terasology.commonworld.Orientation;
 public class SimpleWindow implements Window {
 
     private final Orientation orientation;
-    private final Vector2ic pos;
+    private final Vector2i pos = new Vector2i();
     private final int height;
 
     /**
@@ -36,7 +36,7 @@ public class SimpleWindow implements Window {
      */
     public SimpleWindow(Orientation orientation, Vector2ic pos, int height) {
         this.orientation = orientation;
-        this.pos = new Vector2i(pos);
+        this.pos.set(pos);
         this.height = height;
     }
 

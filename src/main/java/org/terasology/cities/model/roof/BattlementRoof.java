@@ -15,8 +15,6 @@
  */
 
 package org.terasology.cities.model.roof;
-
-
 import org.terasology.world.block.BlockAreac;
 
 /**

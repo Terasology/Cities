@@ -16,10 +16,10 @@
 
 package org.terasology.cities.bldg;
 
-import org.joml.Circlef;
 import org.joml.Vector2ic;
 import org.terasology.cities.model.roof.ConicRoof;
 import org.terasology.commonworld.Orientation;
+import org.terasology.joml.geom.Circlef;
 
 /**
  * A round house with a conic roof

@@ -37,7 +37,6 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
 import org.terasology.utilities.random.MersenneRandom;
 import org.terasology.utilities.random.Random;
@@ -68,7 +67,7 @@ public class RectHouseGenerator implements BuildingGenerator {
         Vector2i probePos = new Vector2i(doorPos.x() + doorDir.x(), doorPos.y() + doorDir.y());
 
         // we add +1, because the building starts at 1 block above the terrain
-        int floorHeight = hm.apply(JomlUtil.from(probePos)) + 1;
+        int floorHeight = hm.apply(probePos) + 1;
         int wallHeight = 3;
 
         int roofBaseHeight = floorHeight + wallHeight;
@@ -93,7 +92,7 @@ public class RectHouseGenerator implements BuildingGenerator {
                 Vector2ic wndDir = wnd.getOrientation().direction();
                 Vector2ic wndPos = wnd.getPos();
                 Vector2i probePosWnd = new Vector2i(wndPos.x() + wndDir.x(), wndPos.y() + wndDir.y());
-                if (wnd.getHeight() > hm.apply(JomlUtil.from(probePosWnd))) {
+                if (wnd.getHeight() > hm.apply(probePosWnd)) {
                     part.addWindow(wnd);
                 }
             }

@@ -24,13 +24,13 @@ import org.joml.Vector2ic;
  */
 public class RoadSegment {
 
-    private final Vector2ic start;
-    private final Vector2ic end;
+    private final Vector2i start = new Vector2i();
+    private final Vector2i end = new Vector2i();
     private final float width;
 
     public RoadSegment(Vector2ic start, Vector2ic end, float width) {
-        this.start = new Vector2i(start);
-        this.end = new Vector2i(end);
+        this.start.set(start);
+        this.end.set(end);
         this.width = width;
     }
 

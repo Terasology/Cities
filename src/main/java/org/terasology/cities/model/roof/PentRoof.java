@@ -37,7 +37,6 @@ public class PentRoof extends RectangularRoof {
      */
     public PentRoof(BlockAreac baseRect, BlockAreac withEaves, int baseHeight, Orientation orientation, double pitch) {
         super(baseRect, withEaves, baseHeight);
-
         Preconditions.checkArgument(pitch > 0 && pitch < 10, "pitch must be in [0..10]");
 
         this.orientation = orientation;

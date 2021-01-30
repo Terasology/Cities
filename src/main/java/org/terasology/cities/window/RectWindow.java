@@ -28,7 +28,7 @@ import org.terasology.world.block.BlockAreac;
 public class RectWindow implements Window {
 
     private final Orientation orientation;
-    private BlockAreac area;
+    private BlockArea area = new BlockArea(BlockArea.INVALID);
     private int baseHeight;
     private int topHeight;
     private BlockType blockType;
@@ -52,7 +52,7 @@ public class RectWindow implements Window {
      */
     public RectWindow(Orientation orientation, BlockAreac area, int baseHeight, int topHeight, BlockType blockType) {
         this.orientation = orientation;
-        this.area = new BlockArea(area);
+        this.area.set(area);
         this.baseHeight = baseHeight;
         this.topHeight = topHeight;
         this.blockType = blockType;
