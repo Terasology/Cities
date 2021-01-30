@@ -3,7 +3,6 @@
 
 package org.terasology.cities.bldg.shape;
 
-
 import org.terasology.joml.geom.Circlef;
 
 public interface CircularBase {
