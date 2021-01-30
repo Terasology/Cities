@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model.roof;
 
-import org.joml.Circlef;
+import org.terasology.joml.geom.Circlef;
 import org.joml.Vector2ic;
 
 /**

@@ -16,7 +16,7 @@
 
 package org.terasology.cities.bldg;
 
-import org.joml.Circlef;
+import org.terasology.joml.geom.Circlef;
 import org.joml.Vector2ic;
 import org.terasology.cities.model.roof.ConicRoof;
 import org.terasology.commonworld.Orientation;
