@@ -52,7 +52,7 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
         DefaultBuilding bldg = new DefaultBuilding(o);
 
         BlockArea rc = parcel.getShape().expand(-4, -4, new BlockArea(BlockArea.INVALID));
-        BlockArea roofRc = rc.expand(2, 2);
+        BlockArea roofRc = new BlockArea(rc).expand(2, 2);
 
         int wallHeight = 8;
         int arcRadius = 4;
@@ -70,7 +70,7 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
         WhiteNoise noiseGen = new WhiteNoise(seed);
 
         float fillFactor = 0.3f;
-        BlockArea storeRc = rc.expand(-3, -3);
+        BlockArea storeRc = new BlockArea(rc).expand(-3, -3);
 
         for (Vector2ic v : storeRc) {
             if (noiseGen.noise(v.x(), v.y()) * 0.5f + 0.5f < fillFactor) {
