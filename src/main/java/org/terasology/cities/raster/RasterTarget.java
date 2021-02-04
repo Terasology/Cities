@@ -19,8 +19,8 @@ package org.terasology.cities.raster;
 import org.joml.Vector3ic;
 import org.terasology.cities.BlockType;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.world.block.BlockRegion;
+import org.terasology.world.block.BlockAreac;
+import org.terasology.world.block.BlockRegionc;
 
 import java.util.Set;
 
@@ -80,10 +80,10 @@ public interface RasterTarget {
     /**
      * @return the XZ area that is drawn by this raster target
      */
-    Rect2i getAffectedArea();
+    BlockAreac getAffectedArea();
 
     /**
      * @return the region that is drawn by this raster target
      */
-    BlockRegion getAffectedRegion();
+    BlockRegionc getAffectedRegion();
 }

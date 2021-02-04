@@ -16,22 +16,25 @@
 
 package org.terasology.cities.bldg;
 
+import org.terasology.cities.bldg.shape.RectangularBase;
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  *
  */
-public class RectBuildingPart extends AbstractBuildingPart {
+public class RectBuildingPart extends AbstractBuildingPart implements RectangularBase {
 
-    public RectBuildingPart(Rect2i layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
+    private final BlockArea layout = new BlockArea(BlockArea.INVALID);
+
+    public RectBuildingPart(BlockAreac layout,Roof roof, int baseHeight, int wallHeight) {
+        super(roof, baseHeight, wallHeight);
+        this.layout.set(layout);
     }
 
     @Override
-    public Rect2i getShape() {
-        return (Rect2i) super.getShape();
+    public BlockAreac getShape() {
+        return this.layout;
     }
-
-
 }

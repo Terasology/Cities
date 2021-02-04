@@ -16,11 +16,10 @@
 
 package org.terasology.cities.common;
 
+import org.joml.Vector2i;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.ImmutableVector2f;
-import org.terasology.math.geom.LineSegment;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.commonworld.geom.Line2f;
+import org.terasology.world.block.BlockAreac;
 
 /**
  *
@@ -31,43 +30,43 @@ public final class Edges {
         // no instances
     }
 
-    public static Vector2i getCorner(Rect2i rc, Orientation o) {
+    public static Vector2i getCorner(BlockAreac rc, Orientation o) {
 
-        int dx = o.getDir().getX() + 1; //  [0..2]
-        int dy = o.getDir().getY() + 1; //  [0..2]
+        int dx = o.direction().x() + 1; //  [0..2]
+        int dy = o.direction().y() + 1; //  [0..2]
 
-        int x = rc.minX() + (rc.width() - 1) * dx / 2;
-        int y = rc.minY() + (rc.height() - 1) * dy / 2;
+        int x = rc.minX() + (rc.getSizeX() - 1) * dx / 2;
+        int y = rc.minY() + (rc.getSizeY() - 1) * dy / 2;
 
         return new Vector2i(x, y);
     }
 
-    public static int getDistanceToBorder(Rect2i rc, int x, int z) {
+    public static int getDistanceToBorder(BlockAreac rc, int x, int z) {
         int rx = x - rc.minX();
         int rz = z - rc.minY();
 
         // distance to border along both axes
-        int borderDistX = Math.min(rx, rc.width() - 1 - rx);
-        int borderDistZ = Math.min(rz, rc.height() - 1 - rz);
+        int borderDistX = Math.min(rx, rc.getSizeX() - 1 - rx);
+        int borderDistZ = Math.min(rz, rc.getSizeY() - 1 - rz);
 
         int dist = Math.min(borderDistX, borderDistZ);
         return dist;
     }
 
-    public static float getDistanceToCorner(Rect2i rc, int x, int y) {
+    public static float getDistanceToCorner(BlockAreac rc, int x, int y) {
         return (float) Math.sqrt(getDistanceToCorner(rc, x, y));
     }
 
-    public static int getDistanceToCornerSq(Rect2i rc, int x, int y) {
+    public static int getDistanceToCornerSq(BlockAreac rc, int x, int y) {
         int dx = Math.min(x - rc.minX(), rc.maxX() - x);
         int dy = Math.min(y - rc.minY(), rc.maxY() - y);
         return dx * dx + dy * dy;
     }
 
-    public static LineSegment getEdge(Rect2i rc, Orientation o) {
+    public static Line2f getEdge(BlockAreac rc, Orientation o) {
 
         Vector2i p0 = getCorner(rc, o.getRotated(-45));
         Vector2i p1 = getCorner(rc, o.getRotated(45));
-        return new LineSegment(new ImmutableVector2f(p0.x(), p0.y()), new ImmutableVector2f(p1.x(), p1.y()));
+        return new Line2f(p0.x(), p0.y(), p1.x(), p1.y());
     }
 }

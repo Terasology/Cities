@@ -15,8 +15,7 @@
  */
 
 package org.terasology.cities.model.roof;
-
-import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A hip roof
@@ -33,7 +32,7 @@ public class HipRoof extends RectangularRoof {
      * @param maxHeight the maximum height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, double pitch, int maxHeight) {
+    public HipRoof(BlockAreac baseRect, BlockAreac withEaves, int baseHeight, double pitch, int maxHeight) {
         super(baseRect, withEaves, baseHeight);
 
         this.maxHeight = maxHeight;
@@ -46,7 +45,7 @@ public class HipRoof extends RectangularRoof {
      * @param baseHeight the base height of the roof
      * @param pitch the roof pitch
      */
-    public HipRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, double pitch) {
+    public HipRoof(BlockAreac baseRect, BlockAreac withEaves, int baseHeight, double pitch) {
         this(baseRect, withEaves, baseHeight, pitch, Integer.MAX_VALUE);
     }
 

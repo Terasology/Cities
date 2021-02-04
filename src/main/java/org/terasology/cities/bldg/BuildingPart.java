@@ -16,24 +16,18 @@
 
 package org.terasology.cities.bldg;
 
-import java.util.Set;
-
 import org.terasology.cities.deco.Decoration;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.window.Window;
-import org.terasology.math.geom.Shape;
+
+import java.util.Set;
 
 /**
  * Defines a part of a building.
  * This is similar to an entire building.
  */
 public interface BuildingPart {
-
-    /**
-     * @return the building layout
-     */
-    Shape getShape();
 
     Roof getRoof();
 

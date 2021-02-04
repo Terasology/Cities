@@ -17,7 +17,7 @@
 package org.terasology.cities.parcels;
 
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A parcel where buildings can be placed on.
@@ -27,7 +27,7 @@ public interface Parcel {
     /**
      * @return the layout shape
      */
-    Rect2i getShape();
+    BlockAreac getShape();
 
     /**
      * @return the orientation of the parcel

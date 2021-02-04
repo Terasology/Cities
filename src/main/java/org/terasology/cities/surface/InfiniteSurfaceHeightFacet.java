@@ -16,7 +16,7 @@
 
 package org.terasology.cities.surface;
 
-import org.terasology.math.geom.BaseVector2i;
+import org.joml.Vector2ic;
 import org.terasology.world.generation.WorldFacet;
 
 /**
@@ -24,8 +24,8 @@ import org.terasology.world.generation.WorldFacet;
  */
 public interface InfiniteSurfaceHeightFacet extends WorldFacet {
 
-    default float getWorld(BaseVector2i worldPos) {
-        return getWorld(worldPos.getX(), worldPos.getY());
+    default float getWorld(Vector2ic worldPos) {
+        return getWorld(worldPos.x(), worldPos.y());
     }
 
     float getWorld(int worldX, int worldY);

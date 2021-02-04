@@ -16,10 +16,9 @@
 
 package org.terasology.cities.model.roof;
 
-import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
-
 import com.google.common.base.Preconditions;
+import org.terasology.commonworld.Orientation;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A roof consisting of a single sloping surface
@@ -36,9 +35,8 @@ public class PentRoof extends RectangularRoof {
      * @param pitch the roof pitch
      * @param orientation where the top edge is
      */
-    public PentRoof(Rect2i baseRect, Rect2i withEaves, int baseHeight, Orientation orientation, double pitch) {
+    public PentRoof(BlockAreac baseRect, BlockAreac withEaves, int baseHeight, Orientation orientation, double pitch) {
         super(baseRect, withEaves, baseHeight);
-
         Preconditions.checkArgument(pitch > 0 && pitch < 10, "pitch must be in [0..10]");
 
         this.orientation = orientation;

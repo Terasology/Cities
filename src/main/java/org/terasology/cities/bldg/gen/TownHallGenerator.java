@@ -16,6 +16,8 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.terasology.cities.bldg.Building;
 import org.terasology.cities.bldg.DefaultBuilding;
 import org.terasology.cities.bldg.RectBuildingPart;
@@ -27,10 +29,10 @@ import org.terasology.cities.parcels.Parcel;
 import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  *
@@ -42,11 +44,11 @@ public class TownHallGenerator implements BuildingGenerator {
         Orientation o = parcel.getOrientation();
         DefaultBuilding bldg = new DefaultBuilding(o);
 
-        Rect2i rc = parcel.getShape().expand(-2, -2);
+        BlockAreac rc = parcel.getShape().expand(-2, -2, new BlockArea(BlockArea.INVALID));
 
-        ImmutableVector2i doorDir = o.getOpposite().getDir();
+        Vector2ic doorDir = o.getOpposite().direction();
         Vector2i doorPos = Edges.getCorner(rc, o.getOpposite());
-        Vector2i probePos = new Vector2i(doorPos.getX() + doorDir.getX(), doorPos.getY() + doorDir.getY());
+        Vector2i probePos = new Vector2i(doorPos.x() + doorDir.x(), doorPos.y() + doorDir.y());
 
         Turtle turtle = new Turtle(doorPos, o);
         turtle.move(0, 2);
@@ -61,13 +63,13 @@ public class TownHallGenerator implements BuildingGenerator {
         int wallHeight = 6;
 
         // Create entry hall
-        Rect2i hallRect = turtle.rectCentered(0, width, length / 3);
+        BlockAreac hallRect = turtle.rectCentered(0, width, length / 3);
         RectBuildingPart hall = createHall(hallRect, o, floorHeight, wallHeight);
 
         bldg.addPart(hall);
 
-        Rect2i leftRect = turtle.rect(-width / 2, length / 3 - 1, width / 3, length / 3); // -1 to overlap
-        Rect2i rightRect = turtle.rect(width * 1 / 6, length / 3 - 1, width / 3, length / 3); // -1 to overlap
+        BlockAreac leftRect = turtle.rect(-width / 2, length / 3 - 1, width / 3, length / 3); // -1 to overlap
+        BlockAreac rightRect = turtle.rect(width * 1 / 6, length / 3 - 1, width / 3, length / 3); // -1 to overlap
 
         RectBuildingPart left = createHallway(leftRect, o, floorHeight, wallHeight - 2);
         RectBuildingPart right = createHallway(rightRect, o, floorHeight, wallHeight - 2);
@@ -83,8 +85,8 @@ public class TownHallGenerator implements BuildingGenerator {
         return bldg;
     }
 
-    private RectBuildingPart createHall(Rect2i rc, Orientation o, int floorHeight, int wallHeight) {
-        Roof roof = new HipRoof(rc, rc.expand(1, 1), floorHeight + wallHeight, 1f);
+    private RectBuildingPart createHall(BlockAreac rc, Orientation o, int floorHeight, int wallHeight) {
+        Roof roof = new HipRoof(rc, rc.expand(1, 1, new BlockArea(BlockArea.INVALID)), floorHeight + wallHeight, 1f);
         RectBuildingPart hall = new RectBuildingPart(rc, roof, floorHeight, wallHeight);
         Vector2i doorPos = Edges.getCorner(rc, o.getOpposite());
         hall.addDoor(new SimpleDoor(o, doorPos, floorHeight, floorHeight + 2));
@@ -94,7 +96,7 @@ public class TownHallGenerator implements BuildingGenerator {
         return hall;
     }
 
-    private RectBuildingPart createHallway(Rect2i rc, Orientation o, int floorHeight, int wallHeight) {
+    private RectBuildingPart createHallway(BlockAreac rc, Orientation o, int floorHeight, int wallHeight) {
         HipRoof roof = new HipRoof(rc, rc, floorHeight + wallHeight, 1f);
         RectBuildingPart hallway = new RectBuildingPart(rc, roof, floorHeight, wallHeight);
         hallway.addDoor(new SimpleDoor(o, Edges.getCorner(rc, o.getOpposite()), floorHeight, floorHeight + 2));

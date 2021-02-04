@@ -16,12 +16,12 @@
 
 package org.terasology.cities.bldg.gen;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.terasology.cities.common.Edges;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.BaseVector2i;
-import org.terasology.math.geom.ImmutableVector2i;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * A turtle has a position and direction. It can be used to define 2D shapes in a relative
@@ -31,7 +31,7 @@ public class Turtle {
     private Orientation orient;
     private Vector2i pos;
 
-    public Turtle(BaseVector2i pos, Orientation orientation) {
+    public Turtle(Vector2ic pos, Orientation orientation) {
         this.orient = orientation;
         this.pos = new Vector2i(pos);
     }
@@ -57,8 +57,8 @@ public class Turtle {
      * @param newPos the new coordinates
      * @return this
      */
-    public Turtle setPosition(BaseVector2i newPos) {
-        return setPosition(newPos.getX(), newPos.getY());
+    public Turtle setPosition(Vector2ic newPos) {
+        return setPosition(newPos.x(), newPos.y());
     }
 
     /**
@@ -79,9 +79,9 @@ public class Turtle {
      * @return this
      */
     public Turtle move(int right, int forward) {
-        ImmutableVector2i dir = orient.getDir();
-        pos.addX(rotateX(dir, right, forward));
-        pos.addY(rotateY(dir, right, forward));
+        Vector2ic dir = orient.direction();
+        pos.add(rotateX(dir, right, forward),
+            rotateY(dir, right, forward));
         return this;
     }
 
@@ -89,16 +89,16 @@ public class Turtle {
      * @param rect the rect to inspect
      * @return the width of the rectangle wrt. the current direction
      */
-    public int width(Rect2i rect) {
-        return isHorz() ? rect.height() : rect.width();
+    public int width(BlockAreac rect) {
+        return isHorz() ? rect.getSizeY() : rect.getSizeX();
     }
 
     /**
      * @param rect the rect to inspect
      * @return the length of the rectangle wrt. the current direction
      */
-    public int length(Rect2i rect) {
-        return isHorz() ? rect.width() : rect.height();
+    public int length(BlockAreac rect) {
+        return isHorz() ? rect.getSizeX() : rect.getSizeY();
     }
 
     /**
@@ -115,14 +115,14 @@ public class Turtle {
      * @param len the length of the rectangle
      * @return the rectangle
      */
-    public Rect2i rect(int right, int forward, int width, int len) {
-        ImmutableVector2i dir = orient.getDir();
-        int minX = pos.getX() + rotateX(dir, right, forward);
-        int minY = pos.getY() + rotateY(dir, right, forward);
+    public BlockAreac rect(int right, int forward, int width, int len) {
+        Vector2ic dir = orient.direction();
+        int minX = pos.x() + rotateX(dir, right, forward);
+        int minY = pos.y() + rotateY(dir, right, forward);
 
-        int maxX = pos.getX() + rotateX(dir, right + width - 1, forward + len - 1);
-        int maxY = pos.getY() + rotateY(dir, right + width - 1, forward + len - 1);
-        return Rect2i.createEncompassing(minX, minY, maxX, maxY);
+        int maxX = pos.x() + rotateX(dir, right + width - 1, forward + len - 1);
+        int maxY = pos.y() + rotateY(dir, right + width - 1, forward + len - 1);
+        return new BlockArea(minX, minY).union(maxX, maxY);
     }
 
     /**
@@ -137,7 +137,7 @@ public class Turtle {
      * @param len the length of the rectangle
      * @return the rectangle
      */
-    public Rect2i rectCentered(int forward, int width, int len) {
+    public BlockAreac rectCentered(int forward, int width, int len) {
         return rect(-width / 2, forward, width, len);
     }
 
@@ -149,18 +149,18 @@ public class Turtle {
      * @param forward the offset of the forward edge
      * @return a new rect with adjusted coordinates
      */
-    public Rect2i adjustRect(Rect2i rc, int left, int back, int right, int forward) {
+    public BlockAreac adjustRect(BlockAreac rc, int left, int back, int right, int forward) {
         Orientation cd = orient.getRotated(45);
         Vector2i max = Edges.getCorner(rc, cd);
         Vector2i min = Edges.getCorner(rc, cd.getOpposite());
 
-        ImmutableVector2i dir = orient.getDir();
-        int minX = min.getX() + rotateX(dir, left, back);
-        int minY = min.getY() + rotateY(dir, left, back);
-        int maxX = max.getX() + rotateX(dir, right, forward);
-        int maxY = max.getY() + rotateY(dir, right, forward);
+        Vector2ic dir = orient.direction();
+        int minX = min.x() + rotateX(dir, left, back);
+        int minY = min.y() + rotateY(dir, left, back);
+        int maxX = max.x() + rotateX(dir, right, forward);
+        int maxY = max.y() + rotateY(dir, right, forward);
 
-        return Rect2i.createEncompassing(minX, minY, maxX, maxY);
+        return new BlockArea(minX, minY).union(maxX, maxY);
     }
 
     /**
@@ -173,8 +173,8 @@ public class Turtle {
     /**
      * @return a copy of the current cursor location
      */
-    public ImmutableVector2i getPos() {
-        return new ImmutableVector2i(pos);
+    public Vector2ic getPos() {
+        return pos;
     }
 
     /**
@@ -184,8 +184,8 @@ public class Turtle {
      * @return the transformed translation
      */
     public Vector2i transform(int right, int forward) {
-        int x = pos.getX() + rotateX(orient.getDir(), right, forward);
-        int y = pos.getY() + rotateY(orient.getDir(), right, forward);
+        int x = pos.x() + rotateX(orient.direction(), right, forward);
+        int y = pos.y() + rotateY(orient.direction(), right, forward);
         return new Vector2i(x, y);
     }
 
@@ -193,11 +193,11 @@ public class Turtle {
         return (orient == Orientation.WEST) || (orient == Orientation.EAST);
     }
 
-    private static int rotateX(BaseVector2i dir, int dx, int dy) {
-        return -dx * dir.getY() + dy * dir.getX();
+    private static int rotateX(Vector2ic dir, int dx, int dy) {
+        return -dx * dir.y() + dy * dir.x();
     }
 
-    private static int rotateY(BaseVector2i dir, int dx, int dy) {
-        return dx * dir.getX() + dy * dir.getY();
+    private static int rotateY(Vector2ic dir, int dx, int dy) {
+        return dx * dir.x() + dy * dir.y();
     }
 }

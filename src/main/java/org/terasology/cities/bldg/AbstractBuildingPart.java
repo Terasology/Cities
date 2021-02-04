@@ -16,17 +16,15 @@
 
 package org.terasology.cities.bldg;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.google.common.collect.Sets;
 import org.terasology.cities.deco.Decoration;
 import org.terasology.cities.door.Door;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.cities.window.Window;
-import org.terasology.math.geom.Shape;
 
-import com.google.common.collect.Sets;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -36,27 +34,19 @@ public abstract class AbstractBuildingPart implements BuildingPart {
     private final Set<Window> windows = Sets.newHashSet();
     private final Set<Door> doors = Sets.newHashSet();
     private final Set<Decoration> decorations = new HashSet<>();
-    private final Shape layout;
     private final int wallHeight;
     private final int baseHeight;
     private final Roof roof;
 
     /**
-     * @param layout the building layout
      * @param roof the roof definition
      * @param baseHeight the height of the floor level
      * @param wallHeight the building height above the floor level
      */
-    public AbstractBuildingPart(Shape layout, Roof roof, int baseHeight, int wallHeight) {
-        this.layout = layout;
+    public AbstractBuildingPart(Roof roof, int baseHeight, int wallHeight) {
         this.roof = roof;
         this.baseHeight = baseHeight;
         this.wallHeight = wallHeight;
-    }
-
-    @Override
-    public Shape getShape() {
-        return this.layout;
     }
 
     @Override

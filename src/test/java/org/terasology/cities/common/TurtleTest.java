@@ -16,12 +16,13 @@
 
 package org.terasology.cities.common;
 
+import org.joml.Vector2i;
 import org.junit.Assert;
 import org.junit.Test;
 import org.terasology.cities.bldg.gen.Turtle;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.world.block.BlockArea;
+import org.terasology.world.block.BlockAreac;
 
 /**
  * Tests the {@link Turtle} class.
@@ -40,7 +41,7 @@ public class TurtleTest {
      * +---+
      * </pre>
      */
-    private Rect2i rect = Rect2i.createFromMinAndMax(0, 10, 50, 100);
+    private BlockAreac rect = new BlockArea(0, 10, 50, 100);
 
     @Test
     public void testMoveSouth() {
@@ -48,7 +49,7 @@ public class TurtleTest {
         Turtle cur = new Turtle(pos, Orientation.SOUTH);
         cur.move(-5, 10);
         Assert.assertEquals(new Vector2i(30, 20), cur.getPos());
-        Assert.assertEquals(Rect2i.createFromMinAndSize(19, 22, 14, 18), cur.rect(-2, 2, 14, 18));
+        Assert.assertEquals(new BlockArea(19, 22).setSize(14, 18), cur.rect(-2, 2, 14, 18));
     }
 
     @Test
@@ -57,7 +58,7 @@ public class TurtleTest {
         Turtle cur = new Turtle(pos, Orientation.EAST);
         cur.move(-5, 10);
         Assert.assertEquals(new Vector2i(10, 50), cur.getPos());
-        Assert.assertEquals(Rect2i.createFromMinAndSize(12, 48, 18, 14), cur.rect(-2, 2, 14, 18));
+        Assert.assertEquals(new BlockArea(12, 48).setSize(18, 14), cur.rect(-2, 2, 14, 18));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class TurtleTest {
         Turtle cur = new Turtle(pos, Orientation.NORTH);
         cur.move(-5, 10);
         Assert.assertEquals(new Vector2i(20, 90), cur.getPos());
-        Assert.assertEquals(Rect2i.createFromMinAndSize(18, 71, 14, 18), cur.rect(-2, 2, 14, 18));
+        Assert.assertEquals(new BlockArea(18, 71).setSize(14, 18), cur.rect(-2, 2, 14, 18));
     }
 
     @Test
@@ -75,6 +76,6 @@ public class TurtleTest {
         Turtle cur = new Turtle(pos, Orientation.WEST);
         cur.move(-5, 10);
         Assert.assertEquals(new Vector2i(40, 60), cur.getPos());
-        Assert.assertEquals(Rect2i.createFromMinAndSize(21, 49, 18, 14), cur.rect(-2, 2, 14, 18));
+        Assert.assertEquals(new BlockArea(21, 49).setSize(18, 14), cur.rect(-2, 2, 14, 18));
     }
 }

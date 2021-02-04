@@ -16,22 +16,17 @@
 
 package org.terasology.cities.model.roof;
 
-import org.terasology.math.geom.Shape;
-
 /**
  * An abstract base class for different roof types
  */
 public abstract class AbstractRoof implements Roof {
 
     private int baseHeight;
-    private Shape shape;
 
     /**
-     * @param shape the roof area
      * @param baseHeight the base height of the roof
      */
-    public AbstractRoof(Shape shape, int baseHeight) {
-        this.shape = shape;
+    public AbstractRoof(int baseHeight) {
         this.baseHeight = baseHeight;
     }
 
@@ -42,11 +37,4 @@ public abstract class AbstractRoof implements Roof {
         return baseHeight;
     }
 
-    /**
-     * @return the building layout
-     */
-    @Override
-    public Shape getArea() {
-        return this.shape;
-    }
 }

@@ -16,22 +16,25 @@
 
 package org.terasology.cities.bldg;
 
+import org.terasology.cities.bldg.shape.CircularBase;
 import org.terasology.cities.model.roof.Roof;
-import org.terasology.math.geom.Circle;
+import org.terasology.joml.geom.Circlef;
 
 /**
  *
  */
-public class RoundBuildingPart extends AbstractBuildingPart {
+public class RoundBuildingPart extends AbstractBuildingPart implements CircularBase {
+    private Circlef layout = new Circlef();
 
-    public RoundBuildingPart(Circle layout, Roof roof, int baseHeight, int wallHeight) {
-        super(layout, roof, baseHeight, wallHeight);
+    public RoundBuildingPart(Circlef layout, Roof roof, int baseHeight, int wallHeight) {
+        super(roof, baseHeight, wallHeight);
+        this.layout.r = layout.r;
+        this.layout.x = layout.x;
+        this.layout.y = layout.y;
     }
 
     @Override
-    public Circle getShape() {
-        return (Circle) super.getShape();
+    public Circlef getShape() {
+        return layout;
     }
-
-
 }
