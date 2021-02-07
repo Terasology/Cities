@@ -20,7 +20,6 @@ import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.cities.raster.RasterTarget;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Rect2i;
 import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
 import org.terasology.world.block.BlockRegion;
