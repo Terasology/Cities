@@ -16,10 +16,11 @@
 
 package org.terasology.cities.raster;
 
+import org.joml.Vector2f;
+import org.terasology.commonworld.geom.Line2f;
+import org.terasology.joml.geom.Rectanglef;
+import org.terasology.joml.geom.Rectanglei;
 import org.terasology.math.TeraMath;
-import org.terasology.math.geom.LineSegment;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2f;
 import org.terasology.world.block.BlockArea;
 import org.terasology.world.block.BlockAreac;
 
@@ -90,7 +91,7 @@ public abstract class RasterUtil {
      * @param pen the pen to use
      * @param rc the rectangle to draw
      */
-    public static void drawRect(Pen pen, Rect2i rc) {
+    public static void drawRect(Pen pen, Rectanglei rc) {
 
         // walls along x-axis
         drawLineX(pen, rc.minX(), rc.maxX(), rc.minY());
@@ -125,17 +126,17 @@ public abstract class RasterUtil {
      * @param pen the pen to use
      * @param line the line to draw
      */
-    public static void drawLine(Pen pen, LineSegment line) {
+    public static void drawLine(Pen pen, Line2f line) {
 
         BlockAreac outerBox = pen.getTargetArea();
 
         Vector2f p0 = new Vector2f();
         Vector2f p1 = new Vector2f();
-        if (line.getClipped(Rect2i.createFromMinAndMax(outerBox.minX(), outerBox.minY(), outerBox.maxX(), outerBox.maxY()), p0, p1)) {
-            int cx1 = TeraMath.floorToInt(p0.getX());
-            int cy1 = TeraMath.floorToInt(p0.getY());
-            int cx2 = TeraMath.floorToInt(p1.getX());
-            int cy2 = TeraMath.floorToInt(p1.getY());
+        if (line.getClipped(new Rectanglef(outerBox.minX(), outerBox.minY(), outerBox.maxX(), outerBox.maxY()), p0, p1)) {
+            int cx1 = TeraMath.floorToInt(p0.x());
+            int cy1 = TeraMath.floorToInt(p0.y());
+            int cx2 = TeraMath.floorToInt(p1.x());
+            int cy2 = TeraMath.floorToInt(p1.y());
             drawClippedLine(pen, cx1, cy1, cx2, cy2);
         }
     }
