@@ -17,7 +17,7 @@
 package org.terasology.cities.common;
 
 import org.joml.Vector2i;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.geom.Line2f;
 import org.terasology.world.block.BlockArea;
