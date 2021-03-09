@@ -16,7 +16,7 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A {@link Pen} that checks all write operations before calling the delegate.

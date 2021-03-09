@@ -19,7 +19,7 @@ package org.terasology.cities.deco;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.terasology.cities.BlockType;
-import org.terasology.math.Side;
+import org.terasology.engine.math.Side;
 
 /**
  * A single block decoration

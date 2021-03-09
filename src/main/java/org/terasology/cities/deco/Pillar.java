@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList;
 import org.joml.Vector3ic;
 import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
-import org.terasology.math.Side;
+import org.terasology.engine.math.Side;
 
 import java.util.Collections;
 import java.util.List;

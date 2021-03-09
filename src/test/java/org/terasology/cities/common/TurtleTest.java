@@ -20,8 +20,8 @@ import org.joml.Vector2i;
 import org.junit.jupiter.api.Test;
 import org.terasology.cities.bldg.gen.Turtle;
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 /**

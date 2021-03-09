@@ -17,7 +17,7 @@
 package org.terasology.cities.parcels;
 
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A parcel where buildings can be placed on.

@@ -18,7 +18,7 @@ package org.terasology.cities.model.roof;
 
 import com.google.common.base.Preconditions;
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 import static org.terasology.commonworld.Orientation.EAST;
 import static org.terasology.commonworld.Orientation.NORTH;

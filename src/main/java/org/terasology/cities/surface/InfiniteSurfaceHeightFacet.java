@@ -17,7 +17,7 @@
 package org.terasology.cities.surface;
 
 import org.joml.Vector2ic;
-import org.terasology.world.generation.WorldFacet;
+import org.terasology.engine.world.generation.WorldFacet;
 
 /**
  *

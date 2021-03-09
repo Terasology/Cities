@@ -18,11 +18,11 @@ package org.terasology.cities.raster;
 
 import org.joml.Vector2f;
 import org.terasology.commonworld.geom.Line2f;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 import org.terasology.joml.geom.Rectanglef;
 import org.terasology.joml.geom.Rectanglei;
 import org.terasology.math.TeraMath;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
 
 import java.util.Optional;
 

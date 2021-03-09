@@ -16,7 +16,7 @@
 
 package org.terasology.cities.model.roof;
 
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A flat roof with an extruded border (terrace roof)

@@ -22,8 +22,8 @@ import org.terasology.cities.door.SimpleDoor;
 import org.terasology.cities.model.roof.BattlementRoof;
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A simple tower

@@ -19,7 +19,7 @@ package org.terasology.cities.common;
 import org.joml.Vector2i;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.geom.Line2f;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  *

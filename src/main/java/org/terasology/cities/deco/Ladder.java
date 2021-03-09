@@ -19,7 +19,7 @@ package org.terasology.cities.deco;
 import org.joml.Vector3ic;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.commonworld.Orientation;
-import org.terasology.math.Side;
+import org.terasology.engine.math.Side;
 
 import java.util.Collections;
 

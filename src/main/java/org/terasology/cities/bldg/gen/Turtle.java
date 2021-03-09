@@ -20,8 +20,8 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import org.terasology.cities.common.Edges;
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A turtle has a position and direction. It can be used to define 2D shapes in a relative

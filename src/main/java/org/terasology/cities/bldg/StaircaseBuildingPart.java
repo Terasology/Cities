@@ -18,8 +18,8 @@ package org.terasology.cities.bldg;
 
 import org.terasology.cities.model.roof.Roof;
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  *

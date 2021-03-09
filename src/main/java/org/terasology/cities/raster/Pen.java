@@ -17,7 +17,7 @@
 package org.terasology.cities.raster;
 
 import org.joml.Vector2ic;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * Assigns blocks based on x and z values

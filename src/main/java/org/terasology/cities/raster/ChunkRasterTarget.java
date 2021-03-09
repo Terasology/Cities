@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.cities.BlockTheme;
 import org.terasology.cities.BlockType;
-import org.terasology.math.Side;
-import org.terasology.world.block.Block;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
-import org.terasology.world.block.BlockRegionc;
-import org.terasology.world.chunks.CoreChunk;
+import org.terasology.engine.math.Side;
+import org.terasology.engine.world.block.Block;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockRegionc;
+import org.terasology.engine.world.chunks.CoreChunk;
 
 import java.util.Set;
 

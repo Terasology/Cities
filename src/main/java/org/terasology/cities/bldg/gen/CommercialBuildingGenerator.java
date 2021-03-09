@@ -31,9 +31,9 @@ import org.terasology.cities.model.roof.HipRoof;
 import org.terasology.cities.parcels.Parcel;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.math.Side;
-import org.terasology.utilities.procedural.WhiteNoise;
-import org.terasology.world.block.BlockArea;
+import org.terasology.engine.math.Side;
+import org.terasology.engine.utilities.procedural.WhiteNoise;
+import org.terasology.engine.world.block.BlockArea;
 
 /**
  *

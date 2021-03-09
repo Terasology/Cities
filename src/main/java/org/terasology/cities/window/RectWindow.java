@@ -19,8 +19,8 @@ package org.terasology.cities.window;
 import org.terasology.cities.BlockType;
 import org.terasology.cities.DefaultBlockType;
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A rectangular window in a wall

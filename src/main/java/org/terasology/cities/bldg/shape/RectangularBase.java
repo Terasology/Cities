@@ -3,7 +3,7 @@
 
 package org.terasology.cities.bldg.shape;
 
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockAreac;
 
 public interface RectangularBase {
     BlockAreac getShape();

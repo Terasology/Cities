@@ -37,11 +37,11 @@ import org.terasology.cities.window.SimpleWindow;
 import org.terasology.commonworld.Orientation;
 import org.terasology.commonworld.geom.Line2f;
 import org.terasology.commonworld.heightmap.HeightMap;
-import org.terasology.math.Side;
-import org.terasology.utilities.random.MersenneRandom;
-import org.terasology.utilities.random.Random;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.math.Side;
+import org.terasology.engine.utilities.random.MersenneRandom;
+import org.terasology.engine.utilities.random.Random;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 import java.util.Set;
 

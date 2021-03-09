@@ -17,8 +17,8 @@
 package org.terasology.cities.door;
 
 import org.terasology.commonworld.Orientation;
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A simple, rectangular door with fixed height and orientation

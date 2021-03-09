@@ -18,9 +18,9 @@ package org.terasology.cities.raster;
 
 import org.joml.Vector3ic;
 import org.terasology.cities.BlockType;
-import org.terasology.math.Side;
-import org.terasology.world.block.BlockAreac;
-import org.terasology.world.block.BlockRegionc;
+import org.terasology.engine.math.Side;
+import org.terasology.engine.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockRegionc;
 
 import java.util.Set;
 

@@ -16,8 +16,8 @@
 
 package org.terasology.cities.raster;
 
-import org.terasology.world.block.BlockArea;
-import org.terasology.world.block.BlockAreac;
+import org.terasology.engine.world.block.BlockArea;
+import org.terasology.engine.world.block.BlockAreac;
 
 /**
  * A {@link Pen} that stores the valid target area.
