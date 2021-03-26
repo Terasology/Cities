@@ -13,7 +13,7 @@ import org.terasology.engine.world.block.Block;
 import org.terasology.engine.world.block.BlockArea;
 import org.terasology.engine.world.block.BlockAreac;
 import org.terasology.engine.world.block.BlockRegionc;
-import org.terasology.engine.world.chunks.CoreChunk;
+import org.terasology.engine.world.chunks.Chunk;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ public class ChunkRasterTarget implements RasterTarget {
 
     private static final Logger logger = LoggerFactory.getLogger(ChunkRasterTarget.class);
 
-    private final CoreChunk chunk;
+    private final Chunk chunk;
     private final BlockTheme blockTheme;
     private final BlockAreac affectedArea;
 
@@ -32,7 +32,7 @@ public class ChunkRasterTarget implements RasterTarget {
      * @param chunk the chunk to work on
      * @param blockTheme a mapping String type to block
      */
-    public ChunkRasterTarget(CoreChunk chunk, BlockTheme blockTheme) {
+    public ChunkRasterTarget(Chunk chunk, BlockTheme blockTheme) {
         this.blockTheme = blockTheme;
         this.chunk = chunk;
 
