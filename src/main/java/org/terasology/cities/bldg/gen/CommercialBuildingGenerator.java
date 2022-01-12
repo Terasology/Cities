@@ -82,9 +82,10 @@ public class CommercialBuildingGenerator implements BuildingGenerator {
 
         BlockArea inner = baseArea.expand(-1, -1, new BlockArea(BlockArea.INVALID));
         for (int i = 0; i < 4; i++) {
-            Vector2i pos = Edges.getCorner(inner, Orientation.NORTHEAST.getRotated(i * 90));
+            Orientation orientation = Orientation.NORTHEAST.getRotated(i * 90);
+            Vector2i pos = Edges.getCorner(inner, orientation);
             Vector3i pos3d = new Vector3i(pos.x(), roofBaseHeight - 2, pos.y());
-            hall.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, pos3d, Side.FRONT));
+            hall.addDecoration(new SingleBlockDecoration(DefaultBlockType.TORCH, pos3d, Side.inDirection(orientation.direction().x(), 0, orientation.direction().y()).reverse()));
         }
         return bldg;
     }
